@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "pack6": {
+      "baseUrl": "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-6/model/"
+    }
+  },
+  "models": {
+    "ship/209/2": [
+      {
+        "source": "pack6",
+        "manifest": "ship/209_2/index.json"
+      }
+    ],
+    "ship/248/1": [
+      {
+        "source": "pack6",
+        "manifest": "ship/248_1/index.json"
+      }
+    ],
+    "ship/325/1": [
+      {
+        "source": "pack6",
+        "manifest": "ship/325_1/index.json"
+      }
+    ]
+  },
+  "gallery": {
+    "ship/209/2": {
+      "name": "密苏里",
+      "en": "Missouri",
+      "outfit": "私人订制",
+      "outfitEn": "Custom Tailored",
+      "portrait": "./games/portraits/warship-girls-209_2.webp"
+    },
+    "ship/248/1": {
+      "name": "大淀",
+      "en": "Ōyodo",
+      "outfit": "一番舰",
+      "outfitEn": "Lead Ship",
+      "portrait": "./games/portraits/warship-girls-248_1.webp"
+    },
+    "ship/325/1": {
+      "name": "列克星敦 (CV-16)",
+      "en": "Lexington (CV-16)",
+      "outfit": "波特曼街237号",
+      "outfitEn": "237 Portman Street",
+      "portrait": "./games/portraits/warship-girls-325_1.webp"
+    }
+  }
+}
