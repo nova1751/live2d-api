@@ -1,0 +1,255 @@
+{
+  "version": "Sample 1.0.0",
+  "layout": {
+    "center_x": 0,
+    "center_y": 0,
+    "width": 2
+  },
+  "hit_areas_custom": {
+    "body_x": [
+      -0.3,
+      0.2
+    ],
+    "body_y": [
+      0.3,
+      -1.9
+    ],
+    "head_x": [
+      -0.25,
+      1
+    ],
+    "head_y": [
+      0.25,
+      0.2
+    ]
+  },
+  "model": "data/model.moc",
+  "textures": [
+    "data/textures/texture_00.png",
+    "data/textures/texture_01.png"
+  ],
+  "motions": {
+    "angry01": [
+      {
+        "file": "data/motions/angry01.mtn"
+      }
+    ],
+    "bye01": [
+      {
+        "file": "data/motions/bye01.mtn"
+      }
+    ],
+    "cry01": [
+      {
+        "file": "data/motions/cry01.mtn"
+      }
+    ],
+    "idle01": [
+      {
+        "file": "data/motions/idle01.mtn"
+      }
+    ],
+    "kandou01": [
+      {
+        "file": "data/motions/kandou01.mtn"
+      }
+    ],
+    "kime01": [
+      {
+        "file": "data/motions/kime01.mtn"
+      }
+    ],
+    "nf01": [
+      {
+        "file": "data/motions/nf01.mtn"
+      }
+    ],
+    "nf02": [
+      {
+        "file": "data/motions/nf02.mtn"
+      }
+    ],
+    "nf03": [
+      {
+        "file": "data/motions/nf03.mtn"
+      }
+    ],
+    "nf04": [
+      {
+        "file": "data/motions/nf04.mtn"
+      }
+    ],
+    "nf05": [
+      {
+        "file": "data/motions/nf05.mtn"
+      }
+    ],
+    "nf_left01": [
+      {
+        "file": "data/motions/nf_left01.mtn"
+      }
+    ],
+    "nf_right01": [
+      {
+        "file": "data/motions/nf_right01.mtn"
+      }
+    ],
+    "nnf01": [
+      {
+        "file": "data/motions/nnf01.mtn"
+      }
+    ],
+    "nnf02": [
+      {
+        "file": "data/motions/nnf02.mtn"
+      }
+    ],
+    "nnf03": [
+      {
+        "file": "data/motions/nnf03.mtn"
+      }
+    ],
+    "nnf04": [
+      {
+        "file": "data/motions/nnf04.mtn"
+      }
+    ],
+    "nnf05": [
+      {
+        "file": "data/motions/nnf05.mtn"
+      }
+    ],
+    "nnf_left01": [
+      {
+        "file": "data/motions/nnf_left01.mtn"
+      }
+    ],
+    "nnf_right01": [
+      {
+        "file": "data/motions/nnf_right01.mtn"
+      }
+    ],
+    "sad01": [
+      {
+        "file": "data/motions/sad01.mtn"
+      }
+    ],
+    "sad02": [
+      {
+        "file": "data/motions/sad02.mtn"
+      }
+    ],
+    "serious01": [
+      {
+        "file": "data/motions/serious01.mtn"
+      }
+    ],
+    "serious02": [
+      {
+        "file": "data/motions/serious02.mtn"
+      }
+    ],
+    "smile01": [
+      {
+        "file": "data/motions/smile01.mtn"
+      }
+    ],
+    "smile02": [
+      {
+        "file": "data/motions/smile02.mtn"
+      }
+    ],
+    "smile03": [
+      {
+        "file": "data/motions/smile03.mtn"
+      }
+    ],
+    "surprised01": [
+      {
+        "file": "data/motions/surprised01.mtn"
+      }
+    ],
+    "sys-urafes-KM-005": [
+      {
+        "file": "data/motions/sys-urafes-KM-005.mtn"
+      }
+    ],
+    "sys-urafes-KM-006": [
+      {
+        "file": "data/motions/sys-urafes-KM-006.mtn"
+      }
+    ],
+    "sys-urafes-KM-007": [
+      {
+        "file": "data/motions/sys-urafes-KM-007.mtn"
+      }
+    ],
+    "sys-urafes-KM-008": [
+      {
+        "file": "data/motions/sys-urafes-KM-008.mtn"
+      }
+    ],
+    "uziuzi01": [
+      {
+        "file": "data/motions/uziuzi01.mtn"
+      }
+    ],
+    "uziuzi02": [
+      {
+        "file": "data/motions/uziuzi02.mtn"
+      }
+    ],
+    "uziuzi03": [
+      {
+        "file": "data/motions/uziuzi03.mtn"
+      }
+    ]
+  },
+  "expressions": [
+    {
+      "name": "angry01",
+      "file": "data/expressions/angry01.exp.json"
+    },
+    {
+      "name": "cry01",
+      "file": "data/expressions/cry01.exp.json"
+    },
+    {
+      "name": "default",
+      "file": "data/expressions/default.exp.json"
+    },
+    {
+      "name": "idle01",
+      "file": "data/expressions/idle01.exp.json"
+    },
+    {
+      "name": "kime01",
+      "file": "data/expressions/kime01.exp.json"
+    },
+    {
+      "name": "sad01",
+      "file": "data/expressions/sad01.exp.json"
+    },
+    {
+      "name": "serious01",
+      "file": "data/expressions/serious01.exp.json"
+    },
+    {
+      "name": "smile01",
+      "file": "data/expressions/smile01.exp.json"
+    },
+    {
+      "name": "smile02",
+      "file": "data/expressions/smile02.exp.json"
+    },
+    {
+      "name": "smile03",
+      "file": "data/expressions/smile03.exp.json"
+    },
+    {
+      "name": "surprised01",
+      "file": "data/expressions/surprised01.exp.json"
+    }
+  ],
+  "physics": "data/physics.json"
+}
