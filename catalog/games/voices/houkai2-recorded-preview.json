@@ -1,0 +1,95 @@
+{
+  "recordings": [
+    {
+      "id": "character/himeko/himeko",
+      "file": "sound/himeko_live2d_010.wav",
+      "from": "https://www.bilibili.com/video/BV1a84y117Pj/?p=33",
+      "sha256": "7cb6d0d50bee563c34123de069a7e5ef6b2dc2ec2429a3ff3d3834684ecbfda4",
+      "textId": 81548,
+      "sound": "houkai2-himeko-beer.ogg",
+      "language": "zh-CN",
+      "range": [
+        106.72,
+        114.15
+      ]
+    },
+    {
+      "id": "character/shin/shin",
+      "file": "sound/shin_009.wav",
+      "from": "https://www.bilibili.com/video/BV1a84y117Pj/?p=52",
+      "sha256": "2140c99effc7e46137025ae12d0932a15212af43d64630a11b940bccc37e060c",
+      "textId": 155102,
+      "sound": "houkai2-shin-last-words.ogg",
+      "language": "ja",
+      "range": [
+        156.19,
+        160.05
+      ]
+    },
+    {
+      "id": "character/kaguya/kaguya",
+      "file": "sound/kaguya_live2d_001.wav",
+      "from": "https://www.bilibili.com/video/BV1jS4y1A7Uk/",
+      "sha256": "fa1f33c27ed235d2e98be6ec5b8b5b64c4fd1908e4bf32ee0595b3623189af80",
+      "textId": 81781,
+      "sound": "houkai2-kaguya-001.ogg",
+      "language": "ja",
+      "range": [
+        42.2,
+        47.75
+      ]
+    },
+    {
+      "id": "character/kaguya/kaguya",
+      "file": "sound/kaguya_live2d_003.wav",
+      "from": "https://www.bilibili.com/video/BV1jS4y1A7Uk/",
+      "sha256": "702aea33dd881c26c8c9aa069460f3877404f4a1d8a98f56bfd69eab8af02afa",
+      "textId": 81777,
+      "sound": "houkai2-kaguya-003.ogg",
+      "language": "ja",
+      "range": [
+        10.4,
+        14.98
+      ]
+    },
+    {
+      "id": "character/kaguya/kaguya",
+      "file": "sound/kaguya_live2d_005.wav",
+      "from": "https://www.bilibili.com/video/BV1jS4y1A7Uk/",
+      "sha256": "b18d91d377ef422c8a2dad0ec62d34e8b5aed7c39159571f9b35d90adc4591bc",
+      "textId": 81778,
+      "sound": "houkai2-kaguya-005.ogg",
+      "language": "ja",
+      "range": [
+        1.85,
+        9.6
+      ]
+    },
+    {
+      "id": "character/kaguya/kaguya",
+      "file": "sound/kaguya_live2d_006.wav",
+      "from": "https://www.bilibili.com/video/BV1jS4y1A7Uk/",
+      "sha256": "e365476ee4ddd8a378c556b81886488ac1178db102d44cf9805ba5dc15c9f827",
+      "textId": 81776,
+      "sound": "houkai2-kaguya-006.ogg",
+      "language": "ja",
+      "range": [
+        18.12,
+        25.2
+      ]
+    },
+    {
+      "id": "character/kaguya/kaguya",
+      "file": "sound/kaguya_live2d_009.wav",
+      "from": "https://www.bilibili.com/video/BV1jS4y1A7Uk/",
+      "sha256": "6efa6c3b01ae99267cc366302fd2f54b76066f26a8050cba204973864c706b5c",
+      "textId": 81779,
+      "sound": "houkai2-kaguya-009.ogg",
+      "language": "ja",
+      "range": [
+        50.95,
+        58.6
+      ]
+    }
+  ]
+}

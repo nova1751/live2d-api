@@ -1,0 +1,335 @@
+{
+  "manifestUrl": "https://assets.hsod2.benghuai.com/asset_bundle/11_7/original/android/Res/ResourceVersion.unity3d",
+  "packageUrl": "https://assets.hsod2.benghuai.com/asset_bundle/11_7/original/android/Res/StreamingAssets/Audio/WwisePck/Pck_Cv_Partner_P01.pck_8684BE9CA2CC7B9019FC756952067B13DA4213C5",
+  "packageSha256": "8dfd59957a40ab6e8b99dd69cda565fd1a812e6392fa4d6f79e328414abd1a52",
+  "recordings": {
+    "Ev_Cv_Partner_1177_001": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1173899262,
+      "mediaId": 924471962,
+      "wemSha256": "2dea017ef5a04c261c530b25d260e2fe17da5effb40b7376c3cf0e5764196192",
+      "sha256": "5fa6b613f0035524a880818b123c9f902eba1f12160049c53be7b6ba16abaf6c"
+    },
+    "Ev_Cv_Partner_1177_003": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1173899260,
+      "mediaId": 12319776,
+      "wemSha256": "ec6da26fd24d14ce81dfbc408a48dc6a22d97fbd68992d525eb6b8279837a5d0",
+      "sha256": "0fc9cf44383bee4fdd16838a7f315541c0568568151b1a772c7c3137b36294a7"
+    },
+    "Ev_Cv_Partner_1177_006": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1173899257,
+      "mediaId": 540476164,
+      "wemSha256": "e3ef7b315068a75c56e570d2bec29dd77ab0e92b8169520642f0ade35beaf4be",
+      "sha256": "95a04f61870a4139923be6a4e5a9023220f528cf75a92e755c0f72c08625df44"
+    },
+    "Ev_Cv_Partner_1177_009": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1173899254,
+      "mediaId": 1018630717,
+      "wemSha256": "9ffc935c67117fa32283b45a937bf00538c5159913eae8ede276cae22d476969",
+      "sha256": "83d0c50f9ff9226dd7b1e5408a2f0e7d0fce08ce676e80147cd88d883b0ed52b"
+    },
+    "Ev_Cv_Partner_1177_011": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1157121549,
+      "mediaId": 676068004,
+      "wemSha256": "5c37838a484833ae2b9fb19a80e01869f52099b7ec84972f5f1357fd1b310820",
+      "sha256": "663fdaa9a7a5e2ed90c881648ed8076a70716585aef62ef90b8a6498d5f31e68"
+    },
+    "Ev_Cv_Partner_1177_104": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1073086450,
+      "mediaId": 648692016,
+      "wemSha256": "a1b523335611289bb8ba36ae17cb57d263d7679018f84bf01e8ee53c0d980467",
+      "sha256": "644c319fa0ed455ed6c9e4b603c62eccc3c67220b4af8574c2ed8654470b0c9b"
+    },
+    "Ev_Cv_Partner_1177_133": {
+      "model": "character/kika/kika",
+      "bank": 3326803470,
+      "eventId": 1056308736,
+      "mediaId": 512553595,
+      "wemSha256": "20456b8668024a4da6f86e2314953a648591751b4c512a461b763db3d053e803",
+      "sha256": "283db922c6d11069ceeac69fad682efbae2a0fccb6913e0ad734e3525d3591f1"
+    },
+    "Ev_Cv_Partner_1220_001_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 1725129483,
+      "mediaId": 971686727,
+      "wemSha256": "68b3888c605d79a434b3edbc3418f9c3ab30aad8e4d85363a90258628bca7ce8",
+      "sha256": "9b73c0fc8760eefbd85f9bd2b1d78d85e413900a959a8cd0c5857cd2e6a57cc8"
+    },
+    "Ev_Cv_Partner_1220_002_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 4248336774,
+      "mediaId": 1051314904,
+      "wemSha256": "0cefbfca2bc294a5fd109a35bc4695200c87b0c7d276746277c8071579244a37",
+      "sha256": "103feabb677b3b6eb55e5b2697916e38d076a1c5de9bc906a2581e0f5347e0c8"
+    },
+    "Ev_Cv_Partner_1220_003_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 1505796205,
+      "mediaId": 47181200,
+      "wemSha256": "915456d5e0dfaedafa2b7981afe714252ecdd9304fcc7cca9576053a49199b51",
+      "sha256": "e876992405ae12718824134dfa85dab5e3e2466b9e7467cc3c62f8357006f7c6"
+    },
+    "Ev_Cv_Partner_1220_004_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 3068668336,
+      "mediaId": 868459321,
+      "wemSha256": "ffad1f62a7a27f5631ce33dbbb0242770d1a6dbc63055c1d1dbc7a62c0644a7d",
+      "sha256": "917990a52367291653434d8413a1a6fc5302804b594fd6cacecbc54d861d90c1"
+    },
+    "Ev_Cv_Partner_1220_005_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 326127511,
+      "mediaId": 683363451,
+      "wemSha256": "78e44b6f75d024a791cdfa032dc3464651e09a87ade53288f069efac362be1ec",
+      "sha256": "38283fcb1b68563faa44494f179920f073d8fe60554fb9f455e124416f6ca039"
+    },
+    "Ev_Cv_Partner_1220_009_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 4285414883,
+      "mediaId": 406477803,
+      "wemSha256": "197f09ab8270394e17cdba24c385ed8fd65d0ed8ece60a87332a8acee6a4a83a",
+      "sha256": "828744fafdc2005a58030022c830d0140dd2827f1ca876c139418bae6a4163dc"
+    },
+    "Ev_Cv_Partner_1220_010_cn": {
+      "model": "character/xilin2.1/xilin2.1",
+      "bank": 1532142781,
+      "eventId": 259316061,
+      "mediaId": 648358417,
+      "wemSha256": "5d8b0647e264dd6b3eb9c1783aebf45971c5a68c27c31ac173f05ed9992403f6",
+      "sha256": "339a5f0ae377bedd0eefbc8da9ab7b33b4c822eb738b7fd74318dd7c47a4ed8e"
+    },
+    "Ev_Cv_Partner_1234_001_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 1906646458,
+      "mediaId": 366631964,
+      "wemSha256": "264d62a76497201dfc7f2b051c9d10b00f2a19c0baeeff2f665ca1ef081a86b6",
+      "sha256": "2c08684ee8d880cd12a2f727df13afbaa2667f16be0a3c091d876ee0424e7519"
+    },
+    "Ev_Cv_Partner_1234_002_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 3709640703,
+      "mediaId": 118922716,
+      "wemSha256": "a17ee0cef5608dd28d043c5be9460a429fdd61f12bd1825c753d64ac6c46690f",
+      "sha256": "8ce84ea6ec6b2a48e7cd0b1863ac27aedb991bbce4efa629320035f404b5fb27"
+    },
+    "Ev_Cv_Partner_1234_003_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 2146768344,
+      "mediaId": 39598539,
+      "wemSha256": "e7d79b60db9430f2c7503076242b145332e58c7e49d010d13b1b62f754beb66d",
+      "sha256": "0cf530f4370e6ff12012ad43027d0612c2c9d4b50d303bd1af34f4b6b84afed7"
+    },
+    "Ev_Cv_Partner_1234_004_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 594341877,
+      "mediaId": 743998328,
+      "wemSha256": "520328cc7bdd18f90a43daebbe02f8f4369c8eba391405d17bfe0da973a88825",
+      "sha256": "a933fed5476e3a5ececb758bd545ab3cab01fac4830696812a63ad421c4b9c8c"
+    },
+    "Ev_Cv_Partner_1234_005_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 2273457646,
+      "mediaId": 508400405,
+      "wemSha256": "24205500f3c11dc5e8b7d89528a179191eead56b7671899b925824dbe029c6ee",
+      "sha256": "ee571abb43633887fd0ba08b635b7394c7f3d5e7e53b986285004d612fc84425"
+    },
+    "Ev_Cv_Partner_1234_006_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 844909395,
+      "mediaId": 183733083,
+      "wemSha256": "289bd0e6d1a6ac0b7154715864f38ea7b140db601c8c77fa7954e0a9b489594a",
+      "sha256": "01ade8616033eabe382dbb7c68855eb363cc52e11dfaa385b1cf4ed82d01a845"
+    },
+    "Ev_Cv_Partner_1234_007_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 3587347020,
+      "mediaId": 131435862,
+      "wemSha256": "a49c4ed5f9ee933c0679a4a1831de18be49e773df2c236d5ee2fc987340ba675",
+      "sha256": "94f2cac00fa8bba0c167a13799d9f68cc84c239591b82da1d9a9bff0b150225d"
+    },
+    "Ev_Cv_Partner_1234_008_cn": {
+      "model": "character/Lita/Lita",
+      "bank": 1515365070,
+      "eventId": 2003789481,
+      "mediaId": 751738540,
+      "wemSha256": "1f89594f7d7855cbfe6752fe1aea83a2e7768cfbe5439c383f03b5eb50cac219",
+      "sha256": "0f5ad7f7856f192e00e9a4b30a560625fb2cee1ce8b55d6804d833d1ad220741"
+    },
+    "Ev_Cv_Partner_1278_001": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2690423942,
+      "mediaId": 173828850,
+      "wemSha256": "5e75732fe0faa981a23d7503fe4ad9a86ec8f5e8db174543160ee5c25b978cff",
+      "sha256": "863f10abff7c28a7cb91e40520fc540440e56c569d61f6e3bb4746cfa4f879a4"
+    },
+    "Ev_Cv_Partner_1278_005": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2690423938,
+      "mediaId": 737208122,
+      "wemSha256": "9838c6f0708e9110e723f7db5bc0137cdfd5d7ed837c45abc4e558e04e97ee08",
+      "sha256": "c35db2dbfa5af5511a9e8994d50beaa3a43280b91ca80c67f5761ec25d7ec107"
+    },
+    "Ev_Cv_Partner_1278_007": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2690423936,
+      "mediaId": 687505118,
+      "wemSha256": "ba5be47b4fe38fd1e20025b52e67022fa75bd677f6047677c56ee0913d033fb0",
+      "sha256": "242cf01b83c4aff42b12f8b73666e3e61b5df75455c7379f8783a103d635ac58"
+    },
+    "Ev_Cv_Partner_1278_008": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2690423951,
+      "mediaId": 1015838956,
+      "wemSha256": "7a1ef331df67da4eb6728351ef07741eaac9889ec0b9c49eb8a74403c98efc6f",
+      "sha256": "6b613169820a6f4f3c6e1993a33ab3cc21d32687934a71d46837e8a7d4a9a773"
+    },
+    "Ev_Cv_Partner_1278_009": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2690423950,
+      "mediaId": 265637946,
+      "wemSha256": "674c2d9da39f4603328e6c5d632638a35f88f9cbd5f4bc1de6301932d7142eaf",
+      "sha256": "a55a3eaa168156576bdbbc4595dcc4d6ee0965ea4e6d93e888d450a089e08a7e"
+    },
+    "Ev_Cv_Partner_1278_010": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2673646356,
+      "mediaId": 788524802,
+      "wemSha256": "ce5f575a15ca57e609861a47859ee53a843e635e06c35f2878c198e6b905c0c4",
+      "sha256": "8a0ef9bb126182a9ac13191aad486bbb10dc6fc8715c1f9ef73e622eb7a815d7"
+    },
+    "Ev_Cv_Partner_1278_011": {
+      "model": "character/Nina/Nina",
+      "bank": 1448254614,
+      "eventId": 2673646357,
+      "mediaId": 962525709,
+      "wemSha256": "0cd44e1b57bc62b8e62b4c707e7778a3c44a3004ee6cdfa3332956eaab710565",
+      "sha256": "f4aa6113946c6e90b425b3b54371e7de61b1eda9ff641d8fa5ffb6336ca50575"
+    },
+    "Ev_Cv_Partner_1279_001": {
+      "model": "character/Kiro/Kiro",
+      "bank": 1448254615,
+      "eventId": 3545790231,
+      "mediaId": 940535171,
+      "wemSha256": "f47ef104aec3f9245b6718707bccf353c5c44016b8b92106b9a3fe44e352f61e",
+      "sha256": "2487e5136abd73ff2011c47516b1fa5e53a04c219a8c561767709d4401c71599"
+    },
+    "Ev_Cv_Partner_1279_002": {
+      "model": "character/Kiro/Kiro",
+      "bank": 1448254615,
+      "eventId": 3545790228,
+      "mediaId": 61762376,
+      "wemSha256": "55e946a50be1ef0630c0f88472279b95f1c912f9aba094b372e6308957731ade",
+      "sha256": "8b4514fc2635c0b48657bd157d2885ae7fb767f3923cc917d15e1c437e141d99"
+    },
+    "Ev_Cv_Partner_1279_003": {
+      "model": "character/Kiro/Kiro",
+      "bank": 1448254615,
+      "eventId": 3545790229,
+      "mediaId": 534571883,
+      "wemSha256": "e1e4b3b2ecd8bdf6c4225b8f1723759a779593dd653908ef914bf7e528d0891e",
+      "sha256": "978a46ef120ae0250c8bf3da8dda4226f3625764b76a5501acd26acd24cef71c"
+    },
+    "Ev_Cv_Partner_1279_008": {
+      "model": "character/Kiro/Kiro",
+      "bank": 1448254615,
+      "eventId": 3545790238,
+      "mediaId": 794067743,
+      "wemSha256": "c6feaeb275059e8ffabe41de2a515ca4f1530bd3b78c4682084c997b8b15ec4d",
+      "sha256": "9d2691d97304ac0a176bd146707b1d8fd9444dc0d829ba225bd8c29c67cbafd8"
+    },
+    "Ev_Cv_Partner_1279_009": {
+      "model": "character/Kiro/Kiro",
+      "bank": 1448254615,
+      "eventId": 3545790239,
+      "mediaId": 106542046,
+      "wemSha256": "2c4c2864872592bee8725c31b7747928478a9bfdc2a0facd926c7438e2fe46da",
+      "sha256": "6667e1890b9ae6995ec025863965e4db9e33c278327dc21c88669649f10928f8"
+    },
+    "Ev_Cv_Partner_Live2D_1276_001_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 770779720,
+      "mediaId": 870895514,
+      "wemSha256": "2acf20da2b0c5fb32e99023ab89d01fb6812f17fbd6731fb48d39942186ad2f6",
+      "sha256": "39199a005210779e2482075b4469872db3b3e972b0ffc7fb5e854f0e447c0857"
+    },
+    "Ev_Cv_Partner_Live2D_1276_002_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 307698437,
+      "mediaId": 103176700,
+      "wemSha256": "881581dce1a084de12041d178f2e157dee97d88d4cdaec425014e6fcf5b047dc",
+      "sha256": "120707714a289515b0bf711188a60f736033d1f9756060203de699efc3ae22bd"
+    },
+    "Ev_Cv_Partner_Live2D_1276_003_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 2084669098,
+      "mediaId": 758987296,
+      "wemSha256": "752d72019d266661df0ddbad766e4fe1f7657d8b690f1e978dc6f02df2f4a487",
+      "sha256": "482d0262c85a117ecfff9a1c2ce79de2681d7161a0317aceeaa3c7366f1c1968"
+    },
+    "Ev_Cv_Partner_Live2D_1276_004_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 2147770535,
+      "mediaId": 939012248,
+      "wemSha256": "e3967d342698a2ca27f83c21a108d42d1781bcecc21702d29d7e8c58eb80eb19",
+      "sha256": "92845c31917e913389addfd1ed787b8ff71f6e73dff53e3cc7cdb5282eb0ce70"
+    },
+    "Ev_Cv_Partner_Live2D_1276_005_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 177000236,
+      "mediaId": 972370711,
+      "wemSha256": "a9192511da301c22cfc9012c8e6fc1f373ec5a3f84522151695551d6330f12d1",
+      "sha256": "87a8f810d370a412565c8fc540df2759d7723a5647a75cfaf112316a5566cd9a"
+    },
+    "Ev_Cv_Partner_Live2D_1276_009_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 3062519872,
+      "mediaId": 444105690,
+      "wemSha256": "5a0918c0194fce0c5d0fd011adb3ba692adf898efd9a582f0162887af52bab08",
+      "sha256": "b87f22c4327b4a4ddf64c2b880a047173643b4990a1a70a4f093a10562e146a4"
+    },
+    "Ev_Cv_Partner_Live2D_1276_020_Jp": {
+      "model": "character/Nindi/Nindi",
+      "bank": 1448254616,
+      "eventId": 3006344673,
+      "mediaId": 440089306,
+      "wemSha256": "677037181d5202c2717610530dc26a93bf08c5885de39121dc8757d3559b79cb",
+      "sha256": "6bc1905a823567a39ba64125b541e4fbd45962d64fa136b6bb395d99ab10ffb7"
+    }
+  }
+}

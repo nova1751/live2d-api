@@ -1,0 +1,15 @@
+{
+  "key": "98K|DIALOGUEWEDDING",
+  "sound": "./games/voices/gfl-98k-dialoguewedding.ogg",
+  "caption": "现在可是工作期间，就算您撒娇，我也是不会陪您闲聊的。不过，如果您能按时下班的话，今晚或许能陪您喝上一杯……",
+  "captionEn": "We're still at work. No matter how much you plead, I haven't time for idle chatter. But if you finish on time, I might join you for a drink tonight…",
+  "sha256": "fccd7cfd5b48739ffc50631bf8e1e6396d58830b12797082a654dc55c632d13e",
+  "source": {
+    "assetIndex": "https://github.com/gf-data-tools/gf-data-jp/blob/4b0d26ce75206d27cffd46a1b9cbdf77d1965969/resdata_no_hash.json",
+    "package": "https://gfjp-cdn.sunborngame.com/android/m8Zgpd81gX9oyjdar9KxWVz3vwbcN0cbn82pg1XH6TFuExUeVjhe7ENWjQtv98Kacb3080.dat",
+    "bank": "98K.acb",
+    "bankSha1": "8da4e2c9a239395217f416e66d86de9824938e07",
+    "stream": 15,
+    "cue": "98K_DIALOGUEWEDDING_JP"
+  }
+}
