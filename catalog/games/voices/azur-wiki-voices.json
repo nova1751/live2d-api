@@ -1,0 +1,109 @@
+[
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "home",
+    "sound": "./voices/azur-9600032-home.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/9/9a/7c0lc2r8be4b1hdtvca8db24eukhv3j.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "哎呀呀，别跑嘛～洗澡有什么好怕的～快来我的怀里，让我帮您把身上的灰尘都洗掉～",
+    "originalSha256": "5c0bb1957ae25d42ae975da6ff2f0932f67b947551a755c5bf4b297be6f5009a",
+    "sha256": "f8e9e01bb076db834abae60e54f98c82bfd2ef45ff31b3f462de6189b2148912",
+    "captionEn": "Easy now, don't run away~ We're just taking a bath together, see~? Come right into my arms, would you please? I'll clean you until you're spotless~"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "login",
+    "sound": "./voices/azur-9600032-login.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/f/f4/48wfhx7rur3blu9kd1khbrvjv4i2wgh.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "呵呵呵呵~您的目光怎么躲开了？但心跳声可是响到藏不住呢……听起来就像在邀请我进来，与您一同沐浴~♡",
+    "originalSha256": "69221e2c7bac3ade3f029e5bc5bfbc691d080310f0671aea1e6d087372098385",
+    "sha256": "236374deb4c856168d242a7cfe9320df1daa5d6e8edf618952aed543b6956228",
+    "captionEn": "Heheh~ Why so bashful? Looking away won't hide your pounding heartbeats from me... It's practically begging for us to melt in this bath together♥"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "main_1",
+    "sound": "./voices/azur-9600032-main_1.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/a/a7/n71kstoyp9069v2hxp61j363tzv5msj.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "浴缸和浴帘都有点小，真是影响发挥呢。不过把浴帘当浴巾用，包住指挥官大人的话……是不是刚好呢~",
+    "originalSha256": "88cd0857d228c4dd088a75382ade5587df5191cadf9954ac56eba99edc0c43f7",
+    "sha256": "e6ee551686a1db8a9d7bf0e6ca425e5e3ccea508f77e2770c1f48afb31bbf65b",
+    "captionEn": "It's rather tight inside the shower, is it not? But maybe, if I wrap you up nicely with the curtains, it'll feel just right~"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "main_2",
+    "sound": "./voices/azur-9600032-main_2.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/5/55/8n9hgvx9a0qmnewwwkh5kpltrk18g2m.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "触手们正在努力帮指挥官大人擦拭身体~感觉很舒服吧？不过~好像越洗越黏了……？",
+    "originalSha256": "7196bbe7607810a3480074a12e95ee0007bef8ea3b6b127c548e0110ba6b492c",
+    "sha256": "42470a3345fd04b10f2ea5bad8314b507135ee60414e913faf3ea9d4fc11da80",
+    "captionEn": "My tentacles are simply trying to clean you, Commander~ Don't they feel nice? But, it seems like you're only getting stickier and stickier, heehee~"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "main_3",
+    "sound": "./voices/azur-9600032-main_3.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/9/94/ga9jqs5uj58chnlout4ylbs92to2i94.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "指挥官大人，您看起来对我的洗浴服务依依不舍呢……是不是担心只要离开这个浴缸，您就会变成我的美餐呢~♡",
+    "originalSha256": "b9bbf5456fef54bbd4cee9dfbe562e61749088d422d0c0ec7dda03dc2112dafc",
+    "sha256": "2f1c5156c1d475a42561ec192af05163aa04c5ce92251dc0ed416ffc0c31c26c",
+    "captionEn": "You seem rather reluctant to step away from my \"cleaning services\"... Or, perhaps, are you simply worried that you might become my next meal?♥"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "touch_body",
+    "sound": "./voices/azur-9600032-touch_body.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/6/65/f2gwnv4dqsd58r3j3327a7wdhdlmo4w.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "指挥官大人想要反过来为我清洁身体吗？那我就不客气了~",
+    "originalSha256": "a66022b3ab36634989c2c950fcac3399c0af0e8905c64e68b6fec648d921c61b",
+    "sha256": "6a465b45f6af9610e5508d93deef8dc5dd9741f43923f3572c6250673f749241",
+    "captionEn": "Oh my, you'd like to help me wash up? I'd be glad to accept that offer~"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "touch_head",
+    "sound": "./voices/azur-9600032-touch_head.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/6/64/q5nne3li7zm2r8eihwj1y3syf22usgk.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "为什么沐浴时不摘掉帽子？在等您亲手来摘哦~",
+    "originalSha256": "1ef00ddb0d1883bc1c122817a3af077ab794ad982b27aca28d334fa5fa7af28e",
+    "sha256": "c4ae5530297087bebe89f9943517835d1041442d0e8c9a678c14ae435dac29ff",
+    "captionEn": "Why is my hat still on? I'm waiting for you to do the honors, of course~"
+  },
+  {
+    "id": "ship/960003/jinluhao_3",
+    "skinId": 9600032,
+    "group": "touch_special",
+    "sound": "./voices/azur-9600032-touch_special.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/d/db/5uohsmro6zagp44lkcl1qk2g9d14hqu.mp3",
+    "page": "https://wiki.biligame.com/blhx/金鹿号",
+    "caption": "想不到您居然对身为妖怪的我有着这样的渴求……真可爱~来吧，我会好好接纳您，用我的全部♡",
+    "originalSha256": "725de962e553f1dbe853aff6d2d260ed3bcf95cb3e5ad8c5c716fa088507da5e",
+    "sha256": "110b3bc776a69913b695d8ba249e40c50952d40d7ed1eb23ae98cba657731c48",
+    "captionEn": "To think you'd lust over a being like me... How adorable♥ I'll use my everything to return the favor and accept all of you♥"
+  },
+  {
+    "id": "ship/30116/xuefeng_3",
+    "skinId": 301162,
+    "group": "touch_special",
+    "sound": "./voices/azur-301162-touch_special.ogg",
+    "source": "https://patchwiki.biligame.com/images/blhx/e/e6/f8gxe12w11r1j5vlhtteybmvud08iam.mp3",
+    "page": "https://wiki.biligame.com/blhx/雪风",
+    "caption": "成，成熟的雪风大人早就习，习惯这些了！唔，唔……",
+    "originalSha256": "f6943d2521475cb42c220d83dbc2c2ee6092bc5d7e5a2caa147be070c637ceb4",
+    "sha256": "12aee84abbfe86f09abddf8e07bdc32097c979c0067dfa767ac33e6fc647ac3d"
+  }
+]
