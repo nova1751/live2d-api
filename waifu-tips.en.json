@@ -1,0 +1,351 @@
+{
+  "mouseover": [
+    {
+      "selector": "#live2d",
+      "text": [
+        "Hello, Commander!",
+        "Looking for me?"
+      ]
+    },
+    {
+      "selector": "#waifu-tool-hitokoto",
+      "text": "Guess what I'm about to say."
+    },
+    {
+      "selector": "#waifu-tool-asteroids",
+      "text": "Want to play Asteroids?"
+    },
+    {
+      "selector": "#waifu-tool-switch-model",
+      "text": "Meet another member of the squad."
+    },
+    {
+      "selector": "#waifu-tool-switch-texture",
+      "text": "Time for a change of outfit?"
+    },
+    {
+      "selector": "#waifu-tool-photo",
+      "text": "Smile for the camera!"
+    },
+    {
+      "selector": "#waifu-tool-info",
+      "text": "Read about this project."
+    },
+    {
+      "selector": "#waifu-tool-quit",
+      "text": "See you later, Commander."
+    },
+    {
+      "selector": ".menu-item-home a",
+      "text": "Back to the homepage."
+    },
+    {
+      "selector": ".menu-item-about a",
+      "text": "Meet the author."
+    },
+    {
+      "selector": ".menu-item-tags a",
+      "text": "Browse posts by tag."
+    },
+    {
+      "selector": ".menu-item-categories a",
+      "text": "Browse posts by category."
+    },
+    {
+      "selector": ".menu-item-archives a",
+      "text": "Explore the archives."
+    },
+    {
+      "selector": ".menu-item-friends a",
+      "text": "Visit a friend."
+    },
+    {
+      "selector": ".menu-item-search a",
+      "text": "Search the site."
+    },
+    {
+      "selector": ".menu-item a",
+      "text": "Open {text}."
+    },
+    {
+      "selector": ".site-author",
+      "text": "Meet the site author."
+    },
+    {
+      "selector": ".site-state",
+      "text": "Take a look at the site statistics."
+    },
+    {
+      "selector": ".feed-link a",
+      "text": "Subscribe to the feed."
+    },
+    {
+      "selector": ".cc-opacity, .post-copyright-author",
+      "text": "Check the attribution before sharing."
+    },
+    {
+      "selector": ".links-of-author",
+      "text": "Find the author elsewhere."
+    },
+    {
+      "selector": ".followme",
+      "text": "Follow the author."
+    },
+    {
+      "selector": ".fancybox img, img.medium-zoom-image",
+      "text": "Take a closer look at this picture."
+    },
+    {
+      "selector": ".copy-btn",
+      "text": "Copy the code."
+    },
+    {
+      "selector": ".highlight .table-container, .gist",
+      "text": "Working on some code?"
+    },
+    {
+      "selector": "a[href^='mailto']",
+      "text": "Send an email."
+    },
+    {
+      "selector": "a[href^='/tags/']",
+      "text": "Explore this tag."
+    },
+    {
+      "selector": "a[href^='/categories/']",
+      "text": "Explore this category."
+    },
+    {
+      "selector": ".post-title-link",
+      "text": "Read {text}."
+    },
+    {
+      "selector": "a[rel='contents']",
+      "text": "Open the table of contents."
+    },
+    {
+      "selector": "a[itemprop='discussionUrl']",
+      "text": "Join the discussion."
+    },
+    {
+      "selector": ".beian a",
+      "text": "View the site registration."
+    },
+    {
+      "selector": ".container a[href^='http'], .nav-link .nav-text",
+      "text": "Visit {text}."
+    },
+    {
+      "selector": ".back-to-top",
+      "text": "Back to the top."
+    },
+    {
+      "selector": ".reward-container",
+      "text": "Support the author."
+    },
+    {
+      "selector": "#wechat",
+      "text": "Support the author via WeChat."
+    },
+    {
+      "selector": "#alipay",
+      "text": "Support the author via Alipay."
+    },
+    {
+      "selector": "#bitcoin",
+      "text": "Support the author with Bitcoin."
+    },
+    {
+      "selector": "#needsharebutton-postbottom .btn",
+      "text": "Share this post."
+    },
+    {
+      "selector": ".need-share-button_weibo",
+      "text": "Share on Weibo."
+    },
+    {
+      "selector": ".need-share-button_wechat",
+      "text": "Share on WeChat."
+    },
+    {
+      "selector": ".need-share-button_douban",
+      "text": "Share on Douban."
+    },
+    {
+      "selector": ".need-share-button_qqzone",
+      "text": "Share on Qzone."
+    },
+    {
+      "selector": ".need-share-button_twitter",
+      "text": "Share on Twitter."
+    },
+    {
+      "selector": ".need-share-button_facebook",
+      "text": "Share on Facebook."
+    },
+    {
+      "selector": ".post-nav-item a[rel='next']",
+      "text": "Read the next post."
+    },
+    {
+      "selector": ".post-nav-item a[rel='prev']",
+      "text": "Read the previous post."
+    },
+    {
+      "selector": ".extend.next",
+      "text": "Go to the next page."
+    },
+    {
+      "selector": ".extend.prev",
+      "text": "Go to the previous page."
+    },
+    {
+      "selector": "input.vnick",
+      "text": "What should I call you?"
+    },
+    {
+      "selector": ".vmail",
+      "text": "Enter your email address."
+    },
+    {
+      "selector": ".vlink",
+      "text": "What's your website?"
+    },
+    {
+      "selector": ".veditor",
+      "text": "Leave a comment."
+    },
+    {
+      "selector": ".vcontrol a",
+      "text": "Try formatting your comment with Markdown."
+    },
+    {
+      "selector": ".vemoji-btn",
+      "text": "Add an emoji?"
+    },
+    {
+      "selector": ".vpreview-btn",
+      "text": "Preview your comment."
+    },
+    {
+      "selector": ".vsubmit",
+      "text": "Ready to send your comment?"
+    },
+    {
+      "selector": ".vcontent",
+      "text": "Read this comment."
+    }
+  ],
+  "click": [
+    {
+      "selector": "#live2d",
+      "text": [
+        "Oh! Did you need something?",
+        "Right here, Commander.",
+        "You have my attention."
+      ]
+    },
+    {
+      "selector": ".veditor",
+      "text": "What would you like to say?"
+    },
+    {
+      "selector": ".vsubmit",
+      "text": "Check your comment before submitting it."
+    }
+  ],
+  "seasons": [
+    {
+      "date": "01/01",
+      "text": "Happy New Year! Welcome to {year}."
+    },
+    {
+      "date": "02/14",
+      "text": "Happy Valentine’s Day!"
+    },
+    {
+      "date": "03/08",
+      "text": "Happy International Women’s Day!"
+    },
+    {
+      "date": "03/12",
+      "text": "It's Arbor Day. Have you planted anything lately?"
+    },
+    {
+      "date": "04/01",
+      "text": "April Fools’ Day! Keep an eye out for surprises."
+    },
+    {
+      "date": "05/01",
+      "text": "Happy Labour Day!"
+    },
+    {
+      "date": "06/01",
+      "text": "Happy Children’s Day!"
+    },
+    {
+      "date": "09/03",
+      "text": "Today we remember the anniversary of victory in the Chinese People's War of Resistance."
+    },
+    {
+      "date": "09/10",
+      "text": "Happy Teachers’ Day!"
+    },
+    {
+      "date": "10/01",
+      "text": "Happy National Day!"
+    },
+    {
+      "date": "11/05-11/12",
+      "text": "Singles’ Day is here."
+    },
+    {
+      "date": "12/20-12/31",
+      "text": "Merry Christmas, Commander!"
+    }
+  ],
+  "time": [
+    {
+      "hour": "6-7",
+      "text": "Good morning! A new day is just beginning."
+    },
+    {
+      "hour": "8-11",
+      "text": "Good morning! Time to stretch your legs?"
+    },
+    {
+      "hour": "12-13",
+      "text": "Lunchtime, Commander."
+    },
+    {
+      "hour": "14-17",
+      "text": "How is your afternoon going?"
+    },
+    {
+      "hour": "18-19",
+      "text": "Look at the evening sky."
+    },
+    {
+      "hour": "20-21",
+      "text": "Good evening! How was your day?"
+    },
+    {
+      "hour": "22-23",
+      "text": "Getting late. Sleep well!"
+    },
+    {
+      "hour": "0-5",
+      "text": "Still awake, Commander?"
+    }
+  ],
+  "message": {
+    "default": [
+      "It’s quiet here today.",
+      "Good to see you, Commander.",
+      "I’ll keep you company while you read."
+    ],
+    "console": "Taking a look behind the scenes?",
+    "copy": "Remember to credit the source when sharing.",
+    "visibilitychange": "Welcome back!"
+  }
+}
