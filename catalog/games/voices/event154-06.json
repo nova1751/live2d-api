@@ -1,0 +1,26 @@
+{
+  "id": "pastelpalettes/008/020_event_154_story_02",
+  "story": "https://haneoka.org/api/v1/garupa/bestdori/jp/stories/event.154-6",
+  "cues": {
+    "../020_general_rip/nnf05.mtn": {
+      "sound": "event154-06-026.mp3",
+      "caption": "是、是的！请听麻弥同学解释！\n……大家都被吓到了，完全不听我们的话……！",
+      "captionEn": "Th-that is right! Please listen to Maya-san~...! Everyone is panicking. They will not listen to us...!"
+    },
+    "../020_general_rip/smile02.mtn": {
+      "sound": "event154-06-053.mp3",
+      "caption": "超漂亮！嗨~呦呀~！！",
+      "captionEn": "They're real incredible! What do Japanese people say during firework shows? Ah! Tamaya~!"
+    }
+  },
+  "recordings": {
+    "event154-06-026.mp3": {
+      "source": "https://bestdori.com/assets/jp/sound/voice/scenario/eventstory154_5_rip/event154-06-026.mp3",
+      "sha256": "2d2a95c04bea5ed1941e980aed569bc55f381798d14a4a84983315910151f968"
+    },
+    "event154-06-053.mp3": {
+      "source": "https://bestdori.com/assets/jp/sound/voice/scenario/eventstory154_5_rip/event154-06-053.mp3",
+      "sha256": "53d31c933500b356bc7aba3d5aad7a0bec4bc81cbdf9ec194046b00587aad21c"
+    }
+  }
+}

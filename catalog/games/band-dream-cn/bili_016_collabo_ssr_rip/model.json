@@ -1,0 +1,178 @@
+{
+  "model": "../bili_016_collabo_ssr_rip/aya.moc",
+  "textures": [
+    "../bili_016_collabo_ssr_rip/texture_00.png",
+    "../bili_016_collabo_ssr_rip/texture_01.png"
+  ],
+  "physics": "../bili_016_collabo_ssr_rip/aya.physics.json",
+  "expressions": [
+    {
+      "name": "aya_default",
+      "file": "../016_general_rip/aya_default.exp.json"
+    },
+    {
+      "name": "aya_cry",
+      "file": "../016_general_rip/aya_cry.exp.json"
+    },
+    {
+      "name": "aya_smile02",
+      "file": "../016_general_rip/aya_smile02.exp.json"
+    },
+    {
+      "name": "aya_special01",
+      "file": "../016_general_rip/aya_special01.exp.json"
+    },
+    {
+      "name": "aya_special02",
+      "file": "../016_general_rip/aya_special02.exp.json"
+    },
+    {
+      "name": "aya_surprised",
+      "file": "../016_general_rip/aya_surprised.exp.json"
+    }
+  ],
+  "motions": {
+    "tap": [
+      {
+        "file": "../016_general_rip/angry01.mtn"
+      },
+      {
+        "file": "../016_general_rip/angry02.mtn"
+      },
+      {
+        "file": "../016_general_rip/awate01.mtn"
+      },
+      {
+        "file": "../016_general_rip/bye01.mtn"
+      },
+      {
+        "file": "../016_general_rip/cry01.mtn"
+      },
+      {
+        "file": "../016_general_rip/cry02.mtn"
+      },
+      {
+        "file": "../016_general_rip/cry03.mtn"
+      },
+      {
+        "file": "../016_general_rip/eeto01.mtn"
+      },
+      {
+        "file": "../016_general_rip/gattsu01.mtn"
+      },
+      {
+        "file": "../016_general_rip/kime01.mtn"
+      },
+      {
+        "file": "../016_general_rip/kime02.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf01.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf02.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf03.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf04.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf05.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf_left01.mtn"
+      },
+      {
+        "file": "../016_general_rip/nf_right01.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf01.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf02.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf03.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf04.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf05.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf_left01.mtn"
+      },
+      {
+        "file": "../016_general_rip/nnf_right01.mtn"
+      },
+      {
+        "file": "../016_general_rip/odoodo01.mtn"
+      },
+      {
+        "file": "../016_general_rip/odoodo01_shame.mtn"
+      },
+      {
+        "file": "../016_general_rip/odoodo02.mtn"
+      },
+      {
+        "file": "../016_general_rip/odoodo02_shame.mtn"
+      },
+      {
+        "file": "../016_general_rip/sad01.mtn"
+      },
+      {
+        "file": "../016_general_rip/sad02.mtn"
+      },
+      {
+        "file": "../016_general_rip/serious01.mtn"
+      },
+      {
+        "file": "../016_general_rip/shame01.mtn"
+      },
+      {
+        "file": "../016_general_rip/shame02.mtn"
+      },
+      {
+        "file": "../016_general_rip/sing01.mtn"
+      },
+      {
+        "file": "../016_general_rip/sing02.mtn"
+      },
+      {
+        "file": "../016_general_rip/smile01.mtn"
+      },
+      {
+        "file": "../016_general_rip/smile02.mtn"
+      },
+      {
+        "file": "../016_general_rip/smile03.mtn"
+      },
+      {
+        "file": "../016_general_rip/smile04.mtn"
+      },
+      {
+        "file": "../016_general_rip/sneeze01.mtn"
+      },
+      {
+        "file": "../016_general_rip/strange01.mtn"
+      },
+      {
+        "file": "../016_general_rip/surprised01.mtn"
+      },
+      {
+        "file": "../016_general_rip/wink01.mtn"
+      },
+      {
+        "file": "../bili_016_collabo_ssr_rip/gacha01.mtn"
+      }
+    ],
+    "idle": [
+      {
+        "file": "../016_general_rip/idle01.mtn"
+      }
+    ]
+  }
+}
