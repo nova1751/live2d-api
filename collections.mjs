@@ -1,3 +1,3 @@
-const target = new URL('../live2d-api@widget-2.9.35/collections.mjs', import.meta.url);
+const target = new URL('../live2d-api@widget-2.9.36/collections.mjs', import.meta.url);
 target.search = new URL(import.meta.url).search;
 await import(target.href);
