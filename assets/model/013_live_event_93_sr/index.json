@@ -1,0 +1,194 @@
+{
+  "version": "Sample 1.0.0",
+  "layout": {
+    "center_x": 0,
+    "center_y": 0,
+    "width": 2
+  },
+  "hit_areas_custom": {
+    "body_x": [
+      -0.3,
+      0.2
+    ],
+    "body_y": [
+      0.3,
+      -1.9
+    ],
+    "head_x": [
+      -0.25,
+      1
+    ],
+    "head_y": [
+      0.25,
+      0.2
+    ]
+  },
+  "model": "data/model.moc",
+  "textures": [
+    "data/textures/texture_00.png"
+  ],
+  "motions": {
+    "angry01": [
+      {
+        "file": "data/motions/angry01.mtn"
+      }
+    ],
+    "bye01": [
+      {
+        "file": "data/motions/bye01.mtn"
+      }
+    ],
+    "cry01": [
+      {
+        "file": "data/motions/cry01.mtn"
+      }
+    ],
+    "idle01": [
+      {
+        "file": "data/motions/idle01.mtn"
+      }
+    ],
+    "idle02": [
+      {
+        "file": "data/motions/idle02.mtn"
+      }
+    ],
+    "kime01": [
+      {
+        "file": "data/motions/kime01.mtn"
+      }
+    ],
+    "kime02": [
+      {
+        "file": "data/motions/kime02.mtn"
+      }
+    ],
+    "kime03": [
+      {
+        "file": "data/motions/kime03.mtn"
+      }
+    ],
+    "kime04": [
+      {
+        "file": "data/motions/kime04.mtn"
+      }
+    ],
+    "kime05": [
+      {
+        "file": "data/motions/kime05.mtn"
+      }
+    ],
+    "natural01": [
+      {
+        "file": "data/motions/natural01.mtn"
+      }
+    ],
+    "nf01": [
+      {
+        "file": "data/motions/nf01.mtn"
+      }
+    ],
+    "nf02": [
+      {
+        "file": "data/motions/nf02.mtn"
+      }
+    ],
+    "nf03": [
+      {
+        "file": "data/motions/nf03.mtn"
+      }
+    ],
+    "nf04": [
+      {
+        "file": "data/motions/nf04.mtn"
+      }
+    ],
+    "nf05": [
+      {
+        "file": "data/motions/nf05.mtn"
+      }
+    ],
+    "nf_left01": [
+      {
+        "file": "data/motions/nf_left01.mtn"
+      }
+    ],
+    "nf_right01": [
+      {
+        "file": "data/motions/nf_right01.mtn"
+      }
+    ],
+    "sad01": [
+      {
+        "file": "data/motions/sad01.mtn"
+      }
+    ],
+    "serious01": [
+      {
+        "file": "data/motions/serious01.mtn"
+      }
+    ],
+    "serious02": [
+      {
+        "file": "data/motions/serious02.mtn"
+      }
+    ],
+    "shame01": [
+      {
+        "file": "data/motions/shame01.mtn"
+      }
+    ],
+    "smile01": [
+      {
+        "file": "data/motions/smile01.mtn"
+      }
+    ],
+    "surprised01": [
+      {
+        "file": "data/motions/surprised01.mtn"
+      }
+    ],
+    "wink01": [
+      {
+        "file": "data/motions/wink01.mtn"
+      }
+    ],
+    "worry01": [
+      {
+        "file": "data/motions/worry01.mtn"
+      }
+    ],
+    "worry02": [
+      {
+        "file": "data/motions/worry02.mtn"
+      }
+    ]
+  },
+  "expressions": [
+    {
+      "name": "kaoru_default",
+      "file": "data/expressions/kaoru_default.exp.json"
+    },
+    {
+      "name": "kaoru_sad",
+      "file": "data/expressions/kaoru_sad.exp.json"
+    },
+    {
+      "name": "kaoru_smile01",
+      "file": "data/expressions/kaoru_smile01.exp.json"
+    },
+    {
+      "name": "kaoru_special",
+      "file": "data/expressions/kaoru_special.exp.json"
+    },
+    {
+      "name": "kaoru_special02",
+      "file": "data/expressions/kaoru_special02.exp.json"
+    },
+    {
+      "name": "kaoru_surprised",
+      "file": "data/expressions/kaoru_surprised.exp.json"
+    }
+  ],
+  "physics": "data/physics.json"
+}
