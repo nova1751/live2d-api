@@ -1,0 +1,88 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "saiga12_3901.moc3",
+    "Textures": [
+      "model.2048/texture_00.png"
+    ],
+    "Motions": {
+      "Broken1": [
+        {
+          "File": "motions/broken_1.motion3.json"
+        }
+      ],
+      "Broken2": [
+        {
+          "File": "motions/broken_2.motion3.json"
+        }
+      ],
+      "Broken3": [
+        {
+          "File": "motions/broken_3.motion3.json"
+        }
+      ],
+      "Broken4": [
+        {
+          "File": "motions/broken_4.motion3.json"
+        }
+      ],
+      "Broken5": [
+        {
+          "File": "motions/broken_5.motion3.json"
+        }
+      ],
+      "Idle": [
+        {
+          "File": "motions/daiji_idle_01.motion3.json"
+        }
+      ],
+      "Login": [
+        {
+          "File": "motions/login.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "motions/shake.motion3.json"
+        }
+      ]
+    },
+    "Layout": {
+      "CenterX": 0.0,
+      "CenterY": 0.0,
+      "Width": 1.0,
+      "Height": 1.0,
+      "Scale": 18.0,
+      "X": 0.0,
+      "Y": 0.0
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthForm",
+        "ParamMouthOpenY"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "HitAreaBody",
+      "Name": "body"
+    },
+    {
+      "Id": "HitAreaHead",
+      "Name": "head"
+    }
+  ]
+}
