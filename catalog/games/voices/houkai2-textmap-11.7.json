@@ -1,0 +1,660 @@
+{
+  "dataBundleUrl": "https://assets.hsod2.benghuai.com/asset_bundle/11_7/original/android/Data/AssetBundles/data_all_F9CDC393580B5FDAA524B02103C7327B02913DAB",
+  "dataBundleSha256": "d4e672109e5becae34ee1a459d70c021b79dc34f18a8efadd5f843d1be60d050",
+  "models": {
+    "BYC": {
+      "sound/D_Sak_Live2D001.wav": {
+        "textId": 155079,
+        "table": "TextMap_12",
+        "caption": "呜哇哇哇快停下，不要再转了，头都快要晕了啦。"
+      },
+      "sound/D_Sak_Live2D002.wav": {
+        "textId": 155080,
+        "table": "TextMap_12",
+        "caption": "呐呐，你说我和小狐狸哪一个更可爱？应该是我吧？诶嘿嘿。"
+      },
+      "sound/D_Sak_Live2D003.wav": {
+        "textId": 155081,
+        "table": "TextMap_12",
+        "caption": "你的信到了，先帮你放在这里，到时候要记得看哦。"
+      },
+      "sound/D_Sak_Live2D004.wav": {
+        "textId": 155082,
+        "table": "TextMap_12",
+        "caption": "喂——喂——起床喽！再不起来的话我就要掀被子咯？"
+      },
+      "sound/D_Sak_Live2D011.wav": {
+        "textId": 155089,
+        "table": "TextMap_12",
+        "caption": "明媚的阳光，照射在身上暖乎乎的，你看，这只小家伙也感觉很开心呢。"
+      },
+      "sound/D_Sak_Live2D005.wav": {
+        "textId": 155083,
+        "table": "TextMap_12",
+        "caption": "诶嘿嘿，要是能够一直戴着这顶小狐狸帽子就好了，真希望它不要长大啊……"
+      },
+      "sound/D_Sak_Live2D007.wav": {
+        "textId": 155085,
+        "table": "TextMap_12",
+        "caption": "这只小狐狸很不一般哦，虽然现在还无法听懂它的话语，但是似乎它一直想要诉说什么呢。"
+      },
+      "sound/D_Sak_Live2D008.wav": {
+        "textId": 155086,
+        "table": "TextMap_12",
+        "caption": "绯狱丸，不要这么抱着我的脚，我都走不动了啦。"
+      },
+      "sound/D_Sak_Live2D006.wav": {
+        "textId": 155084,
+        "table": "TextMap_12",
+        "caption": "紧急的事态吗？那就快去吧，我们会在这里等你回来的！"
+      },
+      "sound/D_Sak_Live2D009.wav": {
+        "textId": 155087,
+        "table": "TextMap_12",
+        "caption": "哈啰，八重樱她的小伙伴们来找你玩了哦。快表示欢迎吧！"
+      },
+      "sound/D_Sak_Live2D010.wav": {
+        "textId": 155088,
+        "table": "TextMap_12",
+        "caption": "哦哦，有人想要和你做朋友哦，看来你还挺受欢迎的嘛！"
+      },
+      "sound/D_Sak_Live2D012.wav": {
+        "textId": 155090,
+        "table": "TextMap_12",
+        "caption": "嗯哼哼~今天晚上要吃什么呢，总之要吃得饱饱的才行啦~"
+      },
+      "sound/D_Sak_Live2D013.wav": {
+        "textId": 155091,
+        "table": "TextMap_12",
+        "caption": "嘘，安静一点，这两个孩子已经睡着了啦。"
+      }
+    },
+    "Kiana": {
+      "sound/kiana_live2d_001.wav": {
+        "textId": 155040,
+        "table": "TextMap_12",
+        "caption": "喂！你这个笨蛋！快停下！头好晕啦！"
+      },
+      "sound/kiana_live2d_004.wav": {
+        "textId": 155043,
+        "table": "TextMap_12",
+        "caption": "摸摸头……好温柔啊……啊！你在摸哪里啊！！"
+      },
+      "sound/kiana_live2d_014.wav": {
+        "textId": 155053,
+        "table": "TextMap_12",
+        "caption": "如果我不再是我了，你还会在我身边吗？"
+      },
+      "sound/kiana_live2d_007.wav": {
+        "textId": 155046,
+        "table": "TextMap_12",
+        "caption": "虽然是个变态，但你这种执着劲也令人敬佩呢。"
+      },
+      "sound/kiana_live2d_002.wav": {
+        "textId": 155041,
+        "table": "TextMap_12",
+        "caption": "呜！呃……是你啊，差点还以为是蟑螂之类的害虫，给消灭掉了呢。"
+      },
+      "sound/kiana_live2d_010.wav": {
+        "textId": 155049,
+        "table": "TextMap_12",
+        "caption": "芽衣学姐……咕嘿嘿~~啊！！我！我才没有睡着呢！！"
+      }
+    },
+    "Kiro": {
+      "Ev_Cv_Partner_1279_002": {
+        "textId": 155183,
+        "table": "TextMap_12",
+        "caption": "咦？你找我有什么事么？难道说是……约……约……"
+      },
+      "Ev_Cv_Partner_1279_003": {
+        "textId": 155184,
+        "table": "TextMap_12",
+        "caption": "这样对女孩子可是非常不礼貌的哦！"
+      },
+      "Ev_Cv_Partner_1279_008": {
+        "textId": 155185,
+        "table": "TextMap_12",
+        "caption": "你知道晴时雨么？当阳光透过雨滴的时候，那一定是雨滴一生中最闪耀的时刻吧~"
+      },
+      "Ev_Cv_Partner_1279_009": {
+        "textId": 155186,
+        "table": "TextMap_12",
+        "caption": "不管是作为一名女武神还是作为一名女性，塞西莉亚大人都是我永远的偶像"
+      },
+      "Ev_Cv_Partner_1279_001": {
+        "textId": 155187,
+        "table": "TextMap_12",
+        "caption": "安全着陆~！呼呼，这点程度非常轻松嘛~"
+      }
+    },
+    "Lita": {
+      "Ev_Cv_Partner_1234_001_cn": {
+        "textId": 155168,
+        "table": "TextMap_12",
+        "caption": "我是一个特别的人？您过奖了，我不过是个普通的女仆罢了。"
+      },
+      "Ev_Cv_Partner_1234_002_cn": {
+        "textId": 155169,
+        "table": "TextMap_12",
+        "caption": "请注意身体，不要操劳过度。您可是我最重要的主人。"
+      },
+      "Ev_Cv_Partner_1234_004_cn": {
+        "textId": 155171,
+        "table": "TextMap_12",
+        "caption": "嗯！？主人有什么吩咐吗……希望您不是单纯的在恶作剧呢"
+      },
+      "Ev_Cv_Partner_1234_003_cn": {
+        "textId": 155170,
+        "table": "TextMap_12",
+        "caption": "一成不变的日常让您感到无聊了吗？今天的红茶，我试着加了些佛手柑换换口味，来尝一下吧？"
+      },
+      "Ev_Cv_Partner_1234_005_cn": {
+        "textId": 155172,
+        "table": "TextMap_12",
+        "caption": "这样安静闲暇的时光非常难得，不知道您有没有什么出行计划？"
+      },
+      "Ev_Cv_Partner_1234_006_cn": {
+        "textId": 155173,
+        "table": "TextMap_12",
+        "caption": "主人，主人！主人~主……呃？！没事，刚才什么都没有发生。"
+      },
+      "Ev_Cv_Partner_1234_007_cn": {
+        "textId": 155174,
+        "table": "TextMap_12",
+        "caption": "主人，摔碎手机破坏打扫成果的话，就算是您我也会生气哦？"
+      },
+      "Ev_Cv_Partner_1234_008_cn": {
+        "textId": 155175,
+        "table": "TextMap_12",
+        "caption": "您是希望被我责备才故意这么做的么？"
+      }
+    },
+    "Nina": {
+      "Ev_Cv_Partner_1278_005": {
+        "textId": 155176,
+        "table": "TextMap_12",
+        "caption": "唔……想要感受更多……这温暖的触感。"
+      },
+      "Ev_Cv_Partner_1278_011": {
+        "textId": 155177,
+        "table": "TextMap_12",
+        "caption": "啊……恩，只是条很旧的缎带，没什么特别的意义。请不要在意"
+      },
+      "Ev_Cv_Partner_1278_010": {
+        "textId": 155178,
+        "table": "TextMap_12",
+        "caption": "伤痛会令人难过，可如果感受不到伤痛，又会是一件多么可怜的事……."
+      },
+      "Ev_Cv_Partner_1278_007": {
+        "textId": 155179,
+        "table": "TextMap_12",
+        "caption": "想看妮娜的收藏品？……可以是可以，不过有点儿锋利，请小心不要被伤到。"
+      },
+      "Ev_Cv_Partner_1278_008": {
+        "textId": 155180,
+        "table": "TextMap_12",
+        "caption": "活着是一件幸福的事情哦，愿你和围绕着你的世界，今后也能幸福下去。"
+      },
+      "Ev_Cv_Partner_1278_009": {
+        "textId": 155181,
+        "table": "TextMap_12",
+        "caption": "喜欢的颜色啊……恩……妮娜果然对绿色的东西没什么抵抗力呢。"
+      },
+      "Ev_Cv_Partner_1278_001": {
+        "textId": 155182,
+        "table": "TextMap_12",
+        "caption": "呀！……真是的，不用这么使劲晃我也感觉得到啦。"
+      }
+    },
+    "Nindi": {
+      "Ev_Cv_Partner_Live2D_1276_004_Jp": {
+        "textId": 155189,
+        "table": "TextMap_12",
+        "caption": "欸？？唔…….宁、宁蒂不是猫咪啦……."
+      },
+      "Ev_Cv_Partner_Live2D_1276_020_Jp": {
+        "textId": 155188,
+        "table": "TextMap_12",
+        "caption": "怎么了？"
+      },
+      "Ev_Cv_Partner_Live2D_1276_002_Jp": {
+        "textId": 155191,
+        "table": "TextMap_12",
+        "caption": "怎么了？我身上有什么奇怪的地方吗……？可爱……？我吗？"
+      },
+      "Ev_Cv_Partner_Live2D_1276_005_Jp": {
+        "textId": 155190,
+        "table": "TextMap_12",
+        "caption": "呀！？这里……还不可以……"
+      },
+      "Ev_Cv_Partner_Live2D_1276_009_Jp": {
+        "textId": 155192,
+        "table": "TextMap_12",
+        "caption": "准备就绪，随时听候您的指令。"
+      },
+      "Ev_Cv_Partner_Live2D_1276_003_Jp": {
+        "textId": 155193,
+        "table": "TextMap_12",
+        "caption": "小鱼干存量告急，宁蒂申请出战补贴家用。"
+      },
+      "Ev_Cv_Partner_Live2D_1276_001_Jp": {
+        "textId": 155194,
+        "table": "TextMap_12",
+        "caption": "再怎么晃我也不会晕的哦？"
+      }
+    },
+    "bronya": {
+      "sound/bronya_live2d_012.wav": {
+        "textId": 155118,
+        "table": "TextMap_12",
+        "caption": "要和布洛妮娅一起玩吗……"
+      },
+      "sound/bronya_live2d_006.wav": {
+        "textId": 155115,
+        "table": "TextMap_12",
+        "caption": "布洛妮娅倒不是讨厌被摸就是了……"
+      },
+      "sound/bronya_live2d_003.wav": {
+        "textId": 155114,
+        "table": "TextMap_12",
+        "caption": "这是给布洛妮娅的奖励吗？奇怪的方式……"
+      },
+      "sound/bronya_live2d_001.wav": {
+        "textId": 155114,
+        "table": "TextMap_12",
+        "caption": "这是给布洛妮娅的奖励吗？奇怪的方式……"
+      },
+      "sound/bronya_live2d_004.wav": {
+        "textId": 155116,
+        "table": "TextMap_12",
+        "caption": "禁止摸奇怪的地方……"
+      },
+      "sound/bronya_live2d_005.wav": {
+        "textId": 155117,
+        "table": "TextMap_12",
+        "caption": "为了您的安全，请不要随便碰我"
+      },
+      "sound/bronya_live2d_015.wav": {
+        "textId": 155119,
+        "table": "TextMap_12",
+        "caption": "虽然感情是无用的，但您的存在让我充满力量"
+      }
+    },
+    "himeko": {
+      "sound/himeko_live2d_010.wav": {
+        "textId": 81548,
+        "table": "TextMap_8",
+        "caption": "啊啊~好无聊啊，啤酒都喝完了，你快去买点回来！"
+      },
+      "sound/himeko_live2d_003.wav": {
+        "textId": 81549,
+        "table": "TextMap_8",
+        "caption": "对我做这种事情可是要负责的"
+      },
+      "sound/himeko_live2d_004.wav": {
+        "textId": 81551,
+        "table": "TextMap_8",
+        "caption": "年轻真好啊，我不讨厌对自己欲望很坦诚的人"
+      },
+      "sound/himeko_live2d_001.wav": {
+        "textId": 81550,
+        "table": "TextMap_8",
+        "caption": "嗯？对我有兴趣吗？你真可爱"
+      },
+      "sound/himeko_live2d_006.wav": {
+        "textId": 81552,
+        "table": "TextMap_8",
+        "caption": "这么在意我的身体啊？这还真让我有点不好意思"
+      },
+      "sound/himeko_live2d_011.wav": {
+        "textId": 81553,
+        "table": "TextMap_8",
+        "caption": "……你在忍耐些什么呢？"
+      },
+      "sound/himeko_live2d_019.wav": {
+        "textId": 81554,
+        "table": "TextMap_8",
+        "caption": "你好像没什么精神啊，要跟我玩玩吗？"
+      }
+    },
+    "houraiji": {
+      "sound/houraiji_live2d_001.wav": {
+        "textId": 81707,
+        "table": "TextMap_8",
+        "caption": "哼~在我的力量面前，连天地都颤动了吗！"
+      },
+      "sound/houraiji_live2d_004.wav": {
+        "textId": 81702,
+        "table": "TextMap_8",
+        "caption": "诶！？这是在做什么仪式吗！？虽然我也觉得还好啦……！"
+      },
+      "sound/houraiji_live2d_005.wav": {
+        "textId": 81703,
+        "table": "TextMap_8",
+        "caption": "你是有喜欢摸别人的毛病吗，还是说你被恶魔附身了……？"
+      },
+      "sound/houraiji_live2d_002.wav": {
+        "textId": 81704,
+        "table": "TextMap_8",
+        "caption": "人的手部动作可以反应出人的内心……你从刚才起就满脑子龌龊事对不对！"
+      },
+      "sound/houraiji_live2d_006.wav": {
+        "textId": 81705,
+        "table": "TextMap_8",
+        "caption": "你要得意也就只有趁现在了，趁我还在封印之中……！"
+      },
+      "sound/houraiji_live2d_003.wav": {
+        "textId": 81706,
+        "table": "TextMap_8",
+        "caption": "我的名字是蓬莱寺九霄，好好记住了，这名字终将载入史册！"
+      }
+    },
+    "kaguya": {
+      "sound/kaguya_live2d_001.wav": {
+        "textId": 81781,
+        "table": "TextMap_8",
+        "caption": "虽然知道你是无意，但请不要将自己的不满宣泄到我的身上。"
+      },
+      "sound/kaguya_live2d_004.wav": {
+        "textId": 81775,
+        "table": "TextMap_8",
+        "caption": "这温暖的触感……谢谢你，你真是一个温柔的人"
+      },
+      "sound/kaguya_live2d_006.wav": {
+        "textId": 81776,
+        "table": "TextMap_8",
+        "caption": "你的手有点冷呢……这次就换我来温暖你吧……"
+      },
+      "sound/kaguya_live2d_003.wav": {
+        "textId": 81777,
+        "table": "TextMap_8",
+        "caption": "好色之徒！你都在摸些什么地方啊！给我停手！"
+      },
+      "sound/kaguya_live2d_005.wav": {
+        "textId": 81778,
+        "table": "TextMap_8",
+        "caption": "哈哈……好痒，下次请不要这样做了！"
+      },
+      "sound/kaguya_live2d_009.wav": {
+        "textId": 81779,
+        "table": "TextMap_8",
+        "caption": "我在这边的一切，终有一日会像泡沫一般消散吧……"
+      },
+      "sound/kaguya_live2d_011.wav": {
+        "textId": 81780,
+        "table": "TextMap_8",
+        "caption": "因为稀少，所以才显得弥足珍贵，生命也是如此吧。"
+      }
+    },
+    "keluoyi": {
+      "sound/kuroe_live2d_001.wav": {
+        "textId": 81562,
+        "table": "TextMap_8",
+        "caption": "摇摆的音符，你想要一曲撼动人心的乐章么？"
+      },
+      "sound/kuroe_live2d_003.wav": {
+        "textId": 81555,
+        "table": "TextMap_8",
+        "caption": "除了音乐没有什么能触动我的内心，但是如果是你的话……"
+      },
+      "sound/kuroe_live2d_005.wav": {
+        "textId": 81556,
+        "table": "TextMap_8",
+        "caption": "…你的手…有种特别的感觉，如果是这双手的话，一定可以演奏出动人的音乐"
+      },
+      "sound/kuroe_live2d_002.wav": {
+        "textId": 81557,
+        "table": "TextMap_8",
+        "caption": "我的身体不是乐器，即使抚摸也无法发出动人的声音哦"
+      },
+      "sound/kuroe_live2d_006.wav": {
+        "textId": 81559,
+        "table": "TextMap_8",
+        "caption": "我的身体很硬么？因为是人偶这不是当然的么"
+      },
+      "sound/kuroe_live2d_004.wav": {
+        "textId": 81558,
+        "table": "TextMap_8",
+        "caption": "我只是为了演奏而生的道具，请不要对我产生感情"
+      },
+      "sound/kuroe_live2d_009.wav": {
+        "textId": 81560,
+        "table": "TextMap_8",
+        "caption": "你想要学乐器么？那就试试看小提琴吧~"
+      },
+      "sound/kuroe_live2d_011.wav": {
+        "textId": 81561,
+        "table": "TextMap_8",
+        "caption": "您能听见么，来自灵魂深处的律动。"
+      }
+    },
+    "kika": {
+      "Ev_Cv_Partner_1177_003": {
+        "textId": 155147,
+        "table": "TextMap_12",
+        "caption": "嗯？你想吃这个？啊~嗯~哈哈哈哈哈!！看你这表情。"
+      },
+      "Ev_Cv_Partner_1177_104": {
+        "textId": 155148,
+        "table": "TextMap_12",
+        "caption": "哈...啊…窝海么睡过耶…."
+      },
+      "Ev_Cv_Partner_1177_133": {
+        "textId": 155149,
+        "table": "TextMap_12",
+        "caption": "我说...就这种任务你也要我来？"
+      },
+      "Ev_Cv_Partner_1177_006": {
+        "textId": 155150,
+        "table": "TextMap_12",
+        "caption": "我可没有落魄到要你保护，好吧…应急的时候挡一下子弹应该还凑合~"
+      },
+      "Ev_Cv_Partner_1177_009": {
+        "textId": 155151,
+        "table": "TextMap_12",
+        "caption": "呐，没什么事就让我回去吧？这里连个坐的地方都没有。"
+      },
+      "Ev_Cv_Partner_1177_011": {
+        "textId": 155152,
+        "table": "TextMap_12",
+        "caption": "咕噜噜噜——呐…我饿了"
+      },
+      "Ev_Cv_Partner_1177_001": {
+        "textId": 155153,
+        "table": "TextMap_12",
+        "caption": "哼，再怎么晃也不会有你想看的东西啦。"
+      }
+    },
+    "mie": {
+      "sound/mei_live2d_001.wav": {
+        "textId": 81538,
+        "table": "TextMap_8",
+        "caption": "身为大和抚子，无论发生何事都不会有所动摇。"
+      },
+      "sound/mei_live2d_003.wav": {
+        "textId": 81539,
+        "table": "TextMap_8",
+        "caption": "你问我舒不舒服……我也不知道如何回答。"
+      },
+      "sound/mei_live2d_004.wav": {
+        "textId": 81540,
+        "table": "TextMap_8",
+        "caption": "你在关心我吗？……其实，我也正在想你的事情。"
+      },
+      "sound/mei_live2d_002.wav": {
+        "textId": 81541,
+        "table": "TextMap_8",
+        "caption": "请住手！不要碰我！……不过，这次就算了，下不为例。"
+      },
+      "sound/mei_live2d_006.wav": {
+        "textId": 81542,
+        "table": "TextMap_8",
+        "caption": "真是的，你也真是孩子气……但你要答应我，这种事情只会对我做。"
+      },
+      "sound/mei_live2d_005.wav": {
+        "textId": 81543,
+        "table": "TextMap_8",
+        "caption": "偶尔让你撒撒娇也不是不行啦……"
+      },
+      "sound/mei_live2d_007.wav": {
+        "textId": 81544,
+        "table": "TextMap_8",
+        "caption": "既温暖又温柔……和你在一起时就会觉得安心"
+      }
+    },
+    "shin": {
+      "sound/sin_live2d_jp_01.wav": {
+        "textId": 155120,
+        "table": "TextMap_12",
+        "caption": "不要摇了，揍死你啊！"
+      },
+      "sound/shin_020.wav": {
+        "textId": 155103,
+        "table": "TextMap_12",
+        "caption": "呜呼呼呼~"
+      },
+      "sound/shin_006.wav": {
+        "textId": 155101,
+        "table": "TextMap_12",
+        "caption": "呀~我可爱么？你该不会期待我说出这种话吧~哈哈哈！！笨蛋！"
+      },
+      "sound/shin_009.wav": {
+        "textId": 155102,
+        "table": "TextMap_12",
+        "caption": "说出你的遗言吧~虽然我不会听哦！"
+      },
+      "sound/sin_live2d_jp_06.wav": {
+        "textId": 155105,
+        "table": "TextMap_12",
+        "caption": "身体的温度么……这种东西已经感受不到了，因为在我面前都是冰冷的尸体！"
+      },
+      "sound/sin_live2d_jp_05.wav": {
+        "textId": 155104,
+        "table": "TextMap_12",
+        "caption": "嗯！？你想和我玩游戏么~好啊！那你想赌几条命！"
+      },
+      "sound/sin_live2d_jp_08.wav": {
+        "textId": 155106,
+        "table": "TextMap_12",
+        "caption": "新的一天又开始了！今天要把什么破坏掉呢？"
+      },
+      "sound/sin_live2d_jp_18.wav": {
+        "textId": 155107,
+        "table": "TextMap_12",
+        "caption": "啊啊…真是无聊的时间，喂！来找点乐子吧！"
+      }
+    },
+    "xilin2.1": {
+      "Ev_Cv_Partner_1220_002_cn": {
+        "textId": 155160,
+        "table": "TextMap_12",
+        "caption": "诶？已经这个时间了吗？西琳，该睡觉了~"
+      },
+      "Ev_Cv_Partner_1220_003_cn": {
+        "textId": 155161,
+        "table": "TextMap_12",
+        "caption": "西琳想创造一个美好的世界。你会跟西琳一起来吗？"
+      },
+      "Ev_Cv_Partner_1220_004_cn": {
+        "textId": 155162,
+        "table": "TextMap_12",
+        "caption": "好啦好啦，好孩子是不能吵架的哟"
+      },
+      "Ev_Cv_Partner_1220_009_cn": {
+        "textId": 155166,
+        "table": "TextMap_12",
+        "caption": "乒噗噜~乓噗噜~嘟噜噜噜噜嗙！怎么样，是让心情变好的魔法哟！"
+      },
+      "Ev_Cv_Partner_1220_005_cn": {
+        "textId": 155163,
+        "table": "TextMap_12",
+        "caption": "乒噗噜~乓噗噜~嘟噜噜噜噜嗙！怎么样，心情有变好点了吗？"
+      },
+      "Ev_Cv_Partner_1220_010_cn": {
+        "textId": 155164,
+        "table": "TextMap_12",
+        "caption": "拉钩上吊~一百年不许变！约好了就不能反悔了哟！"
+      },
+      "Ev_Cv_Partner_1220_001_cn": {
+        "textId": 155165,
+        "table": "TextMap_12",
+        "caption": "啊！吓死西琳了！再这样恶作剧的话，西琳就不跟你一起玩了！哼!"
+      }
+    },
+    "yazakura": {
+      "sound/sakura_live2d_002.wav": {
+        "textId": 81196,
+        "table": "TextMap_8",
+        "caption": "汝也有温柔的一面啊，吾并不讨厌这样"
+      },
+      "sound/sakura_live2d_011.wav": {
+        "textId": 81205,
+        "table": "TextMap_8",
+        "caption": "汝要吃饭团吗？"
+      },
+      "sound/sakura_live2d_003.wav": {
+        "textId": 81197,
+        "table": "TextMap_8",
+        "caption": "从汝的手心可以感觉到柔和的温暖……"
+      },
+      "sound/sakura_live2d_005.wav": {
+        "textId": 81199,
+        "table": "TextMap_8",
+        "caption": "不要摸吾，吾正在吃饭团！"
+      },
+      "sound/sakura_live2d_004.wav": {
+        "textId": 81198,
+        "table": "TextMap_8",
+        "caption": "唔……！不许碰那里！"
+      },
+      "sound/sakura_live2d_006.wav": {
+        "textId": 81200,
+        "table": "TextMap_8",
+        "caption": "汝相信神明吗？"
+      },
+      "sound/sakura_live2d_001.wav": {
+        "textId": 81195,
+        "table": "TextMap_8",
+        "caption": "对于经历过修行的我来说，这种程度根本不足为惧"
+      }
+    },
+    "yiselin": {
+      "sound/hakasecn_live2d_003.wav": {
+        "textId": 81944,
+        "table": "TextMap_9",
+        "caption": "看到这些徽章了吗，很可爱吧，是贵重的礼物哦，但是不给你"
+      },
+      "sound/hakasecn_live2d_005.wav": {
+        "textId": 81945,
+        "table": "TextMap_9",
+        "caption": "哦，想当我的助手？嗯，那么你就去打工吧，因为研究可是很花钱的"
+      },
+      "sound/hakasecn_live2d_002.wav": {
+        "textId": 81946,
+        "table": "TextMap_9",
+        "caption": "别戳我，那里没有开关"
+      },
+      "sound/hakasecn_live2d_006.wav": {
+        "textId": 81947,
+        "table": "TextMap_9",
+        "caption": "白大褂？不，请叫它战斗服。我觉得还蛮可爱的，你说呢？"
+      },
+      "sound/hakasecn_live2d_009.wav": {
+        "textId": 81948,
+        "table": "TextMap_9",
+        "caption": "盯——————"
+      },
+      "sound/hakasecn_live2d_011.wav": {
+        "textId": 81949,
+        "table": "TextMap_9",
+        "caption": "等待实验结果的心情真是紧张又开心啊"
+      },
+      "sound/hakasecn_live2d_001.wav": {
+        "textId": 81950,
+        "table": "TextMap_9",
+        "caption": "哇刚才的晃动是什么！地震，崩坏兽，还是次元的干涉？！"
+      }
+    }
+  }
+}

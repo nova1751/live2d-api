@@ -1,0 +1,14 @@
+{
+	"type":"Live2D Expression",
+	"fade_in":500,
+	"fade_out":500,
+	"params":[
+		{"id":"PARAM_EYE_FORM","val":-0.14},
+		{"id":"PARAM_EYE_SCALE","val":-0.18},
+		{"id":"PARAM_BROW_L_Y","val":-0.31},
+		{"id":"PARAM_BROW_R_Y","val":-0.35},
+		{"id":"PARAM_BROW_L_FORM","val":-0.78},
+		{"id":"PARAM_BROW_R_FORM","val":-0.79},
+		{"id":"PARAM_MOUTH_SCALE","val":0.5}
+	]
+}

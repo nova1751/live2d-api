@@ -1,0 +1,274 @@
+{
+  "model": "../bili_036_collabo_ur_rip/tomori_abroad.moc",
+  "textures": [
+    "../bili_036_collabo_ur_rip/texture_00.png",
+    "../bili_036_collabo_ur_rip/texture_01.png"
+  ],
+  "physics": "../bili_036_collabo_ur_rip/tomori_abroad.physics.json",
+  "expressions": [
+    {
+      "name": "angry01",
+      "file": "../036_general_rip/angry01.exp.json"
+    },
+    {
+      "name": "angry02",
+      "file": "../036_general_rip/angry02.exp.json"
+    },
+    {
+      "name": "bye01",
+      "file": "../036_general_rip/bye01.exp.json"
+    },
+    {
+      "name": "cry01",
+      "file": "../036_general_rip/cry01.exp.json"
+    },
+    {
+      "name": "cry02",
+      "file": "../036_general_rip/cry02.exp.json"
+    },
+    {
+      "name": "cry04",
+      "file": "../036_general_rip/cry04.exp.json"
+    },
+    {
+      "name": "default",
+      "file": "../036_general_rip/default.exp.json"
+    },
+    {
+      "name": "idle",
+      "file": "../036_general_rip/idle.exp.json"
+    },
+    {
+      "name": "kandou01",
+      "file": "../036_general_rip/kandou01.exp.json"
+    },
+    {
+      "name": "kandou02",
+      "file": "../036_general_rip/kandou02.exp.json"
+    },
+    {
+      "name": "kandou03",
+      "file": "../036_general_rip/kandou03.exp.json"
+    },
+    {
+      "name": "kime01",
+      "file": "../036_general_rip/kime01.exp.json"
+    },
+    {
+      "name": "kime02",
+      "file": "../036_general_rip/kime02.exp.json"
+    },
+    {
+      "name": "sad01",
+      "file": "../036_general_rip/sad01.exp.json"
+    },
+    {
+      "name": "sad02",
+      "file": "../036_general_rip/sad02.exp.json"
+    },
+    {
+      "name": "sad03",
+      "file": "../036_general_rip/sad03.exp.json"
+    },
+    {
+      "name": "sad04",
+      "file": "../036_general_rip/sad04.exp.json"
+    },
+    {
+      "name": "serious01",
+      "file": "../036_general_rip/serious01.exp.json"
+    },
+    {
+      "name": "serious02",
+      "file": "../036_general_rip/serious02.exp.json"
+    },
+    {
+      "name": "shame01",
+      "file": "../036_general_rip/shame01.exp.json"
+    },
+    {
+      "name": "shame02",
+      "file": "../036_general_rip/shame02.exp.json"
+    },
+    {
+      "name": "sing01",
+      "file": "../036_general_rip/sing01.exp.json"
+    },
+    {
+      "name": "sing02",
+      "file": "../036_general_rip/sing02.exp.json"
+    },
+    {
+      "name": "smile01",
+      "file": "../036_general_rip/smile01.exp.json"
+    },
+    {
+      "name": "smile02",
+      "file": "../036_general_rip/smile02.exp.json"
+    },
+    {
+      "name": "smile03",
+      "file": "../036_general_rip/smile03.exp.json"
+    },
+    {
+      "name": "smile04",
+      "file": "../036_general_rip/smile04.exp.json"
+    },
+    {
+      "name": "surprised01",
+      "file": "../036_general_rip/surprised01.exp.json"
+    },
+    {
+      "name": "thinking01",
+      "file": "../036_general_rip/thinking01.exp.json"
+    },
+    {
+      "name": "thinking02",
+      "file": "../036_general_rip/thinking02.exp.json"
+    }
+  ],
+  "motions": {
+    "tap": [
+      {
+        "file": "../bili_036_collabo_ur_rip/angry01.mtn"
+      },
+      {
+        "file": "../036_general_rip/angry02.mtn"
+      },
+      {
+        "file": "../036_general_rip/bye01.mtn"
+      },
+      {
+        "file": "../036_general_rip/cry01.mtn"
+      },
+      {
+        "file": "../036_general_rip/cry02.mtn"
+      },
+      {
+        "file": "../036_general_rip/cry03.mtn"
+      },
+      {
+        "file": "../036_general_rip/cry04.mtn"
+      },
+      {
+        "file": "../036_general_rip/cry05.mtn"
+      },
+      {
+        "file": "../036_general_rip/kandou01.mtn"
+      },
+      {
+        "file": "../036_general_rip/kandou02.mtn"
+      },
+      {
+        "file": "../036_general_rip/kandou03.mtn"
+      },
+      {
+        "file": "../036_general_rip/kime01.mtn"
+      },
+      {
+        "file": "../036_general_rip/kime02.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf01.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf02.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf03.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf04.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf05.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf_left01.mtn"
+      },
+      {
+        "file": "../036_general_rip/nf_right01.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf01.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf02.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf03.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf04.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf05.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf_left01.mtn"
+      },
+      {
+        "file": "../036_general_rip/nnf_right01.mtn"
+      },
+      {
+        "file": "../036_general_rip/sad01.mtn"
+      },
+      {
+        "file": "../bili_036_collabo_ur_rip/sad02.mtn"
+      },
+      {
+        "file": "../036_general_rip/sad03.mtn"
+      },
+      {
+        "file": "../036_general_rip/sad04.mtn"
+      },
+      {
+        "file": "../036_general_rip/serious01.mtn"
+      },
+      {
+        "file": "../036_general_rip/serious02.mtn"
+      },
+      {
+        "file": "../bili_036_collabo_ur_rip/shame01.mtn"
+      },
+      {
+        "file": "../036_general_rip/shame02.mtn"
+      },
+      {
+        "file": "../036_general_rip/sing01.mtn"
+      },
+      {
+        "file": "../036_general_rip/sing02.mtn"
+      },
+      {
+        "file": "../036_general_rip/smile01.mtn"
+      },
+      {
+        "file": "../036_general_rip/smile02.mtn"
+      },
+      {
+        "file": "../bili_036_collabo_ur_rip/smile03.mtn"
+      },
+      {
+        "file": "../036_general_rip/smile04.mtn"
+      },
+      {
+        "file": "../036_general_rip/surprised01.mtn"
+      },
+      {
+        "file": "../036_general_rip/thinking01.mtn"
+      },
+      {
+        "file": "../036_general_rip/thinking02.mtn"
+      },
+      {
+        "file": "../bili_036_collabo_ur_rip/gacha01.mtn"
+      }
+    ],
+    "idle": [
+      {
+        "file": "../036_general_rip/idle01.mtn"
+      }
+    ]
+  }
+}

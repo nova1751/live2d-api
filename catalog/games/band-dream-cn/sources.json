@@ -1,0 +1,679 @@
+{
+  "entries": [
+    {
+      "id": "hhw/022/601_live_default",
+      "manifest": "601_live_default_rip/model.json",
+      "display": {
+        "name": "奥泽美咲",
+        "en": "Misaki Okusawa",
+        "outfit": "ステージ",
+        "outfitEn": "Stage",
+        "date": 1546272000000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-hhw/880be40fc1f06e0a317aa10e5830a0a2d5723749/assets/assets/chara_icon_22.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/601_live_default_rip/buildData.asset",
+      "sha256": "df7abd1d8ee61cb26175b495080cf0b91a55904bb1594f3fd21d6baf3b047fa0"
+    },
+    {
+      "id": "hhw/022/601_live_r_2023",
+      "manifest": "601_live_r_2023_rip/model.json",
+      "display": {
+        "name": "奥泽美咲",
+        "en": "Misaki Okusawa",
+        "outfit": "えがお∞わんだー！",
+        "outfitEn": "Wonder∞Smile!",
+        "date": 1546272000000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-hhw/880be40fc1f06e0a317aa10e5830a0a2d5723749/assets/assets/chara_icon_22.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/601_live_r_2023_rip/buildData.asset",
+      "sha256": "80d1601e21998dbeb8b2ec94570937ac6edf99808c7ac96dff181d9c0760604d"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_r",
+      "manifest": "bili_001_collabo_r_rip/model.json",
+      "display": {
+        "name": "户山香澄",
+        "en": "Kasumi Toyama",
+        "outfit": "星之小豆泥",
+        "date": 1738126800000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-poppinparty/fad1b757b6ca85f2f4893525c62647f65e810811/assets/assets/chara_icon_14.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_001_collabo_r_rip/buildData.asset",
+      "sha256": "b26a2450f25e079752ea48ca43b5f2013375a9e69d39fb1f677a44d38673dc47"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "manifest": "bili_001_collabo_ur_rip/model.json",
+      "display": {
+        "name": "户山香澄",
+        "en": "Kasumi Toyama",
+        "outfit": "小豆泥与未解之谜",
+        "date": 1783659600000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-poppinparty/fad1b757b6ca85f2f4893525c62647f65e810811/assets/assets/chara_icon_14.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_001_collabo_ur_rip/buildData.asset",
+      "sha256": "36b6b61d193eef0a159275bb12ea17f94282b1e992e7a58e291acf42c53593b7"
+    },
+    {
+      "id": "afterglow/028/bili_006_collabo_ur",
+      "manifest": "bili_006_collabo_ur_rip/model.json",
+      "display": {
+        "name": "美竹兰",
+        "en": "Ran Mitake",
+        "outfit": "和小豆泥一起装扮",
+        "date": 1783659600000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-afterglow/108e8a811c08baecf3193f93cd5f926896dbe0f5/assets/assets/chara_icon_28.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_006_collabo_ur_rip/buildData.asset",
+      "sha256": "abd0031a954f8df422367b4be0422793fc7079398a6a40682a8ef0d244f73421"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "manifest": "bili_011_collabo_ur_rip/model.json",
+      "display": {
+        "name": "弦卷心",
+        "en": "Kokoro Tsurumaki",
+        "outfit": "小豆泥的秘密特训",
+        "date": 1783659600000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-hhw/880be40fc1f06e0a317aa10e5830a0a2d5723749/assets/assets/chara_icon_15.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_011_collabo_ur_rip/buildData.asset",
+      "sha256": "b199e4cb0a34db11f47e11850fdae330b2acb1522a619d646e93319fa6ea8a3a"
+    },
+    {
+      "id": "pastelpalettes/005/bili_016_collabo_ssr",
+      "manifest": "bili_016_collabo_ssr_rip/model.json",
+      "display": {
+        "name": "丸山彩",
+        "en": "Aya Maruyama",
+        "outfit": "彩彩小豆泥",
+        "date": 1738126800000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-pastelpalettes/56c4ed0ceb7b4e1cd93fe7cfad422e432f336e09/assets/assets/chara_icon_5.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_016_collabo_ssr_rip/buildData.asset",
+      "sha256": "04252d45db32ef3688902c24f4928dc371d8c17d7a51f0c05273214bdd0442c9"
+    },
+    {
+      "id": "roselia/047/bili_021_collabo_ur",
+      "manifest": "bili_021_collabo_ur_rip/model.json",
+      "display": {
+        "name": "凑友希那",
+        "en": "Yukina Minato",
+        "outfit": "小豆泥与蔷薇",
+        "date": 1738126800000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-roselia/57da53a60df8f55de0245f7898c3dc0c9021dd55/assets/assets/chara_icon_47.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_021_collabo_ur_rip/buildData.asset",
+      "sha256": "62f777641598385375ba6e51ed1d4440eb7191c4318b160f7ba8d5bbae8f6d1e"
+    },
+    {
+      "id": "morfonica/019/bili_026_collabo_ur",
+      "manifest": "bili_026_collabo_ur_rip/model.json",
+      "display": {
+        "name": "仓田真白",
+        "en": "Mashiro Kurata",
+        "outfit": "小豆泥前辈",
+        "date": 1738126800000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-morfonica/cdef09188bd51d13b6423f49665082cf2e37db6b/assets/assets/chara_icon_19.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_026_collabo_ur_rip/buildData.asset",
+      "sha256": "d372f7eab8d1f532f9001fa3efde45cb147085f339283feb58d1df3cd9fc395e"
+    },
+    {
+      "id": "ras/030/bili_031_collabo_ur",
+      "manifest": "bili_031_collabo_ur_rip/model.json",
+      "display": {
+        "name": "和奏瑞依",
+        "en": "Rei Wakana",
+        "outfit": "小豆泥模特!?",
+        "date": 1783659600000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-ras/5edb32768bbd8b7af538ad33fb5fc158eea010fb/assets/assets/chara_icon_30.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_031_collabo_ur_rip/buildData.asset",
+      "sha256": "c8ca286f7cd56930f70984268869c99e8b3baffdeadad7d58aeb8356874717c3"
+    },
+    {
+      "id": "mygo/036/bili_036_collabo_ur",
+      "manifest": "bili_036_collabo_ur_rip/model.json",
+      "display": {
+        "name": "高松灯",
+        "en": "Tomori Takamatsu",
+        "outfit": "小豆泥的指引",
+        "date": 1783659600000,
+        "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-mygo/ff1072895d1ea52ed39271a1ed982d305a9188a6/assets/assets/chara_icon_36.png"
+      },
+      "buildData": "https://bestdori.com/assets/cn/live2d/chara/bili_036_collabo_ur_rip/buildData.asset",
+      "sha256": "2e86330299a16d3826bc66f5b7fef733d158c88bbfca3510e0b9452ca3ab4d26"
+    }
+  ],
+  "storyRecordings": [
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nod01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-001.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-001.mp3",
+      "sha256": "4657649dd17b117cc9abb36de24e80dd0fbdcd2ad64a6ea10d65c167fc48ad4a"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/smile03.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-002.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-002.mp3",
+      "sha256": "93549bc3db601665dd62a5c0402f6345aec77bcf84c5575bd6942753447bc2c9"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-003.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-003.mp3",
+      "sha256": "a6ffd73e76630551e9c8da27163cd53ce470f600e27b9653d0fdeedb4712606b"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-004.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-004.mp3",
+      "sha256": "c2cd620994e77ba0d72d0b128fb01bc440b07f8be6fa98b6f093e66f69a553f6"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nnf02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-005.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-005.mp3",
+      "sha256": "8b8915ee9f0de7ff31eeafa9d3297c9c4c39133d763226dc560d439f794a8f24"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/serious02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-006.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-006.mp3",
+      "sha256": "78fccca1dfc713b20c22c53b27a760c8d928ed8ac752f0761a55e4bb0c9a7be3"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-007.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-007.mp3",
+      "sha256": "c1ba758521bed318214f35ccfb6ef8e40bd5131d2968cd5a6dafed98168b3795"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-008.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-008.mp3",
+      "sha256": "6001174ed7c9b7f416b5170af57f6e11c5fa25d174b9aa6388763dad0e582a38"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-009.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-009.mp3",
+      "sha256": "a1b861f7b8f1e4b064147deb15dcead62c88a3787ec30576dd343f7e3b50e075"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-010.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-010.mp3",
+      "sha256": "6001a8b5569bcb3d7f6423f3ed64c61e9db63b8d78c45a99f7d3c5aa4d66212f"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/angry01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-011.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-011.mp3",
+      "sha256": "aef513be0ae254fbe4d55245ac97a999e51d680d4a57c0fbe4e503bbc1884e7b"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nnf01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-012.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-012.mp3",
+      "sha256": "e68e933f8a5178fef71290750a06feb5deb6508c66d8c7260b8448ecdc2a5638"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../bili_001_collabo_ur_rip/eeto01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-013.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-013.mp3",
+      "sha256": "2dd0c0708cca8beeb6734f27e025ce09136002e4285bda2851f4a2435e52044f"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-014.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-014.mp3",
+      "sha256": "50ec30d06961d266453757e94de361697004e44484f41842fe1656c2c7700fb2"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nod02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-015.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-015.mp3",
+      "sha256": "37c2f0922a20dae218e4c374aec1571d805d23b07a131c6af68c70754b5b4868"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/smile06.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-016.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-016.mp3",
+      "sha256": "0a32bd3708cd8ab9a5db6edc4de7b2bfd2b7eafa3ed2ff7f0faa326e18881ee1"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-017.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-017.mp3",
+      "sha256": "26e0623bc0e0e86d44c53a33447928a6ed41056285e8f1071e0bb2e7f8f490cc"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf04.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-018.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-018.mp3",
+      "sha256": "a79f64865975d98623a448c188dd5a9f9d90d157f081e1c18f77005b14d8fc30"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-019.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-019.mp3",
+      "sha256": "8e4828a1a77d21618cfb2795e2e6b110a02a9159ff6e6f48afc016bf55fe2fed"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/kime01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-020.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-020.mp3",
+      "sha256": "8da65e91522accca00541dff5ebfbcda956c42c18cc36c3caa209476e7bf269a"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nnf04.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-021.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-021.mp3",
+      "sha256": "d4158c2ee11533228f1eba8c3bf10c8c4e3cb8c480c0b9e18198b90da4035264"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nod02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-022.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-022.mp3",
+      "sha256": "16095e1051b15feb43077174547db3f456e968f8fea3c125cc0b2faa6812c42a"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-023.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-023.mp3",
+      "sha256": "9f95421f28b14fdb8982372213c0cd9252ccb5b42425363066b23afb4d13795d"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../bili_001_collabo_ur_rip/eeto01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-024.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-024.mp3",
+      "sha256": "7da7afc7e36bb55cc4c23ad7f7ed928b8cada6b955cecc6082e73418419d31c4"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-025.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-025.mp3",
+      "sha256": "d6482caca438d70237ba52c29a8c2d73be0839e08c6bc0e0e73b0895c761dfd2"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/serious02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-026.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-026.mp3",
+      "sha256": "0ae440ad426860acd250aa4abd66d3c3e999b476fca34b56f525da82936d6354"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nnf02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-027.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-027.mp3",
+      "sha256": "441b5b2eb82e0d0681997ce48811b51bd4131f9ca53c78dacb5e7243dce292fa"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/angry01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-028.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-028.mp3",
+      "sha256": "c98c6cc1e0678b21e8eed4788d6bb74ce163cb9c9a0d46fab2521f839277db3a"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/jaan01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-029.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-029.mp3",
+      "sha256": "c1f5f14c701124755086f3dbddbb778028967a20e4818fa8cd5f99366db0d5ba"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/kime01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-030.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-030.mp3",
+      "sha256": "9563d4590b9486062c01c54d55eb950903f0718facc4d422d5ca847c666d39e9"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-031.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-031.mp3",
+      "sha256": "89fceb6d3aad6bb1f923ef5d717292c7132d3b5f49b1d7ef306af40aeaf3c829"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-033.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-033.mp3",
+      "sha256": "59fd5385d388ae4432f2f1cea51210f6ce7cb5053a7e9c1c970fe45d96683708"
+    },
+    {
+      "id": "poppinparty/014/bili_001_collabo_ur",
+      "episode": "episode10048",
+      "motion": "../001_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-034.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res001003_rip/CHS_Azukicollab2026_KM_01-034.mp3",
+      "sha256": "8848bda40d5f4ada76c0d6dd6e93a7e34c10b82264b0ee4500586d9be9f93c26"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-024.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-024.mp3",
+      "sha256": "807afd598de53b9580105278241adeddab8705fb88cd5f549fed23664b1d9a66"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/jaan01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-025.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-025.mp3",
+      "sha256": "2009a2a75db61964a7148ba861c31c71d010746d10a7577cf1ac8a9315d95e0e"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-026.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-026.mp3",
+      "sha256": "22f8211572b4defb2673d5aa28a51854dc36bbd72e68cbf570a170901f0a3fbe"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-028.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-028.mp3",
+      "sha256": "4a27922ef339392527022949738d28f1dd333c1f225b3721c291a221872603ef"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-030.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-030.mp3",
+      "sha256": "49eb52367bbca6ec6bd67465b1b1685c576956214061f00c16199f47f7ce125c"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-033.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-033.mp3",
+      "sha256": "cd03b6a37f577625817bff31b595198efa8c0128a77ca88b16346354cb93e353"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf03.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-034.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-034.mp3",
+      "sha256": "c9c44d9d2a0f18ed5cdcd5c31fac6b48b6d8c38829b89b58c719f5606888f01a"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-036.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-036.mp3",
+      "sha256": "9b6c9c40ae5dfc86f751d74baec1039f6f101d286ee92a41a3d9050b8231bde4"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf03.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-038.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-038.mp3",
+      "sha256": "ae7b458cc7a39860e5fc436e228ed1a4910400b2d34fe0b1925c37e095cbc018"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nod01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-039.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-039.mp3",
+      "sha256": "5f7295591688ccad19a48fa9ca1985742693fd81077cdb02ba6d339b836b378d"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf04.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-041.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-041.mp3",
+      "sha256": "85c325ad9aa2e4bb11f303eb64f5a12e5235bed458c1469553ba38832ef41bc1"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-044.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-044.mp3",
+      "sha256": "362e23ec6751ab695e26c564c0f5f0dbe52ff723fd42ca981ee13aa0e9868178"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "episode10050",
+      "motion": "../011_general_rip/nf03.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-051.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_01-051.mp3",
+      "sha256": "76fad31673f17d893ffc1c2227da0dd9fa627de0f87018734949ed95b3a94ef4"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf03.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-005.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-005.mp3",
+      "sha256": "d39b1633e9cc591523158047c657b6af135ad2526967db879378c2aba9bd6b70"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-006.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-006.mp3",
+      "sha256": "4e5d204c9284dd9997d3051393eb2b325a255f5b99af0147b65e5b52d30cf063"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-009.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-009.mp3",
+      "sha256": "fa5230bf4ee77a0abe4c2b8b05b62f3342e68605facb25404e62282d27de8b9b"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/sad01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-010.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-010.mp3",
+      "sha256": "f19ba393ab1cd0d9fe1584fd77cf2c9f4834fb1ee9d9e3ad48f6b509389fabd2"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/surprised01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-015.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-015.mp3",
+      "sha256": "c29a51416e232c713b7764113b41a506e5ecdead2f5c9f2d128b7d124d2c9c47"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-017.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-017.mp3",
+      "sha256": "a44dde6ec00b018cd2d37e746c256ad042ec2031960af71e54145c16e317f28b"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-020.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-020.mp3",
+      "sha256": "d677abf328ada5e61b5ad2e4b1192607af6a23cee898426136336bfa1d2070d6"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-022.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-022.mp3",
+      "sha256": "e6418210db09f23ef7894f7bd2c18c1bbdbf060f26d8369364aa8fc133f27c2d"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-024.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-024.mp3",
+      "sha256": "31ed64863458dfa37c37db928109f828673e708eb2d55c3ce3784f740eb6e50a"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-028.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-028.mp3",
+      "sha256": "5c1a26714edd6d3f9e54198e6e872cbc506bb57ed439986749991510901842d8"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/gattsu01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-030.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-030.mp3",
+      "sha256": "e6d3fd71caaa1d92d5b3b9f3f45de1719a976c83c770d2351ee1f06600f850ef"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-032.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-032.mp3",
+      "sha256": "cb86d06f25c003d36e591c6e30c2154c80ff89a078a958686a6b8efc4ee8cba7"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/kime01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-034.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-034.mp3",
+      "sha256": "dfc4f0856ea264025fef415380fa2b8368d54a1c25e5907ae4070947f19b0193"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/jaan01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-036.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-036.mp3",
+      "sha256": "bbfcae505e98991ebd00514899c319fc49a19b06ea1a7fbd20f244a9449196aa"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-040.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-040.mp3",
+      "sha256": "d6ebb585327c172f8dea292be592e2e4decd2afbc9d98e0bbd403f9c0e7d30de"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf05.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-042.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-042.mp3",
+      "sha256": "22a4ddd6e1c3385cbcfbba0e5277c4b2a19a3cb544b5ae704cdd2e45036db7f3"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile02.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-044.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-044.mp3",
+      "sha256": "660d3351b25dbc6f3fcaa12ca0f2108d2b6b9b2a22565c0f1620929d21e14c05"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/smile01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-047.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-047.mp3",
+      "sha256": "6226f1237ae83decff5a85fae2aedc0851c30379d7b7f13e480c6f3baf9bd36f"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/oowarai01.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-051.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-051.mp3",
+      "sha256": "0cb010cbcafac7c90d8c433e4956b72e8fd7ce0dcd12374c3766af57ab72752c"
+    },
+    {
+      "id": "hhw/015/bili_011_collabo_ur",
+      "episode": "memorial10050",
+      "motion": "../011_general_rip/nf02.mtn",
+      "sound": "band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-052.mp3",
+      "from": "https://bestdori.com/assets/cn/sound/voice/scenario/resourceset/bili_res011001_rip/CHS_Azukicollab2026_KO_02-052.mp3",
+      "sha256": "7bf534f6430349f514b40773b0d7736ab88a57719d048448903a853105a84eaa"
+    }
+  ]
+}
