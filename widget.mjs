@@ -1,1 +1,1 @@
-export * from '../live2d-api@widget-2.9.38/widget.mjs';
+export * from '../live2d-api@widget-2.9.40/widget.mjs';
