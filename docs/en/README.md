@@ -1,0 +1,265 @@
+<div align="center">
+
+<a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
+
+# Live2D Web Widget
+
+Embed an interactive Live2D model on your website. Load your own model manifest or connect a catalog with character and outfit selection.
+
+<a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm version"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="Build and tests"></a> <a href="#api-and-compatibility"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#credits-and-licensing"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="Code license: ISC"></a>
+
+**[Open the gallery](https://nova1751.github.io/live2d-api/catalog/?lang=en)** · [Quick start](#quick-start) · [Module API](#api-and-compatibility) · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md)
+
+</div>
+
+## Live examples
+
+Select a character to open that outfit, try a motion or switch to full screen.
+
+| <a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 MOD"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&amp;model=ship/10117/lafei&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="Laffey"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="Kanon Matsubara"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&amp;model=character/bronya/bronya&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="Bronya"></a> |
+| :---: | :---: | :---: | :---: |
+| [AK-12 MOD](https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal&lang=en) | [Laffey](https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&model=ship/10117/lafei&lang=en) | [Kanon Matsubara](https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur&lang=en) | [Bronya](https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&model=character/bronya/bronya&lang=en) |
+
+Two more playable examples · [Iron Saga · Slokai](https://nova1751.github.io/live2d-api/catalog/?collection=iron-saga&model=character/siluokayi/base&lang=en) · [Warship Girls R · Missouri](https://nova1751.github.io/live2d-api/catalog/?collection=warship-girls&model=ship/209/2&lang=en)
+
+## Quick start
+
+### Embed a collection
+
+Place the script before `</body>`. **Next character** opens the next character’s first listed form. **Next outfit** cycles through the current character’s costumes, tiers or damaged forms. It is disabled for characters with one form. The full catalog advances to the next game after its last character. A single-game embed wraps within that game. Reloading restores the previous selection. To browse every catalog entry in order, pass `switchBy: 'outfit'` to `loadWidget`.
+
+```html
+<!-- Recommended: rotate all 7 collections and follow the latest stable release -->
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
+```
+
+To bypass Git branch CDN caches and pick up new releases as soon as they publish to npm, use the versioned bootstrap with `?collection=all`:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.41/latest.mjs?collection=all"></script>
+```
+
+For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-locale`, and `data-model-id`), use `@widget-latest/autoload.js?collection=all`:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
+```
+
+Pin a CDN release with a runtime tag such as `@widget-2.9.41`. The `@v2.9.41` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
+
+For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=azur-lane&amp;lang=en"></script>
+```
+
+| Order | Game | `collection` |
+| --- | --- | --- |
+| 1 | Girls’ Frontline | `girls-frontline` |
+| 2 | Azur Lane | `azur-lane` |
+| 3 | BanG Dream! | `bang-dream` |
+| 4 | Guns GirlZ | `houkai2` |
+| 5 | Iron Saga | `iron-saga` |
+| 6 | Warship Girls R | `warship-girls` |
+| 7 | Baoshi Yanwuyu | `baoshi-yanwuyu` |
+
+Use `collection=all` for the same rotation as the default shortcut. The mainland China mirror is `cdn.jsdmirror.com`. Shortcuts mount at viewport widths of 768 CSS pixels or greater. Existing `girls-frontline.mjs` and `latest.mjs` embeds still select Girls’ Frontline when no collection is specified.
+
+### Embed a custom model
+
+Paste this before the closing `</body>` tag. The example loads Matilda from Iron Saga, with textures, motions and voice lines referenced by her manifest.
+
+```html
+<script type="module">
+  import { loadWidget } from "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/widget.mjs";
+
+  await loadWidget({
+    modelUrl: "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/madierda/index.json",
+    position: "right",
+    locale: "en",
+  });
+</script>
+```
+
+To use your own character, set `modelUrl` to a Cubism 2 manifest or a Cubism 3–5 `.model3.json`. Preserve relative asset paths and enable CORS on cross-origin hosts. For visitors in mainland China, replace both occurrences of `cdn.jsdelivr.net` with `cdn.jsdmirror.com`. Other galleries use the asset hosts specified in their catalogs.
+
+## Install with npm or pnpm
+
+```sh
+npm install live2dapi-noa
+# or
+pnpm add live2dapi-noa
+```
+
+Run this in the browser after mounting your page. In a server-rendered app, call it from a client-side lifecycle hook.
+
+```ts
+import { loadWidget } from 'live2dapi-noa';
+
+await loadWidget({
+  modelUrl: '/models/haru/haru.model3.json',
+  locale: 'en',
+  position: 'right',
+});
+```
+
+The package includes the JS runtime, styles, TypeScript declarations and both sets of UI messages. Models, textures, motions and recordings are hosted on GitHub. When a bundler relocates the entry, the runtime loads its matching GitHub CDN release. Set `baseUrl` to the mainland runtime directory or to your own deployed copy. For a CDN-only module integration, import the same functions from `widget.mjs` next to the shortcut.
+
+The gallery indexes seven collections. Some assets live in tagged snapshots of this repository, while others come from pinned upstream commits. With the mainland shortcut, the built-in catalogs resolve models, textures, motions, recordings and file overrides through `cdn.jsdmirror.com`. Set `coreUrl` separately to host Cubism Core for modern models.
+
+## Bring your own catalog
+
+Give each outfit a stable ID in a static JSON catalog. The source base URL resolves against the catalog URL, and manifest paths resolve against that source. In this example, save the catalog at `/models/catalog.json` alongside two model folders.
+
+```json
+{
+  "schemaVersion": 1,
+  "sources": { "local": { "baseUrl": "./" } },
+  "models": {
+    "haru/original": [{ "source": "local", "manifest": "haru/haru.model3.json" }],
+    "companion/original": [{ "source": "local", "manifest": "companion/model.json" }]
+  }
+}
+```
+
+```js
+await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' });
+```
+
+After mounting, call `selectWidgetModel(id)` from your own outfit selector.
+
+## Languages and dialogue
+
+The widget loads the renderer for each model format. The included galleries fit the canvas to the visible figure. Captions sit above the figure and the toolbar sits to its right. In narrow gallery panels, wide formations have their tools above them.
+
+| Setting | Simplified Chinese (default) | English |
+| --- | --- | --- |
+| Shortcut URL | Omit the query or use `?lang=zh-CN` | `?lang=en` |
+| Module API | `locale: 'zh-CN'` | `locale: 'en'` |
+| Gallery | [中文图鉴](https://nova1751.github.io/live2d-api/catalog/) | [English gallery](https://nova1751.github.io/live2d-api/catalog/?lang=en) |
+
+The locale controls widget buttons, accessibility labels, greetings and fallback messages. The gallery language switch preserves the selected outfit. For game dialogue, English uses the subtitle attached to the original motion and voice event. Chinese uses the character and voice key to find the translated line. Older models also use matched voice keys or translations of embedded text. Recordings without a matching subtitle play with the caption bubble hidden. Silent clicks without a line can still show a localized hint. Captions stay visible until the action and audio finish. Both languages play the original recording. For modern models, the player waits for the motion and recording, then schedules the voice from the first motion frame using the configured delay. If a recording is missing or fails to load, the motion and its caption still play.
+
+## Expanded view
+
+
+Gallery characters can extend their arms, clothing and effects beyond the original interaction area. Clicks in this extra space reach the page underneath. The character and toolbar respond within their usual bounds. The floating widget uses a default z-index of 10. Set `:root { --waifu-z-index: 20; }` on the host page to change it.
+
+Choose **Expand model** in the toolbar. **100%** fits the character and its caption into the available area. Scene models keep their authored aspect ratio. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. At higher zoom, scroll, drag the background, or use the arrow keys to move the preview. Choose **Fit to view** to return to 100%. A drag that starts on a part the character moves itself (an Azur Lane outfit's parts, a stroke area on a classic model) goes to the character instead of moving the view.
+
+**Fullscreen** keeps the selected percentage and zoom controls. **Restore** returns the same canvas to the page with its current character and playback. An embedding iframe needs fullscreen permission from its host. To open at 150% each time, set `loadWidget({ modelUrl, expandedZoom: 150 })`.
+
+## Browse by game
+
+The gallery loads one collection at a time. Search by character or outfit and share a link to the current form. BanG Dream! also supports filtering by band.
+
+A click first uses the model’s own touch mapping. On an unassigned visible region, the widget samples an eligible motion from that outfit and avoids immediate repeats when alternatives exist. Idle and lifecycle events retain their separate triggers.
+
+142 Azur Lane outfits carry the game's own touch rules (the `ship_l2d` table) and play them as the game does: dragged parts snap to their notches or spring back, taps switch idle poses or toggle parts, and holding or dragging a part into place starts an action. While a pose is active, actions it does not allow stay off. A few outfits place touch areas outside the model's canvas, where the game's wider screen still shows them; zoom out in **Expand model** to reach them.
+
+Some exports leave touch areas out of the model file or name them differently from the game events (`leg1` for `leg` or `lega`, or a misspelling). Where the model has the mesh, a tap still uses its shape; parts the export lacks cannot be tapped on their own.
+
+| Game | Forms | Scope |
+| --- | ---: | --- |
+| Girls’ Frontline | 443 | 129 entries, preserving legacy entrypoints, classic IDs, and collection order |
+| Azur Lane | 269 | 167 ships with voice and bilingual captions matched by skin ID and official inheritance rules, plus transparent scene cuts; 142 outfits with the game's drags and pose switches |
+| BanG Dream! | 3,493 | 46 characters across nine band libraries, CN crossover outfits, and *Our Notes* Sakiko Cubism 3 forms |
+| Guns GirlZ | 19 | 18 characters with official Chinese captions and recovered voices; unvoiced clips keep motions and captions |
+| Iron Saga | 5 | 4 characters; Matilda and Slokai (JP & CN) use voiced manifests, while the other pilots keep their motions |
+| Warship Girls R | 3 | Individual outfits, motions, and embedded Chinese interaction lines for Missouri, Ōyodo, and Lexington (CV-16) |
+| Baoshi Yanwuyu | 16 | 6 characters merged across both games (including Elizabeth form 8), preserving motions and audio |
+
+In total, the built-in gallery indexes **4,248 selectable forms** across 373 characters and entries. On a deployment of the full static site, use the same widget module for all seven games. Use absolute deployment URLs when embedding from another origin.
+
+```js
+import { loadWidget } from '/widget.mjs';
+
+await loadWidget({
+  collection: 'azur-lane',
+  catalogUrl: '/catalog/games/azur-lane.json',
+  modelId: 'ship/10117/lafei',
+  locale: 'en',
+});
+```
+
+Each additional collection uses a JSON catalog with the same name. Models, textures and recordings use pinned sources, including GitHub raw hosts for some games. [Gallery sources and maintenance](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+
+## API and compatibility
+
+| Entry or option | Usage |
+| --- | --- |
+| `loadWidget({ modelUrl, coreUrl })` | Render an individual model. Cubism 2 uses the legacy renderer. Cubism 3–5 manifests (`.model3.json`) load the WebGL2 backend from `live2d-web` and Live2D Cubism Core on demand. |
+| `loadGirlsFrontline(options?)` | Mount the collection. Set `locale`, `modelId`, `position` (`left` or `right`) or `mode` (`sequential` or `random`). |
+| `selectWidgetModel(id)` | Switch by stable ID after mounting. Copy an ID from the gallery. |
+| `loadModelCatalog(url, collection?, locale?)` | Read available IDs, localized labels and native manifest URLs. |
+| `baseUrl` / `catalogUrl` / `coreUrl` | Override the runtime directory, catalog JSON URL or Cubism Core URL independently. |
+| Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
+
+<details>
+<summary>Collection shortcuts, offline previews and original screenshots</summary>
+
+## One-script Girls’ Frontline preset
+
+Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.8.0`.
+
+**Global**
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/girls-frontline.mjs?lang=en"></script>
+```
+
+**Mainland China**
+
+```html
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/girls-frontline.mjs?lang=en"></script>
+```
+
+To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN; add `collection=all` to rotate through all seven games. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.41/latest.mjs?lang=en"></script>
+```
+
+The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
+
+## Girls’ Frontline examples and offline use
+
+The public catalogs pin their model sources and serve large asset collections in smaller CDN packs. The mainland entry routes assets through `cdn.jsdmirror.com`, and the overseas entry prefers jsDelivr. An npm update ships the player. For independent control over caching and storage capacity, deploy the archived assets and catalogs to your own object storage and CDN, then point `catalogUrl` at the deployed catalog.
+
+To archive all seven collections, run `node scripts/archive-collections.mts ../model-cache --bundle ../models.bundle` in this repository. The printed Git ref includes the player, model files, textures, motions, cataloged recordings, subtitles and repairs. Run `node scripts/check-model-archive.mts <ref>` to verify the files and `node scripts/preview-model-archive.mts <ref>` to browse them. Pass `--core <licensed Core file>` to the preview command for offline Cubism 3–5 rendering. Public CDN URLs keep their existing configuration. To restore, inspect the bundle with `git bundle list-heads ../models.bundle`, then run `git fetch ../models.bundle <ref>:<ref>` in the player repository.
+
+The Girls’ Frontline gallery lists 443 selectable forms across 129 entries from the audited public collections. It includes fairies, dolls, adjutants, squads and backgrounds. Standard and damaged variants have distinct IDs. Seven older IDs resolve to matching outfits. These counts describe the indexed sources. [Model catalog](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [Source audit](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
+
+From a repository checkout with Node.js 24 and Git, run:
+
+```sh
+node scripts/download-models.mts ./models-offline
+node scripts/check-model-library.mts ./models-offline
+python -m http.server 8765 --bind 127.0.0.1 --directory ./models-offline
+```
+
+Open `http://127.0.0.1:8765/viewer/catalog/?lang=en`. Use `--list` to inspect sources, `--source dump` to download a single source, or `--core <file>` to supply your licensed Core for offline rendering.
+
+## Original widget examples
+
+<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/01.png" height="200" alt="Original red-dress companion with a speech bubble"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/02.png" height="200" alt="Original black-dress companion with interaction tips">
+
+</details>
+
+## Development and releases
+
+Use Node.js 24 and the pnpm version pinned in `package.json`. Edit TypeScript under `src/` and commit the generated browser files.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build
+pnpm test
+pnpm exec playwright-core install chromium-headless-shell
+pnpm run test:browser .
+```
+
+`pnpm demo` serves the demo. Run `node test/library-browser.mts ./models-offline` to exercise the gallery against a local collection. For releases, a matching `vX.Y.Z` Git tag triggers CI to verify the tarball, publish fixed GitHub snapshots and publish the tested runtime to npm using OIDC. [Release workflow](https://github.com/nova1751/live2d-api/blob/main/.github/workflows/publish.yml)
+
+## Credits and licensing
+
+Maintained by nova1751. The historical API follows fghrsh’s protocol and the companion UI builds on stevenjoezhang’s widget. The package declares ISC for the project code. Models, audio, Cubism Core and bundled third-party code have their own terms. Check the source and redistribution rights for assets you deploy. [Model sources](https://github.com/nova1751/live2d-api/blob/main/docs/model-sources.json) · [Third-party notices](https://github.com/nova1751/live2d-api/blob/main/modern/THIRD_PARTY_NOTICES.md) · [Live2D Core](https://www.live2d.com/en/sdk/download/web/)
