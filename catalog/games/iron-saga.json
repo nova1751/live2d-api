@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "pack6": {
+      "baseUrl": "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-6/model/"
+    },
+    "pack5": {
+      "baseUrl": "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/"
+    }
+  },
+  "models": {
+    "character/leila/base": [
+      {
+        "source": "pack6",
+        "manifest": "leila/index.json"
+      }
+    ],
+    "character/madierda/base": [
+      {
+        "source": "pack5",
+        "manifest": "madierda/index.json"
+      }
+    ],
+    "character/siluokayi/base": [
+      {
+        "source": "pack6",
+        "manifest": "siluokayi/model.model-Japanese.json"
+      }
+    ],
+    "character/xinxiya/base": [
+      {
+        "source": "pack6",
+        "manifest": "xinxiya/index.json"
+      }
+    ]
+  },
+  "gallery": {
+    "character/leila/base": {
+      "name": "蕾拉",
+      "en": "Leila",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/iron-saga-leila.webp"
+    },
+    "character/madierda/base": {
+      "name": "玛蒂尔达",
+      "en": "Matilda",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/iron-saga-madierda.webp"
+    },
+    "character/siluokayi/base": {
+      "name": "斯洛卡伊",
+      "en": "Slokai",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/iron-saga-siluokayi.webp"
+    },
+    "character/xinxiya/base": {
+      "name": "辛西娅",
+      "en": "Cynthia",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/iron-saga-xinxiya.webp"
+    }
+  }
+}
