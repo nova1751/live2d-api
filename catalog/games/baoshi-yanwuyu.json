@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "archive": {
+      "baseUrl": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/宝石研物语/"
+    }
+  },
+  "models": {
+    "character/aite/base": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/aite/model.json"
+      }
+    ],
+    "character/lili/base": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/lili/model.json"
+      }
+    ],
+    "character/magelite/base": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/magelite/model.json"
+      }
+    ],
+    "character/safeiya/base": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/safeiya/model.json"
+      }
+    ],
+    "character/west/base": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/west/model.json"
+      }
+    ],
+    "character/elizabeth/1": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_1/model.json"
+      }
+    ],
+    "character/elizabeth/2": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_2/model.json"
+      }
+    ],
+    "character/elizabeth/3": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_3/model.json"
+      }
+    ],
+    "character/elizabeth/4": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_4/model.json"
+      }
+    ],
+    "character/elizabeth/5": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_5/model.json"
+      }
+    ],
+    "character/elizabeth/6": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_6/model.json"
+      }
+    ],
+    "character/elizabeth/7": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_7/model.json"
+      }
+    ],
+    "character/elizabeth/8": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_8/model.json",
+        "files": {
+          "motions/guide.mtn": null
+        }
+      }
+    ],
+    "character/elizabeth/9": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_9/model.json"
+      }
+    ],
+    "character/elizabeth/9-1": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_9_1/model.json"
+      }
+    ]
+  },
+  "gallery": {
+    "character/aite/base": {
+      "name": "艾特",
+      "en": "Aite",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/baoshi-yanwuyu-aite.webp"
+    },
+    "character/lili/base": {
+      "name": "莉莉",
+      "en": "Lily",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/baoshi-yanwuyu-lili.webp"
+    },
+    "character/magelite/base": {
+      "name": "玛格丽特",
+      "en": "Margaret",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/baoshi-yanwuyu-magelite.webp"
+    },
+    "character/safeiya/base": {
+      "name": "萨菲雅",
+      "en": "Sophia",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/baoshi-yanwuyu-safeiya.webp"
+    },
+    "character/west/base": {
+      "name": "维斯特",
+      "en": "West",
+      "outfit": "原版",
+      "outfitEn": "Original",
+      "portrait": "./games/portraits/baoshi-yanwuyu-west.webp"
+    },
+    "character/elizabeth/1": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 1",
+      "outfitEn": "Form 1",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_1.webp"
+    },
+    "character/elizabeth/2": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 2",
+      "outfitEn": "Form 2",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_2.webp"
+    },
+    "character/elizabeth/3": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 3",
+      "outfitEn": "Form 3",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_3.webp"
+    },
+    "character/elizabeth/4": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 4",
+      "outfitEn": "Form 4",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_4.webp"
+    },
+    "character/elizabeth/5": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 5",
+      "outfitEn": "Form 5",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_5.webp"
+    },
+    "character/elizabeth/6": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 6",
+      "outfitEn": "Form 6",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_6.webp"
+    },
+    "character/elizabeth/7": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 7",
+      "outfitEn": "Form 7",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_7.webp"
+    },
+    "character/elizabeth/8": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 8",
+      "outfitEn": "Form 8",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_8.webp"
+    },
+    "character/elizabeth/9": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 9",
+      "outfitEn": "Form 9",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_9.webp"
+    },
+    "character/elizabeth/9-1": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 9-1",
+      "outfitEn": "Form 9-1",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_9_1.webp"
+    }
+  }
+}
