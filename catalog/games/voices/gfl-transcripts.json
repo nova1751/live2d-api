@@ -1,0 +1,72 @@
+{
+  "6P62|APPRECIATE": {
+    "path": "audio/6P62/6P62_APPRECIATE_JP.ogg",
+    "sha256": "0b9b849ee5709b2c16fec0d6f8a6a039fc2ca38249b9dac1b4c5f04909300c15",
+    "ja": "素敵ね！",
+    "caption": "真不错！",
+    "captionEn": "Lovely!"
+  },
+  "88TYPEMOD|LOWMOOD": {
+    "path": "audio/88TYPEMOD/88TYPEMOD_LOWMOOD_JP.ogg",
+    "sha256": "a93b2a8dbc0f5a41f688db6242f179ea45187506669f9db02ff288ef190fa5d0",
+    "ja": "ダメですよ。",
+    "caption": "这样不行哦。",
+    "captionEn": "You can't do that."
+  },
+  "98K|LOWMOOD": {
+    "path": "audio/98K/98K_LOWMOOD_JP.ogg",
+    "sha256": "e2ab7a7630f7f67284770201179161421528c47a3f4ca348a9b2cb4b70dd4e75",
+    "ja": "なんてことですの？",
+    "caption": "怎么会这样？",
+    "captionEn": "How could this happen?"
+  },
+  "G36C|LOWMOOD": {
+    "path": "audio/G36C/G36C_LOWMOOD_JP.ogg",
+    "sha256": "7c50abc07849ff32e5ed5ab289be8ee8445eda7d739a87bd6c0b4860580754a9",
+    "ja": "落ち込みますわ。",
+    "caption": "真让人沮丧。",
+    "captionEn": "How discouraging."
+  },
+  "GENERALLIU|APPRECIATE": {
+    "path": "audio/GENERALLIU/GENERALLIU_APPRECIATE_JP.ogg",
+    "sha256": "87e2ac48c70d53e8da4f05893e65bcd94dd48bfc586b76b72de6f4bb3a21e31a",
+    "ja": "お見事ですね。",
+    "caption": "真了不起。",
+    "captionEn": "Nicely done."
+  },
+  "HK416|LOWMOOD": {
+    "path": "audio/HK416/HK416_LOWMOOD_JP.ogg",
+    "sha256": "d55801682a89f42e00d841600cb0d3559950d9be065653bfa53669bfc22ad122",
+    "ja": "そんな……",
+    "caption": "怎么会……",
+    "captionEn": "No way…"
+  },
+  "KP31|APPRECIATE": {
+    "path": "audio/KP31/KP31_APPRECIATE_JP.ogg",
+    "sha256": "9131075d74a49ff632bfcab798cfe0a7983954d927726d1ef919d6fb52917bd2",
+    "ja": "よくできました。",
+    "caption": "做得好。",
+    "captionEn": "Well done."
+  },
+  "RO635MOD|MOOD2": {
+    "path": "audio/RO635MOD/RO635MOD_MOOD2_JP.ogg",
+    "sha256": "fe63ed6780c6adf481e4f0de520a310b967a8e6dfa15f9c91b00624a553cfdd9",
+    "ja": "なに？",
+    "caption": "什么？",
+    "captionEn": "What?"
+  },
+  "WA2000|LOWMOOD": {
+    "path": "audio/WA2000/WA2000_LOWMOOD_JP.ogg",
+    "sha256": "1f258e797bb95992eb2622f6e956247209f5f1699e59ed638be9c8760a285756",
+    "ja": "なんてこと？",
+    "caption": "怎么会这样？",
+    "captionEn": "How could this happen?"
+  },
+  "ZB26|FEELING": {
+    "path": "audio/ZB26/ZB26_FEELING_JP.ogg",
+    "sha256": "1dc61d463371beef61b2a3b6d17a6205e62ebfc3f7a3ed95348166efd1b8e159",
+    "ja": "その通りです。",
+    "caption": "正是如此。",
+    "captionEn": "That's right."
+  }
+}
