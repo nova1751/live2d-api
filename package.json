@@ -1,0 +1,24 @@
+{
+  "name": "live2d_api",
+  "version": "1.0.0",
+  "description": "nova1751自建的live_2d api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nova1751",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nova1751/live2d_api.git"
+  },
+  "keywords": [
+    "live2d",
+    "model",
+    "api"
+  ],
+  "bugs": {
+    "url": "https://github.com/nova1751/live2d_api/issues"
+  },
+  "homepage": "https://github.com/nova1751/live2d_api#readme"
+}
