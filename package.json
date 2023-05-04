@@ -1,5 +1,5 @@
 {
-  "name": "live2d_api",
+  "name": "@nova1751/live2d_api",
   "version": "1.0.0",
   "description": "nova1751自建的live_2d api",
   "main": "index.js",
