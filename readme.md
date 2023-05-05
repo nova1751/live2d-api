@@ -2,8 +2,6 @@
 
 > 如果你觉得这个项目对你有帮助，那就点个 star ⭐ 吧！
 
-
-
 ## 前言
 
 - 本项目 API 搭建方式参考自 [fghrsh/live2d_api](https://github.com/fghrsh/live2d_api)。
@@ -15,7 +13,7 @@
 1. 将 Live2D API 完全 cdn 化，目录结构简单，便于编辑、添加和删除模型。
 2. 为以 CDN 方式加载的 Live2D 模型，添加模型皮肤顺序切换的功能。
 3. 将项目配置文件拆分成`<script>`与`<link>`标签的形式便于网站引入。
-<img src="../live2d-api/src/img/01.png" height="300px" ><img src="../live2d-api/src/img/02.png" height="300px" >
+   <img src="../live2d-api/src/img/01.png" height="300px" ><img src="../live2d-api/src/img/02.png" height="300px" >
 
 ## 使用 How to use
 
@@ -58,6 +56,7 @@
    <link
      rel="stylesheet"
      href="https://npm.elemecdn.com/noa-live2dapi@1.0.5/src/css/left.css"
+   />
    ```
 
 ## 成果 What I've done
