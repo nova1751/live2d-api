@@ -13,7 +13,7 @@
 1. 将 Live2D API 完全 cdn 化，目录结构简单，便于编辑、添加和删除模型。
 2. 为以 CDN 方式加载的 Live2D 模型，添加模型皮肤顺序切换的功能。
 3. 将项目配置文件拆分成`<script>`与`<link>`标签的形式便于网站引入。
-   <img src="../live2d-api/src/img/01.png" height="300px" ><img src="../live2d-api/src/img/02.png" height="300px" >
+   <img src="/src/img/01.png" height="300px" ><img src="/src/img/02.png" height="300px" >
 
 ## 使用 How to use
 
