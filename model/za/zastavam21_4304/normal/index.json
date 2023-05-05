@@ -3,7 +3,7 @@
   "model": "model.moc",
   "textures": ["model.1024/texture_00.png"],
   "motions": {
-    "": [
+    "tap_body": [
       { "file": "motions/login.mtn", "fade_in": 0 },
       { "file": "motions/touch_1.mtn" },
       { "file": "motions/touch_2.mtn" },

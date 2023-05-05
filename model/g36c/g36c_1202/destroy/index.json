@@ -4,7 +4,7 @@
   "textures": ["model.1024/texture_00.png"],
   "motions": {
     "idle": [{ "file": "motions/daiji_idle_01.mtn" }],
-    "": [
+    "tap_body": [
       { "file": "motions/touch_1.mtn" },
       { "file": "motions/touch_2.mtn" },
       { "file": "motions/shake.mtn" },

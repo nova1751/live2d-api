@@ -71,7 +71,26 @@
         "priority": 0
       }
     ],
-    "tap_A": [
+    "tap_body": [
+      {
+        "file": "motions/tap_C/tap3.mtn",
+        "fade_in": 500,
+        "fade_out": 0,
+        "priority": 0
+      },
+      {
+        "file": "motions/tap_B/tap2.mtn",
+        "fade_in": 500,
+        "fade_out": 0,
+        "priority": 0
+      },
+      {
+        "file": "motions/tap_B/tap-j31.mtn",
+        "text": "你说我看起来和机械祭司们很不一样？陛下为我铸造的仿生部件在外表上跟人体几乎一样，这也是陛下的赐福之一。",
+        "fade_in": 1000,
+        "fade_out": 0,
+        "priority": 0
+      },
       {
         "file": "motions/tap_A/tap1.mtn",
         "fade_in": 500,
@@ -110,29 +129,6 @@
         "file": "motions/tap_A/tap-j34.mtn",
         "text": "陛下好像十分中意你，如果你让陛下失望，我是不会放过你的！",
         "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 0
-      }
-    ],
-    "tap_B": [
-      {
-        "file": "motions/tap_B/tap2.mtn",
-        "fade_in": 500,
-        "fade_out": 0,
-        "priority": 0
-      },
-      {
-        "file": "motions/tap_B/tap-j31.mtn",
-        "text": "你说我看起来和机械祭司们很不一样？陛下为我铸造的仿生部件在外表上跟人体几乎一样，这也是陛下的赐福之一。",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 0
-      }
-    ],
-    "tap_C": [
-      {
-        "file": "motions/tap_C/tap3.mtn",
-        "fade_in": 500,
         "fade_out": 0,
         "priority": 0
       }

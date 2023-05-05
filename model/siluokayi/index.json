@@ -21,7 +21,7 @@
     }
   ],
   "motions": {
-    "tap_A2": [
+    "tap_body": [
       {
         "file": "motions/tap_A2/tap1.mtn",
         "text": "放肆，靠我太近了凡人，想去见机械神吗。",
@@ -33,9 +33,7 @@
         "text": "你……！算了……看在你兢兢业业服侍我的份上，我恕你无罪。",
         "fade_in": 1000,
         "fade_out": 0
-      }
-    ],
-    "tap_A1": [
+      },
       {
         "file": "motions/tap_A1/tap3.mtn",
         "text": "凡人，你以后只要看着我一个人就够了。",
@@ -59,9 +57,7 @@
         "text": "你要盯着我到什么时候，差劲的哥哥先生。",
         "fade_in": 1000,
         "fade_out": 0
-      }
-    ],
-    "tap_A3": [
+      },
       {
         "file": "motions/tap_A3/tap2.mtn",
         "text": "不……不要误会，是午夜兔又嘴馋了。",

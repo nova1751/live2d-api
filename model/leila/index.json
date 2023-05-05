@@ -43,30 +43,24 @@
         "fade_out": 0
       }
     ],
-    "tap_A": [
+    "tap_body": [
+      {
+        "file": "motions/tap_D/tap4.mtn",
+        "fade_in": 1000,
+        "fade_out": 0
+      },
       {
         "file": "motions/tap_A/tap1.mtn",
         "fade_in": 1000,
         "fade_out": 0
-      }
-    ],
-    "tap_B": [
+      },
       {
         "file": "motions/tap_B/tap2.mtn",
         "fade_in": 1000,
         "fade_out": 0
-      }
-    ],
-    "tap_C": [
+      },
       {
         "file": "motions/tap_C/tap3.mtn",
-        "fade_in": 1000,
-        "fade_out": 0
-      }
-    ],
-    "tap_D": [
-      {
-        "file": "motions/tap_D/tap4.mtn",
         "fade_in": 1000,
         "fade_out": 0
       }

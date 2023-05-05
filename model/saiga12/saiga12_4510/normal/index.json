@@ -3,7 +3,7 @@
   "model": "model.moc",
   "textures": ["model.1024/texture_00.png"],
   "motions": {
-    "": [
+    "tap_body": [
       { "file": "motions/login.mtn" },
       { "file": "motions/shake.mtn" },
       { "file": "motions/touch_1.mtn" },

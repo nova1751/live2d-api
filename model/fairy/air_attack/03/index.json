@@ -4,7 +4,7 @@
   "textures": ["../model.1024/texture_00.png"],
   "motions": {
     "idle": [{ "file": "../motions/daiji_idle.mtn", "fade_out": 0 }],
-    "": [
+    "tap_body": [
       { "file": "../motions/motou_01.mtn" },
       { "file": "../motions/motou_02.mtn" },
       { "file": "../motions/motou_03.mtn" },

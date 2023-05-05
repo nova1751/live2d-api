@@ -10,7 +10,7 @@
         "fade_out": 0
       }
     ],
-    "": [
+    "tap_body": [
       { "file": "motions/daiji_idle_01.mtn", "fade_in": 0, "fade_out": 0 },
       { "file": "motions/wait_01.mtn", "fade_in": 500, "fade_out": 0 },
       { "file": "motions/wait_02.mtn", "fade_in": 500, "fade_out": 0 }
