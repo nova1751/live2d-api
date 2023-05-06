@@ -14,7 +14,7 @@
 2. 为以 CDN 方式加载的 Live2D 模型，添加模型皮肤顺序切换的功能。
 3. 将项目配置文件拆分成`<script>`与`<link>`标签的形式便于网站引入。
 
-   <img src="/src/img/01.png" height="300px" ><img src="/src/img/02.png" height="300px" >
+   <img src="./img/01.png" height="300px" ><img src="./img/02.png" height="300px" >
 
 ## 使用 How to use
 
@@ -24,19 +24,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/src/sequential/autoload.js"></script>
+   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/src/random/autoload.js"></script>
+   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/src/css/left.css"
+     href="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/css/left.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/src/css/left.css"
+     href="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/css/right.css"
    />
    ```
 
@@ -44,19 +44,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://npm.elemecdn.com/noa-live2dapi@1.0.5/src/sequential/autoload.js"></script>
+   <script src="https://npm.elemecdn.com/noa-live2dapi@latest/npm/sequential/autoload.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://npm.elemecdn.com/noa-live2dapi@1.0.5/src/random/autoload.js"></script>
+   <script src="https://npm.elemecdn.com/noa-live2dapi@latest/npm/random/autoload.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/noa-live2dapi@1.0.5/src/css/left.css"
+     href="https://npm.elemecdn.com/noa-live2dapi@latest/css/left.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/noa-live2dapi@1.0.5/src/css/left.css"
+     href="https://npm.elemecdn.com/noa-live2dapi@latest/css/right.css"
    />
    ```
 
