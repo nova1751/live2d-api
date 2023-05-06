@@ -2,11 +2,11 @@
 
 > 如果你觉得这个项目对你有帮助，那就点个 star ⭐ 吧！
 
-## 前言
+## 前言 To start with
 
 - 本项目 API 搭建方式参考自 [fghrsh/live2d_api](https://github.com/fghrsh/live2d_api)。
 - 本项目代码参考自 [stevenjoezhang/live2d-widget](https://github.com/stevenjoezhang/live2d-widget)。
-- 本项目模型来自[Eikanya/Live2d-model](https://github.com/Eikanya/Live2d-model)，仅供学习交流，请勿用于商业用途，如有侵权，请联系删除。
+- 本项目模型来自 [Eikanya/Live2d-model](https://github.com/Eikanya/Live2d-model)，仅供学习交流，请勿用于商业用途，如有侵权，请联系删除。
 
 ## 特性 Feature
 
@@ -59,6 +59,8 @@
      href="https://npm.elemecdn.com/noa-live2dapi@latest/css/right.css"
    />
    ```
+
+> 你可以下载下来`js`和`css`文件来进行自定义配置，详细请参考 [ live2d-widget 配置](https://github.com/stevenjoezhang/live2d-widget#%E9%85%8D%E7%BD%AE-configuration)。
 
 ## 成果 What I've done
 
