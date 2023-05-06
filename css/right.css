@@ -55,7 +55,7 @@
   transition: opacity 1s;
   width: 280px;
   word-break: break-all;
-  top: -70px;
+  top: -60px;
 }
 
 #waifu-tips.waifu-tips-active {
@@ -82,7 +82,7 @@
   color: #aaa;
   opacity: 0;
   position: absolute;
-  left: 0px;
+  left: 10px;
   top: 50px;
   transition: opacity 1s;
 }
