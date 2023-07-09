@@ -1,7 +1,5 @@
 # Live2D_API
 
-> 如果你觉得这个项目对你有帮助，那就点个 star ⭐ 吧！
-
 ## 前言 To start with
 
 - 本项目 API 搭建方式参考自 [fghrsh/live2d_api](https://github.com/fghrsh/live2d_api)。
