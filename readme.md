@@ -44,9 +44,9 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://npm.elemecdn.com/noa-live2dapi@latest/npm/sequential/autoload.js"></script>
+   <script src="https://npm.elemecdn.com/live2dapi-noa@latest/npm/sequential/autoload.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://npm.elemecdn.com/noa-live2dapi@latest/npm/random/autoload.js"></script>
+   <script src="https://npm.elemecdn.com/live2dapi-noa@latest/npm/random/autoload.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
