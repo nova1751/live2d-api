@@ -51,12 +51,12 @@
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/noa-live2dapi@latest/css/left.css"
+     href="https://npm.elemecdn.com/live2dapi-noa@latest/css/left.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/noa-live2dapi@latest/css/right.css"
+     href="https://npm.elemecdn.com/live2dapi-noa@latest/css/right.css"
    />
    ```
 
