@@ -1,7 +1,9 @@
 {
   "version": "Sample 1.0.0",
   "model": "model.moc",
-  "textures": ["model.1024/texture_00.png"],
+  "textures": [
+    "model.1024/texture_00.png"
+  ],
   "hit_areas": [
     {
       "name": "head",
@@ -16,12 +18,23 @@
       "id": "D_REF_BODY"
     }
   ],
-
   "hit_areas_custom": {
-    "head_x": [-0.35, 0.6],
-    "head_y": [0.19, -0.2],
-    "body_x": [-0.3, -0.25],
-    "body_y": [0.3, -0.9]
+    "head_x": [
+      -0.35,
+      0.6
+    ],
+    "head_y": [
+      0.19,
+      -0.2
+    ],
+    "body_x": [
+      -0.3,
+      -0.25
+    ],
+    "body_y": [
+      0.3,
+      -0.9
+    ]
   },
   "layout": {
     "center_x": 0.0,
@@ -116,9 +129,7 @@
       {
         "file": "motions/bonus.mtn",
         "sound": "../../sounds/KP31_036.mp3"
-      }
-    ],
-    "sleepy": [
+      },
       {
         "file": "motions/wait_1.mtn",
         "sound": "../../sounds/KP31_028.mp3",
@@ -132,6 +143,19 @@
       {
         "file": "motions/shake.mtn",
         "sound": "../../sounds/KP31_033.mp3"
+      }
+    ],
+    "sleepy": [
+      {
+        "file": "motions/wait_1.mtn",
+        "text": "规则就是用来打破的！"
+      },
+      {
+        "file": "motions/wait_2.mtn",
+        "text": "就算只有我一人，也会带回胜利的。"
+      },
+      {
+        "file": "motions/shake.mtn"
       }
     ]
   },
