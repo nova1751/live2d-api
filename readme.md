@@ -44,19 +44,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://npm.elemecdn.com/live2dapi-noa@latest/npm/sequential/autoload.js"></script>
+   <script src="https://unpkg.com/live2dapi-noa@latest/npm/sequential/autoload.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://npm.elemecdn.com/live2dapi-noa@latest/npm/random/autoload.js"></script>
+   <script src="https://unpkg.com/live2dapi-noa@latest/npm/random/autoload.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/live2dapi-noa@latest/css/left.css"
+     href="https://unpkg.com/live2dapi-noa@latest/css/left.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://npm.elemecdn.com/live2dapi-noa@latest/css/right.css"
+     href="https://unpkg.com/live2dapi-noa@latest/css/right.css"
    />
    ```
 
