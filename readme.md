@@ -24,9 +24,9 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.js"></script>
+   <script src="https://jsd.cdn.zzko.cn/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.js"></script>
+   <script src="https://jsd.cdn.zzko.cn/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
