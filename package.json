@@ -1,6 +1,6 @@
 {
   "name": "live2dapi-noa",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "nova1751自建的live-2d api",
   "main": "index.js",
   "scripts": {
