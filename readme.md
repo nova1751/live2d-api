@@ -24,19 +24,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.min.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.min.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@latest/css/left.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/css/left.min.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@latest/css/right.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/css/right.min.css"
    />
    ```
 
