@@ -18,7 +18,35 @@
 
 ## 使用 How to use
 
-你可以使用`jsdelivr`与`npm`镜像节点来为你的网站引入相关文件，根据引入文件的不同决定你的看板娘的位置与模型材质切换方式。
+### 新接入（1.1.0 起）
+
+把完整项目部署到网站的 `/live2d/` 目录，然后在页面的 `<head>` 中加入一行：
+
+```html
+<script defer src="/live2d/autoload.js" data-position="right" data-mode="sequential"></script>
+```
+
+| 属性 | 可选值 | 默认值 |
+| --- | --- | --- |
+| `data-position` | `left`、`right` | `left` |
+| `data-mode` | `sequential`（顺序换装）、`random`（随机换装） | `sequential` |
+
+入口自动加载对应 CSS。页面初次执行脚本时，视口宽度小于 768px 会跳过加载。使用 CDN 时，将 `src` 换成同版本的完整地址，例如 jsDelivr 的 `https://cdn.jsdelivr.net/gh/nova1751/live2d-api@<commit>/autoload.js`（替换为包含新入口的提交 SHA），或 npm 1.1.0 发布后的 `https://unpkg.com/live2dapi-noa@1.1.0/autoload.js`。入口会从同一目录读取项目资源。
+
+需要按页面或用户操作控制加载时，可以直接使用 ES 模块：
+
+```html
+<script type="module">
+  import { loadWidget } from "/live2d/widget.mjs";
+  await loadWidget({ position: "right", mode: "random" });
+</script>
+```
+
+`loadWidget()` 在组件初始化后完成，模型和纹理随后异步加载。模块调用方自行决定是否在小屏幕加载。同一页面重复或并发调用只初始化一次，以第一次调用的配置为准。加载入口依赖失败时 Promise 会拒绝，可以再次调用。打包工具中可从 `live2dapi-noa` 导入 `loadWidget`，并传入 `baseUrl: "/live2d/"` 指向已部署的完整静态资源目录。
+
+### 兼容旧接入
+
+已使用下面方式的网站可以继续使用原引用。每组示例中，脚本按切换方式二选一，样式按位置二选一。
 
 1. 使用`jsdelivr`引入。
 
@@ -61,6 +89,19 @@
    ```
 
 > 你可以下载下来`js`和`css`文件来进行自定义配置，详细请参考 [ live2d-widget 配置](https://github.com/stevenjoezhang/live2d-widget#%E9%85%8D%E7%BD%AE-configuration)。
+
+## 本地开发
+
+使用 Node.js 22 或 24 和 npm。在仓库根目录执行 `npm ci`，再运行 `npm run dev`。打开终端打印的地址即可预览示例页；修改 TypeScript 后会自动重新构建，刷新页面即可查看。
+
+| 命令 | 用途 |
+| --- | --- |
+| `npm run typecheck` | 严格检查项目 TypeScript 类型 |
+| `npm run build` | 检查类型，生成浏览器脚本和 npm 的类型声明 |
+| `npm test` | 验证新旧入口、模型选择和历史配置 |
+| `npm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `npx playwright-core install chromium-headless-shell` |
+
+业务代码在 `src/`。`widget.mts` 导出 `loadWidget` 和 `WidgetOptions`；`runtime/` 管理模型、提示和工具栏；`legacy-autoload.ts` 生成四个历史加载入口。修改源码后提交构建产物，以便 jsDelivr 可以直接读取 Git 提交中的脚本。CSS、模型、Cubism 渲染器和小游戏仍在原来的资源路径。
 
 ## 成果 Achievement
 
