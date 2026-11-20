@@ -4,7 +4,12 @@
   "description": "nova1751自建的live-2d api",
   "main": "./widget.mjs",
   "scripts": {
-    "test": "node --test test/widget.test.mjs"
+    "dev": "node scripts/build.mjs --dev",
+    "typecheck": "tsc --noEmit",
+    "build": "npm run typecheck && tsc -p tsconfig.types.json && node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "prepack": "npm run build",
+    "test:browser": "node test/browser.mjs"
   },
   "author": "nova1751",
   "license": "ISC",
@@ -20,5 +25,33 @@
   "bugs": {
     "url": "https://github.com/nova1751/live2d-api/issues"
   },
-  "homepage": "https://github.com/nova1751/live2d-api#readme"
+  "homepage": "https://github.com/nova1751/live2d-api#readme",
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright-core": "1.56.1",
+    "typescript": "5.9.3"
+  },
+  "types": "./widget.d.mts",
+  "exports": {
+    ".": {
+      "types": "./widget.d.mts",
+      "default": "./widget.mjs"
+    },
+    "./*": "./*"
+  },
+  "files": [
+    "widget.mjs",
+    "widget.d.mts",
+    "autoload.js",
+    "jsdelivr/",
+    "npm/",
+    "css/",
+    "img/",
+    "model/",
+    "model_list.json",
+    "waifu-tips.json",
+    "live2d.min.js",
+    "asteroids.js",
+    "index.html"
+  ]
 }

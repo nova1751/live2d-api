@@ -23,7 +23,11 @@ function browser(failOnce) {
     };
   };
   function element() {
+    const attributes = new Map();
     return {
+      hasAttribute: name => attributes.has(name),
+      setAttribute: (name, value) => attributes.set(name, value),
+      removeAttribute: name => attributes.delete(name),
       dataset: {}, style: {}, classList: { add() {}, remove() {} },
       remove() {},
       addEventListener(event, listener) { this[event] = listener; },
@@ -33,7 +37,7 @@ function browser(failOnce) {
     };
   }
   const document = {
-    body: element(), title: 'Demo', referrer: '', baseURI: base,
+    addEventListener() {}, body: element(), title: 'Demo', referrer: '', baseURI: base,
     createElement: element, getElementById: id => nodes.get(id),
     head: { appendChild(tag) {
       const url = tag.src || tag.href;
@@ -56,12 +60,12 @@ function browser(failOnce) {
   };
   const context = vm.createContext({
     document, URL, screen: { width: 1024 }, location: new URL(base),
-    localStorage: storage(), sessionStorage: storage(), console: { log() {} },
+    localStorage: storage(), sessionStorage: storage(), console: { log() {}, error(error, detail) { throw detail ?? error; } },
     setTimeout() {}, setInterval() {}, clearTimeout() {}, addEventListener() {},
     async fetch(url) {
       requests.push(url);
       const file = new URL(url).pathname.split('/').pop();
-      return { json: async () => JSON.parse(read(file)) };
+      return { ok: true, json: async () => JSON.parse(read(file)) };
     },
   });
   context.window = context;
@@ -132,4 +136,46 @@ test('the script tag skips small screens and loads both assets and model relativ
   assert.ok(requests.includes(new URL('css/right.css', src).href));
   assert.ok(requests.includes(new URL('jsdelivr/random/waifu-tips.js', src).href));
   assert.ok(models[0].some(path => renders[0] === new URL('model/' + path + '/index.json', src).href));
+});
+
+test('legacy initWidget(waifuPath, apiPath) restores stored IDs and uses the original API routes', async () => {
+  const { context, requests, renders, nodes } = browser();
+  context.document.head.appendChild({ src: base + 'live2d.min.js' });
+  await settled();
+  vm.runInContext(read('npm/sequential/waifu-tips.js'), context);
+  context.localStorage.setItem('modelId', '7');
+  context.localStorage.setItem('modelTexturesId', '3');
+  const fetchLocal = context.fetch;
+  context.fetch = async url => {
+    if (url === base + 'waifu-tips.json') return fetchLocal(url);
+    requests.push(url);
+    return { ok: true, json: async () => url.includes('/switch/')
+      ? { model: { id: 8, message: 'next' } }
+      : { textures: { id: 4 } } };
+  };
+  context.initWidget(base + 'waifu-tips.json', base + 'api');
+  await settled();
+  await nodes.get('waifu-tool-switch-texture').click();
+  await nodes.get('waifu-tool-switch-model').click();
+  assert.ok(requests.includes(base + 'api/rand_textures/?id=7-3'));
+  assert.ok(requests.includes(base + 'api/switch/?id=7'));
+  assert.deepEqual(renders, ['7-3', '7-4', '8-0'].map(id => base + 'api/get/?id=' + id));
+});
+
+test('a previously hidden widget waits for reopening, restores the skin and respects custom tools', async () => {
+  const { context, renders, nodes } = browser();
+  context.document.head.appendChild({ src: base + 'live2d.min.js' });
+  await settled();
+  vm.runInContext(read('jsdelivr/sequential/waifu-tips.js'), context);
+  context.localStorage.setItem('waifu-display', Date.now());
+  context.localStorage.setItem('modelId', 1);
+  context.localStorage.setItem('modelTexturesId', 2);
+  context.initWidget({ cdnPath: base, waifuPath: base + 'waifu-tips.json', tools: ['photo'] });
+  assert.equal(nodes.has('live2d'), false);
+  nodes.get('waifu-toggle').click();
+  await settled();
+  assert.deepEqual(renders, [base + 'model/' + models[1][2] + '/index.json']);
+  assert.ok(nodes.has('waifu-tool-photo'));
+  assert.equal(nodes.has('waifu-tool-quit'), false);
+  assert.equal(context.localStorage.getItem('waifu-display'), null);
 });

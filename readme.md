@@ -90,6 +90,19 @@
 
 > 你可以下载下来`js`和`css`文件来进行自定义配置，详细请参考 [ live2d-widget 配置](https://github.com/stevenjoezhang/live2d-widget#%E9%85%8D%E7%BD%AE-configuration)。
 
+## 本地开发
+
+使用 Node.js 22 或 24 和 npm。在仓库根目录执行 `npm ci`，再运行 `npm run dev`。打开终端打印的地址即可预览示例页；修改 TypeScript 后会自动重新构建，刷新页面即可查看。
+
+| 命令 | 用途 |
+| --- | --- |
+| `npm run typecheck` | 严格检查项目 TypeScript 类型 |
+| `npm run build` | 检查类型，生成浏览器脚本和 npm 的类型声明 |
+| `npm test` | 验证新旧入口、模型选择和历史配置 |
+| `npm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `npx playwright-core install chromium-headless-shell` |
+
+业务代码在 `src/`。`widget.mts` 导出 `loadWidget` 和 `WidgetOptions`；`runtime/` 管理模型、提示和工具栏；`legacy-autoload.ts` 生成四个历史加载入口。修改源码后提交构建产物，以便 jsDelivr 可以直接读取 Git 提交中的脚本。CSS、模型、Cubism 渲染器和小游戏仍在原来的资源路径。
+
 ## 成果 Achievement
 
 1. 修正了少女前线(Girls Frontline)等 live2d 模型的文件路径错误以及文件名称错误，对模型的展示视口进行了相关的适配并修复了切换模型报错的问题。
