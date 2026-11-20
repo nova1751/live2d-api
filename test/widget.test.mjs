@@ -1,0 +1,135 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+import vm from 'node:vm';
+
+const root = new URL('../', import.meta.url);
+const read = path => readFileSync(new URL(path, root), 'utf8');
+const models = JSON.parse(read('model_list.json')).models;
+const base = 'https://example.test/vendor/live2d/';
+
+// Run the shipped widget scripts against a small DOM. Record renderer calls
+// so the tests exercise model selection without requiring a GPU or a CDN.
+function browser(failOnce) {
+  const requests = [];
+  const renders = [];
+  const nodes = new Map();
+  const storage = () => {
+    const values = new Map();
+    return {
+      getItem: key => values.get(key) ?? null,
+      setItem: (key, value) => values.set(key, String(value)),
+      removeItem: key => values.delete(key),
+    };
+  };
+  function element() {
+    return {
+      dataset: {}, style: {}, classList: { add() {}, remove() {} },
+      remove() {},
+      addEventListener(event, listener) { this[event] = listener; },
+      insertAdjacentHTML(_, html) {
+        for (const [, id] of html.matchAll(/id="([^"]+)"/g)) nodes.set(id, element());
+      },
+    };
+  }
+  const document = {
+    body: element(), title: 'Demo', referrer: '', baseURI: base,
+    createElement: element, getElementById: id => nodes.get(id),
+    head: { appendChild(tag) {
+      const url = tag.src || tag.href;
+      requests.push(url);
+      queueMicrotask(() => {
+        if (url === failOnce) {
+          failOnce = undefined;
+          return tag.onerror();
+        }
+        if (url.endsWith('live2d.min.js')) {
+          context.loadlive2d = (_, model) => renders.push(model);
+        } else if (url.endsWith('waifu-tips.js')) {
+          document.currentScript = tag;
+          vm.runInContext(read(url.match(/(?:jsdelivr|npm)\/[^/]+\/waifu-tips\.js$/)[0]), context);
+          document.currentScript = null;
+        }
+        tag.onload?.();
+      });
+    } },
+  };
+  const context = vm.createContext({
+    document, URL, screen: { width: 1024 }, location: new URL(base),
+    localStorage: storage(), sessionStorage: storage(), console: { log() {} },
+    setTimeout() {}, setInterval() {}, clearTimeout() {}, addEventListener() {},
+    async fetch(url) {
+      requests.push(url);
+      const file = new URL(url).pathname.split('/').pop();
+      return { json: async () => JSON.parse(read(file)) };
+    },
+  });
+  context.window = context;
+  return { context, document, requests, renders, nodes };
+}
+
+const settled = () => new Promise(resolve => setImmediate(resolve));
+
+for (const [provider, cdn] of [
+  ['jsdelivr', 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/'],
+  ['npm', 'https://unpkg.com/live2dapi-noa@latest/'],
+]) {
+  for (const mode of ['random', 'sequential']) {
+    test(`legacy ${provider}/${mode} works with separate CSS`, async () => {
+      const { context, requests, renders, nodes } = browser();
+      vm.runInContext(read(`${provider}/${mode}/autoload.js`), context);
+      await settled();
+      assert.ok(requests.includes(cdn + `${provider}/${mode}/waifu-tips.js`));
+      assert.ok(requests.includes(cdn + 'waifu-tips.json'));
+      assert.ok(requests.every(url => !url.endsWith('.css')));
+      const allowed = models[0].map(path => cdn + 'model/' + path + '/index.json');
+      assert.ok(allowed.includes(renders[0]));
+      nodes.get('waifu-tool-switch-texture').click();
+      await settled();
+      if (mode === 'sequential') assert.deepEqual(renders, allowed.slice(0, 2));
+      else assert.ok(renders.length === 2 && allowed.includes(renders[1]));
+    });
+  }
+}
+
+test('module retries failed loads, shares initialization and uses the selected asset root', async t => {
+  const { context, document, requests, renders, nodes } = browser(base + 'live2d.min.js');
+  globalThis.document = document;
+  globalThis.window = context;
+  t.after(() => { delete globalThis.document; delete globalThis.window; });
+  const { loadWidget } = await import('../widget.mjs');
+  await assert.rejects(loadWidget({ mode: 'unknown' }), TypeError);
+  const options = { baseUrl: base.slice(0, -1), position: 'right' };
+  await assert.rejects(loadWidget(options), /Failed to load/);
+  await Promise.all([loadWidget(options), loadWidget(options)]);
+  await loadWidget(options);
+  await settled();
+  assert.equal(requests.filter(url => url.endsWith('waifu-tips.js')).length, 1);
+  assert.equal(requests.filter(url => url.endsWith('css/right.css')).length, 2);
+  assert.deepEqual(renders, [base + 'model/' + models[0][0] + '/index.json']);
+  nodes.get('waifu-tool-asteroids').click();
+  assert.ok(requests.includes(base + 'asteroids.js'));
+});
+
+test('the script tag skips small screens and loads both assets and model relative to its URL', async t => {
+  const { context, document, requests, renders } = browser();
+  globalThis.document = document;
+  globalThis.window = context;
+  t.after(() => { delete globalThis.document; delete globalThis.window; });
+
+  const src = new URL('autoload.js', root).href;
+  const entry = 'data:text/javascript,' + encodeURIComponent(read('autoload.js'));
+  document.currentScript = { src, dataset: { position: 'right', mode: 'random' } };
+  context.innerWidth = 767;
+  await import(entry + '#small');
+  assert.deepEqual(requests, []);
+
+  context.innerWidth = 768;
+  await import(entry + '#desktop');
+  // The entry starts a dynamic import. Wait for the widget it requested.
+  await import('../widget.mjs');
+  await settled();
+  assert.ok(requests.includes(new URL('css/right.css', src).href));
+  assert.ok(requests.includes(new URL('jsdelivr/random/waifu-tips.js', src).href));
+  assert.ok(models[0].some(path => renders[0] === new URL('model/' + path + '/index.json', src).href));
+});

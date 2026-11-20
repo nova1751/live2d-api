@@ -1,10 +1,10 @@
 {
   "name": "live2dapi-noa",
-  "version": "1.0.8",
+  "version": "1.1.0",
   "description": "nova1751自建的live-2d api",
-  "main": "index.js",
+  "main": "./widget.mjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/widget.test.mjs"
   },
   "author": "nova1751",
   "license": "ISC",
