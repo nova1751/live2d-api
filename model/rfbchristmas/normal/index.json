@@ -79,8 +79,9 @@
       },
       {
         "name": "changecos",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_BREAK_JP.mp3",
-        "command": "change_cos model1.json"
+        "command": "change_cos ../destroy/index.json"
       }
     ],
     "tap_body": [
@@ -96,10 +97,12 @@
       },
       {
         "name": "1",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_BUILDOVER_JP.mp3"
       },
       {
         "name": "2",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_FEED_JP.mp3"
       },
       {
@@ -110,29 +113,35 @@
       },
       {
         "name": "head",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_MOOD1_JP.mp3",
         "text": "うふふふ"
       },
       {
         "name": "2",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_AGREE_JP.mp3"
       },
       {
         "name": "3",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_APPRECIATE_JP.mp3"
       },
       {
         "name": "1",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_SKILL1_JP.mp3",
         "priority": 4
       },
       {
         "name": "2",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_SKILL2_JP.mp3",
         "priority": 5
       },
       {
         "name": "3",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "sounds/RFB_SKILL3_JP.mp3",
         "priority": 6
       },

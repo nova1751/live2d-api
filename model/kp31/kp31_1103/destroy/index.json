@@ -10,9 +10,7 @@
       { "file": "motions/broken_2.mtn" },
       { "file": "motions/broken_3.mtn" },
       { "file": "motions/broken_4.mtn" },
-      { "file": "motions/broken_5.mtn" },
-      { "file": "motions/login.mtn" },
-      { "file": "motions/shake.mtn" }
+      { "file": "motions/broken_5.mtn" }
     ],
     "idle": [{ "file": "motions/daiji_idle_02.mtn" }]
   },

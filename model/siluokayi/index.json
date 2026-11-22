@@ -29,7 +29,7 @@
         "fade_out": 0
       },
       {
-        "file": "motions\\tap_A2\\tap5.mtn",
+        "file": "motions/tap_A2/tap5.mtn",
         "text": "你……！算了……看在你兢兢业业服侍我的份上，我恕你无罪。",
         "fade_in": 1000,
         "fade_out": 0
@@ -41,19 +41,19 @@
         "fade_out": 0
       },
       {
-        "file": "motions\\tap_A1\\tap4.mtn",
+        "file": "motions/tap_A1/tap4.mtn",
         "text": "你的就是我的，我的还是我的，有什么不满吗？",
         "fade_in": 1000,
         "fade_out": 0
       },
       {
-        "file": "motions\\tap_A1\\tap7.mtn",
+        "file": "motions/tap_A1/tap7.mtn",
         "text": "这种低等的构造，扔掉算了~",
         "fade_in": 1000,
         "fade_out": 0
       },
       {
-        "file": "motions\\tap_A1\\tap8.mtn",
+        "file": "motions/tap_A1/tap8.mtn",
         "text": "你要盯着我到什么时候，差劲的哥哥先生。",
         "fade_in": 1000,
         "fade_out": 0
@@ -65,7 +65,7 @@
         "fade_out": 0
       },
       {
-        "file": "motions\\tap_A3\\tap6.mtn",
+        "file": "motions/tap_A3/tap6.mtn",
         "text": "做好你的分内之事，凡人。",
         "fade_in": 1000,
         "fade_out": 0
