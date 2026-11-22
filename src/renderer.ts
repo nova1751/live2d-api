@@ -34,8 +34,9 @@ export function createRenderer(base: string, legacy?: Render): Render {
       if (legacy) return legacy(canvas, model, options);
       return fetchLegacy().then(renderer => {
         if (generation !== revision) return;
-        renderer(canvas, model, options);
+        const ready = renderer(canvas, model, options);
         if (hidden) renderer.hide?.();
+        return ready;
       });
     }
     legacy?.hide?.();
@@ -43,7 +44,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
     const { signal } = controller;
     return import(/* webpackIgnore: true */ /* @vite-ignore */ base + 'modern/renderer.mjs').then(async module => {
       if (signal.aborted) return;
-      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal);
+      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();

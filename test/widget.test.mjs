@@ -39,7 +39,7 @@ function browser(failOnce) {
     };
   }
   const document = {
-    addEventListener() {}, body: element(), title: 'Demo', referrer: '', baseURI: base,
+    querySelector() { return null; }, addEventListener() {}, body: element(), title: 'Demo', referrer: '', baseURI: base,
     createElement: element, getElementById: id => nodes.get(id),
     head: { appendChild(tag) {
       const url = tag.src || tag.href;
@@ -50,7 +50,8 @@ function browser(failOnce) {
           return tag.onerror();
         }
         if (url.endsWith('live2d.min.js')) {
-          context.loadlive2d = (_, model) => renders.push(model);
+          const draw = (_, model) => { renders.push(model); };
+          if (tag.acceptCubism2) tag.acceptCubism2(draw); else context.loadlive2d = draw;
         } else if (url.endsWith('waifu-tips.js')) {
           document.currentScript = tag;
           vm.runInContext(read(url.match(/(?:jsdelivr|npm)\/[^/]+\/waifu-tips\.js$/)[0]), context);
@@ -61,13 +62,13 @@ function browser(failOnce) {
     } },
   };
   const context = vm.createContext({
-    document, URL, screen: { width: 1024 }, location: new URL(base),
+    document, URL, CustomEvent, dispatchEvent() {}, screen: { width: 1024 }, location: new URL(base),
     localStorage: storage(), sessionStorage: storage(), console: { log() {}, error(error, detail) { throw detail ?? error; } },
     setTimeout() {}, setInterval() {}, clearTimeout() {}, addEventListener() {},
     async fetch(url) {
       requests.push(url);
       const file = new URL(url).pathname.split('/').pop();
-      return { ok: true, json: async () => JSON.parse(read(file)) };
+      return { ok: true, json: async () => JSON.parse(read(file === 'library.json' ? 'catalog/library.json' : file)) };
     },
   });
   context.window = context;
@@ -218,7 +219,7 @@ test('npm shortcuts fetch the default catalog from the corresponding GitHub CDN'
     await settled();
     assert.ok(requests.includes(url + '/live2d.min.js'));
     const assets = 'https://' + host + modelSnapshot;
-    assert.ok(requests.includes(assets + 'model_list.json'));
+    assert.ok(requests.some(r => String(r).startsWith('https://' + host + '/gh/nova1751/live2d-api@catalog-') && String(r).endsWith('/catalog/library.json')));
     assert.equal(renders[0], assets + 'model/' + models[0][0] + '/index.json');
   }
 });

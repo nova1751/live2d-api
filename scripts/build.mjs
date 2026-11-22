@@ -1,3 +1,4 @@
+import { libraryTag } from './library-tag.mjs';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
@@ -5,12 +6,18 @@ import { build, context } from 'esbuild';
 
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const dev = process.argv.includes('--dev');
+const catalogDefine = { LIBRARY_TAG: JSON.stringify(await libraryTag()) };
 const shared = {
+  define: catalogDefine,
   target: 'es2020',
   charset: 'utf8',
   banner: { js: '/*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */' },
 };
-if (!dev) await copyFile('node_modules/.cache/live2dapi-noa/types/widget.d.mts', 'widget.d.mts');
+if (!dev) {
+  await copyFile('node_modules/.cache/live2dapi-noa/types/widget.d.mts', 'widget.d.mts');
+  await mkdir('library', { recursive: true });
+  await copyFile('node_modules/.cache/live2dapi-noa/types/library/catalog.d.ts', 'library/catalog.d.ts');
+}
 const upstream = 'node_modules/live2d-web/';
 await mkdir('modern', { recursive: true });
 for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/cubism-web-framework-5-r.5/LICENSE.md']) {
@@ -27,13 +34,13 @@ const entries = [
   {
     entryPoints: ['src/autoload.ts'], outfile: 'autoload.js', format: 'iife', bundle: true, minify: true,
     // The classic entry calls loadWidget synchronously while currentScript identifies its CDN URL.
-    define: { 'import.meta.url': 'document.currentScript.src' },
+    define: { ...catalogDefine, 'import.meta.url': 'document.currentScript.src' },
   },
 ];
 for (const provider of ['npm', 'jsdelivr']) {
   for (const mode of ['random', 'sequential']) {
     const dir = provider + '/' + mode;
-    const define = { NPM_RUNTIME: JSON.stringify('https://unpkg.com/live2dapi-noa@' + version + '/'),
+    const define = { ...catalogDefine, NPM_RUNTIME: JSON.stringify('https://unpkg.com/live2dapi-noa@' + version + '/'),
       GLOBAL_RUNTIME: JSON.stringify('https://cdn.jsdelivr.net/npm/live2dapi-noa@' + version + '/'), PROVIDER: JSON.stringify(provider), MODE: JSON.stringify(mode) };
     // Preserve the top-level loadExternalResource and live2d_path classic-script bindings.
     entries.push({ entryPoints: ['src/legacy-autoload.ts'], outfile: dir + '/autoload.js', define });
@@ -47,7 +54,10 @@ for (const provider of ['npm', 'jsdelivr']) {
   }
 }
 for (const position of ['left', 'right']) {
-  entries.push({ entryPoints: [`css/${position}.css`], outfile: `css/${position}.min.css`, minify: true });
+  for (const minify of [false, true]) {
+    entries.push({ entryPoints: [`src/styles/${position}.css`], bundle: true,
+      outfile: `css/${position}${minify ? '.min' : ''}.css`, minify });
+  }
 }
 if (dev) {
   const contexts = await Promise.all(entries.map(options => context({ ...shared, ...options })));

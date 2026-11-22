@@ -25,3 +25,9 @@ export function modelDirectory(base: string) {
   const cdn = url.hostname === 'cdn.jsdmirror.com' ? url.origin : globalCdn;
   return cdn + snapshot;
 }
+
+export function defaultLibraryUrl(base: URL) {
+  if (!packageRoot.test(base.pathname)) return undefined;
+  const cdn = base.hostname === 'cdn.jsdmirror.com' ? base.origin : globalCdn;
+  return cdn + '/gh/nova1751/live2d-api@' + LIBRARY_TAG + '/catalog/library.json';
+}

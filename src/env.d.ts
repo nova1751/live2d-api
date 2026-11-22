@@ -3,6 +3,8 @@ interface LegacyOptions {
   cdnPath?: string;
   apiPath?: string;
   tools?: string[];
+  catalogUrl?: string;
+  modelId?: string;
   modelUrl?: string;
   modelBaseUrl?: string;
   coreUrl?: string;
@@ -15,7 +17,7 @@ interface InitWidget {
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { start?: boolean; coreUrl?: string }): void | Promise<void>;
+    (canvas: string, model: string, options?: { soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
     capture?(): boolean;
     prepareInteraction?(): boolean;
     show?(start: boolean): void;
@@ -27,6 +29,7 @@ interface Window {
 }
 
 // Replaced with literals in the standalone CDN entry scripts.
+declare const LIBRARY_TAG: string;
 declare const NPM_RUNTIME: string;
 declare const GLOBAL_RUNTIME: string;
 declare const PROVIDER: 'jsdelivr' | 'npm';
