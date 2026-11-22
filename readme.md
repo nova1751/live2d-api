@@ -20,18 +20,18 @@
 
 ### 一行 CDN 接入
 
-按访客所在地区选一段放到页面的 `<head>` 中。以下地址固定到仓库已有的提交，可以直接使用。
+按访客所在地区选一段放到页面的 `<head>` 中。以下地址固定到同一个发布版本。升级时替换 URL 中的版本号。
 
 **中国大陆 · JSDMirror**
 
 ```html
-<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@f13304e/autoload.js"></script>
+<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v1.1.0/autoload.js"></script>
 ```
 
 **海外 · raw.githack**
 
 ```html
-<script defer src="https://rawcdn.githack.com/nova1751/live2d-api/f13304e55a5ac56b7e7c1d6379ef02eb4434a10b/autoload.js"></script>
+<script defer src="https://rawcdn.githack.com/nova1751/live2d-api/v1.1.0/autoload.js"></script>
 ```
 
 入口会从相同版本目录加载样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
@@ -41,13 +41,15 @@
 | `data-position` | `left`、`right` | `left` |
 | `data-mode` | `sequential`（顺序换装）、`random`（随机换装） | `sequential` |
 
-**通过 npm CDN 接入**　`live2dapi-noa@1.1.0` 发布后，可使用固定版本的 UNPKG 地址。仅在准备升级时修改版本号。[UNPKG 使用说明](https://unpkg.com/)
+**通过 npm CDN 接入**　可使用已发布的 `live2dapi-noa@1.1.0` 的 UNPKG 地址。仅在准备升级时修改版本号。[UNPKG 使用说明](https://unpkg.com/)
 
 ```html
 <script defer src="https://unpkg.com/live2dapi-noa@1.1.0/autoload.js" data-position="right" data-mode="random"></script>
 ```
 
 完整模型包解压后约 224 MB，超过 jsDelivr 默认支持的 npm 包大小。大陆快捷示例使用 JSDMirror 的 GitHub 路径。公共镜像的可用性随线路和缓存而变化。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror) · [raw.githack 生产地址](https://raw.githack.com/)
+
+[打开 Vercel 在线演示](https://live2d-nova.vercel.app/) · [GitHub Pages 镜像](https://nova1751.github.io/live2d-api/)
 
 ### 自有 CDN 和模块调用
 
@@ -130,7 +132,7 @@
 ## 发布到 npm
 
 1. 在 npm 的 `live2dapi-noa` 包设置中添加 GitHub Actions Trusted Publisher，用户填 `nova1751`，仓库填 `live2d-api`，工作流文件填 `publish.yml`，环境名留空。允许该工作流执行 `npm publish`。发布使用 OIDC，并生成来源证明。[npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/)
-2. 确认 `package.json` 与锁文件记录了待发版本，并将源码、构建产物和工作流合入 `main`。当前待发版本为 `1.1.0`。后续升级可用 `npm version <版本号> --no-git-tag-version` 同步两个文件。
+2. 确认 `package.json` 与锁文件记录了待发版本，并将源码、构建产物和工作流合入 `main`。后续升级可用 `npm version <版本号> --no-git-tag-version` 同步两个文件。
 3. 在待发布的提交上创建并推送同版本标签，例如 `git tag v1.1.0` 和 `git push origin v1.1.0`。PR 和普通的 `main` 推送只运行验证。标签必须与包版本一致。
 4. Actions 使用锁文件安装依赖，构建 npm 包，检查生成文件和兼容性测试，并从解包后的目录验证 WebGL 渲染和换装。发布任务上传验证过的同一个 tarball。正式版使用 `latest`，预发布版（例如 `1.2.0-beta.1`）使用 `next`。发布后可用 `npm view live2dapi-noa@1.1.0 dist.integrity --registry=https://registry.npmjs.org` 核对注册表中的版本。
 
