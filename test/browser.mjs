@@ -45,15 +45,13 @@ try {
   await canvas.hover();
   await page.mouse.click(650, 180);
   await page.evaluate(() => document.dispatchEvent(new MouseEvent('mouseout')));
-  await page.clock.install();
-  await page.clock.fastForward(60_000);
-  assert.deepEqual(await canvas.screenshot(), before, 'resting pose changed without a click');
+  assert.ok(!before.equals(await canvas.screenshot()), 'model should animate without a click');
   const nextModel = page.waitForResponse(response =>
     response.url().endsWith('/model/fairy/air_attack/02/index.json') && response.ok());
   await page.locator('#waifu-tool-switch-texture').dispatchEvent('click');
   await nextModel;
   assert.equal(await page.evaluate(() => localStorage.getItem('modelTexturesId')), '1');
-  assert.deepEqual(motionFiles, []);
+  assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
   assert.deepEqual(voices, []);
   const catalog = await (await page.request.get(url + 'model_list.json')).json();
   const skin = 'kp31/kp31_1103/normal';
@@ -68,13 +66,14 @@ try {
   for (const gesture of ['click', 'tap']) {
     await page.reload();
     await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
-    assert.deepEqual(motionFiles, []);
+    assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
     assert.deepEqual(voices, []);
     await page.evaluate(() => {
-      window.interactions = { motions: 0, plays: 0 };
+      window.interactions = { motions: 0, plays: 0, resumedIdle: false };
       const start = MotionQueueManager.prototype.startMotion;
       MotionQueueManager.prototype.startMotion = function (...args) {
-        window.interactions.motions++;
+        if (this.currentPriority === 3) window.interactions.motions++;
+        if (this.currentPriority === 1 && window.interactions.motions) window.interactions.resumedIdle = true;
         return start.apply(this, args);
       };
       const play = HTMLMediaElement.prototype.play;
@@ -88,14 +87,14 @@ try {
     await canvas[gesture]({ position: { x: 160, y: 225 } });
     await Promise.all([motion, audio]);
     await page.waitForFunction(() => window.interactions.motions === 1 && window.interactions.plays === 1);
-    await page.clock.fastForward(60_000);
-    assert.deepEqual(await page.evaluate(() => window.interactions), { motions: 1, plays: 1 });
-    assert.equal(motionFiles.length, 1, 'one gesture should play one action');
+    await page.waitForFunction(() => window.interactions.resumedIdle);
+    assert.deepEqual(await page.evaluate(() => window.interactions), { motions: 1, plays: 1, resumedIdle: true });
+    assert.equal(motionFiles.filter(path => !path.includes('/motions/daiji_idle')).length, 1, 'one gesture should play one action');
     assert.equal(new Set(voices).size, 1, 'one gesture should play one recording');
     motionFiles.length = voices.length = 0;
   }
   assert.deepEqual(errors, []);
-  console.log('Verified static rendering, silent skin changes and one action with its voice per mouse click or touch.');
+  console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');
 } finally {
   await browser?.close();
   await server.dispose();
