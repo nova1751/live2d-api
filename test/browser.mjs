@@ -1,19 +1,15 @@
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
-import { createInterface } from 'node:readline';
+import { resolve } from 'node:path';
+import { context } from 'esbuild';
 import { chromium } from 'playwright-core';
 
-const server = spawn(process.execPath, ['scripts/build.mjs', '--dev'], {
-  stdio: ['ignore', 'pipe', 'inherit'],
-});
+// CI serves the extracted npm tarball so a missing published asset fails the smoke test.
+const servedir = resolve(process.argv[2] ?? '.');
+const server = await context({ stdin: { contents: '' }, write: false });
 let browser;
 try {
-  let url;
-  for await (const line of createInterface({ input: server.stdout })) {
-    url = line.match(/http:\/\/127\.0\.0\.1:\d+\//)?.[0];
-    if (url) break;
-  }
-  assert.ok(url, 'development server started');
+  const { port } = await server.serve({ servedir, host: '127.0.0.1' });
+  const url = `http://127.0.0.1:${port}/`;
   browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
   const errors = [];
@@ -44,5 +40,5 @@ try {
   console.log('WebGL rendered the first model and the page loaded the next skin.');
 } finally {
   await browser?.close();
-  server.kill();
+  await server.dispose();
 }
