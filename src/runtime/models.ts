@@ -1,3 +1,4 @@
+import { globalModels, modelDirectory } from '../distribution';
 import { pick, say } from './messages';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
@@ -11,7 +12,7 @@ export async function getJson<T>(url: string): Promise<T> {
 }
 
 export class Models {
-  private readonly base: string;
+  private base: string;
   private readonly useCDN: boolean;
   private catalog?: Promise<Catalog>;
 
@@ -25,15 +26,29 @@ export class Models {
 
   cancel() { this.revision++; }
 
-  constructor(options: LegacyOptions) {
+  constructor(private readonly options: LegacyOptions) {
     this.useCDN = typeof options.cdnPath === 'string';
-    const path = options.cdnPath ?? options.apiPath;
+    const path = options.modelBaseUrl ?? (options.cdnPath && modelDirectory(options.cdnPath)) ?? options.apiPath;
     if (typeof path !== 'string') throw new TypeError('Invalid initWidget argument');
     this.base = path.endsWith('/') ? path : path + '/';
   }
 
+  private async fetchCatalog(): Promise<Catalog> {
+    const url = this.base + 'model_list.json';
+    const response = await fetch(url);
+    // Full self-hosted deployments retain their local models. A copied runtime-only
+    // tarball can use the published library when its static host has no catalog.
+    if (response.status === 404 && !this.options.modelBaseUrl && this.base !== globalModels) {
+      const catalog = await getJson<Catalog>(globalModels + 'model_list.json');
+      this.base = globalModels;
+      return catalog;
+    }
+    if (!response.ok) throw new Error(`Failed to load ${url} (HTTP ${response.status})`);
+    return response.json();
+  }
+
   private list(): Promise<Catalog> {
-    return this.catalog ??= getJson<Catalog>(this.base + 'model_list.json').catch(error => {
+    return this.catalog ??= this.fetchCatalog().catch(error => {
       this.catalog = undefined;
       throw error;
     });
@@ -42,7 +57,9 @@ export class Models {
   async load(id = storedId('modelId'), texture = storedId('modelTexturesId'), message?: string, start = false,
     revision = ++this.revision, exactSkin = false) {
     let url: string;
-    if (this.useCDN) {
+    if (this.options.modelUrl) {
+      url = this.options.modelUrl;
+    } else if (this.useCDN) {
       const { models } = await this.list();
       if (!models[id]) id = 0;
       const entry = models[id];
@@ -55,15 +72,19 @@ export class Models {
       url = this.base + 'get/?id=' + id + '-' + texture;
     }
     if (revision !== this.revision) return;
-    localStorage.setItem('modelId', String(id));
-    localStorage.setItem('modelTexturesId', String(texture));
-    window.loadlive2d('live2d', url, { start });
+    const ready = window.loadlive2d('live2d', url, { start, coreUrl: this.options.coreUrl });
+    if (ready) await ready;
+    if (revision !== this.revision) return;
+    if (!this.options.modelUrl) {
+      localStorage.setItem('modelId', String(id));
+      localStorage.setItem('modelTexturesId', String(texture));
+    }
     say(message, 4000, 10);
     this.loaded = true;
   }
 
   async costume(target: string) {
-    if (!this.useCDN) return;
+    if (this.options.modelUrl || !this.useCDN) return;
     const revision = ++this.revision;
     const id = storedId('modelId');
     const entry = (await this.list()).models[id];

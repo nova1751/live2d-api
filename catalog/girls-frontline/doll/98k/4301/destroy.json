@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/98k_4301/destroy/destroy.moc3",
       "blob": "57ac4fa7feb0f9b07becde1d2aeade477f99776a",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/98k_4301/destroy/destroy.model3.json"
     },
     {
       "repository": "eikanya",
@@ -20,13 +21,15 @@
       "repository": "jacksen168",
       "path": "人型2/98k_4301/destroy/destroy.moc3",
       "blob": "57ac4fa7feb0f9b07becde1d2aeade477f99776a",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人型2/98k_4301/destroy/destroy.model3.json"
     },
     {
       "repository": "jacksen168",
       "path": "人形/98k_4301/destroy/destroy.moc3",
       "blob": "57ac4fa7feb0f9b07becde1d2aeade477f99776a",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/98k_4301/destroy/destroy.model3.json"
     }
   ],
   "widget": []

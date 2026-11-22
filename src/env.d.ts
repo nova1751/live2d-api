@@ -3,6 +3,9 @@ interface LegacyOptions {
   cdnPath?: string;
   apiPath?: string;
   tools?: string[];
+  modelUrl?: string;
+  modelBaseUrl?: string;
+  coreUrl?: string;
 }
 interface InitWidget {
   (options: LegacyOptions): void;
@@ -12,7 +15,8 @@ interface InitWidget {
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { start: boolean }): void;
+    (canvas: string, model: string, options?: { start?: boolean; coreUrl?: string }): void | Promise<void>;
+    capture?(): boolean;
     prepareInteraction?(): boolean;
     show?(start: boolean): void;
     hide?(): void;
@@ -23,5 +27,7 @@ interface Window {
 }
 
 // Replaced with literals in the standalone CDN entry scripts.
+declare const NPM_RUNTIME: string;
+declare const GLOBAL_RUNTIME: string;
 declare const PROVIDER: 'jsdelivr' | 'npm';
 declare const MODE: 'random' | 'sequential';

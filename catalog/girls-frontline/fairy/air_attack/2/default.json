@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/air_attack/2/2.moc3",
       "blob": "48db2ee575daf5893c0b8f2c41ddea3b22403a99",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/air_attack/2/2.model3.json"
     },
     {
       "repository": "eikanya",
@@ -20,7 +21,8 @@
       "repository": "jacksen168",
       "path": "精灵/air_attack/2/2.moc3",
       "blob": "48db2ee575daf5893c0b8f2c41ddea3b22403a99",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "精灵/air_attack/2/2.model3.json"
     }
   ],
   "widget": [

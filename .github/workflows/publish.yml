@@ -38,6 +38,9 @@ jobs:
       - name: Render the widget from the packed files
         run: |
           tar -xzf "$RUNNER_TEMP"/live2dapi-noa-*.tgz -C "$RUNNER_TEMP"
+          node scripts/check-runtime-package.mjs "$RUNNER_TEMP/package"
+          # The smoke site serves the packed JS with a separate on-disk collection of test models.
+          cp -r model model_list.json index.html "$RUNNER_TEMP/package/"
           pnpm run test:browser "$RUNNER_TEMP/package"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: startsWith(github.ref, 'refs/tags/')

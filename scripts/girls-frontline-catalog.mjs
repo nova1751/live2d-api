@@ -70,7 +70,9 @@ for (const [source, checkout] of [['eikanya', primary], ['jacksen168', secondary
   const args = ['ls-tree', '-rz', sources[source].commit];
   if (source === 'eikanya') args.push('--', game);
   const tree = execFileSync('git', ['-C', resolve(checkout), ...args], { encoding: 'utf8', maxBuffer: 16_000_000 });
-  for (const record of tree.split('\0')) {
+  const records = tree.split('\0');
+  const paths = new Set(records.map(record => record.split('\t')[1]));
+  for (const record of records) {
     const [header, path] = record.split('\t');
     if (!path || !/\.moc3?$/i.test(path)) continue;
     const [category, id, version, form] = classify(source, path);
@@ -82,7 +84,10 @@ for (const [source, checkout] of [['eikanya', primary], ['jacksen168', secondary
     const forms = versions.get(version);
     if (!forms.has(form)) forms.set(form, { id: form, sources: [], widget: [] });
     const item = forms.get(form);
-    item.sources.push({ repository: source, path, blob: header.split(' ')[2], format: path.endsWith('.moc3') ? 'moc3' : 'moc' });
+    const format = path.endsWith('.moc3') ? 'moc3' : 'moc';
+    const manifest = path.replace(/\.moc3$/, '.model3.json');
+    item.sources.push({ repository: source, path, blob: header.split(' ')[2], format,
+      ...(format === 'moc3' && paths.has(manifest) ? { manifest } : {}) });
     if (source === 'eikanya' && widgetByPath.has(path)) {
       item.widget.push(...widgetByPath.get(path));
       widgetByPath.delete(path);
@@ -129,7 +134,7 @@ for (const key of [...models.keys()].sort()) {
 write(out + '/index.json', { schemaVersion: 1, sources, characters });
 const guide = ['# 少女前线模型目录', '',
   '点人物代号查看其版本列表，点版本查看普通、破损等形态。表内数量按形态统计。', '',
-  '“已接入”可用现有看板娘加载。“待接入 moc”有旧格式来源，仍需核验素材完整性与再分发授权。“仅 moc3”需要支持新格式的渲染器。', '',
+  '“已接入”可用现有看板娘加载。“待接入 moc”有旧格式来源，仍需核验素材完整性与再分发授权。“仅 moc3”的上游入口见形态记录的 sources[].manifest，可用新版渲染器加载。', '',
   '[机器可读总目录](index.json) · [来源与授权说明](../../readme.md#少女前线分类)', ''];
 for (const [category, label] of Object.entries(categories)) {
   guide.push('## ' + label, '', '| 对象 | 版本 | 已接入 | 待接入 moc | 仅 moc3 |', '| --- | --- | ---: | ---: | ---: |',

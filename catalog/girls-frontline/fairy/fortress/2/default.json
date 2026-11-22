@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/fortress/2/2.moc3",
       "blob": "0665ad6d59ecf0f14d80cf29e2272442ef06b099",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/fortress/2/2.model3.json"
     },
     {
       "repository": "eikanya",
@@ -20,7 +21,8 @@
       "repository": "jacksen168",
       "path": "精灵/fortress/2/2.moc3",
       "blob": "0665ad6d59ecf0f14d80cf29e2272442ef06b099",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "精灵/fortress/2/2.model3.json"
     }
   ],
   "widget": [

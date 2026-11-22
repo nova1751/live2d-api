@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/armor/1/1.moc3",
       "blob": "f1081a9a03a9d55bffcce64719b92ab7210d65cb",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/armor/1/1.model3.json"
     },
     {
       "repository": "eikanya",
@@ -20,7 +21,8 @@
       "repository": "jacksen168",
       "path": "精灵/armor/1/1.moc3",
       "blob": "f1081a9a03a9d55bffcce64719b92ab7210d65cb",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "精灵/armor/1/1.model3.json"
     }
   ],
   "widget": [

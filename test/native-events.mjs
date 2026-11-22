@@ -13,7 +13,7 @@ export async function checkNativeEvents(browser, base) {
     // Read transformed hit meshes from the renderer being tested, including npm tarballs.
     await page.route('**/live2d.min.js', async route => {
       const response = await route.fetch();
-      const body = (await response.text()).replace('window.loadlive2d=L', 'window.modelsUnderTest=R;window.loadlive2d=L');
+      const body = (await response.text()).replace('window.loadlive2d=L', 'window.modelsUnderTest=R,window.loadlive2d=L');
       await route.fulfill({ response, body });
     });
     await page.addInitScript(() => {

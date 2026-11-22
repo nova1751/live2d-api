@@ -9,8 +9,8 @@ const live2d_path = (() => {
     }
   }
   return PROVIDER === 'npm'
-    ? 'https://unpkg.com/live2dapi-noa@latest/'
-    : 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/';
+    ? NPM_RUNTIME
+    : GLOBAL_RUNTIME;
 })();
 
 function loadExternalResource(url: string, type: 'css' | 'js'): Promise<string> {
