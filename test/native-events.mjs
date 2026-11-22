@@ -67,7 +67,7 @@ export async function checkNativeEvents(browser, base) {
     await page.waitForFunction(() => !!modelsUnderTest.getModel(0).voice?.source);
     await load('rfbchristmas/normal');
     const hand = await point('hand');
-    const change = page.waitForRequest('**/rfbchristmas/destroy/index.json');
+    const change = page.waitForFunction(() => modelsUnderTest.getModel(0).modelHomeDir.endsWith('/rfbchristmas/destroy/'));
     await page.mouse.click(...hand);
     await change;
     assert.equal(await page.evaluate(() => localStorage.getItem('modelTexturesId')), '1');
