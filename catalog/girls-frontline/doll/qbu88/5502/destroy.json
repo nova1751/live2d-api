@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "qbu88",
+  "version": "5502",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/qbu88_5502/destroy/destroy.moc3",
+      "blob": "59f0b09663867b33732794286303276f1f036140",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/qbu88_5502/destroy/destroy.moc3",
+      "blob": "59f0b09663867b33732794286303276f1f036140",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

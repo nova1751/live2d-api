@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "mg5",
+  "version": "4902",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mg5_4902/destroy/destroy.moc3",
+      "blob": "460dd35965cb9ab48b1ce46ecb71efd696b0bae0",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mg5_4902/destroy/model.moc",
+      "blob": "4c9d10c51c9fed6ba6e1e1874d9795c0e2b22028",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/mg5_4902/destroy/destroy.moc3",
+      "blob": "460dd35965cb9ab48b1ce46ecb71efd696b0bae0",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "kp31",
+  "version": "archive-alt",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/kp31/archive-alt/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/kp31/archive-alt/normal.json"
+    }
+  ]
+}

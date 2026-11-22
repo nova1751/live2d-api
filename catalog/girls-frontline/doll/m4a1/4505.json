@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m4a1",
+  "version": "4505",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/m4a1/4505/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/m4a1/4505/normal.json"
+    }
+  ]
+}

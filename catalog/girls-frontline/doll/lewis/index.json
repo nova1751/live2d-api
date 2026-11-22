@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "lewis",
+  "versions": [
+    {
+      "id": "3502",
+      "path": "doll/lewis/3502.json"
+    },
+    {
+      "id": "4001",
+      "path": "doll/lewis/4001.json"
+    },
+    {
+      "id": "5501",
+      "path": "doll/lewis/5501.json"
+    },
+    {
+      "id": "6901",
+      "path": "doll/lewis/6901.json"
+    }
+  ]
+}

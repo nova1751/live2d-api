@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "g11",
+  "versions": [
+    {
+      "id": "1602",
+      "path": "doll/g11/1602.json"
+    },
+    {
+      "id": "4102",
+      "path": "doll/g11/4102.json"
+    },
+    {
+      "id": "9",
+      "path": "doll/g11/9.json"
+    },
+    {
+      "id": "mod",
+      "path": "doll/g11/mod.json"
+    }
+  ]
+}

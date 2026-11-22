@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "k2",
+  "version": "3301",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/k2_3301/normal/normal.moc3",
+      "blob": "11e5f54083a80bbea1567d3e5863a3d33980efe2",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/k2_3301/normal/model.moc",
+      "blob": "00cb0bad8c6024dc2e53a682c499299ad9e4ae41",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/rfbchristmas/k2_3301/normal/index.json",
+      "modelId": 5,
+      "modelTexturesId": 2
+    }
+  ]
+}

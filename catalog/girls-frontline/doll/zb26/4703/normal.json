@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "zb26",
+  "version": "4703",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/zb26_4703/normal/normal.moc3",
+      "blob": "2335385003f8c4cb35ea7fece5654c91b6cdc986",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/zb26_4703/normal/model.moc",
+      "blob": "a5622e897de16553bc72f13fa38e55759adbb969",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/zb26_4703/normal/normal.moc3",
+      "blob": "4f16f655c6c48e4d1a1154c1a019932d93441020",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

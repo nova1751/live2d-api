@@ -1,0 +1,11 @@
+{
+  "category": "squad",
+  "character": "ags-30",
+  "version": "base",
+  "forms": [
+    {
+      "id": "default",
+      "path": "squad/ags-30/base/default.json"
+    }
+  ]
+}

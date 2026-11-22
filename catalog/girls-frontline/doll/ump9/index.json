@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "ump9",
+  "versions": [
+    {
+      "id": "2106",
+      "path": "doll/ump9/2106.json"
+    },
+    {
+      "id": "3404",
+      "path": "doll/ump9/3404.json"
+    },
+    {
+      "id": "556",
+      "path": "doll/ump9/556.json"
+    }
+  ]
+}

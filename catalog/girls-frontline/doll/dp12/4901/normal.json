@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "dp12",
+  "version": "4901",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/dp12_4901/normal/normal.moc3",
+      "blob": "228978d73162ca920a37ea1a454fad0412ed8821",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/dp12_4901/normal/normal.moc3",
+      "blob": "228978d73162ca920a37ea1a454fad0412ed8821",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

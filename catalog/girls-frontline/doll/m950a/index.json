@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "m950a",
+  "versions": [
+    {
+      "id": "2303",
+      "path": "doll/m950a/2303.json"
+    },
+    {
+      "id": "4302",
+      "path": "doll/m950a/4302.json"
+    }
+  ]
+}

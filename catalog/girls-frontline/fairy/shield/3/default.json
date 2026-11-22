@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "shield",
+  "version": "3",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/shield/3/3.moc3",
+      "blob": "2f0b5c32791694ed7c35a6ffd9ae89fbe1ed6d5f",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/shield/model3.moc",
+      "blob": "b2e963ee0b81208e22ebcd7cfdaf295bafa32254",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/shield/3/3.moc3",
+      "blob": "2f0b5c32791694ed7c35a6ffd9ae89fbe1ed6d5f",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/shield/03/index.json",
+      "modelId": 0,
+      "modelTexturesId": 23
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "95type",
+  "version": "5604",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/95type_5604/destroy/destroy.moc3",
+      "blob": "950a42ef3545d1dfad655e69afc16086dd06056f",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/95type_5604/destroy/destroy.moc3",
+      "blob": "950a42ef3545d1dfad655e69afc16086dd06056f",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

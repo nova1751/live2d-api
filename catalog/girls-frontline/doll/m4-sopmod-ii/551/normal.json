@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "551",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/m4 sopmod ii_551/normal/normal.moc3",
+      "blob": "1a9b65043d708b2f08afda4b92db0df30e681867",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

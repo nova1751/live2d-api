@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "mdr",
+  "version": "2603",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mdr_2603/destroy/destroy.moc3",
+      "blob": "4e565196e061a854164b9f2c426ad5031a1b4ef6",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mdr_2603/destroy/model.moc",
+      "blob": "2a8f80e94921b31392052974334e83c29d73867d",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

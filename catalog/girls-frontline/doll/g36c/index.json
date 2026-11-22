@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "g36c",
+  "versions": [
+    {
+      "id": "1202",
+      "path": "doll/g36c/1202.json"
+    },
+    {
+      "id": "3103",
+      "path": "doll/g36c/3103.json"
+    },
+    {
+      "id": "3802",
+      "path": "doll/g36c/3802.json"
+    },
+    {
+      "id": "5201",
+      "path": "doll/g36c/5201.json"
+    }
+  ]
+}

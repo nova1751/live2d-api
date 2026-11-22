@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "1501",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m1928a1_1501/normal/normal.moc3",
+      "blob": "d1e6f00912a2ac47b452f00c2ce7a12e7564359c",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m1928a1_1501/normal/model.moc",
+      "blob": "41df0391f6cd82d7544b8ffa30d3c4e833441991",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

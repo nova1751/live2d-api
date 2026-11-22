@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "generalliu",
+  "version": "563",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/generalliu_563/destroy/destroy.moc3",
+      "blob": "97f6c2d9e8092f2f9175bc6325640e0cc71b5898",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

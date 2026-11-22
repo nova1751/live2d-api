@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "airborne",
+  "version": "3",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/airborne/3/3.moc3",
+      "blob": "1a40b290d1eea5dc701a550464ffce0bfdc0a494",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/airborne/model3.moc",
+      "blob": "53d0cabe1714fd8c94985d1f866c8cde43dd4508",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/airborne/3/3.moc3",
+      "blob": "1a40b290d1eea5dc701a550464ffce0bfdc0a494",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/airborne/03/index.json",
+      "modelId": 0,
+      "modelTexturesId": 5
+    }
+  ]
+}

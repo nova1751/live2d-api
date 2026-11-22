@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "saiga12",
+  "versions": [
+    {
+      "id": "3901",
+      "path": "doll/saiga12/3901.json"
+    },
+    {
+      "id": "4510",
+      "path": "doll/saiga12/4510.json"
+    },
+    {
+      "id": "5402",
+      "path": "doll/saiga12/5402.json"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "howatype89",
+  "version": "6601",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/howatype89_6601/destroy/destroy.moc3",
+      "blob": "6e99aae73c37286884a7b44d81c88b23107f6edd",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

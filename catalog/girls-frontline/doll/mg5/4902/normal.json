@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "mg5",
+  "version": "4902",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mg5_4902/normal/normal.moc3",
+      "blob": "41830383d814e15889f171a21dbbd4bfe4b23dbb",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mg5_4902/normal/model.moc",
+      "blob": "272bc4c6b9e637548b8f0b44e34e866d648ca6d9",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/mg5_4902/normal/normal.moc3",
+      "blob": "87637accae9cf783b9b65bd114b9cfcc7faf5812",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

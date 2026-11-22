@@ -1,0 +1,15 @@
+{
+  "category": "squad",
+  "character": "ags-30",
+  "version": "base",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/squads/ags-30/ags-30.moc3",
+      "blob": "d80df6ba7a19edb9ffb262a5e9c2875786620ac2",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

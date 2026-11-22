@@ -1,0 +1,18 @@
+{
+  "category": "fairy",
+  "id": "air_attack",
+  "versions": [
+    {
+      "id": "1",
+      "path": "fairy/air_attack/1.json"
+    },
+    {
+      "id": "2",
+      "path": "fairy/air_attack/2.json"
+    },
+    {
+      "id": "3",
+      "path": "fairy/air_attack/3.json"
+    }
+  ]
+}

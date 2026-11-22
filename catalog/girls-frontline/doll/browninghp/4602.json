@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "browninghp",
+  "version": "4602",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/browninghp/4602/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/browninghp/4602/normal.json"
+    }
+  ]
+}

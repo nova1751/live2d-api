@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "contender",
+  "version": "2302",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/contender_2302/normal/normal.moc3",
+      "blob": "fe5658afd6205966d3b47c36d1836d6e516e9476",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/contender_2302/normal/model.moc",
+      "blob": "7d1305261800478c18a106c070b85065cebd9a9d",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/contender_2302/normal/normal.moc3",
+      "blob": "fe5658afd6205966d3b47c36d1836d6e516e9476",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

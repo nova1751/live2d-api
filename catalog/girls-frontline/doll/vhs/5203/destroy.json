@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "vhs",
+  "version": "5203",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/vhs_5203/destroy/destroy.moc3",
+      "blob": "fcc142f8849efe0d22ac90508ce7d58d3436f320",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/vhs_5203/destroy/model.moc",
+      "blob": "a01ad5fb1cf32d3f30604e2f37786f79f4543bdc",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/vhs_5203/destroy/destroy.moc3",
+      "blob": "fcc142f8849efe0d22ac90508ce7d58d3436f320",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

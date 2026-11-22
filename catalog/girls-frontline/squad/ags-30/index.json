@@ -1,0 +1,10 @@
+{
+  "category": "squad",
+  "id": "ags-30",
+  "versions": [
+    {
+      "id": "base",
+      "path": "squad/ags-30/base.json"
+    }
+  ]
+}

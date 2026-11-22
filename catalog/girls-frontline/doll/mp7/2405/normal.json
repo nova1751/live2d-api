@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "mp7",
+  "version": "2405",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mp7_2405/normal/normal.moc3",
+      "blob": "36e9513275a6cc7ec3a80464885a420d77ac7ce5",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mp7_2405/normal/model.moc",
+      "blob": "043ae43f74088929ce2dd8b13a4e0a5cc253ca92",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/mp7_2405/normal/normal.moc3",
+      "blob": "a89dc9dda72bf3925693017d1c6920882a121fce",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

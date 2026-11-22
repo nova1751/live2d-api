@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "vhs",
+  "version": "5203",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/vhs_5203/normal/normal.moc3",
+      "blob": "abecd9b74d85bc4c205929613a86dc321de531a2",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/vhs_5203/normal/model.moc",
+      "blob": "fcd08bfed63a7bef5dcf29702a37b642eaf03c37",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/vhs_5203/normal/normal.moc3",
+      "blob": "abecd9b74d85bc4c205929613a86dc321de531a2",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "lewis",
+  "version": "4001",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/lewis_4001/destroy/destroy.moc3",
+      "blob": "3b87fd9a96711cadb0a47ebb875d3c8cfd4ce0f1",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/lewis_4001/destroy/model.moc",
+      "blob": "a7ffcf13891ba5f1b9fe20014affe588cf653399",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/lewis_4001/destroy/destroy.moc3",
+      "blob": "3b87fd9a96711cadb0a47ebb875d3c8cfd4ce0f1",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

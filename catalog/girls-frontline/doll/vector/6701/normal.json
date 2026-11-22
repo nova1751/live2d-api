@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "vector",
+  "version": "6701",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/vector_6701/normal/normal.moc3",
+      "blob": "27844b5b7dc10879f00472a70a716b52c1c68c75",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

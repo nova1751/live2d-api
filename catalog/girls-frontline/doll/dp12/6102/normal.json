@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "dp12",
+  "version": "6102",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/dp12_6102/normal/normal.moc3",
+      "blob": "cc888a39d24aa34857ddbf277342bc171ea5ec3a",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

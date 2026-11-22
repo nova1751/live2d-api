@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "sr3mp",
+  "version": "4101",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/sr3mp_4101/normal/normal.moc3",
+      "blob": "2528e590c360e2e457ab105e98e97361007f3d80",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/sr3mp_4101/normal/model.moc",
+      "blob": "2bbb799b873a14309747f29e218ab07a6d00d80a",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/sr3mp_4101/normal/normal.moc3",
+      "blob": "d6f8ff86c25cee579b5ab39221576acbbc26a231",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

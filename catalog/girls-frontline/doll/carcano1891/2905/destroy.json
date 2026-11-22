@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "carcano1891",
+  "version": "2905",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/carcano1891_2905/destroy/destroy.moc3",
+      "blob": "409abe6932e7dc86db683543a19487dab8bfdd48",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/carcano1891_2905/destroy/model.moc",
+      "blob": "7d3ddcda04f177862f856015d0ac614e85b794b6",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/carcano1891_2905/destroy/destroy.moc3",
+      "blob": "409abe6932e7dc86db683543a19487dab8bfdd48",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/carcano/carcano1891_2905/destroy/index.json",
+      "modelId": 8,
+      "modelTexturesId": 3
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "dsr50",
+  "version": "1801",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/dsr50_1801/destroy/destroy.moc3",
+      "blob": "e118a8a6590b236af13f6ef871d6f08efb086993",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/dsr50_1801/destroy/model.moc",
+      "blob": "20b897dd8fa6fc9db9a8ea9f2bdac4086a144ed0",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/dsr50_1801/destroy/destroy.moc3",
+      "blob": "e118a8a6590b236af13f6ef871d6f08efb086993",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/dsr50/dsr50_1801/destroy/index.json",
+      "modelId": 17,
+      "modelTexturesId": 1
+    }
+  ]
+}

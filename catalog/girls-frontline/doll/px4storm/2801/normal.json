@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "px4storm",
+  "version": "2801",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/px4storm_2801/normal/normal.moc3",
+      "blob": "3d0acd4cdd4d247851277a7b51cd6e07f27a6745",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/px4storm_2801/normal/model.moc",
+      "blob": "86833484601b2522affcb8b44a879028ce467ef9",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/px4storm_2801/normal/normal.moc3",
+      "blob": "3d0acd4cdd4d247851277a7b51cd6e07f27a6745",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

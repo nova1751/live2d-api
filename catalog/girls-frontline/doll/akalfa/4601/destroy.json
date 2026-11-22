@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "akalfa",
+  "version": "4601",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/akalfa_4601/destroy/destroy.moc3",
+      "blob": "15210699e857b2320b582595b2c2b76af894eaea",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/akalfa_4601/destroy/model.moc",
+      "blob": "c768b56150156462a7adcf726ddb5a0d3c961ad9",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

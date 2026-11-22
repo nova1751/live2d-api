@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "vector",
+  "version": "6701",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/vector_6701/destroy/destroy.moc3",
+      "blob": "6a647e0b0cdcea536fe405d0b23a9d0aba9b0952",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

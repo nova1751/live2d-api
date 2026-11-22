@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "howatype89",
+  "version": "6601",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/howatype89_6601/normal/normal.moc3",
+      "blob": "aee8688233d9427de256971b2dccbd47128b5a9a",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

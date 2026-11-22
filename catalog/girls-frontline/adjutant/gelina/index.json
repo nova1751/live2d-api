@@ -1,0 +1,10 @@
+{
+  "category": "adjutant",
+  "id": "gelina",
+  "versions": [
+    {
+      "id": "base",
+      "path": "adjutant/gelina/base.json"
+    }
+  ]
+}

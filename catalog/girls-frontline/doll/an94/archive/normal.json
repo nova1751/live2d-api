@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "an94",
+  "version": "archive",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/AN-94/normal/model.moc",
+      "blob": "8b2206e4368e35bd0be8e4b6b66c015d08252b04",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

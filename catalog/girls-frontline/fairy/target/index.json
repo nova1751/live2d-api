@@ -1,0 +1,18 @@
+{
+  "category": "fairy",
+  "id": "target",
+  "versions": [
+    {
+      "id": "1",
+      "path": "fairy/target/1.json"
+    },
+    {
+      "id": "2",
+      "path": "fairy/target/2.json"
+    },
+    {
+      "id": "3",
+      "path": "fairy/target/3.json"
+    }
+  ]
+}

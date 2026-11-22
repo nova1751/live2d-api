@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "r5rgp",
+  "version": "5302",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/r5rgp_5302/destroy/destroy.moc3",
+      "blob": "ea45fa345b02f2a294d3e54c815833f2ff4835d1",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/r5rgp_5302/destroy/model.moc",
+      "blob": "89e51f912345a18a1ffa041903b9466831161457",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/r5rgp_5302/destroy/destroy.moc3",
+      "blob": "ea45fa345b02f2a294d3e54c815833f2ff4835d1",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

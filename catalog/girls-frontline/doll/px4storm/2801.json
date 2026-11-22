@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "px4storm",
+  "version": "2801",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/px4storm/2801/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/px4storm/2801/normal.json"
+    }
+  ]
+}

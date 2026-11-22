@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "g41",
+  "version": "2401",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/g41_2401/destroy/destroy.moc3",
+      "blob": "b9d6963add0a5c484e82534e7ee34fb40a737a71",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/g41_2401/destroy/model.moc",
+      "blob": "f56068c2c728272380206393ce374183ee16cc60",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/g41_2401/destroy/destroy.moc3",
+      "blob": "b9d6963add0a5c484e82534e7ee34fb40a737a71",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

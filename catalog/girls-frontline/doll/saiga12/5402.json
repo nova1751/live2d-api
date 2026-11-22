@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "saiga12",
+  "version": "5402",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/saiga12/5402/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/saiga12/5402/normal.json"
+    }
+  ]
+}

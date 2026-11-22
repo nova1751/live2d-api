@@ -1,0 +1,18 @@
+{
+  "category": "fairy",
+  "id": "command",
+  "versions": [
+    {
+      "id": "1",
+      "path": "fairy/command/1.json"
+    },
+    {
+      "id": "2",
+      "path": "fairy/command/2.json"
+    },
+    {
+      "id": "3",
+      "path": "fairy/command/3.json"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "sat8",
+  "version": "3602",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/sat8/3602/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/sat8/3602/normal.json"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "category": "doll",
+  "id": "95type",
+  "versions": [
+    {
+      "id": "3702",
+      "path": "doll/95type/3702.json"
+    },
+    {
+      "id": "405",
+      "path": "doll/95type/405.json"
+    },
+    {
+      "id": "5604",
+      "path": "doll/95type/5604.json"
+    },
+    {
+      "id": "6401",
+      "path": "doll/95type/6401.json"
+    },
+    {
+      "id": "7202",
+      "path": "doll/95type/7202.json"
+    }
+  ]
+}

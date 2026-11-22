@@ -1,0 +1,11 @@
+{
+  "category": "fairy",
+  "character": "fortress",
+  "version": "1",
+  "forms": [
+    {
+      "id": "default",
+      "path": "fairy/fortress/1/default.json"
+    }
+  ]
+}

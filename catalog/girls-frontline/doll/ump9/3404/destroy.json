@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "ump9",
+  "version": "3404",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ump9_3404/destroy/destroy.moc3",
+      "blob": "34d722788ab01bf3a5814b03217c23d6c622fde3",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ump9_3404/destroy/model.moc",
+      "blob": "9bbf946364bb304b0e4ccb10f3b6aa158e02ae91",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ump9_3404/destroy/destroy.moc3",
+      "blob": "34d722788ab01bf3a5814b03217c23d6c622fde3",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/UMP9/ump9_3404/destroy/index.json",
+      "modelId": 18,
+      "modelTexturesId": 3
+    }
+  ]
+}

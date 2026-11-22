@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "tabuk",
+  "version": "4906",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/tabuk_4906/normal/normal.moc3",
+      "blob": "a83b8ee64ba26d8e6258bc93d72f4709a15367bb",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/tabuk_4906/normal/model.moc",
+      "blob": "413b0f5578a1964576f4573fc85f820d9f1658f7",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/tabuk_4906/normal/normal.moc3",
+      "blob": "a83b8ee64ba26d8e6258bc93d72f4709a15367bb",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

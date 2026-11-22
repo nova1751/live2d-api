@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "ntw20",
+  "versions": [
+    {
+      "id": "2301",
+      "path": "doll/ntw20/2301.json"
+    },
+    {
+      "id": "4801",
+      "path": "doll/ntw20/4801.json"
+    }
+  ]
+}

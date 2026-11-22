@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "type64-ar",
+  "version": "2901",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/type64-ar_2901/destroy/destroy.moc3",
+      "blob": "bc86247c56ffe04ad97c2444a36ff1a8220edfd7",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/type64-ar_2901/destroy/model.moc",
+      "blob": "12646e2e77abbb0d93f8589161672974460c4650",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/type64-ar_2901/destroy/destroy.moc3",
+      "blob": "bc86247c56ffe04ad97c2444a36ff1a8220edfd7",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

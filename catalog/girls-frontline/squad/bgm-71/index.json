@@ -1,0 +1,10 @@
+{
+  "category": "squad",
+  "id": "bgm-71",
+  "versions": [
+    {
+      "id": "base",
+      "path": "squad/bgm-71/base.json"
+    }
+  ]
+}

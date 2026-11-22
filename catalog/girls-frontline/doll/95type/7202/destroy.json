@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "95type",
+  "version": "7202",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/95type_7202/destroy/destroy.moc3",
+      "blob": "a0fab04977dadc621b9f924737d75df95b5ac2b5",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

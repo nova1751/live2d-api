@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "g36c",
+  "version": "5201",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/g36c_5201/destroy/destroy.moc3",
+      "blob": "604ea8c11ec010a36b6d3177fd44b92e2eede404",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/g36c_5201/destroy/model.moc",
+      "blob": "1742725c700b147ee8abbab1616b3dfe524ea837",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/g36c/g36c_5201/destroy/index.json",
+      "modelId": 9,
+      "modelTexturesId": 7
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "4type",
+  "version": "5305",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/4type_5305/destroy/model.moc",
+      "blob": "5691c183b6272a707d96d177b94dfeb0d35fa993",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "p90",
+  "version": "2802",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/p90_2802/destroy/destroy.moc3",
+      "blob": "ebcedc39cc6e26054292b121d2896c061280b21b",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/p90_2802/destroy/model.moc",
+      "blob": "5c3321aa036d51aedfd35ced7df2a769fad3cfd2",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

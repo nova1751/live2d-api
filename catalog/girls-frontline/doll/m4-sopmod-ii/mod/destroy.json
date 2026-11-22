@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "mod",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m4 sopmod iimod/destroy/destroy.moc3",
+      "blob": "b6598e529ad530386232f442d7e0b3f3278bb154",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m4 sopmod iimod/destroy/model.moc",
+      "blob": "e2b94fe0580472cc6840cc5ab9cbb27b92cfd0d2",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/m4/m4 sopmod iimod/destroy/index.json",
+      "modelId": 19,
+      "modelTexturesId": 3
+    }
+  ]
+}

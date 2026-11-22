@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "g36",
+  "versions": [
+    {
+      "id": "1904",
+      "path": "doll/g36/1904.json"
+    },
+    {
+      "id": "2407",
+      "path": "doll/g36/2407.json"
+    }
+  ]
+}

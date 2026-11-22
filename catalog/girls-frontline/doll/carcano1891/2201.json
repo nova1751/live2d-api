@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "carcano1891",
+  "version": "2201",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/carcano1891/2201/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/carcano1891/2201/normal.json"
+    }
+  ]
+}

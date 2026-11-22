@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "95type",
+  "version": "5604",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/95type_5604/normal/normal.moc3",
+      "blob": "59d24de18e1966e96ea5965f69278c2bbdef1d35",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/95type_5604/normal/normal.moc3",
+      "blob": "cb58c0cd379ad9c422362604320f062515fb39e6",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

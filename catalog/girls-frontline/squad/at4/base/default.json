@@ -1,0 +1,21 @@
+{
+  "category": "squad",
+  "character": "at4",
+  "version": "base",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/squads/at4/at4.moc3",
+      "blob": "f704c62b1d1c1d91d2a52e4fc132f23bac1d77bc",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "小队/at4/at4.moc3",
+      "blob": "f704c62b1d1c1d91d2a52e4fc132f23bac1d77bc",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}
