@@ -25,13 +25,13 @@
 **中国大陆 · JSDMirror**
 
 ```html
-<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-fad574356193/autoload.js"></script>
+<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/autoload.js"></script>
 ```
 
 **海外 · jsDelivr**
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/autoload.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/autoload.js"></script>
 ```
 
 入口会加载同一版本的样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
@@ -78,19 +78,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/jsdelivr/sequential/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/jsdelivr/sequential/autoload.min.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/jsdelivr/random/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/jsdelivr/random/autoload.min.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/css/left.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/css/left.min.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/css/right.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/css/right.min.css"
    />
    ```
 
@@ -133,7 +133,7 @@
 
 首次打开网页时，皮肤会播放自己的待机动作。即使上游给待机动作配置了录音，网页也保持静音。主动打开看板娘或切换模型、服装时，播放器只抽选一次该皮肤的 `start` 事件。有登场语音且浏览器允许播放时，语音随登场动作开始。当前目录中有 5 套皮肤配置了 `start`。这是网页的播放策略，ViewerEX 原生的 `start` 在模型载入时触发。[ViewerEX 事件定义](https://live2d.pavostudio.com/doc/zh-cn/live2d/model-config/)
 
-点击按皮肤自己的命中区域选取动作。三套战舰少女模型还使用各自的点击、抚摸或上划规则。仅提供无名动作组的皮肤在网页上以点击触发该组。只配置了语音的事件可以单独播放。配有录音和动作的事件等两项资源均就绪后在同一渲染帧启动，并按音频时钟推进动作。缺少任一已配置资源时跳过该次互动，再次点击可以重试。
+点击按皮肤自己的命中区域选取动作。三套战舰少女模型还使用各自的点击、抚摸或上划规则。仅提供无名动作组的皮肤在网页上以点击触发该组。如果无名组只是重复唯一的待机动作（例如 AK-12 和 AN-94 的默认皮肤），点击时会接着原来的进度播放。只配置了语音的事件可以单独播放。配有录音和动作的事件等两项资源均就绪后在同一渲染帧启动，并按音频时钟推进动作。缺少任一已配置资源时跳过该次互动，再次点击可以重试。
 
 鼠标在可点击部位停留 150 毫秒后，组件会提前准备该部位的一组互动资源。触屏从按下时开始准备。模型自带的台词在对应动作和语音都结束后保留 1.2 秒再淡出；播放期间，默认提示不会覆盖台词。
 
