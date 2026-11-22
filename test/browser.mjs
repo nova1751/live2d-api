@@ -11,11 +11,19 @@ try {
   const { port } = await server.serve({ servedir, host: '127.0.0.1' });
   const url = `http://127.0.0.1:${port}/`;
   browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
-  const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
+  const page = await browser.newPage({ viewport: { width: 1024, height: 768 }, hasTouch: true });
   const errors = [];
+  const motionFiles = [];
+  const voices = [];
+  page.on('request', request => {
+    const path = new URL(request.url()).pathname;
+    if (path.endsWith('.mtn')) motionFiles.push(path);
+    if (path.endsWith('.mp3')) voices.push(path);
+  });
   page.on('pageerror', error => errors.push(error.message));
   // Observe the actual framebuffer immediately after the renderer draws to it.
   await page.addInitScript(() => {
+    sessionStorage.setItem('Sleepy', '1');
     const gl = WebGLRenderingContext.prototype;
     const draw = gl.drawElements;
     gl.drawElements = function (...args) {
@@ -31,13 +39,62 @@ try {
   });
   await page.goto(url);
   await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
+  const canvas = page.locator('#live2d');
+  await page.addStyleTag({ content: '#waifu {transition:none!important;bottom:0!important} #waifu-tips {visibility:hidden}' });
+  const before = await canvas.screenshot();
+  await canvas.hover();
+  await page.mouse.click(650, 180);
+  await page.evaluate(() => document.dispatchEvent(new MouseEvent('mouseout')));
+  assert.ok(!before.equals(await canvas.screenshot()), 'model should animate without a click');
   const nextModel = page.waitForResponse(response =>
     response.url().endsWith('/model/fairy/air_attack/02/index.json') && response.ok());
   await page.locator('#waifu-tool-switch-texture').dispatchEvent('click');
   await nextModel;
   assert.equal(await page.evaluate(() => localStorage.getItem('modelTexturesId')), '1');
+  assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
+  assert.deepEqual(voices, []);
+  const catalog = await (await page.request.get(url + 'model_list.json')).json();
+  const skin = 'kp31/kp31_1103/normal';
+  const id = catalog.models.findIndex(skins => skins.includes(skin));
+  const texture = catalog.models[id].indexOf(skin);
+  await page.evaluate(([id, texture]) => {
+    localStorage.setItem('modelId', id);
+    localStorage.setItem('modelTexturesId', texture);
+  }, [id, texture]);
+  // The first touch interaction in this skin has a known motion and recording.
+  await page.addInitScript(() => { Math.random = () => 0; });
+  for (const gesture of ['click', 'tap']) {
+    await page.reload();
+    await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
+    assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
+    assert.deepEqual(voices, []);
+    await page.evaluate(() => {
+      window.interactions = { motions: 0, plays: 0, resumedIdle: false };
+      const start = MotionQueueManager.prototype.startMotion;
+      MotionQueueManager.prototype.startMotion = function (...args) {
+        if (this.currentPriority === 3) window.interactions.motions++;
+        if (this.currentPriority === 1 && window.interactions.motions) window.interactions.resumedIdle = true;
+        return start.apply(this, args);
+      };
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function () {
+        this.addEventListener('playing', () => window.interactions.plays++, { once: true });
+        return play.call(this);
+      };
+    });
+    const motion = page.waitForResponse(r => r.url().endsWith('/motions/touch_1.mtn') && r.ok());
+    const audio = page.waitForResponse(r => r.url().endsWith('/sounds/KP31_005.mp3') && r.ok());
+    await canvas[gesture]({ position: { x: 160, y: 225 } });
+    await Promise.all([motion, audio]);
+    await page.waitForFunction(() => window.interactions.motions === 1 && window.interactions.plays === 1);
+    await page.waitForFunction(() => window.interactions.resumedIdle);
+    assert.deepEqual(await page.evaluate(() => window.interactions), { motions: 1, plays: 1, resumedIdle: true });
+    assert.equal(motionFiles.filter(path => !path.includes('/motions/daiji_idle')).length, 1, 'one gesture should play one action');
+    assert.equal(new Set(voices).size, 1, 'one gesture should play one recording');
+    motionFiles.length = voices.length = 0;
+  }
   assert.deepEqual(errors, []);
-  console.log('WebGL rendered the first model and the page loaded the next skin.');
+  console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');
 } finally {
   await browser?.close();
   await server.dispose();
