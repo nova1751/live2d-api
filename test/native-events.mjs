@@ -42,6 +42,26 @@ export async function checkNativeEvents(browser, base) {
       const vy = y * 2 / points.length * matrix[5] + matrix[13];
       return [rect.left + (vx + 1) * rect.width / 2, rect.top + (1 - vy * canvas.width / canvas.height) * rect.height / 2];
     }, name);
+    for (const skin of ['AK12/ak12_0/normal', 'AN-94/an94_2404/normal']) {
+      await load(skin);
+      await page.waitForFunction(() => !modelsUnderTest.getModel(0).mainMotionManager.isFinished());
+      await page.evaluate(() => {
+        const model = modelsUnderTest.getModel(0);
+        window.clickTrace = { preparations: 0, interactions: 0, hits: 0 };
+        const prepare = model.prepareTap, start = model.startMotion;
+        model.prepareTap = function (...args) { clickTrace.preparations++; return prepare.apply(this, args); };
+        model.startMotion = function (...args) {
+          if (!args[4]) clickTrace.interactions++;
+          return start.apply(this, args);
+        };
+        document.querySelector('#live2d').addEventListener('click', () => clickTrace.hits++, { once: true });
+      });
+      const body = await point('body');
+      await page.mouse.move(...body);
+      await page.waitForTimeout(200); // Exercise the hover preparation path too.
+      await page.mouse.click(...body);
+      assert.deepEqual(await page.evaluate(() => window.clickTrace), { preparations: 0, interactions: 0, hits: 1 }, skin);
+    }
     await load('rfbchristmas/normal');
     assert.deepEqual(audio, [], 'passive loads must be silent');
     const catalog = await (await page.request.get(base + 'model_list.json')).json();
