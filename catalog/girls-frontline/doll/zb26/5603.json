@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "zb26",
+  "version": "5603",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/zb26/5603/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/zb26/5603/normal.json"
+    }
+  ]
+}

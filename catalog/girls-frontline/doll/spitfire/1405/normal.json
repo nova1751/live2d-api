@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "spitfire",
+  "version": "1405",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/spitfire_1405/normal/normal.moc3",
+      "blob": "4cb465bc804ad7abc6a5e66160b7d6821210423c",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/spitfire_1405/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

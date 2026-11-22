@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "88type",
+  "versions": [
+    {
+      "id": "1809",
+      "path": "doll/88type/1809.json"
+    },
+    {
+      "id": "5308",
+      "path": "doll/88type/5308.json"
+    },
+    {
+      "id": "6503",
+      "path": "doll/88type/6503.json"
+    },
+    {
+      "id": "7106",
+      "path": "doll/88type/7106.json"
+    }
+  ]
+}

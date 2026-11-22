@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "4507",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m4 sopmod ii_4507/destroy/destroy.moc3",
+      "blob": "8234106fd73e022e01909bcfb8c94cb26a535147",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/m4 sopmod ii_4507/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m4 sopmod ii_4507/destroy/model.moc",
+      "blob": "38cb27605bb6dad9b5df4ccb4735b4fb07be6b48",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m4 sopmod ii_4507/destroy/destroy.moc3",
+      "blob": "8234106fd73e022e01909bcfb8c94cb26a535147",
+      "format": "moc3",
+      "manifest": "人形/m4 sopmod ii_4507/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/m4/m4 sopmod ii_4507/destroy/index.json",
+      "modelId": 19,
+      "modelTexturesId": 1
+    }
+  ]
+}

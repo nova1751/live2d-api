@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "sr3mp",
+  "versions": [
+    {
+      "id": "3704",
+      "path": "doll/sr3mp/3704.json"
+    },
+    {
+      "id": "4101",
+      "path": "doll/sr3mp/4101.json"
+    }
+  ]
+}

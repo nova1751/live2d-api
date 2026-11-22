@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "welrod",
+  "version": "2103",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/welrod_2103/normal/normal.moc3",
+      "blob": "35f095b53f7b27f9262c458653a8c1b932dfa4d1",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/welrod_2103/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/welrod_2103/normal/model.moc",
+      "blob": "998837615e2e66b3805838dbc0cd59d972a5a03c",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

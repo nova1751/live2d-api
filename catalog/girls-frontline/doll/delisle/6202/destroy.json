@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "delisle",
+  "version": "6202",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/delisle_6202/destroy/destroy.moc3",
+      "blob": "d7ba7793b5660a0d38b9d5f5fa17d08f128a87c4",
+      "format": "moc3",
+      "manifest": "人形/delisle_6202/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "mod",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/m4-sopmod-ii/mod/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/m4-sopmod-ii/mod/normal.json"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "r93",
+  "version": "3501",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/r93_3501/normal/normal.moc3",
+      "blob": "c92d089bc417222740fe4d27c9550869fe2d86e1",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/r93_3501/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/r93_3501/normal/model.moc",
+      "blob": "69895ffc4befbc303e880c758bc41a2848a90eba",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/r93_3501/normal/normal.moc3",
+      "blob": "e1ab8821d8f14ac2af8bea9bf7e0aca03c093bef",
+      "format": "moc3",
+      "manifest": "人形/r93_3501/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

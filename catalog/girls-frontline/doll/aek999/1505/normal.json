@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "aek999",
+  "version": "1505",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/aek999_1505/normal/normal.moc3",
+      "blob": "7ce71e239d66a4387dd069d064c107c862e64b22",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/aek999_1505/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/aek999_1505/normal/model.moc",
+      "blob": "31547b3177fd52e4f54f47f7dc2c60d88b7f7776",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

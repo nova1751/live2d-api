@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ar15",
+  "version": "4508",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/ar15/4508/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/ar15/4508/normal.json"
+    }
+  ]
+}

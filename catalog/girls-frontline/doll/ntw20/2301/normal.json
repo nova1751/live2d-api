@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "ntw20",
+  "version": "2301",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ntw20_2301/normal/normal.moc3",
+      "blob": "9810d504e79463fc0d6474d615b31a86a996a285",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ntw20_2301/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ntw20_2301/normal/model.moc",
+      "blob": "6ea15fe177fec873045dfe1f27198686777f365c",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ntw20_2301/normal/normal.moc3",
+      "blob": "9810d504e79463fc0d6474d615b31a86a996a285",
+      "format": "moc3",
+      "manifest": "人形/ntw20_2301/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

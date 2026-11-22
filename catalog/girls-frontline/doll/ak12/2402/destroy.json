@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "ak12",
+  "version": "2402",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ak12_2402/destroy/destroy.moc3",
+      "blob": "b197ca7db5351d5a6b330506d02dffeeee6f8ad5",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ak12_2402/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ak12_2402/destroy/model.moc",
+      "blob": "454be0ddeab5829a33ab16f784a6dd7f477b3b35",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ak12_2402/destroy/destroy.moc3",
+      "blob": "b197ca7db5351d5a6b330506d02dffeeee6f8ad5",
+      "format": "moc3",
+      "manifest": "人形/ak12_2402/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/AK12/ak12_2402/destroy/index.json",
+      "modelId": 1,
+      "modelTexturesId": 3
+    }
+  ]
+}

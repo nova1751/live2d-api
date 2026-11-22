@@ -1,0 +1,23 @@
+{
+  "category": "doll",
+  "character": "97types",
+  "version": "5805",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人型2/97types_5805/normal/normal.moc3",
+      "blob": "ae2b0fdaed6e3f63be856733c6ee389850bc7cc8",
+      "format": "moc3",
+      "manifest": "人型2/97types_5805/normal/normal.model3.json"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/97types_5805/normal/normal.moc3",
+      "blob": "ae2b0fdaed6e3f63be856733c6ee389850bc7cc8",
+      "format": "moc3",
+      "manifest": "人形/97types_5805/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

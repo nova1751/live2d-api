@@ -1,0 +1,10 @@
+{
+  "category": "doll",
+  "id": "ads",
+  "versions": [
+    {
+      "id": "3601",
+      "path": "doll/ads/3601.json"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "lewis",
+  "version": "6901",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/lewis_6901/destroy/destroy.moc3",
+      "blob": "9c318111a2abd2b436c8dd531f1f7a0cf6ee095e",
+      "format": "moc3",
+      "manifest": "人形/lewis_6901/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

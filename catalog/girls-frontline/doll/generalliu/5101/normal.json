@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "generalliu",
+  "version": "5101",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/generalliu_5101/normal/normal.moc3",
+      "blob": "818d374add0a22328d4e99af4e5f02cbb6580895",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/generalliu_5101/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/generalliu_5101/normal/model.moc",
+      "blob": "9638f1c68040fd1e7c577c7eac8189fa095cf5bd",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/generalliu_5101/normal/normal.moc3",
+      "blob": "76056f240a24d04a87a977260561f9e43b66bb97",
+      "format": "moc3",
+      "manifest": "人形/generalliu_5101/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

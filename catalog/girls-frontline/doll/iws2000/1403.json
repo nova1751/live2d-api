@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "iws2000",
+  "version": "1403",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/iws2000/1403/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/iws2000/1403/normal.json"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "mod",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m4 sopmod iimod/normal/normal.moc3",
+      "blob": "5b87655b760a3a19d25f0fa8ed1c2be3748c6f40",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/m4 sopmod iimod/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m4 sopmod iimod/normal/model.moc",
+      "blob": "f33d101f3af9bff6f97b760d52fb81780ec2af2a",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/m4/m4 sopmod iimod/normal/index.json",
+      "modelId": 19,
+      "modelTexturesId": 2
+    }
+  ]
+}

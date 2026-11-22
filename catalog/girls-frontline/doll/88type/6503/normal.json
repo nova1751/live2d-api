@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "88type",
+  "version": "6503",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人型2/88type_6503/normal/normal.moc3",
+      "blob": "179d4a3c08b7a37f3de925542925c48d35aa09cd",
+      "format": "moc3",
+      "manifest": "人型2/88type_6503/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

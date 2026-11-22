@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "m950a",
+  "version": "4302",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m950a_4302/destroy/destroy.moc3",
+      "blob": "339374cb6af5931419e741f8d1df58aed41bbe58",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/m950a_4302/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m950a_4302/destroy/model.moc",
+      "blob": "04dc95a6e9abf81b9f2e7c51a1a204255dc61f85",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m950a_4302/destroy/destroy.moc3",
+      "blob": "339374cb6af5931419e741f8d1df58aed41bbe58",
+      "format": "moc3",
+      "manifest": "人形/m950a_4302/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "welrod",
+  "version": "1401",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/welrod/1401/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/welrod/1401/normal.json"
+    }
+  ]
+}

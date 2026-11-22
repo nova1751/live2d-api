@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "ots14",
+  "versions": [
+    {
+      "id": "1203",
+      "path": "doll/ots14/1203.json"
+    },
+    {
+      "id": "3001",
+      "path": "doll/ots14/3001.json"
+    },
+    {
+      "id": "4501",
+      "path": "doll/ots14/4501.json"
+    },
+    {
+      "id": "5602",
+      "path": "doll/ots14/5602.json"
+    }
+  ]
+}

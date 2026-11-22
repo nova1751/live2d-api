@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "dp12",
+  "versions": [
+    {
+      "id": "4201",
+      "path": "doll/dp12/4201.json"
+    },
+    {
+      "id": "4901",
+      "path": "doll/dp12/4901.json"
+    },
+    {
+      "id": "6102",
+      "path": "doll/dp12/6102.json"
+    }
+  ]
+}

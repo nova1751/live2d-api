@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "sp9",
+  "version": "6801",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/sp9_6801/destroy/destroy.moc3",
+      "blob": "21482105d4c49a17119f7aed554edd7ce8de9f25",
+      "format": "moc3",
+      "manifest": "人形/sp9_6801/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

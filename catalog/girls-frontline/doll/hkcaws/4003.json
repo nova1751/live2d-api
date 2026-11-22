@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "hkcaws",
+  "version": "4003",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/hkcaws/4003/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/hkcaws/4003/normal.json"
+    }
+  ]
+}

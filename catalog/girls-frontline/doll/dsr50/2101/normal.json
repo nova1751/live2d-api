@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "dsr50",
+  "version": "2101",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/dsr50_2101/normal/normal.moc3",
+      "blob": "0cb1ff82eeb6d357c2d8a17574e6db8b768f9745",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/dsr50_2101/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/dsr50_2101/normal/model.moc",
+      "blob": "ea8412db55eecc3fdf13e85a0ed7ef3f77c12d81",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/dsr50_2101/normal/normal.moc3",
+      "blob": "119d535f9ca8a346e847aa59a096c6392f26c7e8",
+      "format": "moc3",
+      "manifest": "人形/dsr50_2101/normal/normal.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/dsr50/dsr50_2101/normal/index.json",
+      "modelId": 17,
+      "modelTexturesId": 2
+    }
+  ]
+}

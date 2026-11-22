@@ -1,0 +1,29 @@
+{
+  "category": "adjutant",
+  "character": "gelina",
+  "version": "base",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/gelina/normal/normal.moc3",
+      "blob": "334fda07256d77a726536016623fd15cdfacff0a",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/gelina/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/gelina/normal/model.moc",
+      "blob": "4d517d11b97cd8df646d4728ff5d33feab600ab1",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/gelina/normal/normal.moc3",
+      "blob": "334fda07256d77a726536016623fd15cdfacff0a",
+      "format": "moc3",
+      "manifest": "人形/gelina/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

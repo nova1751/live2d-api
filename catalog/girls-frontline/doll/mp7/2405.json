@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "mp7",
+  "version": "2405",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/mp7/2405/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/mp7/2405/normal.json"
+    }
+  ]
+}

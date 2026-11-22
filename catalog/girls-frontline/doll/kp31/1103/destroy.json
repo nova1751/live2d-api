@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "kp31",
+  "version": "1103",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/kp31_1103/destroy/destroy.moc3",
+      "blob": "1cdd4ca6a182507b8c69262db2e12b2b92533294",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/kp31_1103/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/kp31_1103/destroy/model.moc",
+      "blob": "458f53b01d4730a3e891ed09e1bb9c99a2a3b293",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/kp31_1103/destroy/destroy.moc3",
+      "blob": "1cdd4ca6a182507b8c69262db2e12b2b92533294",
+      "format": "moc3",
+      "manifest": "人形/kp31_1103/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/kp31/kp31_1103/destroy/index.json",
+      "modelId": 4,
+      "modelTexturesId": 5
+    }
+  ]
+}

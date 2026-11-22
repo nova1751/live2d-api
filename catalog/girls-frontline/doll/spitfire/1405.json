@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "spitfire",
+  "version": "1405",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/spitfire/1405/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/spitfire/1405/normal.json"
+    }
+  ]
+}

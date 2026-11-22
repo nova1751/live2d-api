@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "grizzly",
+  "version": "2102",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/grizzly_2102/normal/normal.moc3",
+      "blob": "b5c6d928c1cd5cfa68f5e7f915fa223f057e267c",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/grizzly_2102/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/grizzly_2102/normal/model.moc",
+      "blob": "eb440549a3b2fe7acfcdd69b04854ce087a8fd04",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

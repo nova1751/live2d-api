@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "tabuk",
+  "version": "4906",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/tabuk/4906/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/tabuk/4906/normal.json"
+    }
+  ]
+}

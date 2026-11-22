@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "type64-ar",
+  "version": "2901",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/type64-ar/2901/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/type64-ar/2901/normal.json"
+    }
+  ]
+}

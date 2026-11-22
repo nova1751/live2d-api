@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "px4storm",
+  "version": "2801",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/px4storm_2801/destroy/destroy.moc3",
+      "blob": "c8725a925779ab7a710870964a7c66b2fc5a745a",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/px4storm_2801/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/px4storm_2801/destroy/model.moc",
+      "blob": "3e447a94368e1032c653b412cd03e3680d120fcc",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/px4storm_2801/destroy/destroy.moc3",
+      "blob": "c8725a925779ab7a710870964a7c66b2fc5a745a",
+      "format": "moc3",
+      "manifest": "人形/px4storm_2801/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

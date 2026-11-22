@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "zastavam21",
+  "versions": [
+    {
+      "id": "2104",
+      "path": "doll/zastavam21/2104.json"
+    },
+    {
+      "id": "4304",
+      "path": "doll/zastavam21/4304.json"
+    }
+  ]
+}

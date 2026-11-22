@@ -1,0 +1,10 @@
+{
+  "category": "background",
+  "id": "cg7",
+  "versions": [
+    {
+      "id": "base",
+      "path": "background/cg7/base.json"
+    }
+  ]
+}

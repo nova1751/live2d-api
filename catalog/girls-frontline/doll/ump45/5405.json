@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ump45",
+  "version": "5405",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/ump45/5405/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/ump45/5405/normal.json"
+    }
+  ]
+}

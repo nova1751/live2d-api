@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "sp9",
+  "version": "6801",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/sp9_6801/normal/normal.moc3",
+      "blob": "9601179cfd6c029eb2d22d4af5b10c295fedcd32",
+      "format": "moc3",
+      "manifest": "人形/sp9_6801/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

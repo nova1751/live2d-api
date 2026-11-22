@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "ak12",
+  "version": "archive",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/AK12/normal/model.moc",
+      "blob": "69c6dcc8a6e357bc56ba3c3f06cf0c7ae2fa1c16",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/AK12/ak12_0/normal/index.json",
+      "modelId": 1,
+      "modelTexturesId": 0
+    }
+  ]
+}

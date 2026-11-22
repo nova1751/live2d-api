@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "an94",
+  "version": "2404",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/an94_2404/normal/normal.moc3",
+      "blob": "bed86e04b0be7108432397925756e09c84caac22",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/an94_2404/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/an94_2404/normal/model.moc",
+      "blob": "db4b0848eb92cdbfa5cb0b026513746db8e50c99",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/an94_2404/normal/normal.moc3",
+      "blob": "bed86e04b0be7108432397925756e09c84caac22",
+      "format": "moc3",
+      "manifest": "人形/an94_2404/normal/normal.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/AN-94/an94_2404/normal/index.json",
+      "modelId": 2,
+      "modelTexturesId": 0
+    }
+  ]
+}

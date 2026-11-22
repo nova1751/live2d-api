@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "4type",
+  "version": "5305",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/4type_5305/normal/model.moc",
+      "blob": "18ff0c106a23fcdc6e4c09d3f2701d20e1378dce",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

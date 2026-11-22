@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "js9mm",
+  "version": "4702",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/js9mm_4702/destroy/destroy.moc3",
+      "blob": "a52fb097c7869ddb6ae7e4e43a284623d4802136",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/js9mm_4702/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/js9mm_4702/destroy/model.moc",
+      "blob": "318b60bec2d8f3f5a4505012a33657efe3748737",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/js9mm_4702/destroy/destroy.moc3",
+      "blob": "a52fb097c7869ddb6ae7e4e43a284623d4802136",
+      "format": "moc3",
+      "manifest": "人形/js9mm_4702/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

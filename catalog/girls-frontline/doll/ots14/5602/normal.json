@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "ots14",
+  "version": "5602",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ots14_5602/normal/normal.moc3",
+      "blob": "9327bf006290a411c1cc66fc6e5234ec1d3fd004",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ots14_5602/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

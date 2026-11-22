@@ -1,0 +1,28 @@
+{
+  "category": "doll",
+  "character": "ots14",
+  "version": "1203",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ots14_1203/destroy/destroy.moc3",
+      "blob": "f12b40224d5fc3371b843cd0c8ed2f4c1885cd06",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ots14_1203/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ots14_1203/destroy/model.moc",
+      "blob": "7e73c8f0455eb0e5ad4134bc829d5a1d547543a0",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/ost14/ots14_1203/destroy/index.json",
+      "modelId": 7,
+      "modelTexturesId": 1
+    }
+  ]
+}

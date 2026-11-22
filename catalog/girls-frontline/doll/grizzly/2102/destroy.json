@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "grizzly",
+  "version": "2102",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/grizzly_2102/destroy/destroy.moc3",
+      "blob": "37102627c7fe529c902fb272ae26c68fb857ed60",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/grizzly_2102/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/grizzly_2102/destroy/model.moc",
+      "blob": "0a5b67ad72d037e3da6ae134a9ca8a7a952348f6",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

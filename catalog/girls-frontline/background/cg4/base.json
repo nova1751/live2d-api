@@ -1,0 +1,11 @@
+{
+  "category": "background",
+  "character": "cg4",
+  "version": "base",
+  "forms": [
+    {
+      "id": "default",
+      "path": "background/cg4/base/default.json"
+    }
+  ]
+}

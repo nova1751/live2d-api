@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "dsr50",
+  "version": "1801",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/dsr50/1801/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/dsr50/1801/normal.json"
+    }
+  ]
+}

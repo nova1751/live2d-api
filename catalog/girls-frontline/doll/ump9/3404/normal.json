@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "ump9",
+  "version": "3404",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ump9_3404/normal/normal.moc3",
+      "blob": "db803acdbd7a51e840b57a52ac7a2b7c395bbea9",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ump9_3404/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ump9_3404/normal/model.moc",
+      "blob": "5c598a5c043feb66bc0f56bd84a4257573b649dd",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ump9_3404/normal/normal.moc3",
+      "blob": "db803acdbd7a51e840b57a52ac7a2b7c395bbea9",
+      "format": "moc3",
+      "manifest": "人形/ump9_3404/normal/normal.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/UMP9/ump9_3404/normal/index.json",
+      "modelId": 18,
+      "modelTexturesId": 2
+    }
+  ]
+}

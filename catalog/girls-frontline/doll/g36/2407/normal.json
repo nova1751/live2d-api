@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "g36",
+  "version": "2407",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/g36_2407/normal/normal.moc3",
+      "blob": "6fd2aee2c6112a481c96702b1b45398448eeb6c1",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/g36_2407/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/g36_2407/normal/model.moc",
+      "blob": "aa96303bb5497bce86462dfcfea62bc47a8dc126",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

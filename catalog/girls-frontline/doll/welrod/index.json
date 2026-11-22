@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "welrod",
+  "versions": [
+    {
+      "id": "1401",
+      "path": "doll/welrod/1401.json"
+    },
+    {
+      "id": "2103",
+      "path": "doll/welrod/2103.json"
+    }
+  ]
+}

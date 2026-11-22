@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "88type",
+  "version": "1809",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/88type_1809/destroy/destroy.moc3",
+      "blob": "9d5e07c3c2570f531f8d7db26b1960ce30e82c8c",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/88type_1809/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/88type_1809/destroy/model.moc",
+      "blob": "282b12ddacecbe014ee21a007f6475c779df2c9b",
+      "format": "moc"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/88type_1809/destroy/model.moc",
+      "blob": "282b12ddacecbe014ee21a007f6475c779df2c9b",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/88type_1809/destroy/destroy.moc3",
+      "blob": "9d5e07c3c2570f531f8d7db26b1960ce30e82c8c",
+      "format": "moc3",
+      "manifest": "人形/88type_1809/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

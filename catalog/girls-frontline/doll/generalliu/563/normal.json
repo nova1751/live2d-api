@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "generalliu",
+  "version": "563",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/generalliu_563/normal/normal.moc3",
+      "blob": "46124d840966c6a5cfcb8044c60f970a38eeaef8",
+      "format": "moc3",
+      "manifest": "人形/generalliu_563/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "pkp",
+  "version": "1201",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/pkp_1201/destroy/destroy.moc3",
+      "blob": "f4255175fb1d3e899b693fd5cb516055c6745a62",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/pkp_1201/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/pkp_1201/destroy/model.moc",
+      "blob": "6872f6c8ea925de1307f3da3147d3e88d27ea321",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/pkp_1201/destroy/destroy.moc3",
+      "blob": "f4255175fb1d3e899b693fd5cb516055c6745a62",
+      "format": "moc3",
+      "manifest": "人形/pkp_1201/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "mdr",
+  "version": "2603",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mdr_2603/normal/normal.moc3",
+      "blob": "379a8ab19cee5c09ff45dc6c0ca50038d3e9fc62",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/mdr_2603/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mdr_2603/normal/model.moc",
+      "blob": "25d109bf3dfbb0067a9549b4e4bd795165a378b1",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

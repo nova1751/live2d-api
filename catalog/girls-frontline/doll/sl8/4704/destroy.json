@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "sl8",
+  "version": "4704",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/sl8_4704/destroy/destroy.moc3",
+      "blob": "a478fba95aa2b3107a05b22fef95458c1e47e63b",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/sl8_4704/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/sl8_4704/destroy/model.moc",
+      "blob": "617ab5fb6105ef9c91deb7c9b405346761177ba8",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/sl8_4704/destroy/destroy.moc3",
+      "blob": "a478fba95aa2b3107a05b22fef95458c1e47e63b",
+      "format": "moc3",
+      "manifest": "人形/sl8_4704/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

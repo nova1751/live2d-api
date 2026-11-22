@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "g11",
+  "version": "mod",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/g11/mod/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/g11/mod/normal.json"
+    }
+  ]
+}

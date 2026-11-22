@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "wa2000",
+  "version": "6",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/wa2000/6/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/wa2000/6/normal.json"
+    }
+  ]
+}

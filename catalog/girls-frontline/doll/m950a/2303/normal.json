@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "m950a",
+  "version": "2303",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m950a_2303/normal/normal.moc3",
+      "blob": "35268b24d412ec3334b865499f38a9cdfc3d293f",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/m950a_2303/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m950a_2303/normal/model.moc",
+      "blob": "0df8c96177ebafc1d539ddbd6f9acb81105891d0",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m950a_2303/normal/normal.moc3",
+      "blob": "35268b24d412ec3334b865499f38a9cdfc3d293f",
+      "format": "moc3",
+      "manifest": "人形/m950a_2303/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

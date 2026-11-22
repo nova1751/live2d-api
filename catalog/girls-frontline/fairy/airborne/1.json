@@ -1,0 +1,11 @@
+{
+  "category": "fairy",
+  "character": "airborne",
+  "version": "1",
+  "forms": [
+    {
+      "id": "default",
+      "path": "fairy/airborne/1/default.json"
+    }
+  ]
+}

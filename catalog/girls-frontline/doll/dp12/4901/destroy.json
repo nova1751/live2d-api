@@ -1,0 +1,23 @@
+{
+  "category": "doll",
+  "character": "dp12",
+  "version": "4901",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/dp12_4901/destroy/destroy.moc3",
+      "blob": "d2847cf43bd1ea6c123c248e45c60bbdc084dbb2",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/dp12_4901/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/dp12_4901/destroy/destroy.moc3",
+      "blob": "d2847cf43bd1ea6c123c248e45c60bbdc084dbb2",
+      "format": "moc3",
+      "manifest": "人形/dp12_4901/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "mk23",
+  "version": "3105",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mk23_3105/normal/normal.moc3",
+      "blob": "53901d440bdf77fa4af19090fb46935c932ea2e7",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/mk23_3105/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mk23_3105/normal/model.moc",
+      "blob": "084dd8541aa5f3103a10b710b96c8a6a5442a646",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

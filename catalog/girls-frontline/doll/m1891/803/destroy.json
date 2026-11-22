@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "m1891",
+  "version": "803",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m1891_803/destroy/destroy.moc3",
+      "blob": "e2d2c14292e9bfd3b9bc990141a0934697b200f5",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/m1891_803/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/M1891_803/destroy/model.moc",
+      "blob": "b2a0e5ff126ef14eff8db2927166bb85d7a4c8ea",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m1891_803/destroy/destroy.moc3",
+      "blob": "e2d2c14292e9bfd3b9bc990141a0934697b200f5",
+      "format": "moc3",
+      "manifest": "人形/m1891_803/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "tac50",
+  "version": "2602",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/tac50_2602/destroy/destroy.moc3",
+      "blob": "8a186398aeba95758445e4444b1528d3197f59d5",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/tac50_2602/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/tac50_2602/destroy/model.moc",
+      "blob": "e8bc3f8c885015aa5c00e82e2a60f5ab22a7edd9",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/tac50_2602/destroy/destroy.moc3",
+      "blob": "8a186398aeba95758445e4444b1528d3197f59d5",
+      "format": "moc3",
+      "manifest": "人形/tac50_2602/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

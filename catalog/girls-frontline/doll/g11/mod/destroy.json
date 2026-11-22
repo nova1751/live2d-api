@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "g11",
+  "version": "mod",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人型2/g11mod/destroy/destroy.moc3",
+      "blob": "7508184c9d4aaacbc5e35fe17e683176987e4658",
+      "format": "moc3",
+      "manifest": "人型2/g11mod/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

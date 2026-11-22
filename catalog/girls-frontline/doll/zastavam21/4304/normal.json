@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "zastavam21",
+  "version": "4304",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/zastavam21_4304/normal/normal.moc3",
+      "blob": "4f7ca98788e7829a9f6ab30e2766dc880c35371d",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/zastavam21_4304/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/zastavam21_4304/normal/model.moc",
+      "blob": "9ada45623b66321c3f4c4f6ca15b684524a79bc1",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/zastavam21_4304/normal/normal.moc3",
+      "blob": "4f7ca98788e7829a9f6ab30e2766dc880c35371d",
+      "format": "moc3",
+      "manifest": "人形/zastavam21_4304/normal/normal.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/za/zastavam21_4304/normal/index.json",
+      "modelId": 20,
+      "modelTexturesId": 2
+    }
+  ]
+}

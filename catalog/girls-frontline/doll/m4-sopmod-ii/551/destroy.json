@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "m4-sopmod-ii",
+  "version": "551",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/m4 sopmod ii_551/destroy/destroy.moc3",
+      "blob": "be4905af1856381a8be7bebc0ac36a151e2342e6",
+      "format": "moc3",
+      "manifest": "人形/m4 sopmod ii_551/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

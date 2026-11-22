@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "97type",
+  "version": "406",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/97type_406/destroy/destroy.moc3",
+      "blob": "8bd944dc8d7754e2cc477bc67461b584656fe965",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/97type_406/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/97type_406/destroy/model.moc",
+      "blob": "adea323cb3f9799f7fdb7f74de5fc9ed0dae29c1",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/97type_406/destroy/destroy.moc3",
+      "blob": "8bd944dc8d7754e2cc477bc67461b584656fe965",
+      "format": "moc3",
+      "manifest": "人形/97type_406/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/97type/97type_406/destroy/index.json",
+      "modelId": 16,
+      "modelTexturesId": 1
+    }
+  ]
+}

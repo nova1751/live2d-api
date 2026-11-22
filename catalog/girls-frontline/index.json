@@ -1,0 +1,557 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "eikanya": {
+      "repository": "https://github.com/Eikanya/Live2d-model",
+      "commit": "7e446cbd95ec352cdb0f73c079e4d075d7d528ac",
+      "assetRedistributionPermission": "unverified"
+    },
+    "jacksen168": {
+      "repository": "https://github.com/jacksen168/Girls-Frontline-model",
+      "commit": "42b54cff59b1e1f20b352c019115f7b744a78bd2",
+      "assetRedistributionPermission": "unverified"
+    }
+  },
+  "characters": [
+    {
+      "category": "adjutant",
+      "id": "gelina",
+      "path": "adjutant/gelina/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg1",
+      "path": "background/cg1/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg2021kr",
+      "path": "background/cg2021kr/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg3",
+      "path": "background/cg3/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg4",
+      "path": "background/cg4/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg5",
+      "path": "background/cg5/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg6",
+      "path": "background/cg6/index.json"
+    },
+    {
+      "category": "background",
+      "id": "cg7",
+      "path": "background/cg7/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "4type",
+      "path": "doll/4type/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "79type",
+      "path": "doll/79type/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "88type",
+      "path": "doll/88type/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "95type",
+      "path": "doll/95type/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "97type",
+      "path": "doll/97type/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "97types",
+      "path": "doll/97types/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "98k",
+      "path": "doll/98k/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "aa12",
+      "path": "doll/aa12/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ads",
+      "path": "doll/ads/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "aek999",
+      "path": "doll/aek999/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ak12",
+      "path": "doll/ak12/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "akalfa",
+      "path": "doll/akalfa/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "an94",
+      "path": "doll/an94/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ar15",
+      "path": "doll/ar15/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "aug",
+      "path": "doll/aug/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "browninghp",
+      "path": "doll/browninghp/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "carcano1891",
+      "path": "doll/carcano1891/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "carcano1938",
+      "path": "doll/carcano1938/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "cbjms",
+      "path": "doll/cbjms/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "contender",
+      "path": "doll/contender/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "delisle",
+      "path": "doll/delisle/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "dp12",
+      "path": "doll/dp12/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "dsr50",
+      "path": "doll/dsr50/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "fn57",
+      "path": "doll/fn57/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "g11",
+      "path": "doll/g11/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "g36",
+      "path": "doll/g36/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "g36c",
+      "path": "doll/g36c/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "g41",
+      "path": "doll/g41/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "generalliu",
+      "path": "doll/generalliu/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "grizzly",
+      "path": "doll/grizzly/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "hk416",
+      "path": "doll/hk416/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "hkcaws",
+      "path": "doll/hkcaws/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "howatype89",
+      "path": "doll/howatype89/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "iws2000",
+      "path": "doll/iws2000/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "js9mm",
+      "path": "doll/js9mm/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "k2",
+      "path": "doll/k2/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "kord",
+      "path": "doll/kord/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "kp31",
+      "path": "doll/kp31/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "lewis",
+      "path": "doll/lewis/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m16a1",
+      "path": "doll/m16a1/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m1891",
+      "path": "doll/m1891/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m1903",
+      "path": "doll/m1903/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m1928a1",
+      "path": "doll/m1928a1/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m4-sopmod-ii",
+      "path": "doll/m4-sopmod-ii/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m4a1",
+      "path": "doll/m4a1/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m590",
+      "path": "doll/m590/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m950a",
+      "path": "doll/m950a/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "m99",
+      "path": "doll/m99/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mdr",
+      "path": "doll/mdr/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mg36",
+      "path": "doll/mg36/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mg5",
+      "path": "doll/mg5/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mk23",
+      "path": "doll/mk23/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mk48",
+      "path": "doll/mk48/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mlemk1",
+      "path": "doll/mlemk1/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "mp7",
+      "path": "doll/mp7/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ntw20",
+      "path": "doll/ntw20/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ots14",
+      "path": "doll/ots14/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "p22",
+      "path": "doll/p22/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "p90",
+      "path": "doll/p90/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "pa15",
+      "path": "doll/pa15/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "pkp",
+      "path": "doll/pkp/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "px4storm",
+      "path": "doll/px4storm/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "qbu88",
+      "path": "doll/qbu88/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "r5rgp",
+      "path": "doll/r5rgp/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "r93",
+      "path": "doll/r93/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "rfb",
+      "path": "doll/rfb/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ro635",
+      "path": "doll/ro635/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "rpk203",
+      "path": "doll/rpk203/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "saf",
+      "path": "doll/saf/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "saiga12",
+      "path": "doll/saiga12/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "sat8",
+      "path": "doll/sat8/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "sl8",
+      "path": "doll/sl8/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "sp9",
+      "path": "doll/sp9/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "spitfire",
+      "path": "doll/spitfire/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "sr3mp",
+      "path": "doll/sr3mp/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "tabuk",
+      "path": "doll/tabuk/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "tac50",
+      "path": "doll/tac50/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "type100",
+      "path": "doll/type100/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "type64-ar",
+      "path": "doll/type64-ar/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "type88",
+      "path": "doll/type88/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ump45",
+      "path": "doll/ump45/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "ump9",
+      "path": "doll/ump9/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "vector",
+      "path": "doll/vector/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "vhs",
+      "path": "doll/vhs/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "wa2000",
+      "path": "doll/wa2000/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "welrod",
+      "path": "doll/welrod/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "zastavam21",
+      "path": "doll/zastavam21/index.json"
+    },
+    {
+      "category": "doll",
+      "id": "zb26",
+      "path": "doll/zb26/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "air_attack",
+      "path": "fairy/air_attack/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "airborne",
+      "path": "fairy/airborne/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "armor",
+      "path": "fairy/armor/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "command",
+      "path": "fairy/command/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "fighting",
+      "path": "fairy/fighting/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "fortress",
+      "path": "fairy/fortress/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "golden",
+      "path": "fairy/golden/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "shield",
+      "path": "fairy/shield/index.json"
+    },
+    {
+      "category": "fairy",
+      "id": "target",
+      "path": "fairy/target/index.json"
+    },
+    {
+      "category": "squad",
+      "id": "ags-30",
+      "path": "squad/ags-30/index.json"
+    },
+    {
+      "category": "squad",
+      "id": "at4",
+      "path": "squad/at4/index.json"
+    },
+    {
+      "category": "squad",
+      "id": "bgm-71",
+      "path": "squad/bgm-71/index.json"
+    }
+  ]
+}

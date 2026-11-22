@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "zb26",
+  "versions": [
+    {
+      "id": "4703",
+      "path": "doll/zb26/4703.json"
+    },
+    {
+      "id": "5603",
+      "path": "doll/zb26/5603.json"
+    }
+  ]
+}

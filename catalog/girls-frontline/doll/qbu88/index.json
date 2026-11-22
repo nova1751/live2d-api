@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "qbu88",
+  "versions": [
+    {
+      "id": "3801",
+      "path": "doll/qbu88/3801.json"
+    },
+    {
+      "id": "5502",
+      "path": "doll/qbu88/5502.json"
+    }
+  ]
+}

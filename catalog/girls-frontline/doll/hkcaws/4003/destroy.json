@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "hkcaws",
+  "version": "4003",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/hkcaws_4003/destroy/destroy.moc3",
+      "blob": "1de9feaa75fa8ad1c06c7231ea7a2f8fff44d9d6",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/hkcaws_4003/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/hkcaws_4003/destroy/model.moc",
+      "blob": "61ed28515c7619cacd34096bea68bf86406309f1",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/hkcaws_4003/destroy/destroy.moc3",
+      "blob": "1de9feaa75fa8ad1c06c7231ea7a2f8fff44d9d6",
+      "format": "moc3",
+      "manifest": "人形/hkcaws_4003/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

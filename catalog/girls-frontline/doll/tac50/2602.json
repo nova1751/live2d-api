@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "tac50",
+  "version": "2602",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/tac50/2602/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/tac50/2602/normal.json"
+    }
+  ]
+}

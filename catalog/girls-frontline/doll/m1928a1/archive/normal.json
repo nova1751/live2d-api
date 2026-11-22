@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "archive",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/汤姆森 m1928a1/noraml/model.moc",
+      "blob": "41df0391f6cd82d7544b8ffa30d3c4e833441991",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

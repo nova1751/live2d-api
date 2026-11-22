@@ -1,0 +1,35 @@
+{
+  "category": "fairy",
+  "character": "golden",
+  "version": "3",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/golden/3/3.moc3",
+      "blob": "5b631cf1fdd0383bb8205b2b65489e0695540d37",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/golden/3/3.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/golden/model3.moc",
+      "blob": "8f45a95f675695e4ce1922b3dd2bea81c8a9c15c",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/golden/3/3.moc3",
+      "blob": "5b631cf1fdd0383bb8205b2b65489e0695540d37",
+      "format": "moc3",
+      "manifest": "精灵/golden/3/3.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/golden/03/index.json",
+      "modelId": 0,
+      "modelTexturesId": 20
+    }
+  ]
+}

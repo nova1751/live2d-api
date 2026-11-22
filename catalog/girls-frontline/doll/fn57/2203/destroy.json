@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "fn57",
+  "version": "2203",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/fn57_2203/destroy/destroy.moc3",
+      "blob": "050bcc1c010433efa2e6ee8135411b8c9772fbc7",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/fn57_2203/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/fn57_2203/destroy/model.moc",
+      "blob": "9effa32cc418fdf314d7fd895a10d80d5366d1b7",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/fn57_2203/destroy/destroy.moc3",
+      "blob": "050bcc1c010433efa2e6ee8135411b8c9772fbc7",
+      "format": "moc3",
+      "manifest": "人形/fn57_2203/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

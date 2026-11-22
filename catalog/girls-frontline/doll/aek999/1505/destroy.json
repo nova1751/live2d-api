@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "character": "aek999",
+  "version": "1505",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/aek999_1505/destroy/destroy.moc3",
+      "blob": "f4b4e827cfe264d66c9ae20b5b7c4a3490454c44",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/aek999_1505/destroy/destroy.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/aek999_1505/destroy/model.moc",
+      "blob": "071bc1d70d4fdfdd4cf69728afcd5074272c7451",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

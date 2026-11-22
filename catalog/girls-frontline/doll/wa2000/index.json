@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "wa2000",
+  "versions": [
+    {
+      "id": "1108",
+      "path": "doll/wa2000/1108.json"
+    },
+    {
+      "id": "306",
+      "path": "doll/wa2000/306.json"
+    },
+    {
+      "id": "6",
+      "path": "doll/wa2000/6.json"
+    }
+  ]
+}

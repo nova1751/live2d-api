@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "rpk203",
+  "version": "5901",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/rpk203/5901/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/rpk203/5901/normal.json"
+    }
+  ]
+}

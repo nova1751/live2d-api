@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "kp31",
+  "version": "archive",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/kp31/normal/model.moc",
+      "blob": "2a42370d7e5446d4f4d98d72392194eeda25840b",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/kp31/kp31-/normal/index.json",
+      "modelId": 4,
+      "modelTexturesId": 0
+    }
+  ]
+}

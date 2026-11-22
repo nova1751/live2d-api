@@ -1,0 +1,11 @@
+{
+  "category": "squad",
+  "character": "at4",
+  "version": "base",
+  "forms": [
+    {
+      "id": "default",
+      "path": "squad/at4/base/default.json"
+    }
+  ]
+}

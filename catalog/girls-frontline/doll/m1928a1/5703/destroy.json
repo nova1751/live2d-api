@@ -1,0 +1,16 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "5703",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/m1928a1_5703/destroy/destroy.moc3",
+      "blob": "f07cfe1bea3c42a16cf9d268ed3d542deb65eea1",
+      "format": "moc3",
+      "manifest": "人形/m1928a1_5703/destroy/destroy.model3.json"
+    }
+  ],
+  "widget": []
+}

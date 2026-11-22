@@ -1,0 +1,35 @@
+{
+  "category": "doll",
+  "character": "saiga12",
+  "version": "5402",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/saiga12_5402/normal/normal.moc3",
+      "blob": "b6f58e04dcaef29f91281b42a98f0088294612d9",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/saiga12_5402/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/saiga12_5402/normal/model.moc",
+      "blob": "d1d0aae32b371222663ab63336fd51e25969b4be",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/saiga12_5402/normal/normal.moc3",
+      "blob": "6d2359e975a2fef3eb22ba3910125ab970924fe7",
+      "format": "moc3",
+      "manifest": "人形/saiga12_5402/normal/normal.model3.json"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/saiga12/saiga12_5402/normal/index.json",
+      "modelId": 10,
+      "modelTexturesId": 4
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "fn57",
+  "version": "2203",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/fn57_2203/normal/normal.moc3",
+      "blob": "84ce0b6d5edf8203f621c07a1be1dacb563703a6",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/fn57_2203/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/fn57_2203/normal/model.moc",
+      "blob": "8cb41c3d57e0ac749ff6bf7ba10dc1697fe7898e",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/fn57_2203/normal/normal.moc3",
+      "blob": "84ce0b6d5edf8203f621c07a1be1dacb563703a6",
+      "format": "moc3",
+      "manifest": "人形/fn57_2203/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,29 @@
+{
+  "category": "doll",
+  "character": "kord",
+  "version": "5102",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/kord_5102/normal/normal.moc3",
+      "blob": "d8624d41c372a8f70430adba7ac3210bc1addfe5",
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/kord_5102/normal/normal.model3.json"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/kord_5102/normal/model.moc",
+      "blob": "1a2e6de215b529f367d53da308bc5cd8ef542688",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/kord_5102/normal/normal.moc3",
+      "blob": "d4e6a6ad70c998d6feeedd2d1a5bad074e2f17a1",
+      "format": "moc3",
+      "manifest": "人形/kord_5102/normal/normal.model3.json"
+    }
+  ],
+  "widget": []
+}
