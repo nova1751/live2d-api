@@ -21,15 +21,16 @@ try {
     body: `<!doctype html><script defer src="${base}autoload.js" data-model-url="${samples}Haru/Haru.model3.json"></script>` }));
   await page.addInitScript(() => {
     // Read from the visible drawing buffer during drawing, before the browser clears it.
-    const proto = WebGL2RenderingContext.prototype;
-    const draw = proto.drawElements;
-    proto.drawElements = function (...args) {
-      draw.apply(this, args);
-      if (this.canvas.dataset.painted || this.getParameter(this.FRAMEBUFFER_BINDING)) return;
-      const rgba = new Uint8Array(this.drawingBufferWidth * this.drawingBufferHeight * 4);
-      this.readPixels(0, 0, this.drawingBufferWidth, this.drawingBufferHeight, this.RGBA, this.UNSIGNED_BYTE, rgba);
-      if (rgba.some((value, i) => i % 4 === 3 && value > 0)) this.canvas.dataset.painted = 'true';
-    };
+    for (const proto of [WebGLRenderingContext.prototype, WebGL2RenderingContext.prototype]) {
+      const draw = proto.drawElements;
+      proto.drawElements = function (...args) {
+        draw.apply(this, args);
+        if (this.canvas.dataset.painted || this.getParameter(this.FRAMEBUFFER_BINDING)) return;
+        const rgba = new Uint8Array(this.drawingBufferWidth * this.drawingBufferHeight * 4);
+        this.readPixels(0, 0, this.drawingBufferWidth, this.drawingBufferHeight, this.RGBA, this.UNSIGNED_BYTE, rgba);
+        if (rgba.some((value, i) => i % 4 === 3 && value > 0)) this.canvas.dataset.painted = 'true';
+      };
+    }
   });
   await page.goto(`http://127.0.0.1:${port}/smoke.html`);
   const drawn = () => page.waitForSelector('canvas[data-painted]', { timeout: 90000 });
@@ -48,6 +49,7 @@ try {
     window.loadlive2d.show(false);
     window.loadlive2d('live2d', url);
   }, base + 'model/AK12/ak12_0/normal/index.json');
+  await page.waitForSelector('#live2d[data-painted]', { timeout: 60000 });
   assert.equal(await page.locator('canvas').count(), 1);
   assert.deepEqual(errors, []);
 } finally {

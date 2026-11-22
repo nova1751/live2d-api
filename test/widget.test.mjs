@@ -150,6 +150,20 @@ test('the script tag skips small screens and loads both assets and model relativ
   assert.ok(models[0].some(path => renders[0] === new URL('model/' + path + '/index.json', src).href));
 });
 
+test('single-model script resolves a page-relative manifest and preserves the built-in rotation preference', async () => {
+  const { context, document, requests, renders, nodes } = browser();
+  document.currentScript = { src: 'https://cdn.test/preview/autoload.js', dataset: { modelUrl: './Ren.model3.json' } };
+  context.innerWidth = 1024;
+  context.localStorage.setItem('modelId', '4');
+  vm.runInContext(read('autoload.js'), context);
+  await settled();
+  assert.deepEqual(renders, [base + 'Ren.model3.json']);
+  assert.equal(context.localStorage.getItem('modelId'), '4');
+  assert.equal(nodes.has('waifu-tool-switch-model'), false);
+  assert.equal(nodes.has('waifu-tool-switch-texture'), false);
+  assert.ok(!requests.some(url => url.endsWith('model_list.json')));
+});
+
 test('legacy initWidget(waifuPath, apiPath) restores stored IDs and uses the original API routes', async () => {
   const { context, requests, renders, nodes } = browser();
   context.document.head.appendChild({ src: base + 'live2d.min.js' });
