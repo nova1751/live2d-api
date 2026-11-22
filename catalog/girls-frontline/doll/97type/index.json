@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "97type",
+  "versions": [
+    {
+      "id": "3703",
+      "path": "doll/97type/3703.json"
+    },
+    {
+      "id": "406",
+      "path": "doll/97type/406.json"
+    }
+  ]
+}

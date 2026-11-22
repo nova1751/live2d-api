@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "akalfa",
+  "version": "4601",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/akalfa_4601/normal/normal.moc3",
+      "blob": "f028564d94a26f84ee2e56360f601adc9fa276aa",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/akalfa_4601/normal/model.moc",
+      "blob": "83423ebbe4c0824c30be3de54fb60d3a00a0c914",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

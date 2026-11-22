@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "lewis",
+  "version": "3502",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/lewis_3502/normal/normal.moc3",
+      "blob": "c9ecf5e2ae8420da7da4580bf3502575a2efbad2",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/lewis_3502/normal/model.moc",
+      "blob": "2f77135fbf6587e8620a2c9e01386173a25859a5",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/lewis_3502/normal/normal.moc3",
+      "blob": "c9ecf5e2ae8420da7da4580bf3502575a2efbad2",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "ak12",
+  "version": "archive",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/AK12/destroy/model.moc",
+      "blob": "d19fcf3066ec3f6515c37da84904a6c1c65290f7",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/AK12/ak12_0/destroy/index.json",
+      "modelId": 1,
+      "modelTexturesId": 1
+    }
+  ]
+}

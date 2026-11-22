@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "m4a1",
+  "versions": [
+    {
+      "id": "4505",
+      "path": "doll/m4a1/4505.json"
+    },
+    {
+      "id": "mod",
+      "path": "doll/m4a1/mod.json"
+    }
+  ]
+}

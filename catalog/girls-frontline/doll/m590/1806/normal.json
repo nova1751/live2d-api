@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "m590",
+  "version": "1806",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m590_1806/normal/normal.moc3",
+      "blob": "f22725710829b54409eff52937d43b37f03c0898",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m590_1806/normal/model.moc",
+      "blob": "215a02943ff9fc3c5b6f49c256e563724962a12d",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m590_1806/normal/normal.moc3",
+      "blob": "f22725710829b54409eff52937d43b37f03c0898",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

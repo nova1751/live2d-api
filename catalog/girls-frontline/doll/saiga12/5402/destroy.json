@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "saiga12",
+  "version": "5402",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/saiga12_5402/destroy/destroy.moc3",
+      "blob": "edaf09190b0b00e1b80ce027705b4d53b25d9722",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/saiga12_5402/destroy/model.moc",
+      "blob": "31f17bc38fe6b71520debab5cd2ce825c602ac0c",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/saiga12_5402/destroy/destroy.moc3",
+      "blob": "edaf09190b0b00e1b80ce027705b4d53b25d9722",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/saiga12/saiga12_5402/destroy/index.json",
+      "modelId": 10,
+      "modelTexturesId": 5
+    }
+  ]
+}

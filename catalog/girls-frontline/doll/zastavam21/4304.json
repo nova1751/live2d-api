@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "zastavam21",
+  "version": "4304",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/zastavam21/4304/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/zastavam21/4304/normal.json"
+    }
+  ]
+}

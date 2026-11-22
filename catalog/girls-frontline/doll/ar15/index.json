@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "ar15",
+  "versions": [
+    {
+      "id": "4508",
+      "path": "doll/ar15/4508.json"
+    },
+    {
+      "id": "mod",
+      "path": "doll/ar15/mod.json"
+    }
+  ]
+}

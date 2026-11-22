@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "carcano1938",
+  "version": "2904",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/carcano1938_2904/normal/normal.moc3",
+      "blob": "c75ebd803a08a61b977e4fdafdc62ebadb67b8e9",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/carcano1938_2904/normal/model.moc",
+      "blob": "c6c8108297d0ce547bff7f6517f742f958b64c1b",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/carcano1938_2904/normal/normal.moc3",
+      "blob": "c75ebd803a08a61b977e4fdafdc62ebadb67b8e9",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/carcano/carcano1938_2904/normal/index.json",
+      "modelId": 8,
+      "modelTexturesId": 6
+    }
+  ]
+}

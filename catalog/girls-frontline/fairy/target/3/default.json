@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "target",
+  "version": "3",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/target/3/3.moc3",
+      "blob": "5867b2497c1d7fb84c4cb27ac18f51dd72369d58",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/target/model3.moc",
+      "blob": "e05cec65e86a5e2f0f3c1ad8437ab500c0f15956",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/target/3/3.moc3",
+      "blob": "5867b2497c1d7fb84c4cb27ac18f51dd72369d58",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/target/03/index.json",
+      "modelId": 0,
+      "modelTexturesId": 26
+    }
+  ]
+}

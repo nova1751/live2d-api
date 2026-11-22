@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "cbjms",
+  "versions": [
+    {
+      "id": "2205",
+      "path": "doll/cbjms/2205.json"
+    },
+    {
+      "id": "3503",
+      "path": "doll/cbjms/3503.json"
+    }
+  ]
+}

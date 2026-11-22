@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "type88",
+  "version": "3504",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/type88_3504/normal/normal.moc3",
+      "blob": "ae2edfede854cb4bef7a21cb49685dc44b1951d4",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/type88_3504/normal/model.moc",
+      "blob": "0f4cc59f4c7e3acdfe52e361747b793965090816",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/type88_3504/normal/normal.moc3",
+      "blob": "b21b2486c592b3181e45dc2b4bfb4b009009c422",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

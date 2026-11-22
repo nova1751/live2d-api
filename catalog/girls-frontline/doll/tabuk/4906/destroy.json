@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "tabuk",
+  "version": "4906",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/tabuk_4906/destroy/destroy.moc3",
+      "blob": "ea20d37003fe431f59ab43afb913e00ee27d7346",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/tabuk_4906/destroy/model.moc",
+      "blob": "e9b2e1d18d238d2e0018b96b893dec0b78a24607",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/tabuk_4906/destroy/destroy.moc3",
+      "blob": "ea20d37003fe431f59ab43afb913e00ee27d7346",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

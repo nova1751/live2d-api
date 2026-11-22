@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "ntw20",
+  "version": "2301",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ntw20_2301/destroy/destroy.moc3",
+      "blob": "738cc777c4f522422d5e4c135fe1990ad2ce87c8",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ntw20_2301/destroy/model.moc",
+      "blob": "882a81304d5b2a07b38f8215f204236aa4f01e60",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ntw20_2301/destroy/destroy.moc3",
+      "blob": "738cc777c4f522422d5e4c135fe1990ad2ce87c8",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

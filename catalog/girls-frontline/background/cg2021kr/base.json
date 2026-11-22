@@ -1,0 +1,11 @@
+{
+  "category": "background",
+  "character": "cg2021kr",
+  "version": "base",
+  "forms": [
+    {
+      "id": "default",
+      "path": "background/cg2021kr/base/default.json"
+    }
+  ]
+}

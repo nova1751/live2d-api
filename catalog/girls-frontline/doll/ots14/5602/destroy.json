@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ots14",
+  "version": "5602",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ots14_5602/destroy/destroy.moc3",
+      "blob": "c3108c204d3fadf7b3ecd6a5bc24395be91d3d0d",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

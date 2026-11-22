@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "ots14",
+  "version": "4501",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ots14_4501/normal/normal.moc3",
+      "blob": "ccb73886cb10a2c395bc0fd0f5c1ae8c5c598302",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ots14_4501/normal/model.moc",
+      "blob": "89e595c20217ef9dca30ad5b36130773b346f55e",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/ots14_4501/normal/normal.moc3",
+      "blob": "a8f5103d6a651f31e3b4c9a7644ebd5c4dc707ca",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/ost14/ots14_4501/normal/index.json",
+      "modelId": 7,
+      "modelTexturesId": 4
+    }
+  ]
+}

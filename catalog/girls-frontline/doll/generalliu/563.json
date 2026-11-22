@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "generalliu",
+  "version": "563",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/generalliu/563/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/generalliu/563/normal.json"
+    }
+  ]
+}

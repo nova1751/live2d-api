@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "pkp",
+  "version": "1201",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/pkp_1201/normal/normal.moc3",
+      "blob": "1dbbbe799ac924b5912aca358445d3b9276a6582",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/pkp_1201/normal/model.moc",
+      "blob": "05cb57fc58078885df692961e040602945bc0213",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/pkp_1201/normal/normal.moc3",
+      "blob": "1dbbbe799ac924b5912aca358445d3b9276a6582",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

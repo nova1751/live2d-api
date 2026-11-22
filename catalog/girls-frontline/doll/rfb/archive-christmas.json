@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "rfb",
+  "version": "archive-christmas",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/rfb/archive-christmas/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/rfb/archive-christmas/normal.json"
+    }
+  ]
+}

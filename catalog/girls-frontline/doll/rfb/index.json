@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "rfb",
+  "versions": [
+    {
+      "id": "1601",
+      "path": "doll/rfb/1601.json"
+    },
+    {
+      "id": "archive-christmas",
+      "path": "doll/rfb/archive-christmas.json"
+    }
+  ]
+}

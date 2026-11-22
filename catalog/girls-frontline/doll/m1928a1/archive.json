@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "archive",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/m1928a1/archive/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/m1928a1/archive/normal.json"
+    }
+  ]
+}

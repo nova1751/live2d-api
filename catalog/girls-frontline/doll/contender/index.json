@@ -1,0 +1,10 @@
+{
+  "category": "doll",
+  "id": "contender",
+  "versions": [
+    {
+      "id": "2302",
+      "path": "doll/contender/2302.json"
+    }
+  ]
+}

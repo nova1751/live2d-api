@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "rfb",
+  "version": "archive-christmas",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/rfb christmas/normal/model.moc",
+      "blob": "688805cea9cf1915834a0a932d40110db28f1023",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/rfbchristmas/normal/index.json",
+      "modelId": 5,
+      "modelTexturesId": 0
+    }
+  ]
+}

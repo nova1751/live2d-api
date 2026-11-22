@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "armor",
+  "version": "3",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/armor/3/3.moc3",
+      "blob": "fa32fd5f1e36e572af77eb8ec5275c932b1a4aa9",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/armor/model3.moc",
+      "blob": "99d8ff053ad9f687f56178301734f008d59b9521",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/armor/3/3.moc3",
+      "blob": "fa32fd5f1e36e572af77eb8ec5275c932b1a4aa9",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/armor/03/index.json",
+      "modelId": 0,
+      "modelTexturesId": 8
+    }
+  ]
+}

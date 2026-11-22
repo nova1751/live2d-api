@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "archive",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/汤姆森 m1928a1/destory/model.moc",
+      "blob": "0a39da7c5fe4fe40746bfea81c3aea2b5bd345b2",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

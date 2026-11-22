@@ -1,0 +1,22 @@
+{
+  "category": "doll",
+  "id": "ump45",
+  "versions": [
+    {
+      "id": "2107",
+      "path": "doll/ump45/2107.json"
+    },
+    {
+      "id": "3403",
+      "path": "doll/ump45/3403.json"
+    },
+    {
+      "id": "5405",
+      "path": "doll/ump45/5405.json"
+    },
+    {
+      "id": "mod",
+      "path": "doll/ump45/mod.json"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "air_attack",
+  "version": "1",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/air_attack/1/1.moc3",
+      "blob": "1f62bdc3b0251a4bdb710cc4e183d02bc6ceacbe",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/air_attack/model.moc",
+      "blob": "ffc779ad5e72597d7a90d9048fe2c6b30a741175",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/air_attack/1/1.moc3",
+      "blob": "1f62bdc3b0251a4bdb710cc4e183d02bc6ceacbe",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/air_attack/index.json",
+      "modelId": 0,
+      "modelTexturesId": 0
+    }
+  ]
+}

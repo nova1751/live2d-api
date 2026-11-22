@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "mg36",
+  "version": "4903",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mg36_4903/destroy/destroy.moc3",
+      "blob": "aeffea8909b6f4c985077e0cd64cd3b5c8c1b6a9",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mg36_4903/destroy/model.moc",
+      "blob": "ea0d005ca381f8cc0ce82fbdd548fc261390577e",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/mg36_4903/destroy/destroy.moc3",
+      "blob": "aeffea8909b6f4c985077e0cd64cd3b5c8c1b6a9",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

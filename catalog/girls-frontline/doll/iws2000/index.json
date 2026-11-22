@@ -1,0 +1,10 @@
+{
+  "category": "doll",
+  "id": "iws2000",
+  "versions": [
+    {
+      "id": "1403",
+      "path": "doll/iws2000/1403.json"
+    }
+  ]
+}

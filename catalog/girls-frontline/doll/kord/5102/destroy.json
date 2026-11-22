@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "kord",
+  "version": "5102",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/kord_5102/destroy/destroy.moc3",
+      "blob": "1e22a7981cf115c0219487cb617191c5033eccec",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/kord_5102/destroy/model.moc",
+      "blob": "db22535f9e43f1514af183cf657ce32f53fe2a18",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/kord_5102/destroy/destroy.moc3",
+      "blob": "1e22a7981cf115c0219487cb617191c5033eccec",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

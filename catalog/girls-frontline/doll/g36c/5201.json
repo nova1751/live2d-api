@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "g36c",
+  "version": "5201",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/g36c/5201/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/g36c/5201/normal.json"
+    }
+  ]
+}

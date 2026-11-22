@@ -1,0 +1,11 @@
+{
+  "category": "squad",
+  "character": "bgm-71",
+  "version": "base",
+  "forms": [
+    {
+      "id": "default",
+      "path": "squad/bgm-71/base/default.json"
+    }
+  ]
+}

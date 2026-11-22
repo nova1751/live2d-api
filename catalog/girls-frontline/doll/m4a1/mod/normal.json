@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "m4a1",
+  "version": "mod",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m4a1mod/normal/normal.moc3",
+      "blob": "09e68efd4290822ac176feed683b48ace1501d5b",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m4a1mod/normal/model.moc",
+      "blob": "2deb31a289685c0e6c72d7704a5218c057684a6f",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m4a1mod/normal/normal.moc3",
+      "blob": "09e68efd4290822ac176feed683b48ace1501d5b",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

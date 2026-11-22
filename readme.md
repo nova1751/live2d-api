@@ -131,6 +131,20 @@
 
 ### 维护模型
 
+#### 少女前线分类
+
+[总目录](catalog/girls-frontline/index.json)按人形、妖精、副官、小队和背景编目。每个人物有独立目录，每套皮肤有独立 JSON，普通和破损形态在 `forms` 中各自指向独立的模型记录。比如 [K2](catalog/girls-frontline/doll/k2/index.json) 的 [3301 皮肤](catalog/girls-frontline/doll/k2/3301.json) 列出[普通](catalog/girls-frontline/doll/k2/3301/normal.json)和[破损](catalog/girls-frontline/doll/k2/3301/destroy.json)两种形态，它们在旧版看板娘中仍然使用原来的数字编号。
+
+目录覆盖 [Eikanya](https://github.com/Eikanya/Live2d-model) 和 [jacksen168](https://github.com/jacksen168/Girls-Frontline-model) 两个固定提交中的少女前线模型。人物和皮肤沿用来源代号；旧收藏里无法确认编号的版本保留 `archive` 标记。同一形态可以收录多个格式及来源，每个二进制文件均记录仓库、路径和 Git blob。来源快照和去重口径决定这里的覆盖范围。
+
+- 从 `catalog/girls-frontline/index.json` 开始。人物、版本和形态的 `path` 都相对于该分类根目录。形态记录中的 `widget[].index` 相对于组件资源根目录，可传给已有的 `loadlive2d('live2d', url)`，或用同条记录的 `modelId`、`modelTexturesId` 对接旧目录。
+- `widget: []` 表示该形态仅编目。有 `.moc` 来源的形态可以进一步核验入口、贴图、物理、命中区域和动作；只有 `.moc3` 来源的形态需要支持该格式的渲染器。
+- 两个收藏均包含从游戏提取的素材。查阅的公开说明未提供整套模型、贴图和录音经 npm 或公共 CDN 再分发的权利人授权。编目和现有 `widget` 入口均不表示素材已获授权。日本发行方对粉丝网站展示和直接复制素材有不同规定。[日服官方使用指南](https://gf-jp.sunborngame.com/guide.php)
+
+要更新分类，在仓库根目录运行 `node scripts/girls-frontline-catalog.mjs <Eikanya 本地仓库> <jacksen168 本地仓库>`，再运行 `pnpm test`。生成器读取固定提交的 Git 文件树，支持稀疏检出。
+
+#### 交互与资源
+
 首次打开网页时，皮肤会播放自己的待机动作。即使上游给待机动作配置了录音，网页也保持静音。主动打开看板娘或切换模型、服装时，播放器只抽选一次该皮肤的 `start` 事件。有登场语音且浏览器允许播放时，语音随登场动作开始。当前目录中有 5 套皮肤配置了 `start`。这是网页的播放策略，ViewerEX 原生的 `start` 在模型载入时触发。[ViewerEX 事件定义](https://live2d.pavostudio.com/doc/zh-cn/live2d/model-config/)
 
 点击按皮肤自己的命中区域选取动作。三套战舰少女模型还使用各自的点击、抚摸或上划规则。仅提供无名动作组的皮肤在网页上以点击触发该组。如果无名组只是重复唯一的待机动作（例如 AK-12 和 AN-94 的默认皮肤），点击时会接着原来的进度播放。只配置了语音的事件可以单独播放。配有录音和动作的事件等两项资源均就绪后在同一渲染帧启动，并按音频时钟推进动作。缺少任一已配置资源时跳过该次互动，再次点击可以重试。

@@ -1,0 +1,18 @@
+{
+  "category": "fairy",
+  "id": "fortress",
+  "versions": [
+    {
+      "id": "1",
+      "path": "fairy/fortress/1.json"
+    },
+    {
+      "id": "2",
+      "path": "fairy/fortress/2.json"
+    },
+    {
+      "id": "3",
+      "path": "fairy/fortress/3.json"
+    }
+  ]
+}

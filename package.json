@@ -52,6 +52,7 @@
     "npm/",
     "css/",
     "img/",
+    "catalog/",
     "model/",
     "model_list.json",
     "waifu-tips.json",

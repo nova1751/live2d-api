@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "carcano1891",
+  "versions": [
+    {
+      "id": "2201",
+      "path": "doll/carcano1891/2201.json"
+    },
+    {
+      "id": "2905",
+      "path": "doll/carcano1891/2905.json"
+    }
+  ]
+}

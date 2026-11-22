@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ro635",
+  "version": "mod",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/ro635mod/normal/normal.moc3",
+      "blob": "4b42b3a491e28ffd1da4dc5a5330b437cc6fcf11",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

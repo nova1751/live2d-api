@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "g36c",
+  "version": "3103",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/g36c_3103/normal/normal.moc3",
+      "blob": "a710c624d3d98148401f4f23385431593cf9b29a",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/g36c_3103/normal/model.moc",
+      "blob": "6cb1947cb02a666c9ec6b8701d6a11c8ae6c12c9",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/g36c_3103/normal/normal.moc3",
+      "blob": "3679902a2d4051319857bd6c86a89e161fbe2626",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/g36c/g36c_3103/normal/index.json",
+      "modelId": 9,
+      "modelTexturesId": 2
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "sat8",
+  "version": "2601",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/sat8_2601/normal/normal.moc3",
+      "blob": "e92230aa1cf9d430e1e06012f6b4cf792f9f7bcb",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/sat8_2601/normal/model.moc",
+      "blob": "c5e440ce829acebe57022e6fd43201f2b9598d19",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/sat8_2601/normal/normal.moc3",
+      "blob": "e92230aa1cf9d430e1e06012f6b4cf792f9f7bcb",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

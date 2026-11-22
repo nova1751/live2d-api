@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "sat8",
+  "versions": [
+    {
+      "id": "2601",
+      "path": "doll/sat8/2601.json"
+    },
+    {
+      "id": "3602",
+      "path": "doll/sat8/3602.json"
+    }
+  ]
+}

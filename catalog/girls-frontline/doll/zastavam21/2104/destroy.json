@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "zastavam21",
+  "version": "2104",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/zastavam21_2104/destroy/destroy.moc3",
+      "blob": "2eca3e0c50deab5e2da029745c827bacb1bf8e7e",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/zastavam21_2104/destroy/model.moc",
+      "blob": "89bccdf2fc257731b194d7932447faab064c8c61",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/zastavam21_2104/destroy/destroy.moc3",
+      "blob": "2eca3e0c50deab5e2da029745c827bacb1bf8e7e",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/za/zastavam21_2104/destroy/index.json",
+      "modelId": 20,
+      "modelTexturesId": 1
+    }
+  ]
+}

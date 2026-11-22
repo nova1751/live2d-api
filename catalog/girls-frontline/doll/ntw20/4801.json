@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ntw20",
+  "version": "4801",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/ntw20/4801/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/ntw20/4801/normal.json"
+    }
+  ]
+}

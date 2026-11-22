@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "hk416",
+  "versions": [
+    {
+      "id": "3401",
+      "path": "doll/hk416/3401.json"
+    },
+    {
+      "id": "805",
+      "path": "doll/hk416/805.json"
+    }
+  ]
+}

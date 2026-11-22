@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "generalliu",
+  "versions": [
+    {
+      "id": "5101",
+      "path": "doll/generalliu/5101.json"
+    },
+    {
+      "id": "563",
+      "path": "doll/generalliu/563.json"
+    }
+  ]
+}

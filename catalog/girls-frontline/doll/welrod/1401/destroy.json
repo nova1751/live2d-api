@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "welrod",
+  "version": "1401",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/welrod_1401/destroy/destroy.moc3",
+      "blob": "b016161d7cf6d1ce13c6e7447d546004bfa7d3ae",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/welrod_1401/destroy/model.moc",
+      "blob": "ace093b80feb09e317733ddc6679e78a682d7ab2",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/welrod_1401/destroy/destroy.moc3",
+      "blob": "b016161d7cf6d1ce13c6e7447d546004bfa7d3ae",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

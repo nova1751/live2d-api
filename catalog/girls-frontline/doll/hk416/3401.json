@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "hk416",
+  "version": "3401",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/hk416/3401/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/hk416/3401/normal.json"
+    }
+  ]
+}

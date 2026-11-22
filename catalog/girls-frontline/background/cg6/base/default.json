@@ -1,0 +1,27 @@
+{
+  "category": "background",
+  "character": "cg6",
+  "version": "base",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/bg/cg6/cg6.moc3",
+      "blob": "96d94779873508830b302515ad68916bea64590d",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/bg/cg6/model.moc",
+      "blob": "f360f574af8dae46f093d776588cdd7345ab15b6",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "辅助/cg6/cg6.moc3",
+      "blob": "96d94779873508830b302515ad68916bea64590d",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

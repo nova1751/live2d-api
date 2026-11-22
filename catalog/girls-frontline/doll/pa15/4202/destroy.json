@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "pa15",
+  "version": "4202",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/pa15_4202/destroy/destroy.moc3",
+      "blob": "3394696610446835204d5d18d7458b9b1e84621f",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/pa15_4202/destroy/model.moc",
+      "blob": "ffd53e338f6b61f58c48adb27ff3138c8aef638e",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/pa15_4202/destroy/destroy.moc3",
+      "blob": "3394696610446835204d5d18d7458b9b1e84621f",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

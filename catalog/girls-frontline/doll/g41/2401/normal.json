@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "g41",
+  "version": "2401",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/g41_2401/normal/normal.moc3",
+      "blob": "6080c1b247bdef41cacaf19d6d4370c7c4fedbc2",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/g41_2401/normal/model.moc",
+      "blob": "50708ffd604897243ed0a295b532ce7e5815d140",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/g41_2401/normal/normal.moc3",
+      "blob": "906580cf6b97472f3479525783b3c0f6582dc1f5",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

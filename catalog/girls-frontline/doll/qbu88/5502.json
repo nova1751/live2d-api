@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "qbu88",
+  "version": "5502",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/qbu88/5502/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/qbu88/5502/normal.json"
+    }
+  ]
+}

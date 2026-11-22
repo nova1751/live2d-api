@@ -1,0 +1,11 @@
+{
+  "category": "fairy",
+  "character": "fighting",
+  "version": "1",
+  "forms": [
+    {
+      "id": "default",
+      "path": "fairy/fighting/1/default.json"
+    }
+  ]
+}

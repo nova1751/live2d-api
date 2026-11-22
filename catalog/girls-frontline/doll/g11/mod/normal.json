@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "g11",
+  "version": "mod",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人型2/g11mod/normal/normal.moc3",
+      "blob": "cc01b102feadba63219a4c12d73b7f0f39256656",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

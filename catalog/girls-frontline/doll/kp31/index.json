@@ -1,0 +1,26 @@
+{
+  "category": "doll",
+  "id": "kp31",
+  "versions": [
+    {
+      "id": "1103",
+      "path": "doll/kp31/1103.json"
+    },
+    {
+      "id": "310",
+      "path": "doll/kp31/310.json"
+    },
+    {
+      "id": "3101",
+      "path": "doll/kp31/3101.json"
+    },
+    {
+      "id": "archive",
+      "path": "doll/kp31/archive.json"
+    },
+    {
+      "id": "archive-alt",
+      "path": "doll/kp31/archive-alt.json"
+    }
+  ]
+}

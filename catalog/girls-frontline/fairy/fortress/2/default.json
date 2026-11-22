@@ -1,0 +1,33 @@
+{
+  "category": "fairy",
+  "character": "fortress",
+  "version": "2",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/fortress/2/2.moc3",
+      "blob": "0665ad6d59ecf0f14d80cf29e2272442ef06b099",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/fortress/model2.moc",
+      "blob": "bfcb0e721b03712846a63932bfacb30968cca933",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "精灵/fortress/2/2.moc3",
+      "blob": "0665ad6d59ecf0f14d80cf29e2272442ef06b099",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/fortress/02/index.json",
+      "modelId": 0,
+      "modelTexturesId": 16
+    }
+  ]
+}

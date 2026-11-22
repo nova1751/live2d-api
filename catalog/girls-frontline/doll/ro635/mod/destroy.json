@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "ro635",
+  "version": "mod",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/ro635mod/destroy/destroy.moc3",
+      "blob": "bcc05a698ad6f0a1bb2bca8142051078355628e4",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "rfb",
+  "version": "1601",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/rfb/1601/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/rfb/1601/normal.json"
+    }
+  ]
+}

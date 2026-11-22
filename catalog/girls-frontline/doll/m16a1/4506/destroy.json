@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "m16a1",
+  "version": "4506",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/m16a1_4506/destroy/destroy.moc3",
+      "blob": "61a111e78b274f5334a856f1c2f493889d2f639f",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/m16a1_4506/destroy/model.moc",
+      "blob": "e5f6f3b3b9ca459d006fc9c0a24158d94fedb1a2",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/m16a1_4506/destroy/destroy.moc3",
+      "blob": "61a111e78b274f5334a856f1c2f493889d2f639f",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

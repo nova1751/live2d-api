@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "sl8",
+  "versions": [
+    {
+      "id": "4704",
+      "path": "doll/sl8/4704.json"
+    },
+    {
+      "id": "6302",
+      "path": "doll/sl8/6302.json"
+    }
+  ]
+}

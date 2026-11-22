@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "sl8",
+  "version": "6302",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/sl8_6302/normal/normal.moc3",
+      "blob": "28785111533d22c0656ea41b07a56a4d4f123509",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

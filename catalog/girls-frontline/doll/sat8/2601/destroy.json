@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "sat8",
+  "version": "2601",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/sat8_2601/destroy/destroy.moc3",
+      "blob": "c884ba0a4059bfba2b396f2146ac121f9eedd518",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/sat8_2601/destroy/model.moc",
+      "blob": "ebad3328013ce151bc8786b29220a93df08e6c18",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/sat8_2601/destroy/destroy.moc3",
+      "blob": "c884ba0a4059bfba2b396f2146ac121f9eedd518",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

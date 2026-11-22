@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "kp31",
+  "version": "archive",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/kp31/destroy/model.moc",
+      "blob": "238b67117b083f38760494e7714f4c9f63ba456d",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/kp31/kp31-/destroy/index.json",
+      "modelId": 4,
+      "modelTexturesId": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "dp12",
+  "version": "6102",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/dp12_6102/destroy/destroy.moc3",
+      "blob": "c174bc946d91a391395b21fe6362265eb88c38ce",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

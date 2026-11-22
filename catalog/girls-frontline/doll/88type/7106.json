@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "88type",
+  "version": "7106",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/88type/7106/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/88type/7106/normal.json"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "generalliu",
+  "version": "5101",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/generalliu_5101/destroy/destroy.moc3",
+      "blob": "86cf133d1804369e3b93560ee6169decdf191071",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/generalliu_5101/destroy/model.moc",
+      "blob": "51c414ba5af079ddc040acc28f66381afcee3211",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/generalliu_5101/destroy/destroy.moc3",
+      "blob": "86cf133d1804369e3b93560ee6169decdf191071",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

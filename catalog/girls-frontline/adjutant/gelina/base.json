@@ -1,0 +1,11 @@
+{
+  "category": "adjutant",
+  "character": "gelina",
+  "version": "base",
+  "forms": [
+    {
+      "id": "normal",
+      "path": "adjutant/gelina/base/normal.json"
+    }
+  ]
+}

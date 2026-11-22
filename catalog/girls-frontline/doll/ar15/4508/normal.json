@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "ar15",
+  "version": "4508",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ar15_4508/normal/normal.moc3",
+      "blob": "c06f557ea023bbfbfe7c71f5cd4d4c6cc9e51ac1",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ar15_4508/normal/model.moc",
+      "blob": "87cad9932808c846ea9ddf5218eada37adf8d0a7",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

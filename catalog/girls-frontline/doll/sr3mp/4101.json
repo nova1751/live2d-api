@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "sr3mp",
+  "version": "4101",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/sr3mp/4101/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/sr3mp/4101/normal.json"
+    }
+  ]
+}

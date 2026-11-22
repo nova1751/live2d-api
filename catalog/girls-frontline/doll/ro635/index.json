@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "ro635",
+  "versions": [
+    {
+      "id": "4504",
+      "path": "doll/ro635/4504.json"
+    },
+    {
+      "id": "mod",
+      "path": "doll/ro635/mod.json"
+    }
+  ]
+}

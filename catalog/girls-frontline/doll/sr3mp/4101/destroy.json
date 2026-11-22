@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "sr3mp",
+  "version": "4101",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/sr3mp_4101/destroy/destroy.moc3",
+      "blob": "d439ca2defac32007a520317b55400b6b639b732",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/sr3mp_4101/destroy/model.moc",
+      "blob": "1c502ca452bf380818962b1ccc6353849b16b4e1",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/sr3mp_4101/destroy/destroy.moc3",
+      "blob": "d439ca2defac32007a520317b55400b6b639b732",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

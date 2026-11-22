@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "akalfa",
+  "version": "4601",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/akalfa/4601/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/akalfa/4601/normal.json"
+    }
+  ]
+}

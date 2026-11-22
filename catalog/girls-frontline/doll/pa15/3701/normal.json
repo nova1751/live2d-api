@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "pa15",
+  "version": "3701",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/pa15_3701/normal/normal.moc3",
+      "blob": "dc59dab59aab7426f304fcc5ccc5d2112cce45a3",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/pa15_3701/normal/model.moc",
+      "blob": "1dd23dfd0a4c2b7d761f760add855d37e4d045a9",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/pa15_3701/normal/normal.moc3",
+      "blob": "dc59dab59aab7426f304fcc5ccc5d2112cce45a3",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

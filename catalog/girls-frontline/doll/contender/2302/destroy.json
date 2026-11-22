@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "contender",
+  "version": "2302",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/contender_2302/destroy/destroy.moc3",
+      "blob": "5dea360c65c3f599367a51eb632081a750ace246",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/contender_2302/destroy/model.moc",
+      "blob": "c4db8b0ba0a45a80671e4ce92ed1841b1e6fd666",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/contender_2302/destroy/destroy.moc3",
+      "blob": "5dea360c65c3f599367a51eb632081a750ace246",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

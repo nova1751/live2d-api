@@ -1,0 +1,14 @@
+{
+  "category": "doll",
+  "id": "dsr50",
+  "versions": [
+    {
+      "id": "1801",
+      "path": "doll/dsr50/1801.json"
+    },
+    {
+      "id": "2101",
+      "path": "doll/dsr50/2101.json"
+    }
+  ]
+}

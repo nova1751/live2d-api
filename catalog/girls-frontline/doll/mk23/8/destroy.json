@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "mk23",
+  "version": "8",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/mk23_8/destroy/destroy.moc3",
+      "blob": "8af77b70d10a206663577eba10edb5373229ad04",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/mk23_8/destroy/model.moc",
+      "blob": "215d61cab81ef538bafebfa6602c1083b2ecae96",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/mk23_8/destroy/destroy.moc3",
+      "blob": "8af77b70d10a206663577eba10edb5373229ad04",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

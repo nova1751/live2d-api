@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "lewis",
+  "version": "6901",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/lewis_6901/normal/normal.moc3",
+      "blob": "4271e6a830324416c3df29c6f58ae92e83f27010",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

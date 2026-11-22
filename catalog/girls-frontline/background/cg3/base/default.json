@@ -1,0 +1,21 @@
+{
+  "category": "background",
+  "character": "cg3",
+  "version": "base",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/bg/cg3/cg3.moc3",
+      "blob": "851535e820937643083b927e0ba4941f73c02976",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/bg/cg3/model.moc",
+      "blob": "6ad2d72ad6062f83c92dee6ce1bbbc8c98ae8b9b",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

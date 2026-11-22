@@ -1,0 +1,33 @@
+{
+  "category": "doll",
+  "character": "kp31",
+  "version": "1103",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/kp31_1103/normal/normal.moc3",
+      "blob": "21080662daf77865d19a7bb8f629eab61eef001b",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/kp31_1103/normal/model.moc",
+      "blob": "4dd13b166a3c034428b7d3cc49ab820b5387ae7f",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/kp31_1103/normal/normal.moc3",
+      "blob": "0ff5eb58479ce7f816b944601db6829873c5ded4",
+      "format": "moc3"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/kp31/kp31_1103/normal/index.json",
+      "modelId": 4,
+      "modelTexturesId": 4
+    }
+  ]
+}

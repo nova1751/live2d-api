@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "m1928a1",
+  "version": "5703",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "jacksen168",
+      "path": "人形/m1928a1_5703/normal/normal.moc3",
+      "blob": "09eb40bd67c7663c33554862319de7340be7b573",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

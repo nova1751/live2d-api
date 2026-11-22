@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "tac50",
+  "version": "2602",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/tac50_2602/normal/normal.moc3",
+      "blob": "6f576d669a78dbf8b5f840b731a708e12e02eadf",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/tac50_2602/normal/model.moc",
+      "blob": "3b242b60f82eac773e2567c55158e7efc82ceff5",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/tac50_2602/normal/normal.moc3",
+      "blob": "6f576d669a78dbf8b5f840b731a708e12e02eadf",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

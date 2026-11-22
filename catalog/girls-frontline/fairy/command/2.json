@@ -1,0 +1,11 @@
+{
+  "category": "fairy",
+  "character": "command",
+  "version": "2",
+  "forms": [
+    {
+      "id": "default",
+      "path": "fairy/command/2/default.json"
+    }
+  ]
+}

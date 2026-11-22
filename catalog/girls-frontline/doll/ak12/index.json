@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "ak12",
+  "versions": [
+    {
+      "id": "2402",
+      "path": "doll/ak12/2402.json"
+    },
+    {
+      "id": "3302",
+      "path": "doll/ak12/3302.json"
+    },
+    {
+      "id": "archive",
+      "path": "doll/ak12/archive.json"
+    }
+  ]
+}

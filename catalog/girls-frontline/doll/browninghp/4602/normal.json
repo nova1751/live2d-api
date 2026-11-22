@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "browninghp",
+  "version": "4602",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/browninghp_4602/normal/normal.moc3",
+      "blob": "03242407d530449de6b095333c3f967e1b7732c7",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/browninghp_4602/normal/model.moc",
+      "blob": "62440fb6b176b33eee6d9e1aeed38ab6191e7203",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/browninghp_4602/normal/normal.moc3",
+      "blob": "03242407d530449de6b095333c3f967e1b7732c7",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

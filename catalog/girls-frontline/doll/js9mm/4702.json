@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "js9mm",
+  "version": "4702",
+  "forms": [
+    {
+      "id": "destroy",
+      "path": "doll/js9mm/4702/destroy.json"
+    },
+    {
+      "id": "normal",
+      "path": "doll/js9mm/4702/normal.json"
+    }
+  ]
+}

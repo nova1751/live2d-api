@@ -1,0 +1,10 @@
+{
+  "category": "doll",
+  "id": "pkp",
+  "versions": [
+    {
+      "id": "1201",
+      "path": "doll/pkp/1201.json"
+    }
+  ]
+}

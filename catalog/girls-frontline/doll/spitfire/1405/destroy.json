@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "spitfire",
+  "version": "1405",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/spitfire_1405/destroy/destroy.moc3",
+      "blob": "7e63e0c98435acf27db838201bc3bba1fbdb71f5",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

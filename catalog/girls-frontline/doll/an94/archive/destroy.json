@@ -1,0 +1,15 @@
+{
+  "category": "doll",
+  "character": "an94",
+  "version": "archive",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/old/AN-94/destroy/model.moc",
+      "blob": "662da8f1c4fad170639adcbf88cb134ad82d6170",
+      "format": "moc"
+    }
+  ],
+  "widget": []
+}

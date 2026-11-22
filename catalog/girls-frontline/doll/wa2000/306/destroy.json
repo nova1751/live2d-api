@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "wa2000",
+  "version": "306",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/wa2000_306/destroy/destroy.moc3",
+      "blob": "fb5ca39192d8044db45765adfc9dd208df30b85f",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/wa2000_306/destroy/model.moc",
+      "blob": "925820fc4fe47c77753419a849e9895205b022ff",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/wa2000/wa2000_306/destroy/index.json",
+      "modelId": 12,
+      "modelTexturesId": 3
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "r93",
+  "version": "3501",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/r93_3501/destroy/destroy.moc3",
+      "blob": "f8ecb45d64d6fc187d1ccc424983edb3fc1b1e8d",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/r93_3501/destroy/model.moc",
+      "blob": "30be9d795433a6f56ffad9342740e1a948cf2db8",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/r93_3501/destroy/destroy.moc3",
+      "blob": "f8ecb45d64d6fc187d1ccc424983edb3fc1b1e8d",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

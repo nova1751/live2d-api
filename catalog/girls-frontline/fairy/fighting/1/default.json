@@ -1,0 +1,27 @@
+{
+  "category": "fairy",
+  "character": "fighting",
+  "version": "1",
+  "id": "default",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/fighting/1/1.moc3",
+      "blob": "2dfe036be579da75ea6c7c28e9fe1599e015e89d",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/fairy/fighting/model1.moc",
+      "blob": "57ea1745afdf8ec9c9c58c2be338c49b04263bb9",
+      "format": "moc"
+    }
+  ],
+  "widget": [
+    {
+      "index": "model/fairy/fighting/index.json",
+      "modelId": 0,
+      "modelTexturesId": 12
+    }
+  ]
+}

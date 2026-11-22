@@ -1,0 +1,27 @@
+{
+  "category": "doll",
+  "character": "ar15",
+  "version": "mod",
+  "id": "destroy",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/ar15mod/destroy/destroy.moc3",
+      "blob": "a0becdf0b2434d6292a4c15fd63e60a61bf3462e",
+      "format": "moc3"
+    },
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dold/gun/ar15mod/destroy/model.moc",
+      "blob": "00ada1693fb7037b00a4fcdbdb9259daed61b81a",
+      "format": "moc"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人型2/ar15mod/destroy/destroy.moc3",
+      "blob": "a0becdf0b2434d6292a4c15fd63e60a61bf3462e",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}

@@ -1,0 +1,18 @@
+{
+  "category": "doll",
+  "id": "pa15",
+  "versions": [
+    {
+      "id": "3701",
+      "path": "doll/pa15/3701.json"
+    },
+    {
+      "id": "4202",
+      "path": "doll/pa15/4202.json"
+    },
+    {
+      "id": "5802",
+      "path": "doll/pa15/5802.json"
+    }
+  ]
+}

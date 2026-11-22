@@ -1,0 +1,21 @@
+{
+  "category": "doll",
+  "character": "qbu88",
+  "version": "5502",
+  "id": "normal",
+  "sources": [
+    {
+      "repository": "eikanya",
+      "path": "少女前线 girls Frontline/live2dnew/qbu88_5502/normal/normal.moc3",
+      "blob": "04bd63f3b97c030d7a4614befb0c6778d1054b96",
+      "format": "moc3"
+    },
+    {
+      "repository": "jacksen168",
+      "path": "人形/qbu88_5502/normal/normal.moc3",
+      "blob": "04bd63f3b97c030d7a4614befb0c6778d1054b96",
+      "format": "moc3"
+    }
+  ],
+  "widget": []
+}
