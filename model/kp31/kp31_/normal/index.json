@@ -60,21 +60,25 @@
       },
       {
         "name": "1",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_004.mp3",
         "weight": 1
       },
       {
         "name": "2",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_024.mp3",
         "weight": 1
       },
       {
         "name": "3",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_025.mp3",
         "weight": 1
       },
       {
         "name": "4",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_026.mp3",
         "weight": 1
       }
@@ -94,16 +98,19 @@
       },
       {
         "name": "1",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_032.mp3",
         "weight": 1
       },
       {
         "name": "2",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_035.mp3",
         "weight": 1
       },
       {
         "name": "3",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_036.mp3",
         "weight": 1
       },

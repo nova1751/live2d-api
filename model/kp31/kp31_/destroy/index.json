@@ -1,6 +1,7 @@
 {
   "version": "Sample 1.0.0",
   "model": "model.moc",
+  "physics": "physics.json",
   "textures": ["model.1024/texture_00.png"],
   "groups": [
     {
@@ -128,7 +129,7 @@
         "weight": 1
       },
       {
-        "name": "motions/shake.mtn",
+        "file": "motions/shake.mtn",
         "sound": "../../sounds/KP31_015.mp3",
         "weight": 1
       },

@@ -1,6 +1,7 @@
 {
   "version": "Sample 1.0.0",
   "model": "model.moc",
+  "physics": "physics.json",
   "textures": ["model.1024/texture_00.png"],
   "hit_areas": [
     {
@@ -91,20 +92,20 @@
         "text": "指挥官，上回的音乐会还不错吧？我也玩得很开心呢，下次有机会还会一起去吧，就我们两个！"
       },
       {
-        "file": "motions/christmas.mtn",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_020.mp3",
         "text": "圣诞快乐，指挥官......我今晚的服装，您还满意吗？作为迎接圣诞老人的第一人，不好好打扮可不行呢。"
       },
       {
-        "file": "motions/bonus.mtn",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_032.mp3"
       },
       {
-        "file": "motions/bonus.mtn",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_035.mp3"
       },
       {
-        "file": "motions/bonus.mtn",
+        "file": "motions/daiji_idle_01.mtn",
         "sound": "../../sounds/KP31_036.mp3"
       },
       {

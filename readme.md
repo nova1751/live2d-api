@@ -124,10 +124,18 @@
 | --- | --- |
 | `npm run typecheck` | 严格检查项目 TypeScript 类型 |
 | `npm run build` | 检查类型，生成浏览器脚本和 npm 的类型声明 |
-| `npm test` | 验证新旧入口、模型选择和历史配置 |
+| `npm test` | 验证新旧入口、模型目录、资源路径大小写和 Cubism 2 物理配置 |
 | `npm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `npx playwright-core install chromium-headless-shell` |
 
 业务代码在 `src/`。`widget.mts` 导出 `loadWidget` 和 `WidgetOptions`；`runtime/` 管理模型、提示和工具栏；`legacy-autoload.ts` 生成四个历史加载入口。修改源码后提交构建产物，以便 jsDelivr 可以直接读取 Git 提交中的脚本。CSS、模型、Cubism 渲染器和小游戏仍在原来的资源路径。
+
+### 维护模型
+
+`model_list.json` 中的分组和皮肤顺序对应浏览器保存的数字 ID。新增皮肤时追加到对应组末尾。每套皮肤的入口为 `model/<皮肤目录>/index.json`，共用语音可以用相对路径引用。提交前运行 `npm test` 检查资源。
+
+- 索米圣诞皮肤的节日及奖励语音，以及索米、RFB 原先只有语音的网页互动，使用各自皮肤的待机动作播放录音。核对上游时，圣诞索米和两套 DSR-50 的破损版本都缺少配置中列出的部分动作，网页点击列表仅保留同皮肤可用的动作。[上游模型快照](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac)
+- 斯洛卡伊的日语配置位于 `model/siluokayi/model.model-Japanese.json`。其中 10 段录音按台词从仓库历史恢复，保留原始 MP3 文件名。[原始语音目录](https://github.com/nova1751/live2d-api/tree/349289f4896fd6df725b757b2b2749684ac56fe1/model/siluokayi/voice)
+- `model/kp31/kp31_/destroy/替换配置/model.json` 是 ViewerEX 的替换配置。使用时将其复制到上一级皮肤目录，与 `model.moc` 放在一起，以便解析动作和共用语音路径。
 
 ## 发布到 npm
 
