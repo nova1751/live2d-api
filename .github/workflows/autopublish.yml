@@ -1,18 +1,40 @@
-name: Node.js Package
+name: Build, test and publish
 on:
+  pull_request:
+    branches: [main]
   push:
-    branches:
-      - main
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: git diff --exit-code
+      - run: npm test
+      - run: npx playwright-core install --with-deps chromium-headless-shell
+      - run: npm run test:browser
+
   publish-npm:
+    if: github.event_name == 'push'
+    needs: verify
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: "16.x"
+          node-version: '22'
           registry-url: https://registry.npmjs.org/
+      - run: npm ci
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
