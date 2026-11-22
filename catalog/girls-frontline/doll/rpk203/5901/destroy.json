@@ -8,7 +8,8 @@
       "repository": "jacksen168",
       "path": "人形/rpk203_5901/destroy/destroy.moc3",
       "blob": "50be165f7cf0491b16b6271aba190b4140b6af8c",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/rpk203_5901/destroy/destroy.model3.json"
     }
   ],
   "widget": []

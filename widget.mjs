@@ -30,7 +30,7 @@ function loadScript(url, exportName, asteroidsUrl) {
   }
   return scripts.get(url);
 }
-async function mount(base, mode, position) {
+async function mount(base, mode, position, modelUrl, coreUrl) {
   const style = document.createElement("link");
   style.rel = "stylesheet";
   style.href = base + `css/${position}.css`;
@@ -44,14 +44,19 @@ async function mount(base, mode, position) {
       await new Promise((resolve) => document.addEventListener("DOMContentLoaded", () => resolve(), { once: true }));
     }
     if (!document.getElementById("waifu-toggle")) {
-      initWidget({ cdnPath: base, waifuPath: base + "waifu-tips.json" });
+      initWidget({
+        cdnPath: base,
+        waifuPath: base + "waifu-tips.json",
+        modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
+        coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href
+      });
     }
   } catch (error) {
     style.remove();
     throw error;
   }
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl } = {}) {
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
   const page = document;
@@ -61,7 +66,7 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl } = 
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   base.search = "";
   base.hash = "";
-  page[mounting] = mount(base.href, mode, position).catch((error) => {
+  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl).catch((error) => {
     delete page[mounting];
     throw error;
   });

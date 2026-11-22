@@ -8,7 +8,8 @@
       "repository": "jacksen168",
       "path": "人形/rpk203_5901/normal/normal.moc3",
       "blob": "1b580397a92df0016da91fd6e4365432ab49a869",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/rpk203_5901/normal/normal.model3.json"
     }
   ],
   "widget": []

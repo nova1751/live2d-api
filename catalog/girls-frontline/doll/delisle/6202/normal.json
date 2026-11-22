@@ -8,7 +8,8 @@
       "repository": "jacksen168",
       "path": "人形/delisle_6202/normal/normal.moc3",
       "blob": "83226f7288705186702d7bddf083d150931e0e6d",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/delisle_6202/normal/normal.model3.json"
     }
   ],
   "widget": []

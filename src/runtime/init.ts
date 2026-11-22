@@ -75,6 +75,7 @@ function mount(options: LegacyOptions, models: Models, start = false) {
     'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
     photo: () => {
       say('照好了嘛，是不是很可爱呢？', 6000, 9);
+      if (window.loadlive2d.capture?.()) return;
       window.Live2D.captureName = 'photo.png';
       window.Live2D.captureFrame = true;
     },
@@ -82,6 +83,7 @@ function mount(options: LegacyOptions, models: Models, start = false) {
     quit: () => { models.cancel(); hide(); },
   };
   for (const name of Array.isArray(options.tools) ? options.tools : Object.keys(actions)) {
+    if (options.modelUrl && (name === 'switch-model' || name === 'switch-texture')) continue;
     if (!Object.prototype.hasOwnProperty.call(actions, name)) continue;
     const tool = name as keyof typeof actions;
     byId('waifu-tool').insertAdjacentHTML('beforeend', `<span id="waifu-tool-${tool}">${icons[tool]}</span>`);

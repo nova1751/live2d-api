@@ -5,6 +5,10 @@ type WidgetDocument = Document & { [mounting]?: Promise<void> };
 export type WidgetMode = 'random' | 'sequential';
 export type WidgetPosition = 'left' | 'right';
 export interface WidgetOptions {
+  /** A single model manifest to show in place of the built-in rotation. */
+  modelUrl?: string | URL;
+  /** Optional self-hosted Cubism Core for modern models. */
+  coreUrl?: string | URL;
   mode?: WidgetMode;
   position?: WidgetPosition;
   /** Directory containing the deployed scripts, styles and models. */
@@ -44,7 +48,7 @@ function loadScript<K extends 'initWidget' | 'loadlive2d'>(
   return scripts.get(url) as Promise<Window[K]>;
 }
 
-async function mount(base: string, mode: WidgetMode, position: WidgetPosition) {
+async function mount(base: string, mode: WidgetMode, position: WidgetPosition, modelUrl?: string | URL, coreUrl?: string | URL) {
   const style = document.createElement('link');
   style.rel = 'stylesheet';
   style.href = base + `css/${position}.css`;
@@ -58,7 +62,9 @@ async function mount(base: string, mode: WidgetMode, position: WidgetPosition) {
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, waifuPath: base + 'waifu-tips.json' });
+      initWidget({ cdnPath: base, waifuPath: base + 'waifu-tips.json',
+        modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
+        coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
   } catch (error) {
     style.remove();
@@ -66,7 +72,7 @@ async function mount(base: string, mode: WidgetMode, position: WidgetPosition) {
   }
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl }: WidgetOptions = {}): Promise<void> {
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
   const page: WidgetDocument = document;
@@ -79,7 +85,7 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   if (!base.pathname.endsWith('/')) base.pathname += '/';
   base.search = '';
   base.hash = '';
-  page[mounting] = mount(base.href, mode, position).catch(error => {
+  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl).catch(error => {
     delete page[mounting];
     throw error;
   });

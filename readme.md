@@ -51,6 +51,20 @@
 
 [打开 Vercel 在线演示](https://live2d-nova.vercel.app/) · [GitHub Pages 镜像](https://nova1751.github.io/live2d-api/)
 
+### 指定 Cubism 3、4、5 模型
+
+使用包含 `modern/renderer.mjs` 的部署版本。给同一个入口指定完整的 `.model3.json` URL，即可固定显示该模型。相对 URL 按页面地址解析。模型、贴图、物理与动作文件须保留清单中的相对路径，并允许页面跨域读取。
+
+```html
+<script defer src="/live2d/autoload.js"
+  data-model-url="/characters/Ren/Ren.model3.json"
+  data-core-url="/live2d-core/06/live2dcubismcore.min.js"></script>
+```
+
+`data-core-url` 可省略，默认从 Live2D 官方的固定版 Core 地址加载。需要所有资源走自己的国内 CDN 时，请将合法部署的 Core 和模型一起指定到目标域名。框架按需加载，使用 WebGL 2 和 Cubism Web Framework 5-r.5。单模型模式提供待机、视线跟随，以及模型声明的命中区与对应 Tap 动作；ViewerEX 的自定义台词、事件与配音规则属于旧播放器。支持范围取决于导出的运行时模型及 Web SDK 功能。[Live2D 官方 Core 与许可](https://www.live2d.com/en/sdk/download/web/) · [Cubism 5.3 功能限制](https://docs.live2d.com/en/cubism-sdk-manual/compatibility-with-cubism-5-3/)
+
+模块调用可传 `loadWidget({ modelUrl, coreUrl })`。直接控制画布可调用 `await loadlive2d('live2d', modelUrl, { coreUrl })`。使用老的 `index.json` 时走原先的 Cubism 2 播放器。可以运行 `node test/modern-browser.mjs` 在线验证三个官方模型，也可以在命令后传入组件 CDN 根地址和其他模型清单 URL。
+
 ### 自有 CDN 和模块调用
 
 面向大陆长期运行的站点，可以把同一份发布包部署到自己的静态站点或国内 CDN。在仓库运行 `pnpm install --frozen-lockfile` 和 `npm pack`，将生成的 `.tgz` 解压，把其中 `package/` 下的文件原样上传到一个版本目录，例如 `/live2d/1.1.0/`。跨域部署时，静态服务器需要允许页面读取资源（CORS），并为 `.js` 和 `.mjs` 返回 JavaScript MIME 类型。版本目录可以设置长缓存，升级时切换入口 URL。
@@ -138,7 +152,7 @@
 目录覆盖 [Eikanya](https://github.com/Eikanya/Live2d-model) 和 [jacksen168](https://github.com/jacksen168/Girls-Frontline-model) 两个固定提交中的少女前线模型。人物和皮肤沿用来源代号；旧收藏里无法确认编号的版本保留 `archive` 标记。同一形态可以收录多个格式及来源，每个二进制文件均记录仓库、路径和 Git blob。来源快照和去重口径决定这里的覆盖范围。
 
 - 从 `catalog/girls-frontline/index.json` 开始。人物、版本和形态的 `path` 都相对于该分类根目录。形态记录中的 `widget[].index` 相对于组件资源根目录，可传给已有的 `loadlive2d('live2d', url)`，或用同条记录的 `modelId`、`modelTexturesId` 对接旧目录。
-- `widget: []` 表示该形态仅编目。有 `.moc` 来源的形态可以进一步核验入口、贴图、物理、命中区域和动作；只有 `.moc3` 来源的形态需要支持该格式的渲染器。
+- `widget: []` 表示该形态仅编目。有 `.moc` 来源的形态可以进一步核验入口、贴图、物理、命中区域和动作；只有 `.moc3` 来源的形态在 `sources[].manifest` 提供固定上游提交中的新版模型入口路径。
 - 两个收藏均包含从游戏提取的素材。查阅的公开说明未提供整套模型、贴图和录音经 npm 或公共 CDN 再分发的权利人授权。编目和现有 `widget` 入口均不表示素材已获授权。日本发行方对粉丝网站展示和直接复制素材有不同规定。[日服官方使用指南](https://gf-jp.sunborngame.com/guide.php)
 
 要更新分类，在仓库根目录运行 `node scripts/girls-frontline-catalog.mjs <Eikanya 本地仓库> <jacksen168 本地仓库>`，再运行 `pnpm test`。生成器读取固定提交的 Git 文件树，支持稀疏检出。

@@ -3,6 +3,8 @@ interface LegacyOptions {
   cdnPath?: string;
   apiPath?: string;
   tools?: string[];
+  modelUrl?: string;
+  coreUrl?: string;
 }
 interface InitWidget {
   (options: LegacyOptions): void;
@@ -12,7 +14,8 @@ interface InitWidget {
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { start: boolean }): void;
+    (canvas: string, model: string, options?: { start?: boolean; coreUrl?: string }): void | Promise<void>;
+    capture?(): boolean;
     prepareInteraction?(): boolean;
     show?(start: boolean): void;
     hide?(): void;

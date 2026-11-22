@@ -1,3 +1,6 @@
+import { createRequire } from 'node:module';
+import { dirname, resolve } from 'node:path';
+import { copyFile, mkdir } from 'node:fs/promises';
 import { build, context } from 'esbuild';
 
 const dev = process.argv.includes('--dev');
@@ -6,7 +9,15 @@ const shared = {
   charset: 'utf8',
   banner: { js: '/*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */' },
 };
+const upstream = 'node_modules/live2d-web/';
+await mkdir('modern', { recursive: true });
+for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/cubism-web-framework-5-r.5/LICENSE.md']) {
+  await copyFile(upstream + name, 'modern/' + name.split('/').pop());
+}
+const runtimeRequire = createRequire(import.meta.resolve('live2d-web'));
+await copyFile(resolve(dirname(runtimeRequire.resolve('wlipsync')), '../LICENSE'), 'modern/wlipsync-LICENSE');
 const entries = [
+  { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
   { entryPoints: ['src/widget.mts'], outfile: 'widget.mjs', format: 'esm', bundle: true },
   {
     entryPoints: ['src/autoload.ts'], outfile: 'autoload.js', format: 'iife', bundle: true, minify: true,

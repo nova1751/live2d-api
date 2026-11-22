@@ -11,6 +11,9 @@ importers:
       esbuild:
         specifier: 0.25.12
         version: 0.25.12
+      live2d-web:
+        specifier: 0.9.0
+        version: 0.9.0
       playwright-core:
         specifier: 1.56.1
         version: 1.56.1
@@ -181,6 +184,17 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  live2d-web@0.9.0:
+    resolution: {integrity: sha512-yboilM46r/K8+SIiwtUUj/OG2j6qD86AtDPhFKSiH6ICvpiHiCWRZuE0FO/tWpyVHXy2d8p1wlRdqnQKFE2/6Q==}
+    peerDependencies:
+      '@mediapipe/tasks-vision': ^1.0.1
+      react: '>=18.2 <20'
+    peerDependenciesMeta:
+      '@mediapipe/tasks-vision':
+        optional: true
+      react:
+        optional: true
+
   playwright-core@1.56.1:
     resolution: {integrity: sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==}
     engines: {node: '>=18'}
@@ -190,6 +204,9 @@ packages:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
+
+  wlipsync@1.3.1:
+    resolution: {integrity: sha512-R7m2b7UkfpXxvQYxypIkJqtmgmgMXNZ/z3558u9S0rI0HoMhKusXz4tFdDSsct3eRoZg1WBan6YfcawGxJqP1g==}
 
 snapshots:
 
@@ -300,6 +317,12 @@ snapshots:
       '@esbuild/win32-ia32': 0.25.12
       '@esbuild/win32-x64': 0.25.12
 
+  live2d-web@0.9.0:
+    dependencies:
+      wlipsync: 1.3.1
+
   playwright-core@1.56.1: {}
 
   typescript@5.9.3: {}
+
+  wlipsync@1.3.1: {}

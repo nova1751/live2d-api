@@ -8,13 +8,15 @@
       "repository": "jacksen168",
       "path": "人型2/97types_5805/destroy/destroy.moc3",
       "blob": "fb925a26e360fc3149231cf99751bb60bbc25a9b",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人型2/97types_5805/destroy/destroy.model3.json"
     },
     {
       "repository": "jacksen168",
       "path": "人形/97types_5805/destroy/destroy.moc3",
       "blob": "fb925a26e360fc3149231cf99751bb60bbc25a9b",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/97types_5805/destroy/destroy.model3.json"
     }
   ],
   "widget": []

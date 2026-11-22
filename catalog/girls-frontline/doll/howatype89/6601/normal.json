@@ -8,7 +8,8 @@
       "repository": "jacksen168",
       "path": "人形/howatype89_6601/normal/normal.moc3",
       "blob": "aee8688233d9427de256971b2dccbd47128b5a9a",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/howatype89_6601/normal/normal.model3.json"
     }
   ],
   "widget": []

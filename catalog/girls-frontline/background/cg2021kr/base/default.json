@@ -8,7 +8,8 @@
       "repository": "jacksen168",
       "path": "辅助/cg2021kr/cg2021kr.moc3",
       "blob": "47a080089fd5ec28955946904c695d09b9e06239",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "辅助/cg2021kr/cg2021kr.model3.json"
     }
   ],
   "widget": []

@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/ntw20_4801/normal/normal.moc3",
       "blob": "1b7e3c7e1f48a3bf9812ec5fbfb049ec274173ef",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ntw20_4801/normal/normal.model3.json"
     },
     {
       "repository": "eikanya",
@@ -20,7 +21,8 @@
       "repository": "jacksen168",
       "path": "人形/ntw20_4801/normal/normal.moc3",
       "blob": "1b7e3c7e1f48a3bf9812ec5fbfb049ec274173ef",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "人形/ntw20_4801/normal/normal.model3.json"
     }
   ],
   "widget": []

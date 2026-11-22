@@ -8,7 +8,8 @@
       "repository": "eikanya",
       "path": "少女前线 girls Frontline/live2dnew/ar15_4508/normal/normal.moc3",
       "blob": "c06f557ea023bbfbfe7c71f5cd4d4c6cc9e51ac1",
-      "format": "moc3"
+      "format": "moc3",
+      "manifest": "少女前线 girls Frontline/live2dnew/ar15_4508/normal/normal.model3.json"
     },
     {
       "repository": "eikanya",
