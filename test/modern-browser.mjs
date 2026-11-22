@@ -1,13 +1,37 @@
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 import { context } from 'esbuild';
+
+async function girlsFrontlineModels() {
+  const root = new URL('../catalog/girls-frontline/', import.meta.url);
+  const read = async path => JSON.parse(await readFile(new URL(path, root), 'utf8'));
+  const { sources, characters } = await read('index.json');
+  const urls = [];
+  for (const character of characters) {
+    for (const version of (await read(character.path)).versions) {
+      for (const entry of (await read(version.path)).forms) {
+        const form = await read(entry.path);
+        if (form.sources.some(source => source.format !== 'moc3')) continue;
+        const source = form.sources.find(s => s.repository === 'jacksen168' && s.manifest)
+          ?? form.sources.find(s => s.manifest);
+        assert.ok(source, 'Missing model3.json in ' + entry.path);
+        const { repository, commit } = sources[source.repository];
+        urls.push(repository.replace('github.com', 'raw.githubusercontent.com') + '/' + commit + '/'
+          + source.manifest.split('/').map(encodeURIComponent).join('/'));
+      }
+    }
+  }
+  return urls;
+}
 
 // Opt-in network smoke test. The sample models and proprietary Core stay at their publishers.
 const server = await context({ stdin: { contents: '' }, write: false });
 let browser;
 try {
   const { port } = await server.serve({ servedir: '.', host: '127.0.0.1' });
-  const base = process.argv[2] || `http://127.0.0.1:${port}/`;
+  const args = process.argv.slice(2).filter(arg => arg !== '--girls-frontline');
+  const base = args.shift() || `http://127.0.0.1:${port}/`;
   const samples = 'https://raw.githubusercontent.com/Live2D/CubismWebSamples/5-r.5/Samples/Resources/';
   browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
@@ -38,7 +62,8 @@ try {
   assert.equal(await page.locator('#waifu-tool-switch-model').count(), 0);
   console.log('Haru (MOC3 v1): rendered via autoload');
   const models = ['Mao', 'Ren'].map(name => samples + name + '/' + name + '.model3.json');
-  for (const url of [...models, ...process.argv.slice(3)]) {
+  if (process.argv.includes('--girls-frontline')) models.push(...await girlsFrontlineModels());
+  for (const url of [...models, ...args]) {
     await page.evaluate(url => window.loadlive2d('live2d', url), url);
     await drawn();
     assert.equal(await page.locator('canvas').count(), 2);

@@ -63,7 +63,7 @@
 
 `data-core-url` 可省略，默认从 Live2D 官方的固定版 Core 地址加载。需要所有资源走自己的国内 CDN 时，请将合法部署的 Core 和模型一起指定到目标域名。框架按需加载，使用 WebGL 2 和 Cubism Web Framework 5-r.5。单模型模式提供待机、视线跟随，以及模型声明的命中区与对应 Tap 动作；ViewerEX 的自定义台词、事件与配音规则属于旧播放器。支持范围取决于导出的运行时模型及 Web SDK 功能。[Live2D 官方 Core 与许可](https://www.live2d.com/en/sdk/download/web/) · [Cubism 5.3 功能限制](https://docs.live2d.com/en/cubism-sdk-manual/compatibility-with-cubism-5-3/)
 
-模块调用可传 `loadWidget({ modelUrl, coreUrl })`。直接控制画布可调用 `await loadlive2d('live2d', modelUrl, { coreUrl })`。使用老的 `index.json` 时走原先的 Cubism 2 播放器。可以运行 `node test/modern-browser.mjs` 在线验证三个官方模型，也可以在命令后传入组件 CDN 根地址和其他模型清单 URL。
+模块调用可传 `loadWidget({ modelUrl, coreUrl })`。直接控制画布可调用 `await loadlive2d('live2d', modelUrl, { coreUrl })`。使用老的 `index.json` 时走原先的 Cubism 2 播放器。可以运行 `node test/modern-browser.mjs` 在线验证三个官方模型；追加 `--girls-frontline` 会逐个检查仅有新版格式的少女前线形态是否实际出图。也可以在命令后传入组件 CDN 根地址和其他模型清单 URL。
 
 ### 自有 CDN 和模块调用
 
