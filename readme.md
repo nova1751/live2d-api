@@ -20,21 +20,21 @@
 
 ### 一行 CDN 接入
 
-按访客所在地区选一段放到页面的 `<head>` 中。以下地址固定到同一个发布版本。升级时替换 URL 中的版本号。
+按访客所在地区选一段放到页面的 `<head>` 中。以下两种入口使用同一份模型和播放器。升级时一起更换脚本与资源版本。
 
 **中国大陆 · JSDMirror**
 
 ```html
-<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v1.1.0/autoload.js"></script>
+<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-9d81af00062a/autoload.js"></script>
 ```
 
-**海外 · raw.githack**
+**海外 · jsDelivr**
 
 ```html
-<script defer src="https://rawcdn.githack.com/nova1751/live2d-api/v1.1.0/autoload.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-9d81af00062a/autoload.js"></script>
 ```
 
-入口会从相同版本目录加载样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
+入口会加载同一版本的样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
 
 | 属性 | 可选值 | 默认值 |
 | --- | --- | --- |
@@ -47,7 +47,7 @@
 <script defer src="https://unpkg.com/live2dapi-noa@1.1.0/autoload.js" data-position="right" data-mode="random"></script>
 ```
 
-完整模型包解压后约 224 MB，超过 jsDelivr 默认支持的 npm 包大小。大陆快捷示例使用 JSDMirror 的 GitHub 路径。公共镜像的可用性随线路和缓存而变化。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror) · [raw.githack 生产地址](https://raw.githack.com/)
+完整仓库超出 jsDelivr 每版本 50 MB 的限制，整库地址在镜像缓存未命中时可能返回 403。大陆示例将播放器、目录和每套皮肤配置放在一个固定版本，动作、模型、贴图和语音由同域名的七个固定版本提供，每份均小于 38 MB。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror)
 
 [打开 Vercel 在线演示](https://live2d-nova.vercel.app/) · [GitHub Pages 镜像](https://nova1751.github.io/live2d-api/)
 
@@ -78,19 +78,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/sequential/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-9d81af00062a/jsdelivr/sequential/autoload.min.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/jsdelivr/random/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-9d81af00062a/jsdelivr/random/autoload.min.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/css/left.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-9d81af00062a/css/left.min.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/css/right.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-9d81af00062a/css/right.min.css"
    />
    ```
 
@@ -141,6 +141,10 @@
 - 玛蒂尔达恢复了 10 个按同角色动作编号对应的录音文件。斯洛卡伊默认配置引用的 11 个录音文件在该套上游资源中缺失，保留原动作和文字。索米和 DSR-50 的三套破损皮肤合计缺少 4 个动作引用。战舰少女配置中的占位音效 `test` 已忽略。
 - 斯洛卡伊的日语配置位于 `model/siluokayi/model.model-Japanese.json`。其中 10 段录音按台词从仓库历史恢复，保留原始 MP3 文件名。[原始语音目录](https://github.com/nova1751/live2d-api/tree/349289f4896fd6df725b757b2b2749684ac56fe1/model/siluokayi/voice)
 - `model/kp31/kp31_/destroy/替换配置/model.json` 是 ViewerEX 的替换配置。使用时将其复制到上一级皮肤目录，与 `model.moc` 放在一起，以便解析动作和共用语音路径。
+
+### 发布国内 CDN 资源
+
+在仓库根目录执行 `node scripts/cdn-snapshot.mjs <提交>`，可核对每份静态资源的体积和入口。确认后运行 `node scripts/cdn-snapshot.mjs <提交> --publish`。脚本从指定 Git 提交读取文件，把同一模型家族放在一起，并通过一次原子推送发布所有 CDN 标签。标签使用源提交标识，重复运行会产生相同内容。站点只需引用输出的入口地址。自托管和 npm 继续使用完整包。
 
 ## 发布到 npm
 
