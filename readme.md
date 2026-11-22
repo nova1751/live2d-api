@@ -25,13 +25,13 @@
 **中国大陆 · JSDMirror**
 
 ```html
-<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-fad574356193/autoload.js"></script>
+<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/autoload.js"></script>
 ```
 
 **海外 · jsDelivr**
 
 ```html
-<script defer src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/autoload.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/autoload.js"></script>
 ```
 
 入口会加载同一版本的样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
@@ -78,19 +78,19 @@
 
    ```html
    <!-- 顺序切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/jsdelivr/sequential/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/jsdelivr/sequential/autoload.min.js"></script>
    <!-- 随机切换模型材质 -->
-   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/jsdelivr/random/autoload.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/jsdelivr/random/autoload.min.js"></script>
 
    <!-- 看板娘位置靠左 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/css/left.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/css/left.min.css"
    />
    <!-- 看板娘位置靠右 -->
    <link
      rel="stylesheet"
-     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-fad574356193/css/right.min.css"
+     href="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-e8a7dc51e4d9/css/right.min.css"
    />
    ```
 
