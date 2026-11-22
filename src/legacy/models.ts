@@ -1,17 +1,12 @@
+import { getJson } from '../runtime/request';
 import { globalModels, modelDirectory } from '../distribution';
-import { pick, say } from './messages';
+import { pick, say } from '../runtime/messages';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
 const changed = '我的新衣服好看嘛？';
 const storedId = (key: string) => Number(localStorage.getItem(key)) || 0;
 
-export async function getJson<T>(url: string): Promise<T> {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed to load ${url} (HTTP ${response.status})`);
-  return response.json();
-}
-
-export class Models {
+export class LegacyModels {
   private base: string;
   private readonly useCDN: boolean;
   private catalog?: Promise<Catalog>;

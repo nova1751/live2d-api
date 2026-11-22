@@ -7,6 +7,8 @@ if (script && window.innerWidth >= 768) {
   const { mode, position } = script.dataset;
   loadWidget({
     baseUrl: scriptDirectory(script.src),
+    catalogUrl: script.dataset.catalogUrl,
+    modelId: script.dataset.modelId,
     modelBaseUrl: script.dataset.modelBaseUrl,
     modelUrl: script.dataset.modelUrl,
     coreUrl: script.dataset.coreUrl,

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live2D 模型目录</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#faf8f4;color:#302e2b;font:16px/1.55 system-ui,sans-serif}
+main{max-width:64rem;margin:6vh auto;padding:1.5rem}section{max-width:29rem;margin-left:auto}
+h1{font:600 clamp(2.2rem,5vw,3.6rem)/1.1 Georgia,serif;margin:0 0 1.4rem}
+label{display:block;margin-top:.8rem}select,button{font:inherit}select{width:100%;padding:.5rem;background:white;border:1px solid #928c80;border-radius:4px}
+a{color:#265b64}#result{min-height:1.8rem}#preview{margin-top:1.2rem;padding:.45rem 1.2rem}
+@media(max-width:800px){main{margin:0;padding:1rem 1rem 27rem}section{margin:auto}#waifu #live2d{width:min(68vw,280px);height:min(68vw,280px)}}
+</style>
+<main><section>
+<h1>Live2D 模型目录</h1>
+<form id="picker">
+<label>分类<select id="category"></select></label>
+<label>人物或对象<select id="character"></select></label>
+<label>版本<select id="version"></select></label>
+<label>形态<select id="form"></select></label>
+<button id="preview" disabled>预览所选模型</button>
+</form>
+<p id="result" role="status"></p>
+<a id="manifest" hidden>查看模型清单</a> · <a href="https://github.com/nova1751/live2d-api#模型目录与离线下载">下载模型集合</a>
+</section></main>
+<script type="module" src="./browser.mjs"></script>
+</html>

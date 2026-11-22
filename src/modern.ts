@@ -1,6 +1,9 @@
 import { createLive2D, OFFICIAL_CUBISM_CORE_URL, type Live2DInstance } from 'live2d-web';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal) {
+import { readActions, bindInteractions } from './modern/interactions';
+import type { DialogueSource } from './library/catalog';
+
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -23,27 +26,15 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   }
   signal.addEventListener('abort', cleanup, { once: true });
   try {
-    stage = await createLive2D({ container: host, src, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
+    const { actions, src: model, resolveAsset } = await readActions(src, dialogue, signal);
+    signal.throwIfAborted();
+    stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
       fit: 'full', followPointer: true, signal, onError: error => console.error('[Live2D]', error) });
     signal.throwIfAborted();
     const instance = stage;
-    const { motions, expressions } = instance.getModelInfo();
-    // Use the sample application's tap convention only for declared hit areas and groups.
-    host.addEventListener('click', event => {
-      const hits = instance.hitTest(event.clientX, event.clientY);
-      for (const area of hits) {
-        const group = Object.keys(motions).find(key =>
-          key.replace(/_/g, '').toLowerCase() === 'tap' + area.toLowerCase() && motions[key] > 0);
-        const action = group ? instance.motion(group, Math.floor(Math.random() * motions[group]))
-          : area.toLowerCase() === 'head' && expressions.length ? instance.expression() : undefined;
-        if (action) {
-          action.catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
-          break;
-        }
-      }
-    });
+    const stopInteraction = bindInteractions(host, instance, actions, signal);
     return {
-      pause: () => instance.pause(),
+      pause: () => { stopInteraction(); instance.pause(); },
       resume: () => instance.resume(),
       capture() {
         requestAnimationFrame(() => {

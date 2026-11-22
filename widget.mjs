@@ -36,8 +36,9 @@ function createRenderer(base, legacy) {
       if (legacy) return legacy(canvas, model, options);
       return fetchLegacy().then((renderer) => {
         if (generation !== revision) return;
-        renderer(canvas, model, options);
+        const ready = renderer(canvas, model, options);
         if (hidden) renderer.hide?.();
+        return ready;
       });
     }
     legacy?.hide?.();
@@ -49,7 +50,7 @@ function createRenderer(base, legacy) {
       base + "modern/renderer.mjs"
     ).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal);
+      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -78,8 +79,37 @@ function createRenderer(base, legacy) {
   return render;
 }
 
+// src/library/catalog.ts
+async function loadModelCatalog(input) {
+  const url = new URL(input, document.baseURI);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
+  const catalog = await response.json();
+  if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
+  const audioBySource = /* @__PURE__ */ new Map();
+  const ids = Object.keys(catalog.models).filter((id) => catalog.models[id].some((asset) => asset.manifest));
+  function resolve(id, source) {
+    const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
+    if (!asset?.manifest) throw new Error("No model manifest for " + id);
+    const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
+    if (url.hostname === "cdn.jsdmirror.com" && base.hostname === "cdn.jsdelivr.net" && base.pathname.startsWith("/gh/nova1751/live2d-api@cdn-")) base.hostname = url.hostname;
+    const assetUrl = (path) => new URL(path.split("/").map(encodeURIComponent).join("/"), base).href;
+    let dialogue;
+    if (asset.dialogue) {
+      let audio = audioBySource.get(asset.source);
+      if (!audio) {
+        audio = new Map((catalog.audio?.[asset.source] ?? []).map((path) => [path.toUpperCase(), assetUrl(path)]));
+        audioBySource.set(asset.source, audio);
+      }
+      dialogue = { url: assetUrl(asset.dialogue), audio };
+    }
+    return { modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+  }
+  return { ids, resolve, legacyIds: catalog.legacyIds };
+}
+
 // package.json
-var version = "2.0.0";
+var version = "2.1.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -95,6 +125,11 @@ function scriptDirectory(src) {
 }
 function runtimeDirectory(src) {
   return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + "/npm/live2dapi-noa@" + version + "/");
+}
+function defaultLibraryUrl(base) {
+  if (!packageRoot.test(base.pathname)) return void 0;
+  const cdn = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
+  return cdn + "/gh/nova1751/live2d-api@catalog-c6c44d203d03fa2b/catalog/library.json";
 }
 
 // src/widget.mts
@@ -127,14 +162,14 @@ function loadScript(url, exportName, asteroidsUrl) {
   }
   return scripts.get(url);
 }
-async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl) {
+async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId) {
   const style = document.createElement("link");
   style.rel = "stylesheet";
   style.href = base + `css/${position}.css`;
   try {
     const [, , initWidget] = await Promise.all([
       appendResource(style, style.href),
-      modelUrl && isModern(new URL(modelUrl, document.baseURI)) ? window.loadlive2d = createRenderer(base) : loadScript(base + "live2d.min.js", "loadlive2d"),
+      catalogUrl || modelUrl && isModern(new URL(modelUrl, document.baseURI)) ? window.loadlive2d = createRenderer(base) : loadScript(base + "live2d.min.js", "loadlive2d"),
       loadScript(base + `jsdelivr/${mode}/waifu-tips.js`, "initWidget", base + "asteroids.js")
     ]);
     if (!document.body) {
@@ -143,6 +178,8 @@ async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl) {
     if (!document.getElementById("waifu-toggle")) {
       initWidget({
         cdnPath: base,
+        catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href,
+        modelId,
         modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href,
         waifuPath: base + "waifu-tips.json",
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
@@ -154,9 +191,16 @@ async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl) {
     throw error;
   }
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl } = {}) {
+async function selectWidgetModel(id) {
+  const key = Symbol.for("live2dapi-noa.selectModel");
+  const select = window[key];
+  if (!select) throw new Error("Initialize the widget with a model catalog first");
+  await select(id);
+}
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId } = {}) {
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
+  if (catalogUrl && modelUrl) throw new TypeError("Choose catalogUrl or modelUrl");
   const page = document;
   if (page[mounting]) return page[mounting];
   if (document.getElementById("waifu-toggle")) return;
@@ -164,12 +208,16 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   base.search = "";
   base.hash = "";
-  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl).catch((error) => {
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = defaultLibraryUrl(base);
+  if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
+  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId).catch((error) => {
     delete page[mounting];
     throw error;
   });
   return page[mounting];
 }
 export {
-  loadWidget
+  loadModelCatalog,
+  loadWidget,
+  selectWidgetModel
 };

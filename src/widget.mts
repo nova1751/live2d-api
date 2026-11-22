@@ -1,5 +1,6 @@
 import { createRenderer, isModern } from './renderer';
-import { runtimeDirectory } from './distribution';
+export { loadModelCatalog } from './library/catalog.js';
+import { runtimeDirectory, defaultLibraryUrl } from './distribution';
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
@@ -12,6 +13,8 @@ export interface WidgetOptions {
   modelUrl?: string | URL;
   /** Optional self-hosted Cubism Core for modern models. */
   coreUrl?: string | URL;
+  catalogUrl?: string | URL;
+  modelId?: string;
   mode?: WidgetMode;
   position?: WidgetPosition;
   /** Directory containing the deployed runtime and styles. */
@@ -51,14 +54,14 @@ function loadScript<K extends 'initWidget' | 'loadlive2d'>(
   return scripts.get(url) as Promise<Window[K]>;
 }
 
-async function mount(base: string, mode: WidgetMode, position: WidgetPosition, modelUrl?: string | URL, coreUrl?: string | URL, modelBaseUrl?: string | URL) {
+async function mount(base: string, mode: WidgetMode, position: WidgetPosition, modelUrl?: string | URL, coreUrl?: string | URL, modelBaseUrl?: string | URL, catalogUrl?: string | URL, modelId?: string) {
   const style = document.createElement('link');
   style.rel = 'stylesheet';
   style.href = base + `css/${position}.css`;
   try {
     const [, , initWidget] = await Promise.all([
       appendResource(style, style.href),
-      modelUrl && isModern(new URL(modelUrl, document.baseURI))
+      catalogUrl || modelUrl && isModern(new URL(modelUrl, document.baseURI))
         ? (window.loadlive2d = createRenderer(base))
         : loadScript(base + 'live2d.min.js', 'loadlive2d'),
       loadScript(base + `jsdelivr/${mode}/waifu-tips.js`, 'initWidget', base + 'asteroids.js'),
@@ -67,7 +70,7 @@ async function mount(base: string, mode: WidgetMode, position: WidgetPosition, m
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + 'waifu-tips.json',
+      initWidget({ cdnPath: base, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + 'waifu-tips.json',
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
@@ -77,9 +80,17 @@ async function mount(base: string, mode: WidgetMode, position: WidgetPosition, m
   }
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl }: WidgetOptions = {}): Promise<void> {
+export async function selectWidgetModel(id: string): Promise<void> {
+  const key = Symbol.for('live2dapi-noa.selectModel');
+  const select = (window as Window & { [key]?: (id: string) => Promise<void> })[key];
+  if (!select) throw new Error('Initialize the widget with a model catalog first');
+  await select(id);
+}
+
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId }: WidgetOptions = {}): Promise<void> {
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
+  if (catalogUrl && modelUrl) throw new TypeError('Choose catalogUrl or modelUrl');
   const page: WidgetDocument = document;
   if (page[mounting]) return page[mounting];
   if (document.getElementById('waifu-toggle')) return;
@@ -90,7 +101,9 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   if (!base.pathname.endsWith('/')) base.pathname += '/';
   base.search = '';
   base.hash = '';
-  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl).catch(error => {
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = defaultLibraryUrl(base);
+  if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
+  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId).catch(error => {
     delete page[mounting];
     throw error;
   });

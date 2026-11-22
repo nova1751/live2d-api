@@ -83,20 +83,20 @@ export function bindMessages(tips: Tips) {
       idleMessages.push(pick(text).replace('{year}', String(now.getFullYear())));
     }
   }
-  let active = false;
+  const idleDelay = 20000;
+  let lastActivity = Date.now();
   let idleTimer: number | undefined;
-  const markActive = () => { active = true; };
-  window.addEventListener('mousemove', markActive);
+  function tick() {
+    if (document.hidden) return;
+    const remaining = idleDelay - (Date.now() - lastActivity);
+    if (remaining <= 0 && !localStorage.getItem('waifu-display')) say(idleMessages, 6000, 9);
+    idleTimer = setTimeout(tick, remaining > 0 ? remaining : idleDelay);
+  }
+  const markActive = () => { lastActivity = Date.now(); };
+  window.addEventListener('pointermove', markActive, { passive: true });
+  window.addEventListener('pointerdown', markActive, { passive: true });
   window.addEventListener('keydown', markActive);
-  setInterval(() => {
-    if (active) {
-      active = false;
-      clearInterval(idleTimer);
-      idleTimer = undefined;
-    } else if (idleTimer === undefined) {
-      idleTimer = setInterval(() => say(idleMessages, 6000, 9), 20000);
-    }
-  }, 1000);
+  if (!document.hidden) idleTimer = setTimeout(tick, idleDelay);
   say(welcome(tips.time), 7000, 11);
 
   let previousSelector: string | undefined;
@@ -114,6 +114,11 @@ export function bindMessages(tips: Tips) {
   console.log('%c', consoleGreeting);
   window.addEventListener('copy', () => say(tips.message.copy, 6000, 9));
   document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) say(tips.message.visibilitychange, 6000, 9);
+    clearTimeout(idleTimer);
+    if (!document.hidden) {
+      markActive();
+      idleTimer = setTimeout(tick, idleDelay);
+      if (!localStorage.getItem('waifu-display')) say(tips.message.visibilitychange, 6000, 9);
+    }
   });
 }
