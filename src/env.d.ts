@@ -11,7 +11,12 @@ interface InitWidget {
 
 interface Window {
   initWidget: InitWidget;
-  loadlive2d(canvas: string, model: string): void;
+  loadlive2d: {
+    (canvas: string, model: string, options?: { start: boolean }): void;
+    prepareInteraction?(): boolean;
+    show?(start: boolean): void;
+    hide?(): void;
+  };
   Live2D: { captureName: string; captureFrame: boolean };
   Asteroids?: new () => object;
   ASTEROIDSPLAYERS?: object[];

@@ -1,3 +1,4 @@
+import { checkNativeEvents } from './native-events.mjs';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { context } from 'esbuild';
@@ -54,7 +55,7 @@ try {
   assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
   assert.deepEqual(voices, []);
   const catalog = await (await page.request.get(url + 'model_list.json')).json();
-  const skin = 'kp31/kp31_1103/normal';
+  const skin = 'kp31/kp31_/normal';
   const id = catalog.models.findIndex(skins => skins.includes(skin));
   const texture = catalog.models[id].indexOf(skin);
   await page.evaluate(([id, texture]) => {
@@ -63,8 +64,8 @@ try {
   }, [id, texture]);
   // The first touch interaction in this skin has a known motion and recording.
   await page.addInitScript(() => { Math.random = () => 0; });
-  const motionPath = '**/motions/touch_1.mtn';
-  const audioPath = '**/sounds/KP31_005.mp3';
+  const motionPath = '**/motions/wedding.mtn';
+  const audioPath = '**/sounds/KP31_029.mp3';
   for (const scenario of ['failure and retry', 'motion delayed', 'voice delayed']) {
     const gesture = scenario === 'voice delayed' ? 'tap' : 'click';
     await page.reload();
@@ -142,6 +143,7 @@ try {
     await page.unroute(slow);
     motionFiles.length = voices.length = 0;
   }
+  await checkNativeEvents(browser, url);
   assert.deepEqual(errors, []);
   console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');
 } finally {

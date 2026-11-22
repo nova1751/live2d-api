@@ -33,7 +33,12 @@ function show() {
   setTimeout(() => { byId('waifu').style.bottom = '0'; }, 0);
 }
 
+function prepareStart(event: Event) {
+  return event.isTrusted && !!window.loadlive2d.prepareInteraction?.();
+}
+
 function hide() {
+  window.loadlive2d.hide?.();
   localStorage.setItem('waifu-display', String(Date.now()));
   say('愿你有一天能与重要的人重逢。', 2000, 11);
   byId('waifu').style.bottom = '-500px';
@@ -43,8 +48,7 @@ function hide() {
   }, 3000);
 }
 
-function mount(options: LegacyOptions) {
-  const models = new Models(options);
+function mount(options: LegacyOptions, models: Models, start = false) {
   sessionStorage.removeItem('waifu-text');
   document.body.insertAdjacentHTML('beforeend', `<div id="waifu">
     <div id="waifu-tips"></div>
@@ -52,18 +56,26 @@ function mount(options: LegacyOptions) {
     <div id="waifu-tool"></div>
   </div>`);
   show();
+  window.addEventListener('live2d:dialogue', event => {
+    const text = (event as CustomEvent<unknown>).detail;
+    if (typeof text === 'string') say(escapeText(text), 5000, 11);
+  });
+  window.addEventListener('live2d:costume', event => {
+    const url = (event as CustomEvent<unknown>).detail;
+    if (typeof url === 'string') models.costume(url).catch(reportError);
+  });
   const actions = {
     hitokoto: () => hitokoto().catch(reportError),
     asteroids,
-    'switch-model': () => models.nextModel().catch(reportError),
-    'switch-texture': () => models.nextTexture().catch(reportError),
+    'switch-model': (event: Event) => models.nextModel(prepareStart(event)).catch(reportError),
+    'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
     photo: () => {
       say('照好了嘛，是不是很可爱呢？', 6000, 9);
       window.Live2D.captureName = 'photo.png';
       window.Live2D.captureFrame = true;
     },
     info: () => window.open('https://github.com/nova1751/live2d-api'),
-    quit: hide,
+    quit: () => { models.cancel(); hide(); },
   };
   for (const name of Array.isArray(options.tools) ? options.tools : Object.keys(actions)) {
     if (!Object.prototype.hasOwnProperty.call(actions, name)) continue;
@@ -71,7 +83,7 @@ function mount(options: LegacyOptions) {
     byId('waifu-tool').insertAdjacentHTML('beforeend', `<span id="waifu-tool-${tool}">${icons[tool]}</span>`);
     byId('waifu-tool-' + tool).addEventListener('click', actions[tool]);
   }
-  models.load().catch(reportError);
+  models.load(undefined, undefined, undefined, start).catch(reportError);
   getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(reportError);
 }
 
@@ -80,13 +92,16 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
   if (document.getElementById('waifu-toggle')) return;
   document.body.insertAdjacentHTML('beforeend', '<div id="waifu-toggle"><span>看板娘</span></div>');
   const toggle = byId('waifu-toggle');
-  toggle.addEventListener('click', () => {
+  const models = new Models(options);
+  toggle.addEventListener('click', event => {
+    const start = prepareStart(event);
     toggle.classList.remove('waifu-toggle-active');
     if (toggle.hasAttribute('first-time')) {
-      mount(options);
+      mount(options, models, start);
       toggle.removeAttribute('first-time');
     } else {
       show();
+      models.reopen(start)?.catch(reportError);
     }
   });
   const hiddenSince = Number(localStorage.getItem('waifu-display'));
@@ -94,6 +109,6 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
     toggle.setAttribute('first-time', 'true');
     setTimeout(() => toggle.classList.add('waifu-toggle-active'), 0);
   } else {
-    mount(options);
+    mount(options, models);
   }
 };

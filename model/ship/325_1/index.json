@@ -13,45 +13,22 @@
 
   "motions": {
     "idle": [
-      {
-        "file": "daiji_idle_01.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 1
-      }
+      {"file": "daiji_idle_01.mtn", "fade_in": 0, "fade_out": 0, "priority": 1}
     ],
-
-    "tap_body": [
-      {
-        "file": "motou.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "moxiong.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "nanguo.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "yansu.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "zixin.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      }
+    "motou": [
+      {"file": "motou.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "moxiong": [
+      {"file": "moxiong.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "nanguo": [
+      {"file": "nanguo.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "yansu": [
+      {"file": "yansu.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "zixin": [
+      {"file": "zixin.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
     ]
   },
 
