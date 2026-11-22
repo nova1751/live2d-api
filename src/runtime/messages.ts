@@ -17,17 +17,39 @@ export function escapeText(text: string): string {
 }
 
 let timer: number | undefined;
-export function say(message: Text | undefined, duration: number, priority: number) {
-  if (!message || Number(sessionStorage.getItem('waifu-text')) > priority) return;
-  const box = document.getElementById('waifu-tips')!;
-  if (timer !== undefined) clearTimeout(timer);
+let heldPlayback: object | undefined;
+
+function clearMessage() {
+  clearTimeout(timer);
+  sessionStorage.removeItem('waifu-text');
+  document.getElementById('waifu-tips')?.classList.remove('waifu-tips-active');
+}
+
+function display(message: string, priority: number) {
+  clearTimeout(timer);
   sessionStorage.setItem('waifu-text', String(priority));
-  box.innerHTML = pick(message);
+  const box = document.getElementById('waifu-tips')!;
+  box.innerHTML = message;
   box.classList.add('waifu-tips-active');
-  timer = setTimeout(() => {
-    sessionStorage.removeItem('waifu-text');
-    box.classList.remove('waifu-tips-active');
-  }, duration);
+}
+
+export function say(message: Text | undefined, duration: number, priority: number) {
+  if (!message || heldPlayback || Number(sessionStorage.getItem('waifu-text')) > priority) return;
+  display(pick(message), priority);
+  timer = setTimeout(clearMessage, duration);
+}
+
+export function showDialogue(text: string, playback?: object) {
+  if (!playback) { say(escapeText(text), 5000, 11); return; }
+  heldPlayback = playback;
+  display(escapeText(text), 11);
+}
+
+export function finishDialogue(playback: object, interrupted: boolean) {
+  if (heldPlayback !== playback) return;
+  heldPlayback = undefined;
+  if (interrupted) clearMessage();
+  else timer = setTimeout(clearMessage, 1200);
 }
 
 function welcome(times: Tips['time']): Text {
