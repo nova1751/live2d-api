@@ -63,34 +63,83 @@ try {
   }, [id, texture]);
   // The first touch interaction in this skin has a known motion and recording.
   await page.addInitScript(() => { Math.random = () => 0; });
-  for (const gesture of ['click', 'tap']) {
+  const motionPath = '**/motions/touch_1.mtn';
+  const audioPath = '**/sounds/KP31_005.mp3';
+  for (const scenario of ['failure and retry', 'motion delayed', 'voice delayed']) {
+    const gesture = scenario === 'voice delayed' ? 'tap' : 'click';
     await page.reload();
     await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
-    assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
+    assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')));
     assert.deepEqual(voices, []);
     await page.evaluate(() => {
-      window.interactions = { motions: 0, plays: 0, resumedIdle: false };
-      const start = MotionQueueManager.prototype.startMotion;
-      MotionQueueManager.prototype.startMotion = function (...args) {
-        if (this.currentPriority === 3) window.interactions.motions++;
-        if (this.currentPriority === 1 && window.interactions.motions) window.interactions.resumedIdle = true;
-        return start.apply(this, args);
+      window.events = [];
+      let frame = 0;
+      function tick() { frame++; requestAnimationFrame(tick); }
+      requestAnimationFrame(tick);
+      const startMotion = MotionQueueManager.prototype.startMotion;
+      MotionQueueManager.prototype.startMotion = function (motion, ...rest) {
+        if (this.currentPriority === 3) {
+          window.events.push({ type: 'motion', frame, time: performance.now() });
+          window.pairedMotion = motion;
+        } else if (window.pairedMotion) {
+          window.returnedToIdle = true;
+        }
+        return startMotion.call(this, motion, ...rest);
       };
-      const play = HTMLMediaElement.prototype.play;
-      HTMLMediaElement.prototype.play = function () {
-        this.addEventListener('playing', () => window.interactions.plays++, { once: true });
-        return play.call(this);
+      const play = AudioBufferSourceNode.prototype.start;
+      AudioBufferSourceNode.prototype.start = function (...args) {
+        play.apply(this, args);
+        window.speakingContext = this.context;
+        window.events.push({ type: 'voice', frame, time: performance.now() });
       };
     });
-    const motion = page.waitForResponse(r => r.url().endsWith('/motions/touch_1.mtn') && r.ok());
-    const audio = page.waitForResponse(r => r.url().endsWith('/sounds/KP31_005.mp3') && r.ok());
-    await canvas[gesture]({ position: { x: 160, y: 225 } });
-    await Promise.all([motion, audio]);
-    await page.waitForFunction(() => window.interactions.motions === 1 && window.interactions.plays === 1);
-    await page.waitForFunction(() => window.interactions.resumedIdle);
-    assert.deepEqual(await page.evaluate(() => window.interactions), { motions: 1, plays: 1, resumedIdle: true });
-    assert.equal(motionFiles.filter(path => !path.includes('/motions/daiji_idle')).length, 1, 'one gesture should play one action');
-    assert.equal(new Set(voices).size, 1, 'one gesture should play one recording');
+    const activate = () => canvas[gesture]({ position: { x: 160, y: 225 } });
+    if (scenario === 'failure and retry') {
+      // A missing clip or motion must release the reservation so the next tap can retry.
+      for (const path of [motionPath, audioPath]) {
+        await page.route(path, route => route.fulfill({ status: 403, body: 'Forbidden' }));
+        const failed = page.waitForEvent('console', msg => msg.text().includes('Interaction could not start'));
+        await activate();
+        await failed;
+        assert.deepEqual(await page.evaluate(() => window.events), []);
+        await page.unroute(path);
+      }
+      await activate();
+      await page.waitForFunction(() => window.events.length === 2);
+      motionFiles.length = voices.length = 0;
+      continue;
+    }
+    // Hold one response, then give the other asset several frames to finish on its own.
+    const slow = gesture === 'click' ? motionPath : audioPath;
+    const fast = gesture === 'click' ? audioPath : motionPath;
+    let release;
+    const gate = new Promise(resolve => { release = resolve; });
+    await page.route(slow, async route => { await gate; await route.continue(); });
+    const fastResponse = page.waitForResponse(fast);
+    const pending = page.waitForRequest(slow);
+    await activate();
+    await pending;
+    await (await fastResponse).finished();
+    await page.evaluate(() => new Promise(resolve => setTimeout(resolve, 300)));
+    assert.deepEqual(await page.evaluate(() => window.events), [], 'neither half starts alone');
+    release();
+    await page.waitForFunction(() => window.events.length === 2);
+    const [voice, motion] = await page.evaluate(() => window.events);
+    assert.equal(voice.type, 'voice');
+    assert.equal(motion.type, 'motion');
+    assert.equal(voice.frame, motion.frame, 'voice and motion must start in one animation frame');
+    console.log(gesture, 'paired start difference (ms)', Math.round(motion.time - voice.time));
+    await page.evaluate(async () => {
+      await window.speakingContext.suspend();
+      const before = window.pairedMotion.playbackTimeMSec();
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      if (before !== window.pairedMotion.playbackTimeMSec()) throw Error('Motion advanced with suspended audio');
+      await window.speakingContext.resume();
+    });
+    await page.waitForFunction(() => window.returnedToIdle);
+    assert.equal(await page.evaluate(() => window.events.length), 2);
+    assert.equal(new Set(voices).size, 1);
+    await page.unroute(slow);
     motionFiles.length = voices.length = 0;
   }
   assert.deepEqual(errors, []);
