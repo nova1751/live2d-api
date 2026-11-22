@@ -1,5 +1,5 @@
 import { icons } from './icons';
-import { bindMessages, escapeText, say } from './messages';
+import { bindMessages, escapeText, finishDialogue, say, showDialogue } from './messages';
 import { getJson, Models } from './models';
 
 const script = document.currentScript as HTMLScriptElement | null;
@@ -57,8 +57,12 @@ function mount(options: LegacyOptions, models: Models, start = false) {
   </div>`);
   show();
   window.addEventListener('live2d:dialogue', event => {
-    const text = (event as CustomEvent<unknown>).detail;
-    if (typeof text === 'string') say(escapeText(text), 5000, 11);
+    const { detail, playback } = event as CustomEvent<unknown> & { playback?: object };
+    if (typeof detail === 'string') showDialogue(detail, playback);
+  });
+  window.addEventListener('live2d:dialogue-end', event => {
+    const detail = (event as CustomEvent).detail;
+    if (detail?.playback) finishDialogue(detail.playback, detail.interrupted);
   });
   window.addEventListener('live2d:costume', event => {
     const url = (event as CustomEvent<unknown>).detail;

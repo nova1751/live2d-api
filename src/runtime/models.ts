@@ -57,8 +57,8 @@ export class Models {
     if (revision !== this.revision) return;
     localStorage.setItem('modelId', String(id));
     localStorage.setItem('modelTexturesId', String(texture));
-    say(message, 4000, 10);
     window.loadlive2d('live2d', url, { start });
+    say(message, 4000, 10);
     this.loaded = true;
   }
 

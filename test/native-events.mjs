@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 
 export async function checkNativeEvents(browser, base) {
   const page = await browser.newPage();
+  page.setDefaultTimeout(20000);
   try {
     const audio = [], errors = [];
     page.on('pageerror', error => errors.push(error.message));
@@ -71,6 +72,56 @@ export async function checkNativeEvents(browser, base) {
     await page.mouse.click(...hand);
     await change;
     assert.equal(await page.evaluate(() => localStorage.getItem('modelTexturesId')), '1');
+    await load('rfbchristmas/normal');
+    // Warm the exact sound-only head action. A hover must never start playback.
+    const head = await point('head');
+    const headClip = '**/sounds/RFB_MOOD1_JP.mp3';
+    console.log('Checking pointer preparation and dialogue lifetime');
+    const warmed = page.waitForResponse(headClip);
+    await page.mouse.move(...head);
+    await (await warmed).finished();
+    const count = audio.length;
+    assert.equal(await page.evaluate(() => !!modelsUnderTest.getModel(0).voice), false);
+    const tips = page.locator('#waifu-tips');
+    const active = () => tips.evaluate(el => el.classList.contains('waifu-tips-active'));
+    const line = await page.evaluate(() => modelsUnderTest.getModel(0).modelSetting.json.motions.tap_head[0].text);
+    await page.mouse.click(...head);
+    await page.waitForFunction(() => !!modelsUnderTest.getModel(0).activeDialogue);
+    await page.evaluate(async () => {
+      window.testAudio = modelsUnderTest.getModel(0).voice.source.context;
+      await window.testAudio.suspend();
+      await new Promise(resolve => setTimeout(resolve, 5300));
+      window.dispatchEvent(new Event('copy'));
+    });
+    assert.equal(await tips.textContent(), line);
+    assert.equal(await active(), true, 'the subtitle survives the old five-second timeout');
+    assert.equal(audio.length, count, 'the click reuses the warmed recording');
+    await page.evaluate(() => window.testAudio.resume());
+    await page.waitForFunction(() => !modelsUnderTest.getModel(0).activeDialogue);
+    assert.equal(await active(), true, 'allow time to read after the recording');
+    await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
+
+    // Stop the voice early. The subtitle belongs to the motion until its last frame.
+    await load('rfbchristmas/normal');
+    await page.evaluate(() => modelsUnderTest.getModel(0).startMotion('tap', 4, 3));
+    await page.waitForFunction(() => !!modelsUnderTest.getModel(0).activeDialogue);
+    await page.evaluate(() => modelsUnderTest.getModel(0).voice.source.stop());
+    await page.waitForFunction(() => !modelsUnderTest.getModel(0).voice);
+    assert.equal(await page.evaluate(() => !!modelsUnderTest.getModel(0).activeDialogue), true);
+    assert.equal(await active(), true);
+    await load('rfbchristmas/destroy');
+    assert.equal(await active(), false, 'switching skins releases interrupted dialogue immediately');
+
+    // Finish the motion early and keep the recording running.
+    await load('rfbchristmas/normal');
+    await page.evaluate(() => modelsUnderTest.getModel(0).startMotion('tap', 4, 3));
+    await page.waitForFunction(() => !!modelsUnderTest.getModel(0).activeDialogue);
+    await page.evaluate(async () => {
+      modelsUnderTest.getModel(0).mainMotionManager.stopAllMotions();
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    });
+    assert.equal(await page.evaluate(() => !!modelsUnderTest.getModel(0).activeDialogue), true);
+    assert.equal(await active(), true);
     await load('ship/248_1');
     const [sx, sy] = await point('SUTOKA');
     const up = page.waitForRequest(req => req.url().toLowerCase().includes('skirt') && req.url().endsWith('.mtn'));
@@ -81,6 +132,12 @@ export async function checkNativeEvents(browser, base) {
     const stroke = page.waitForRequest('**/nanguo.mtn');
     await page.mouse.move(hx, hy); await page.mouse.down(); await page.mouse.move(hx+22, hy, { steps: 4 }); await page.mouse.up();
     await stroke;
+    await page.waitForFunction(() => !!modelsUnderTest.getModel(0).activeDialogue);
+    const shipLine = await page.evaluate(() => modelsUnderTest.getModel(0).modelSetting.json.trigger
+      .find(rule => rule.action[0] === 'nanguo').dialogue);
+    assert.equal(await tips.textContent(), shipLine);
+    await page.waitForFunction(() => !modelsUnderTest.getModel(0).activeDialogue);
+    assert.equal(await active(), true, 'the motion-only subtitle lingers after its last frame');
     assert.deepEqual(errors, []);
     console.log('Verified silent load, deliberate start and replay, sound-only playback and ship gestures.');
   } finally {
