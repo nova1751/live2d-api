@@ -4,6 +4,7 @@ interface LegacyOptions {
   apiPath?: string;
   tools?: string[];
   modelUrl?: string;
+  modelBaseUrl?: string;
   coreUrl?: string;
 }
 interface InitWidget {
@@ -26,5 +27,7 @@ interface Window {
 }
 
 // Replaced with literals in the standalone CDN entry scripts.
+declare const NPM_RUNTIME: string;
+declare const GLOBAL_RUNTIME: string;
 declare const PROVIDER: 'jsdelivr' | 'npm';
 declare const MODE: 'random' | 'sequential';

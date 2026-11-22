@@ -14,10 +14,12 @@ try {
   browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 1024, height: 768 }, hasTouch: true });
   const errors = [];
+  const modernRequests = [];
   const motionFiles = [];
   const voices = [];
   page.on('request', request => {
     const path = new URL(request.url()).pathname;
+    if (path.includes('/modern/') || path.includes('live2dcubismcore')) modernRequests.push(path);
     if (path.endsWith('.mtn')) motionFiles.push(path);
     if (path.endsWith('.mp3')) voices.push(path);
   });
@@ -143,6 +145,7 @@ try {
     await page.unroute(slow);
     motionFiles.length = voices.length = 0;
   }
+  assert.deepEqual(modernRequests, []);
   await checkNativeEvents(browser, url);
   assert.deepEqual(errors, []);
   console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');

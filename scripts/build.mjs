@@ -1,14 +1,16 @@
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
-import { copyFile, mkdir } from 'node:fs/promises';
+import { copyFile, mkdir, readFile } from 'node:fs/promises';
 import { build, context } from 'esbuild';
 
+const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const dev = process.argv.includes('--dev');
 const shared = {
   target: 'es2020',
   charset: 'utf8',
   banner: { js: '/*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */' },
 };
+if (!dev) await copyFile('node_modules/.cache/live2dapi-noa/types/widget.d.mts', 'widget.d.mts');
 const upstream = 'node_modules/live2d-web/';
 await mkdir('modern', { recursive: true });
 for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/cubism-web-framework-5-r.5/LICENSE.md']) {
@@ -16,7 +18,10 @@ for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/
 }
 const runtimeRequire = createRequire(import.meta.resolve('live2d-web'));
 await copyFile(resolve(dirname(runtimeRequire.resolve('wlipsync')), '../LICENSE'), 'modern/wlipsync-LICENSE');
+const legacyEngine = await readFile('src/vendor/cubism2.js', 'utf8');
 const entries = [
+  { entryPoints: ['src/standalone.ts'], outfile: 'live2d.min.js', format: 'iife', bundle: true,
+    minify: true, banner: { js: legacyEngine.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
   { entryPoints: ['src/widget.mts'], outfile: 'widget.mjs', format: 'esm', bundle: true },
   {
@@ -28,7 +33,8 @@ const entries = [
 for (const provider of ['npm', 'jsdelivr']) {
   for (const mode of ['random', 'sequential']) {
     const dir = provider + '/' + mode;
-    const define = { PROVIDER: JSON.stringify(provider), MODE: JSON.stringify(mode) };
+    const define = { NPM_RUNTIME: JSON.stringify('https://unpkg.com/live2dapi-noa@' + version + '/'),
+      GLOBAL_RUNTIME: JSON.stringify('https://cdn.jsdelivr.net/npm/live2dapi-noa@' + version + '/'), PROVIDER: JSON.stringify(provider), MODE: JSON.stringify(mode) };
     // Preserve the top-level loadExternalResource and live2d_path classic-script bindings.
     entries.push({ entryPoints: ['src/legacy-autoload.ts'], outfile: dir + '/autoload.js', define });
     if (provider === 'jsdelivr') {

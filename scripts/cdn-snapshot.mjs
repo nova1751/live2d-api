@@ -1,3 +1,4 @@
+import { siteFiles } from './site-files.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { posix } from 'node:path';
@@ -46,7 +47,7 @@ for (const group of [...families.values()].sort((a, b) => b.size - a.size)) {
   byFamily.set(group.name, shard);
 }
 
-const packageFiles = readJson('package.json').files.filter(path => path !== 'model/');
+const packageFiles = siteFiles(readJson('package.json').files).filter(path => path !== 'model/');
 const core = files.filter(file => packageFiles.some(path => path.endsWith('/') ? file.path.startsWith(path) : file.path === path)
   || ['readme.md', 'docs/model-sources.json', 'LICENSE'].includes(file.path));
 for (const skin of readJson('model_list.json').models.flat()) {

@@ -36,6 +36,8 @@ try {
   browser = await chromium.launch({ args: ['--enable-unsafe-swiftshader'] });
   const page = await browser.newPage({ viewport: { width: 1024, height: 768 } });
   const errors = [];
+  const legacyRequests = [];
+  page.on('request', request => { if (new URL(request.url()).pathname.endsWith('/live2d.min.js')) legacyRequests.push(request.url()); });
   page.on('pageerror', error => errors.push(error.message));
   page.on('console', message => { if (message.type() === 'error') console.error(message.text()); });
   page.on('requestfailed', r => {
@@ -69,13 +71,15 @@ try {
     assert.equal(await page.locator('canvas').count(), 2);
     console.log(decodeURI(url.split('/').slice(-3).join('/')) + ': rendered');
   }
+  assert.equal(legacyRequests.length, 0, 'A modern-only page should never download Cubism 2');
   await page.evaluate(url => {
     window.loadlive2d.hide();
     window.loadlive2d.show(false);
     window.loadlive2d('live2d', url);
-  }, base + 'model/AK12/ak12_0/normal/index.json');
+  }, (process.env.LIVE2D_TEST_MODELS || base) + 'model/AK12/ak12_0/normal/index.json');
   await page.waitForSelector('#live2d[data-painted]', { timeout: 60000 });
   assert.equal(await page.locator('canvas').count(), 1);
+  assert.equal(legacyRequests.length, 1);
   assert.deepEqual(errors, []);
 } finally {
   await browser?.close();

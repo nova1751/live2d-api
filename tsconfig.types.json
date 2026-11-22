@@ -5,7 +5,7 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "rootDir": "./src",
-    "outDir": "."
+    "outDir": "./node_modules/.cache/live2dapi-noa/types"
   },
   "include": ["src/widget.mts", "src/env.d.ts"],
   "exclude": ["node_modules"]

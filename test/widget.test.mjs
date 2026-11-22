@@ -6,6 +6,8 @@ import vm from 'node:vm';
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root), 'utf8');
 const models = JSON.parse(read('model_list.json')).models;
+const version = JSON.parse(read('package.json')).version;
+const modelSnapshot = '/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/';
 const base = 'https://example.test/vendor/live2d/';
 
 // Run the shipped widget scripts against a small DOM. Record renderer calls
@@ -75,8 +77,8 @@ function browser(failOnce) {
 const settled = () => new Promise(resolve => setImmediate(resolve));
 
 for (const [provider, cdn] of [
-  ['jsdelivr', 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@latest/'],
-  ['npm', 'https://unpkg.com/live2dapi-noa@latest/'],
+  ['jsdelivr', 'https://cdn.jsdelivr.net/npm/live2dapi-noa@' + version + '/'],
+  ['npm', 'https://unpkg.com/live2dapi-noa@' + version + '/'],
 ]) {
   for (const mode of ['random', 'sequential']) {
     test(`legacy ${provider}/${mode} works with separate CSS`, async () => {
@@ -86,7 +88,7 @@ for (const [provider, cdn] of [
       assert.ok(requests.includes(cdn + `${provider}/${mode}/waifu-tips.js`));
       assert.ok(requests.includes(cdn + 'waifu-tips.json'));
       assert.ok(requests.every(url => !url.endsWith('.css')));
-      const allowed = models[0].map(path => cdn + 'model/' + path + '/index.json');
+      const allowed = models[0].map(path => 'https://cdn.jsdelivr.net' + modelSnapshot + 'model/' + path + '/index.json');
       assert.ok(allowed.includes(renders[0]));
       nodes.get('waifu-tool-switch-texture').click();
       await settled();
@@ -152,12 +154,12 @@ test('the script tag skips small screens and loads both assets and model relativ
 
 test('single-model script resolves a page-relative manifest and preserves the built-in rotation preference', async () => {
   const { context, document, requests, renders, nodes } = browser();
-  document.currentScript = { src: 'https://cdn.test/preview/autoload.js', dataset: { modelUrl: './Ren.model3.json' } };
+  document.currentScript = { src: 'https://cdn.test/preview/autoload.js', dataset: { modelUrl: './Haru/index.json' } };
   context.innerWidth = 1024;
   context.localStorage.setItem('modelId', '4');
   vm.runInContext(read('autoload.js'), context);
   await settled();
-  assert.deepEqual(renders, [base + 'Ren.model3.json']);
+  assert.deepEqual(renders, [base + 'Haru/index.json']);
   assert.equal(context.localStorage.getItem('modelId'), '4');
   assert.equal(nodes.has('waifu-tool-switch-model'), false);
   assert.equal(nodes.has('waifu-tool-switch-texture'), false);
@@ -204,4 +206,19 @@ test('a previously hidden widget waits for reopening, restores the skin and resp
   assert.ok(nodes.has('waifu-tool-photo'));
   assert.equal(nodes.has('waifu-tool-quit'), false);
   assert.equal(context.localStorage.getItem('waifu-display'), null);
+});
+
+test('npm shortcuts fetch the default catalog from the corresponding GitHub CDN', async () => {
+  for (const host of ['cdn.jsdmirror.com', 'cdn.jsdelivr.net']) {
+    const { context, document, requests, renders } = browser();
+    const url = 'https://' + host + '/npm/live2dapi-noa@' + version;
+    document.currentScript = { src: url, dataset: {} };
+    context.innerWidth = 1024;
+    vm.runInContext(read('autoload.js'), context);
+    await settled();
+    assert.ok(requests.includes(url + '/live2d.min.js'));
+    const assets = 'https://' + host + modelSnapshot;
+    assert.ok(requests.includes(assets + 'model_list.json'));
+    assert.equal(renders[0], assets + 'model/' + models[0][0] + '/index.json');
+  }
 });

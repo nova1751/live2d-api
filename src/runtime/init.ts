@@ -75,7 +75,7 @@ function mount(options: LegacyOptions, models: Models, start = false) {
     'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
     photo: () => {
       say('照好了嘛，是不是很可爱呢？', 6000, 9);
-      if (window.loadlive2d.capture?.()) return;
+      if (window.loadlive2d.capture?.() || !window.Live2D) return;
       window.Live2D.captureName = 'photo.png';
       window.Live2D.captureFrame = true;
     },
