@@ -133,7 +133,7 @@
 
 #### 少女前线分类
 
-[总目录](catalog/girls-frontline/index.json)按人形、妖精、副官、小队和背景编目。每个人物有独立目录，每套皮肤有独立 JSON，普通和破损形态在 `forms` 中各自指向独立的模型记录。比如 [K2](catalog/girls-frontline/doll/k2/index.json) 的 [3301 皮肤](catalog/girls-frontline/doll/k2/3301.json) 列出[普通](catalog/girls-frontline/doll/k2/3301/normal.json)和[破损](catalog/girls-frontline/doll/k2/3301/destroy.json)两种形态，它们在旧版看板娘中仍然使用原来的数字编号。
+[分类浏览](catalog/girls-frontline/README.md)和[JSON 总目录](catalog/girls-frontline/index.json)按人形、妖精、副官、小队和背景编目。每个人物有独立目录，每套皮肤有独立 JSON，普通和破损形态在 `forms` 中各自指向独立的模型记录。比如 [K2](catalog/girls-frontline/doll/k2/index.json) 的 [3301 皮肤](catalog/girls-frontline/doll/k2/3301.json) 列出[普通](catalog/girls-frontline/doll/k2/3301/normal.json)和[破损](catalog/girls-frontline/doll/k2/3301/destroy.json)两种形态，它们在旧版看板娘中仍然使用原来的数字编号。
 
 目录覆盖 [Eikanya](https://github.com/Eikanya/Live2d-model) 和 [jacksen168](https://github.com/jacksen168/Girls-Frontline-model) 两个固定提交中的少女前线模型。人物和皮肤沿用来源代号；旧收藏里无法确认编号的版本保留 `archive` 标记。同一形态可以收录多个格式及来源，每个二进制文件均记录仓库、路径和 Git blob。来源快照和去重口径决定这里的覆盖范围。
 

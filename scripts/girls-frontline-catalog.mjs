@@ -96,17 +96,24 @@ function write(path, data) {
   writeFileSync(path, JSON.stringify(data, null, 2) + '\n');
 }
 const characters = [];
+const categories = { doll: '人形', adjutant: '副官', fairy: '妖精', squad: '小队', background: '背景' };
+const rows = new Map(Object.keys(categories).map(id => [id, []]));
 for (const key of [...models.keys()].sort()) {
   const [category, id] = key.split('/');
   const versions = models.get(key);
   const entries = [];
+  const available = { widget: 0, moc: 0, moc3: 0 };
   for (const version of [...versions.keys()].sort()) {
     const forms = versions.get(version);
     const path = key + '/' + version + '.json';
     const formEntries = [];
     for (const form of [...forms.keys()].sort()) {
       const formPath = key + '/' + version + '/' + form + '.json';
-      write(out + '/' + formPath, { category, character: id, version, ...forms.get(form) });
+      const model = forms.get(form);
+      if (model.widget.length) available.widget++;
+      else if (model.sources.some(file => file.format === 'moc')) available.moc++;
+      else available.moc3++;
+      write(out + '/' + formPath, { category, character: id, version, ...model });
       formEntries.push({ id: form, path: formPath });
     }
     write(out + '/' + path, { category, character: id, version, forms: formEntries });
@@ -115,5 +122,17 @@ for (const key of [...models.keys()].sort()) {
   const path = key + '/index.json';
   write(out + '/' + path, { category, id, versions: entries });
   characters.push({ category, id, path });
+  const links = entries.map(v => '[' + v.id + '](' + v.path + ')').join('、');
+  rows.get(category).push('| [' + id + '](' + path + ') | ' + links + ' | ' +
+    [available.widget, available.moc, available.moc3].join(' | ') + ' |');
 }
 write(out + '/index.json', { schemaVersion: 1, sources, characters });
+const guide = ['# 少女前线模型目录', '',
+  '点人物代号查看其版本列表，点版本查看普通、破损等形态。表内数量按形态统计。', '',
+  '“已接入”可用现有看板娘加载。“待接入 moc”有旧格式来源，仍需核验素材完整性与再分发授权。“仅 moc3”需要支持新格式的渲染器。', '',
+  '[机器可读总目录](index.json) · [来源与授权说明](../../readme.md#少女前线分类)', ''];
+for (const [category, label] of Object.entries(categories)) {
+  guide.push('## ' + label, '', '| 对象 | 版本 | 已接入 | 待接入 moc | 仅 moc3 |', '| --- | --- | ---: | ---: | ---: |',
+    ...rows.get(category), '');
+}
+writeFileSync(out + '/README.md', guide.join('\n'));
