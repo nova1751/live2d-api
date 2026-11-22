@@ -1,6 +1,7 @@
 {
   "name": "live2dapi-noa",
   "version": "1.1.0",
+  "packageManager": "pnpm@10.33.0",
   "description": "nova1751自建的live-2d api",
   "main": "./widget.mjs",
   "publishConfig": {
