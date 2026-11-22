@@ -8,7 +8,7 @@ const live2d_path = (() => {
       return new URL("../../", url).href;
     }
   }
-  return true ? "https://unpkg.com/live2dapi-noa@2.1.0/" : "https://cdn.jsdelivr.net/npm/live2dapi-noa@2.1.0/";
+  return "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.2.0/";
 })();
 function loadExternalResource(url, type) {
   let tag;

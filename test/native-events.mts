@@ -1,5 +1,11 @@
 import assert from 'node:assert/strict';
 
+export async function openLegacyDemo(page, base) {
+  await page.route(base + 'legacy-demo', route => route.fulfill({ contentType: 'text/html',
+    body: '<!doctype html><script defer src="./autoload.js"></script>' }));
+  await page.goto(base + 'legacy-demo');
+}
+
 export async function checkNativeEvents(browser, base) {
   const page = await browser.newPage();
   page.setDefaultTimeout(20000);
@@ -13,14 +19,14 @@ export async function checkNativeEvents(browser, base) {
     // Read transformed hit meshes from the renderer being tested, including npm tarballs.
     await page.route('**/live2d.min.js', async route => {
       const response = await route.fetch();
-      const body = (await response.text()).replace('window.loadlive2d=L', 'window.modelsUnderTest=R,window.loadlive2d=L');
+      const body = (await response.text()).replace('window.loadlive2d=L', '(window.modelsUnderTest=R,window.loadlive2d=L)');
       await route.fulfill({ response, body });
     });
     await page.addInitScript(() => {
       Math.random = () => 0;
       sessionStorage.setItem('Sleepy', '1');
     });
-    await page.goto(base);
+    await openLegacyDemo(page, base);
     await page.waitForSelector('#live2d');
     await page.addStyleTag({ content: '#waifu {bottom:0!important;transition:none!important} #waifu-tips {pointer-events:none} #waifu-toggle {transition:none!important}' });
     const ready = () => page.waitForFunction(() => window.modelsUnderTest?.getModel(0)?.initialized);

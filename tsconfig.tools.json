@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2023",
+      "DOM"
+    ],
+    "types": [
+      "node"
+    ],
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "scripts/library-files.mts",
+    "scripts/download-models.mts",
+    "scripts/check-model-library.mts",
+    "scripts/model-library.mts",
+    "scripts/publish-widget.mts"
+  ]
+}

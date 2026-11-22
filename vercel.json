@@ -2,14 +2,29 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
   "installCommand": "",
-  "buildCommand": "node scripts/vercel-static.mjs",
+  "buildCommand": "node scripts/vercel-static.mts",
   "outputDirectory": "public",
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/model/:path*",
+      "destination": "https://raw.githubusercontent.com/nova1751/live2d-api/89053b85a3e850952b3b35fc873a2065a3fda8b9/model/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/model_list.json",
+      "destination": "https://raw.githubusercontent.com/nova1751/live2d-api/89053b85a3e850952b3b35fc873a2065a3fda8b9/model_list.json",
+      "permanent": false
     }
   ]
 }

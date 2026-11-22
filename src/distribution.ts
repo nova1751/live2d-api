@@ -4,6 +4,7 @@ import { version } from '../package.json';
 const snapshot = '/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/';
 const globalCdn = 'https://cdn.jsdelivr.net';
 export const globalModels = globalCdn + snapshot;
+const widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 const packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
 
 export function scriptDirectory(src: string) {
@@ -16,18 +17,22 @@ export function scriptDirectory(src: string) {
 
 export function runtimeDirectory(src: string) {
   // A bundler can move the ESM entry into the application's own JS chunk.
-  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + '/npm/live2dapi-noa@' + version + '/');
+  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + '/gh/nova1751/live2d-api@widget-' + version + '/');
+}
+
+export function githubLibrary(base: URL) {
+  const origin = base.hostname === 'cdn.jsdmirror.com' ? base.origin : globalCdn;
+  return origin + '/gh/nova1751/live2d-api@' + LIBRARY_TAG + '/catalog/library.json';
 }
 
 export function modelDirectory(base: string) {
   const url = new URL(base, document.baseURI);
-  if (!packageRoot.test(url.pathname) || /@1\.[^/]+\/?$/.test(url.pathname)) return base;
+  if ((!packageRoot.test(url.pathname) && !widgetSnapshot.test(url.pathname)) || /@1\.[^/]+\/?$/.test(url.pathname)) return base;
   const cdn = url.hostname === 'cdn.jsdmirror.com' ? url.origin : globalCdn;
   return cdn + snapshot;
 }
 
 export function defaultLibraryUrl(base: URL) {
-  if (!packageRoot.test(base.pathname)) return undefined;
-  const cdn = base.hostname === 'cdn.jsdmirror.com' ? base.origin : globalCdn;
-  return cdn + '/gh/nova1751/live2d-api@' + LIBRARY_TAG + '/catalog/library.json';
+  if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return undefined;
+  return githubLibrary(base);
 }

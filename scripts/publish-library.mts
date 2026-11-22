@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { libraryTag } from './library-tag.mjs';
+import { libraryTag } from './library-tag.mts';
 
 const git = (args, input, env) => execFileSync('git', args, { input, encoding: 'utf8', env }).trim();
 git(['diff', '--exit-code', 'HEAD', '--', 'catalog/library.json']);

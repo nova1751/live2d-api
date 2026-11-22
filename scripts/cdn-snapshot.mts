@@ -1,4 +1,4 @@
-import { siteFiles } from './site-files.mjs';
+import { siteFiles } from './site-files.mts';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { posix } from 'node:path';

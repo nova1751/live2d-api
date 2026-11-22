@@ -9,15 +9,19 @@ export interface ModelCatalog {
 }
 export interface DialogueSource { url: string; audio: ReadonlyMap<string, string> }
 
-export async function loadModelCatalog(input: string | URL) {
+export type Collection = 'girls-frontline';
+export const defaultDoll = 'doll/k2/3301/normal';
+
+export async function loadModelCatalog(input: string | URL, collection?: Collection) {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
   const catalog: ModelCatalog = await response.json();
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error('Unsupported model catalog');
   const audioBySource = new Map<string, Map<string, string>>();
-  const ids = Object.keys(catalog.models).filter(id => catalog.models[id].some(asset => asset.manifest));
+  const ids = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
   function resolve(id: string, source?: string) {
+    if (collection && !ids.includes(id)) throw new Error('Model outside the selected collection: ' + id);
     const asset = catalog.models[id]?.find(item => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error('No model manifest for ' + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);

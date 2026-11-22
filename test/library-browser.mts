@@ -1,4 +1,4 @@
-// Run against a collection created by scripts/download-models.py.
+// Run against a collection created by scripts/download-models.mts.
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -43,6 +43,12 @@ try {
   assert.equal(await page.locator('#waifu-tool button').count(), 7);
   assert.equal(await page.locator('#waifu-tips').evaluate(el => getComputedStyle(el).animationName), 'none');
   assert.deepEqual(await page.evaluate(() => sounds), []);
+  assert.equal(await page.locator('#category option[value="other"]').count(), 0);
+  const outside = Object.keys(catalog.models).find(id => id.startsWith('other/'));
+  if (outside) await assert.rejects(page.evaluate(async id => {
+    const { selectWidgetModel } = await import('/viewer/widget.mjs');
+    await selectWidgetModel(id);
+  }, outside), /outside the selected collection/);
   const rect = await page.locator('canvas[data-painted]').boundingBox();
   for (let y = 0.12; y < 0.9; y += 0.08) {
     for (const x of [0.5, 0.42, 0.58]) {
@@ -58,7 +64,7 @@ try {
   await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
   console.log('Touch triggered a voiced caption through completion:', line);
 
-  const keys = process.argv.includes('--all') ? Object.keys(catalog.models) : ['doll/an94/archive/normal', 'fairy/air_attack/1/default'];
+  const keys = process.argv.includes('--all') ? Object.keys(catalog.models).filter(id => !id.startsWith('other/')) : ['doll/an94/archive/normal', 'fairy/air_attack/1/default'];
   for (const id of keys) {
     await page.evaluate(async id => {
       const { selectWidgetModel } = await import('/viewer/widget.mjs');

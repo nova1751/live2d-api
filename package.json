@@ -1,20 +1,20 @@
 {
   "name": "live2dapi-noa",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "packageManager": "pnpm@10.33.0",
-  "description": "nova1751自建的live-2d api",
+  "description": "nova1751 的少女前线 Live2D 网页组件与历史加载器",
   "main": "./widget.mjs",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "dev": "node scripts/build.mjs --dev",
-    "typecheck": "tsc --noEmit",
-    "build": "npm run typecheck && tsc -p tsconfig.types.json && node scripts/build.mjs",
-    "test": "node --test test/*.test.mjs",
+    "dev": "node scripts/build.mts --dev",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.tools.json",
+    "build": "npm run typecheck && tsc -p tsconfig.types.json && node scripts/build.mts",
+    "test": "node --test test/*.test.mts",
     "prepack": "npm run build",
-    "test:browser": "node test/browser.mjs"
+    "test:browser": "node test/browser.mts"
   },
   "author": "nova1751",
   "license": "ISC",
@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/nova1751/live2d-api#readme",
   "devDependencies": {
+    "@types/node": "^24.19.2",
     "esbuild": "0.25.12",
     "live2d-web": "0.9.0",
     "playwright-core": "1.56.1",
@@ -47,6 +48,7 @@
   },
   "files": [
     "widget.mjs",
+    "girls-frontline.mjs",
     "widget.d.mts",
     "library/catalog.d.ts",
     "autoload.js",

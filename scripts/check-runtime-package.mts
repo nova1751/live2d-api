@@ -4,11 +4,11 @@ import { join } from 'node:path';
 
 const root = process.argv[2];
 const files = await readdir(root, { recursive: true });
-assert.ok(files.includes('autoload.js') && files.includes('live2d.min.js'));
+assert.ok(files.includes('girls-frontline.mjs') && files.includes('autoload.js') && files.includes('live2d.min.js'));
 assert.ok(files.some(file => file.replaceAll('\\', '/') === 'modern/renderer.mjs'));
 let size = 0;
 for (const file of files) {
-  assert.doesNotMatch(file, /^(?:model(?:[\\/]|_list\.json|$)|catalog(?:[\\/]|$)|img(?:[\\/]|$))|\.(?:moc3?|mtn|png|mp3)$/i);
+  assert.doesNotMatch(file, /^(?:model(?:[\\/]|_list\.json|$)|catalog(?:[\\/]|$)|img(?:[\\/]|$))|\.(?:moc3?|mtn|png|mp3|ogg|wav)$/i);
   const entry = await stat(join(root, file));
   if (entry.isFile()) size += entry.size;
 }

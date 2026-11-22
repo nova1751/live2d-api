@@ -3,6 +3,7 @@ interface LegacyOptions {
   cdnPath?: string;
   apiPath?: string;
   tools?: string[];
+  collection?: import('./library/catalog').Collection;
   catalogUrl?: string;
   modelId?: string;
   modelUrl?: string;
@@ -30,7 +31,6 @@ interface Window {
 
 // Replaced with literals in the standalone CDN entry scripts.
 declare const LIBRARY_TAG: string;
-declare const NPM_RUNTIME: string;
 declare const GLOBAL_RUNTIME: string;
 declare const PROVIDER: 'jsdelivr' | 'npm';
 declare const MODE: 'random' | 'sequential';

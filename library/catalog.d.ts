@@ -18,7 +18,9 @@ export interface DialogueSource {
     url: string;
     audio: ReadonlyMap<string, string>;
 }
-export declare function loadModelCatalog(input: string | URL): Promise<{
+export type Collection = 'girls-frontline';
+export declare const defaultDoll = "doll/k2/3301/normal";
+export declare function loadModelCatalog(input: string | URL, collection?: Collection): Promise<{
     ids: string[];
     resolve: (id: string, source?: string) => {
         modelUrl: string;
