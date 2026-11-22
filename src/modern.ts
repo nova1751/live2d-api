@@ -1,15 +1,19 @@
 import { createLive2D, OFFICIAL_CUBISM_CORE_URL, type Live2DInstance } from 'live2d-web';
 
+import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
+import type { Live2DBackend, StageHandle } from 'live2d-web';
+import type { Camera, Framing } from './library/framing';
 import { readActions, bindInteractions } from './modern/interactions';
 import type { DialogueSource } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
   const wrapper = document.createElement('div');
   wrapper.style.cssText = 'display:inline-block;position:relative;vertical-align:top;line-height:0';
   const host = document.createElement('div');
+  host.className = 'waifu-model-stage';
   host.style.cssText = 'position:absolute;inset:0;cursor:grab';
   const visibility = canvas.style.visibility;
   canvas.before(wrapper);
@@ -28,10 +32,29 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   try {
     const { actions, src: model, resolveAsset } = await readActions(src, dialogue, signal);
     signal.throwIfAborted();
+    let graphics: StageHandle | undefined;
+    const backend: Live2DBackend | undefined = (framing || onPaint) && { ...cubismWebGL, createStage(element, options) {
+      return graphics = cubismWebGL.createStage(element, options);
+    } };
+    const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
+      offsetY: camera.y - 0.5, units: 'stage' as const });
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
-      fit: 'full', followPointer: true, signal, onError: error => console.error('[Live2D]', error) });
+      backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: error => console.error('[Live2D]', error) });
     signal.throwIfAborted();
     const instance = stage;
+    const output = host.querySelector('canvas');
+    if (graphics && output) {
+      const unsubscribe = graphics.onFrame(() => queueMicrotask(() => {
+        if (signal.aborted) return;
+        if (framing) {
+          const camera = framing.measure(output);
+          if (camera) { framing = undefined; instance.setFit(fit(camera)); }
+          return;
+        }
+        unsubscribe();
+        onPaint?.(output);
+      }));
+    }
     const stopInteraction = bindInteractions(host, instance, actions, signal);
     return {
       pause: () => { stopInteraction(); instance.pause(); },

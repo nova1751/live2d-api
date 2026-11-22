@@ -78,9 +78,27 @@ function resetGaze() {
   pointerGesture = null;
   gaze.setPoint(0, 0);
 }
-function n(t){var i=C.width,e=C.height;var r=e/i,o=w.default.VIEW_LOGICAL_LEFT,n=w.default.VIEW_LOGICAL_RIGHT,_=-r,h=r;if(window.Live2D.captureFrame=!1,B=new M.L2DViewMatrix,B.setScreenRect(o,n,_,h),B.setMaxScreenRect(w.default.VIEW_LOGICAL_MAX_LEFT,w.default.VIEW_LOGICAL_MAX_RIGHT,w.default.VIEW_LOGICAL_MAX_BOTTOM,w.default.VIEW_LOGICAL_MAX_TOP),B.setMaxScale(w.default.VIEW_MAX_SCALE),B.setMinScale(w.default.VIEW_MIN_SCALE),U=new M.L2DMatrix44,U.multScale(1,i/e),F=v(),(0,D.setContext)(F),!F)return console.error("Failed to create WebGL context."),void(window.WebGLRenderingContext&&console.error("Your browser don't support WebGL, check https://get.webgl.org/ for futher information."));window.Live2D.setGL(F),F.clearColor(0,0,0,0),a(t),s()}function s(){b||(b=!0,function t(){_();var i=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||window.msRequestAnimationFrame;if(window.Live2D.captureFrame){window.Live2D.captureFrame=!1;var e=document.createElement("a");document.body.appendChild(e),e.setAttribute("type","hidden"),e.href=C.toDataURL(),e.download=window.Live2D.captureName||"live2d.png",e.click()}i(t,C)}())}function _(){if(R.getModel(0)&&R.getModel(0).hidden)return;gaze.update();O.default.reset(),O.default.loadIdentity(),F.clear(F.COLOR_BUFFER_BIT),O.default.multMatrix(U.getArray()),O.default.multMatrix(B.getArray()),O.default.push();for(var t=0;t<R.numModels();t++){var i=R.getModel(t);if(null==i)return;i.initialized&&!i.updating&&(i.setDrag(gaze.getX(),gaze.getY()),i.update(),i.draw(F))}O.default.pop()}function a(t){resetGaze();R.reloadFlg=!0,R.count++,R.changeModel(F,t)}function v(){for(var t=["webgl","experimental-webgl","webkit-3d","moz-webgl"],i=0;i<t.length;i++)try{var e=C.getContext(t[i],{premultipliedAlpha:!0});if(e)return e}catch(t){}return null}function L(canvas,url,options) {
+function n(t){var i=C.width,e=C.height;var r=e/i,o=w.default.VIEW_LOGICAL_LEFT,n=w.default.VIEW_LOGICAL_RIGHT,_=-r,h=r;if(window.Live2D.captureFrame=!1,B=new M.L2DViewMatrix,B.setScreenRect(o,n,_,h),B.setMaxScreenRect(w.default.VIEW_LOGICAL_MAX_LEFT,w.default.VIEW_LOGICAL_MAX_RIGHT,w.default.VIEW_LOGICAL_MAX_BOTTOM,w.default.VIEW_LOGICAL_MAX_TOP),B.setMaxScale(w.default.VIEW_MAX_SCALE),B.setMinScale(w.default.VIEW_MIN_SCALE),U=new M.L2DMatrix44,U.multScale(1,i/e),F=v(),(0,D.setContext)(F),!F)return console.error("Failed to create WebGL context."),void(window.WebGLRenderingContext&&console.error("Your browser don't support WebGL, check https://get.webgl.org/ for futher information."));window.Live2D.setGL(F),F.clearColor(0,0,0,0),a(t),s()}function s(){b||(b=!0,function t(){_();var i=window.requestAnimationFrame||window.mozRequestAnimationFrame||window.webkitRequestAnimationFrame||window.msRequestAnimationFrame;if(window.Live2D.captureFrame){window.Live2D.captureFrame=!1;var e=document.createElement("a");document.body.appendChild(e),e.setAttribute("type","hidden"),e.href=C.toDataURL(),e.download=window.Live2D.captureName||"live2d.png",e.click()}i(t,C)}())}function _(){if(R.getModel(0)&&R.getModel(0).hidden)return;gaze.update();O.default.reset(),O.default.loadIdentity(),F.clear(F.COLOR_BUFFER_BIT),O.default.multMatrix(U.getArray()),O.default.multMatrix(B.getArray()),O.default.push();for(var t=0;t<R.numModels();t++){var i=R.getModel(t);if(null==i)return;i.initialized&&!i.updating&&(i.setDrag(gaze.getX(),gaze.getY()),i.update(),i.draw(F),i.framing?frameModel(i):i.onPaint&&presentModel(i))}O.default.pop()}function a(t){resetGaze();R.reloadFlg=!0,R.count++,R.changeModel(F,t)}function v(){for(var t=["webgl","experimental-webgl","webkit-3d","moz-webgl"],i=0;i<t.length;i++)try{var e=C.getContext(t[i],{premultipliedAlpha:!0});if(e)return e}catch(t){}return null}function presentModel(model) {
+  var ready = model.onPaint;
+  model.onPaint = undefined;
+  ready(C);
+}
+function frameModel(model) {
+  var frame = model.framing.measure(C);
+  if (!frame) return;
+  B.scale(frame.scale, frame.scale);
+  B.translate(2 * frame.x, -2 * C.height / C.width * frame.y);
+  model.framing = undefined;
+}
+function L(canvas,url,options) {
   o(canvas); n(url);
   var model = R.getModel(0);
+  if (model && options && options.framing) {
+    model.framing = options.framing;
+    B.scale(model.framing.initial.scale, model.framing.initial.scale);
+  }
+  if (model) model.onPaint = options && options.onPaint;
+  if (model) model.captions = options && options.captions;
   if (model) model.soundAliases = options && options.soundAliases;
   if (model) model.startPending = !!(options && options.start && !document.hidden);
 }
@@ -343,8 +361,13 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
       motion.setFadeOut(settings.getMotionFadeOut(group, index));
       handle = manager.startMotionPrio(motion, priority);
     } else manager.setReservePriority(0);
-    if (interactive && (dialogue || entry.text)) {
-      var event = new CustomEvent("live2d:dialogue", {detail: dialogue || entry.text});
+    var caption = dialogue || entry.text;
+    if (interactive && owner.captions && sound && (!caption || !/[\u3400-\u9fff]/.test(caption))) {
+      var clip = /(?:^|\/)([^/]+)_([^_/]+)_JP\.[^.]+$/i.exec(sound);
+      if (clip) caption = owner.captions[(clip[1] + "|" + clip[2]).toUpperCase()] || caption;
+    }
+    if (interactive && caption) {
+      var event = new CustomEvent("live2d:dialogue", {detail: caption});
       event.playback = owner.activeDialogue = {handle: handle};
       window.dispatchEvent(event);
     }

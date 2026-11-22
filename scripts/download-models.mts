@@ -75,8 +75,12 @@ for (const [id, variants] of Object.entries(library.models)) {
   if (!library.models[id].length) delete library.models[id];
 }
 const index = join(output, 'library.json');
-if (existsSync(index) && !isDeepStrictEqual(readJson(index), library))
-  throw new Error('Different catalog already exists: ' + index);
+if (existsSync(index)) {
+  const previous = readJson<Library>(index);
+  // An existing checkout can pick up updated display names, captions and archive aliases.
+  if (!isDeepStrictEqual({ ...previous, presentation: library.presentation }, { ...library, presentation: library.presentation }))
+    throw new Error('Different catalog already exists: ' + index);
+}
 const viewer = join(output, 'viewer');
 const marker = join(viewer, '.model-library-viewer');
 if (existsSync(viewer) && !existsSync(marker))

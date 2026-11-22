@@ -37,3 +37,38 @@ test('game motion counts match the Cubism segment encoding for all curve types',
   assert.equal(clip.Meta.Loop, false);
   assert.throws(() => prepareMotion({ ...clip, Curves: [{ Segments: [0, 1, 4] }] }, true));
 });
+
+test('Chinese presentation keeps archive links and speaker-specific captions', async () => {
+  const catalog = await json('catalog/library.json');
+  const { aliases, captions, labels } = catalog.presentation;
+  for (const [old, visible] of Object.entries(aliases)) {
+    assert.ok(catalog.models[old] && catalog.models[visible]);
+    assert.equal(old.split('/').at(-1), visible.split('/').at(-1));
+  }
+  assert.equal(aliases['doll/ak12/archive/normal'], 'doll/ak12/3302/normal');
+  assert.match(labels['doll/56-1type/7706'], /[\u3400-\u9fff]/);
+  assert.match(captions['HK416MOD_LIVE2D|HELLO'], /指挥官/);
+  assert.notEqual(captions['K2|DIALOGUE1'], captions['RFB|DIALOGUE1']);
+});
+
+test('collection navigation starts with fairies and follows CN releases, then standard/damaged', async t => {
+  const catalog = await json('catalog/library.json');
+  const source = await readFile(new URL('../src/library/catalog.ts', import.meta.url), 'utf8');
+  const { code } = await transform(source, { loader: 'ts', format: 'esm' });
+  const { loadModelCatalog } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+  const previous = globalThis.document;
+  globalThis.document = { baseURI: 'https://example.org/' };
+  t.after(() => { if (previous) globalThis.document = previous; else delete globalThis.document; });
+  t.mock.method(globalThis, 'fetch', async () => Response.json(catalog));
+  const { ids } = await loadModelCatalog('catalog.json', 'girls-frontline');
+  assert.equal(ids[0], 'fairy/air_attack/1/default');
+  assert.ok(ids.slice(0, 27).every(id => id.startsWith('fairy/')));
+  const versions = who => [...new Set(ids.filter(id => id.startsWith('doll/' + who + '/')).map(id => id.split('/')[2]))];
+  assert.deepEqual(versions('wa2000'), ['6','306','1108']);
+  assert.deepEqual(versions('ump45'), ['2107','mod','3403','5405','584']);
+  assert.deepEqual(versions('g11'), ['9','1602','4102','mod','8401']);
+  for (const id of ids.filter(id => id.endsWith('/destroy'))) {
+    const normal = id.replace(/destroy$/, 'normal');
+    if (ids.includes(normal)) assert.equal(ids[ids.indexOf(id) - 1], normal);
+  }
+});

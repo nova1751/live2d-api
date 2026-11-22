@@ -50,7 +50,7 @@ function createRenderer(base, legacy) {
       base + "modern/renderer.mjs"
     ).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue);
+      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -80,6 +80,23 @@ function createRenderer(base, legacy) {
 }
 
 // src/library/catalog.ts
+var categories = ["fairy", "doll", "adjutant", "npc", "squad", "background"];
+var forms = ["default", "normal", "destroy"];
+function rank(list, key) {
+  const i = list.indexOf(key);
+  return i < 0 ? list.length : i;
+}
+function orderCollection(ids, outfits) {
+  const natural = new Intl.Collator("en", { numeric: true });
+  const rows = ids.map((id) => {
+    const [category, character, version2, form] = id.split("/");
+    const outfit = outfits[[category, character, version2].join("/")];
+    const order = version2 === "base" ? -1 : outfit ?? (category === "fairy" && /^\d+$/.test(version2) ? Number(version2) : Number.MAX_SAFE_INTEGER);
+    return { id, category, character, version: version2, form, order };
+  });
+  rows.sort((a, b) => rank(categories, a.category) - rank(categories, b.category) || natural.compare(a.category, b.category) || natural.compare(a.character, b.character) || a.order - b.order || natural.compare(a.version, b.version) || rank(forms, a.form) - rank(forms, b.form) || natural.compare(a.form, b.form));
+  return rows.map((row) => row.id);
+}
 async function loadModelCatalog(input, collection) {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
@@ -87,9 +104,15 @@ async function loadModelCatalog(input, collection) {
   const catalog = await response.json();
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
   const audioBySource = /* @__PURE__ */ new Map();
-  const ids = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
+  const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
+  const presentation = collection ? catalog.presentation : void 0;
+  const visibleId = (id) => {
+    const alias = presentation?.aliases[id];
+    return alias && available.includes(alias) ? alias : id;
+  };
+  const ids = collection ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id, source) {
-    if (collection && !ids.includes(id)) throw new Error("Model outside the selected collection: " + id);
+    if (collection && !available.includes(id)) throw new Error("Model outside the selected collection: " + id);
     const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error("No model manifest for " + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
@@ -102,15 +125,15 @@ async function loadModelCatalog(input, collection) {
         audio = new Map((catalog.audio?.[asset.source] ?? []).map((path) => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: presentation?.captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { captions: presentation?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, resolve, legacyIds: catalog.legacyIds };
+  return { ids, visibleId, labels: presentation?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.2.0";
+var version = "2.3.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -130,7 +153,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-c6c44d203d03fa2b/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-1ae324f1d73c1f1f/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;
