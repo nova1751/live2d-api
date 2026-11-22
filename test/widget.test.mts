@@ -78,8 +78,8 @@ function browser(failOnce) {
 const settled = () => new Promise(resolve => setImmediate(resolve));
 
 for (const [provider, cdn] of [
-  ['jsdelivr', 'https://cdn.jsdelivr.net/npm/live2dapi-noa@' + version + '/'],
-  ['npm', 'https://unpkg.com/live2dapi-noa@' + version + '/'],
+  ['jsdelivr', 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-' + version + '/'],
+  ['npm', 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-' + version + '/'],
 ]) {
   for (const mode of ['random', 'sequential']) {
     test(`legacy ${provider}/${mode} works with separate CSS`, async () => {

@@ -1,6 +1,6 @@
 import { createRenderer, isModern } from './renderer';
 export { loadModelCatalog } from './library/catalog.js';
-import { runtimeDirectory, defaultLibraryUrl } from './distribution';
+import { runtimeDirectory, defaultLibraryUrl, githubLibrary } from './distribution';
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
@@ -13,6 +13,7 @@ export interface WidgetOptions {
   modelUrl?: string | URL;
   /** Optional self-hosted Cubism Core for modern models. */
   coreUrl?: string | URL;
+  collection?: import('./library/catalog.js').Collection;
   catalogUrl?: string | URL;
   modelId?: string;
   mode?: WidgetMode;
@@ -54,7 +55,8 @@ function loadScript<K extends 'initWidget' | 'loadlive2d'>(
   return scripts.get(url) as Promise<Window[K]>;
 }
 
-async function mount(base: string, mode: WidgetMode, position: WidgetPosition, modelUrl?: string | URL, coreUrl?: string | URL, modelBaseUrl?: string | URL, catalogUrl?: string | URL, modelId?: string) {
+async function mount(base: string, options: WidgetOptions, mode: WidgetMode, position: WidgetPosition) {
+  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = options;
   const style = document.createElement('link');
   style.rel = 'stylesheet';
   style.href = base + `css/${position}.css`;
@@ -70,7 +72,7 @@ async function mount(base: string, mode: WidgetMode, position: WidgetPosition, m
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + 'waifu-tips.json',
+      initWidget({ cdnPath: base, collection, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + 'waifu-tips.json',
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
@@ -87,7 +89,7 @@ export async function selectWidgetModel(id: string): Promise<void> {
   await select(id);
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }: WidgetOptions = {}): Promise<void> {
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
   if (catalogUrl && modelUrl) throw new TypeError('Choose catalogUrl or modelUrl');
@@ -101,11 +103,16 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   if (!base.pathname.endsWith('/')) base.pathname += '/';
   base.search = '';
   base.hash = '';
-  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = defaultLibraryUrl(base);
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
-  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId).catch(error => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }, mode, position).catch(error => {
     delete page[mounting];
     throw error;
   });
   return page[mounting];
+}
+
+/** Mount the Girls’ Frontline collection and keep character changes inside it. */
+export function loadGirlsFrontline(options: Omit<WidgetOptions, 'collection' | 'modelUrl' | 'modelBaseUrl'> = {}) {
+  return loadWidget({ ...options, collection: 'girls-frontline' });
 }

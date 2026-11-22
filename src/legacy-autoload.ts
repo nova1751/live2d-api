@@ -8,9 +8,7 @@ const live2d_path = (() => {
       return new URL('../../', url).href;
     }
   }
-  return PROVIDER === 'npm'
-    ? NPM_RUNTIME
-    : GLOBAL_RUNTIME;
+  return GLOBAL_RUNTIME;
 })();
 
 function loadExternalResource(url: string, type: 'css' | 'js'): Promise<string> {

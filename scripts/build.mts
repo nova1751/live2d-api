@@ -1,8 +1,8 @@
-import { libraryTag } from './library-tag.mjs';
+import { libraryTag } from './library-tag.mts';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
-import { build, context } from 'esbuild';
+import { build, context, transform } from 'esbuild';
 
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const dev = process.argv.includes('--dev');
@@ -25,11 +25,16 @@ for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/
 }
 const runtimeRequire = createRequire(import.meta.resolve('live2d-web'));
 await copyFile(resolve(dirname(runtimeRequire.resolve('wlipsync')), '../LICENSE'), 'modern/wlipsync-LICENSE');
-const legacyEngine = await readFile('src/vendor/cubism2.js', 'utf8');
+const { code: legacyEngine } = await transform(await readFile('src/vendor/cubism2.ts', 'utf8'), {
+  loader: 'ts', target: 'es2020', minifyWhitespace: true, legalComments: 'inline',
+});
 const entries = [
+  { entryPoints: ['src/vendor/asteroids.ts'], outfile: 'asteroids.js' },
   { entryPoints: ['src/standalone.ts'], outfile: 'live2d.min.js', format: 'iife', bundle: true,
     minify: true, banner: { js: legacyEngine.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
+  { entryPoints: ['src/girls-frontline.mts'], outfile: 'girls-frontline.mjs', format: 'esm' },
+  { entryPoints: ['src/pages/catalog.ts'], outfile: 'catalog/browser.mjs', format: 'esm', target: 'es2022' },
   { entryPoints: ['src/widget.mts'], outfile: 'widget.mjs', format: 'esm', bundle: true },
   {
     entryPoints: ['src/autoload.ts'], outfile: 'autoload.js', format: 'iife', bundle: true, minify: true,
@@ -40,8 +45,7 @@ const entries = [
 for (const provider of ['npm', 'jsdelivr']) {
   for (const mode of ['random', 'sequential']) {
     const dir = provider + '/' + mode;
-    const define = { ...catalogDefine, NPM_RUNTIME: JSON.stringify('https://unpkg.com/live2dapi-noa@' + version + '/'),
-      GLOBAL_RUNTIME: JSON.stringify('https://cdn.jsdelivr.net/npm/live2dapi-noa@' + version + '/'), PROVIDER: JSON.stringify(provider), MODE: JSON.stringify(mode) };
+    const define = { ...catalogDefine, GLOBAL_RUNTIME: JSON.stringify('https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-' + version + '/'), PROVIDER: JSON.stringify(provider), MODE: JSON.stringify(mode) };
     // Preserve the top-level loadExternalResource and live2d_path classic-script bindings.
     entries.push({ entryPoints: ['src/legacy-autoload.ts'], outfile: dir + '/autoload.js', define });
     if (provider === 'jsdelivr') {

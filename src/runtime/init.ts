@@ -5,9 +5,7 @@ import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
 
 const script = document.currentScript as HTMLScriptElement | null;
-const asteroidsUrl = script?.dataset.asteroidsUrl ?? (PROVIDER === 'npm'
-  ? 'https://unpkg.com/live2dapi-noa@latest/asteroids.js'
-  : 'https://fastly.jsdelivr.net/gh/nova1751/live2d-api@latest/asteroids.js');
+const asteroidsUrl = script?.dataset.asteroidsUrl ?? GLOBAL_RUNTIME + 'asteroids.js';
 const byId = (id: string) => document.getElementById(id)!;
 function reportError(error: unknown) {
   console.error('[Live2D]', error);

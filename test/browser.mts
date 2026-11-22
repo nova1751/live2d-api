@@ -1,4 +1,4 @@
-import { checkNativeEvents } from './native-events.mjs';
+import { checkNativeEvents, openLegacyDemo } from './native-events.mts';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
 import { context } from 'esbuild';
@@ -40,7 +40,8 @@ try {
       }
     };
   });
-  await page.goto(url);
+  // Exercise the historical loader independently of the public Girls’ Frontline demo.
+  await openLegacyDemo(page, url);
   await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
   const canvas = page.locator('#live2d');
   await page.addStyleTag({ content: '#waifu {transition:none!important;bottom:0!important} #waifu-tips {visibility:hidden}' });

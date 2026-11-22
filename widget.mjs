@@ -80,15 +80,16 @@ function createRenderer(base, legacy) {
 }
 
 // src/library/catalog.ts
-async function loadModelCatalog(input) {
+async function loadModelCatalog(input, collection) {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
   const catalog = await response.json();
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
   const audioBySource = /* @__PURE__ */ new Map();
-  const ids = Object.keys(catalog.models).filter((id) => catalog.models[id].some((asset) => asset.manifest));
+  const ids = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
   function resolve(id, source) {
+    if (collection && !ids.includes(id)) throw new Error("Model outside the selected collection: " + id);
     const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error("No model manifest for " + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
@@ -109,12 +110,13 @@ async function loadModelCatalog(input) {
 }
 
 // package.json
-var version = "2.1.0";
+var version = "2.2.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
 var globalCdn = "https://cdn.jsdelivr.net";
 var globalModels = globalCdn + snapshot;
+var widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 var packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
 function scriptDirectory(src) {
   const url = new URL(src, document.baseURI);
@@ -124,12 +126,15 @@ function scriptDirectory(src) {
   return url;
 }
 function runtimeDirectory(src) {
-  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + "/npm/live2dapi-noa@" + version + "/");
+  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + "/gh/nova1751/live2d-api@widget-" + version + "/");
+}
+function githubLibrary(base) {
+  const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
+  return origin + "/gh/nova1751/live2d-api@catalog-c6c44d203d03fa2b/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
-  if (!packageRoot.test(base.pathname)) return void 0;
-  const cdn = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return cdn + "/gh/nova1751/live2d-api@catalog-c6c44d203d03fa2b/catalog/library.json";
+  if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;
+  return githubLibrary(base);
 }
 
 // src/widget.mts
@@ -162,7 +167,8 @@ function loadScript(url, exportName, asteroidsUrl) {
   }
   return scripts.get(url);
 }
-async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId) {
+async function mount(base, options, mode, position) {
+  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = options;
   const style = document.createElement("link");
   style.rel = "stylesheet";
   style.href = base + `css/${position}.css`;
@@ -178,6 +184,7 @@ async function mount(base, mode, position, modelUrl, coreUrl, modelBaseUrl, cata
     if (!document.getElementById("waifu-toggle")) {
       initWidget({
         cdnPath: base,
+        collection,
         catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href,
         modelId,
         modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href,
@@ -197,7 +204,7 @@ async function selectWidgetModel(id) {
   if (!select) throw new Error("Initialize the widget with a model catalog first");
   await select(id);
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = {}) {
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
   if (catalogUrl && modelUrl) throw new TypeError("Choose catalogUrl or modelUrl");
@@ -208,15 +215,19 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   base.search = "";
   base.hash = "";
-  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = defaultLibraryUrl(base);
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
-  page[mounting] = mount(base.href, mode, position, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId).catch((error) => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }, mode, position).catch((error) => {
     delete page[mounting];
     throw error;
   });
   return page[mounting];
 }
+function loadGirlsFrontline(options = {}) {
+  return loadWidget({ ...options, collection: "girls-frontline" });
+}
 export {
+  loadGirlsFrontline,
   loadModelCatalog,
   loadWidget,
   selectWidgetModel
