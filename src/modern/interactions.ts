@@ -36,7 +36,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
           const code = line?.char_code?.toUpperCase();
           const key = line?.voice_key?.toUpperCase();
           actions.push({ file: file.File, group, index, area: motion.touch_area.toLowerCase(), weight: motion.probability,
-            delay: Math.max(0, motion.delay || 0), caption: line?.caption,
+            delay: Math.max(0, motion.delay || 0), caption: source.captions?.[code + '|' + key] || line?.caption,
             sound: code && key ? source.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined });
         }
       } else if (/^tap_?/i.test(group)) {

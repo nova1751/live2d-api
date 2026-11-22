@@ -12,17 +12,26 @@ export interface ModelCatalog {
     legacyIds?: string[][];
     sources: Record<string, ModelSource>;
     models: Record<string, ModelVariant[]>;
+    presentation?: {
+        labels: Record<string, string>;
+        captions: Record<string, string>;
+        aliases: Record<string, string>;
+    };
     audio?: Record<string, string[]>;
 }
 export interface DialogueSource {
     url: string;
+    captions?: Record<string, string>;
     audio: ReadonlyMap<string, string>;
 }
 export type Collection = 'girls-frontline';
 export declare const defaultDoll = "doll/k2/3301/normal";
 export declare function loadModelCatalog(input: string | URL, collection?: Collection): Promise<{
     ids: string[];
+    visibleId: (id: string) => string;
+    labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
+        captions: Record<string, string> | undefined;
         modelUrl: string;
         dialogue: DialogueSource | undefined;
         soundAliases: Record<string, string> | undefined;

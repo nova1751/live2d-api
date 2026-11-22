@@ -19,6 +19,7 @@
     "scripts/download-models.mts",
     "scripts/check-model-library.mts",
     "scripts/model-library.mts",
+    "scripts/localize-library.mts",
     "scripts/publish-widget.mts"
   ]
 }

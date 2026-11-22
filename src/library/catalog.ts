@@ -5,9 +5,10 @@ export interface ModelCatalog {
   legacyIds?: string[][];
   sources: Record<string, ModelSource>;
   models: Record<string, ModelVariant[]>;
+  presentation?: { labels: Record<string,string>; captions: Record<string,string>; aliases: Record<string,string> };
   audio?: Record<string, string[]>;
 }
-export interface DialogueSource { url: string; audio: ReadonlyMap<string, string> }
+export interface DialogueSource { url: string; captions?: Record<string,string>; audio: ReadonlyMap<string, string> }
 
 export type Collection = 'girls-frontline';
 export const defaultDoll = 'doll/k2/3301/normal';
@@ -19,9 +20,15 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
   const catalog: ModelCatalog = await response.json();
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error('Unsupported model catalog');
   const audioBySource = new Map<string, Map<string, string>>();
-  const ids = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
+  const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
+  const presentation = collection ? catalog.presentation : undefined;
+  const visibleId = (id: string) => {
+    const alias = presentation?.aliases[id];
+    return alias && available.includes(alias) ? alias : id;
+  };
+  const ids = available.filter(id => visibleId(id) === id);
   function resolve(id: string, source?: string) {
-    if (collection && !ids.includes(id)) throw new Error('Model outside the selected collection: ' + id);
+    if (collection && !available.includes(id)) throw new Error('Model outside the selected collection: ' + id);
     const asset = catalog.models[id]?.find(item => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error('No model manifest for ' + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
@@ -35,9 +42,9 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
         audio = new Map((catalog.audio?.[asset.source] ?? []).map(path => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: presentation?.captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { captions: presentation?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, resolve, legacyIds: catalog.legacyIds };
+  return { ids, visibleId, labels: presentation?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

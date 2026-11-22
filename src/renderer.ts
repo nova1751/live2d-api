@@ -44,7 +44,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
     const { signal } = controller;
     return import(/* webpackIgnore: true */ /* @vite-ignore */ base + 'modern/renderer.mjs').then(async module => {
       if (signal.aborted) return;
-      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue);
+      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();

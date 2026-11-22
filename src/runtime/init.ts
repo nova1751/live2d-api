@@ -134,7 +134,7 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
       show();
       models.reopen(start)?.catch(reportError);
     }
-    document.querySelector<HTMLElement>('#waifu-tool button')?.focus();
+    if (event.detail === 0) document.querySelector<HTMLElement>('#waifu-tool button')?.focus();
   });
   const hiddenSince = Number(localStorage.getItem('waifu-display'));
   if (hiddenSince && Date.now() - hiddenSince <= 86400000) {

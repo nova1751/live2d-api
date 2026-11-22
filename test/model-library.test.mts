@@ -37,3 +37,16 @@ test('game motion counts match the Cubism segment encoding for all curve types',
   assert.equal(clip.Meta.Loop, false);
   assert.throws(() => prepareMotion({ ...clip, Curves: [{ Segments: [0, 1, 4] }] }, true));
 });
+
+test('Chinese presentation keeps archive links and speaker-specific captions', async () => {
+  const catalog = await json('catalog/library.json');
+  const { aliases, captions, labels } = catalog.presentation;
+  for (const [old, visible] of Object.entries(aliases)) {
+    assert.ok(catalog.models[old] && catalog.models[visible]);
+    assert.equal(old.split('/').at(-1), visible.split('/').at(-1));
+  }
+  assert.equal(aliases['doll/ak12/archive/normal'], 'doll/ak12/3302/normal');
+  assert.match(labels['doll/56-1type/7706'], /[\u3400-\u9fff]/);
+  assert.match(captions['HK416MOD_LIVE2D|HELLO'], /指挥官/);
+  assert.notEqual(captions['K2|DIALOGUE1'], captions['RFB|DIALOGUE1']);
+});
