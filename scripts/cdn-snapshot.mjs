@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { posix } from 'node:path';
 
-// Produce ordinary immutable Git refs under jsDelivr's 50 MB per-version limit.
+// Produce ordinary immutable Git refs with a conservative 38 MB budget per asset pack.
 // Each skin family stays together so the original shared model paths still work.
 const limit = 38_000_000;
 const publish = process.argv.includes('--publish');

@@ -47,7 +47,7 @@
 <script defer src="https://unpkg.com/live2dapi-noa@2.1.0/autoload.js" data-position="right" data-mode="random"></script>
 ```
 
-完整仓库超出 jsDelivr 每版本 50 MB 的限制，整库地址在镜像缓存未命中时可能返回 403。两个入口从 npm 读取播放器，从同一 CDN 的独立 `catalog-…` 标签读取统一目录。历史皮肤的入口和贴图、动作、录音继续走原有七个固定素材包，各包小于 38 MB。新编目的上游素材使用固定提交的原始文件 URL，中国大陆的访问速度和可用性取决于网络；需要全量同域时请部署下方的离线集合。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror)
+jsDelivr 当前文档给出的默认上限为每包 150 MB，GitHub 单文件 20 MB。历史整库地址曾有文件返回 403；缓存、路径和上游响应都会影响结果。38 MB 是本项目七个素材快照的实际体积上界。两个入口从 npm 读取播放器，从同一 CDN 的独立 `catalog-…` 标签读取统一目录。历史皮肤的入口和贴图、动作、录音继续走原有七个固定素材包，各包小于 38 MB。新编目的上游素材使用固定提交的原始文件 URL，中国大陆的访问速度和可用性取决于网络；需要全量同域时请部署下方的离线集合。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror)
 
 [打开 Vercel 在线演示](https://live2d-nova.vercel.app/) · [GitHub Pages 镜像](https://nova1751.github.io/live2d-api/)
 
@@ -167,6 +167,8 @@ await loadWidget();
 
 普通和破损分别计数；同一皮肤的格式或来源副本不重复计数。旧收藏中无法确认皮肤编号的记录保留 `archive`。游戏各区服、联动和下架装扮没有可供逐条核验的官方完整目录。上述统计只描述已核对的公开来源。
 
+对四份下载来源逐一检查后，457 个首选模型清单引用的文件均存在。在全部 1,317 个不同来源清单中，有 32 个备用入口引用了缺失文件（Eikanya 31 个、dump 1 个），另有 99 条 Eikanya 来源记录只有模型二进制。目录保留这些记录供溯源，默认选择可加载的入口。
+
 在仓库根目录运行以下命令。下载器需要 Python 3.9+ 和 Git，会取回四个固定提交中收录的素材、原始对话、贴图、动作和录音，并生成使用本地相对路径的目录及预览页。
 
 ```sh
@@ -191,7 +193,7 @@ await selectWidgetModel('doll/56-1type/7706/normal');
 
 省略 `data-catalog-url` 的 npm 快捷入口使用该版本固定的公开目录。已有的 `data-model-url` 可直达原生模型清单，`data-model-base-url` 可指定旧 `model_list.json` 目录，历史 `initWidget` 和数字模型地址继续可用。npm 压缩包只包含运行时、样式、类型与许可，模型集合单独下载。
 
-当模型带游戏对话配置时，播放器按命中部位、普通或破损形态、动作名和 ID 匹配台词与日语录音，保留游戏配置的播放延迟。加载器按实际曲线重算新版动作的段数和控制点数，修正部分导出文件会被 Cubism 拒绝播放的问题；原始下载文件按固定提交保存。带游戏事件配置的点击动作播放一遍，待机动画继续循环。模型台词会持续到动作与声音都结束，再保留 1.2 秒淡出。没有对应台词或录音时仅使用所提供的内容。原语言文字随来源保留。
+当模型带游戏对话配置时，播放器按命中部位、普通或破损形态、动作名和 ID 匹配台词与日语录音，保留游戏配置的播放延迟。复核 dump 中的 2,840 份动作文件，2,839 份的曲线计数与导出内容不符。加载器按实际曲线重算新版动作的段数和控制点数，修正部分导出文件会被 Cubism 拒绝播放的问题；原始下载文件按固定提交保存。带游戏事件配置的点击动作播放一遍，待机动画继续循环。模型台词会持续到动作与声音都结束，再保留 1.2 秒淡出。没有对应台词或录音时仅使用所提供的内容。原语言文字随来源保留。
 
 维护者可运行 `python scripts/model-library.py <Eikanya 本地仓库> <jacksen168 本地仓库>` 重建索引，运行 `node test/library-browser.mjs <下载目录>` 验证真实模型、配音和键盘操作。目录变更提交后执行 `node scripts/publish-library.mjs --publish`，在发布 npm 新版本前核对两个 CDN 均可读取生成的固定标签。
 
