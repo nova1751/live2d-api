@@ -1,0 +1,182 @@
+{
+  "models": [
+    [
+      "fairy/air_attack",
+      "fairy/air_attack/02",
+      "fairy/air_attack/03",
+      "fairy/airborne",
+      "fairy/airborne/02",
+      "fairy/airborne/03",
+      "fairy/armor",
+      "fairy/armor/02",
+      "fairy/armor/03",
+      "fairy/command",
+      "fairy/command/02",
+      "fairy/command/03",
+      "fairy/fighting",
+      "fairy/fighting/02",
+      "fairy/fighting/03",
+      "fairy/fortress",
+      "fairy/fortress/02",
+      "fairy/fortress/03",
+      "fairy/golden",
+      "fairy/golden/02",
+      "fairy/golden/03",
+      "fairy/shield",
+      "fairy/shield/02",
+      "fairy/shield/03",
+      "fairy/target",
+      "fairy/target/02",
+      "fairy/target/03"
+    ],
+    [
+      "AK12/ak12_0/normal",
+      "AK12/ak12_0/destroy",
+      "AK12/ak12_2402/normal",
+      "AK12/ak12_2402/destroy"
+    ],
+    [
+      "AN-94/an94_2404/normal",
+      "AN-94/an94_2404/destroy",
+      "AN-94/an94_3303/normal",
+      "AN-94/an94_3303/destroy"
+    ],
+    [
+      "HK416/HK416_805/normal",
+      "HK416/HK416_805/destroy",
+      "HK416/HK416_3401/normal",
+      "HK416/HK416_3401/destroy"
+    ],
+    [
+      "kp31/kp31-/normal",
+      "kp31/kp31-/destroy",
+      "kp31/kp31_/normal",
+      "kp31/kp31_/destroy",
+      "kp31/kp31_1103/normal",
+      "kp31/kp31_1103/destroy"
+    ],
+    [
+      "rfbchristmas/normal",
+      "rfbchristmas/destroy",
+      "rfbchristmas/k2_3301/normal",
+      "rfbchristmas/k2_3301/destroy"
+    ],
+    ["ro635_4504/normal", "ro635_4504/destroy"],
+    [
+      "ost14/ots14_1203/normal",
+      "ost14/ots14_1203/destroy",
+      "ost14/ots14_3001/normal",
+      "ost14/ots14_3001/destroy",
+      "ost14/ots14_4501/normal",
+      "ost14/ots14_4501/destroy"
+    ],
+    [
+      "carcano/carcano1891_2201/normal",
+      "carcano/carcano1891_2201/destroy",
+      "carcano/carcano1891_2905/normal",
+      "carcano/carcano1891_2905/destroy",
+      "carcano/carcano1938_2202/normal",
+      "carcano/carcano1938_2202/destroy",
+      "carcano/carcano1938_2904/normal",
+      "carcano/carcano1938_2904/destroy"
+    ],
+    [
+      "g36c/g36c_1202/normal",
+      "g36c/g36c_1202/destroy",
+      "g36c/g36c_3103/normal",
+      "g36c/g36c_3103/destroy",
+      "g36c/g36c_3802/normal",
+      "g36c/g36c_3802/destroy",
+      "g36c/g36c_5201/normal",
+      "g36c/g36c_5201/destroy"
+    ],
+    [
+      "saiga12/saiga12_3901/normal",
+      "saiga12/saiga12_3901/destroy",
+      "saiga12/saiga12_4510/normal",
+      "saiga12/saiga12_4510/destroy",
+      "saiga12/saiga12_5402/normal",
+      "saiga12/saiga12_5402/destroy"
+    ],
+    [
+      "ump45/ump45_2107/normal",
+      "ump45/ump45_2107/destroy",
+      "ump45/ump45_3403/normal",
+      "ump45/ump45_3403/destroy",
+      "ump45/ump45_5405/normal",
+      "ump45/ump45_5405/destroy",
+      "ump45/ump45mod/normal",
+      "ump45/ump45mod/destroy"
+    ],
+    [
+      "wa2000/wa2000_6/normal",
+      "wa2000/wa2000_6/destroy",
+      "wa2000/wa2000_306/normal",
+      "wa2000/wa2000_306/destroy",
+      "wa2000/wa2000_1108/normal",
+      "wa2000/wa2000_1108/destroy"
+    ],
+
+    ["leila", "madierda", "siluokayi", "xinxiya"],
+    ["ship/209_2", "ship/248_1", "ship/325_1"],
+    [
+      "95type/95type_405/normal",
+      "95type/95type_405/destroy",
+      "95type/95type_3702/normal",
+      "95type/95type_3702/destroy"
+    ],
+    [
+      "97type/97type_406/normal",
+      "97type/97type_406/destroy",
+      "97type/97type_3703/normal",
+      "97type/97type_3703/destroy"
+    ],
+    [
+      "dsr50/dsr50_1801/normal",
+      "dsr50/dsr50_1801/destroy",
+      "dsr50/dsr50_2101/normal",
+      "dsr50/dsr50_2101/destroy"
+    ],
+    [
+      "UMP9/ump9_2106/normal",
+      "UMP9/ump9_2106/destroy",
+      "UMP9/ump9_3404/normal",
+      "UMP9/ump9_3404/destroy"
+    ],
+    [
+      "m4/m4 sopmod ii_4507/normal",
+      "m4/m4 sopmod ii_4507/destroy",
+      "m4/m4 sopmod iimod/normal",
+      "m4/m4 sopmod iimod/destroy"
+    ],
+    [
+      "za/zastavam21_2104/normal",
+      "za/zastavam21_2104/destroy",
+      "za/zastavam21_4304/normal",
+      "za/zastavam21_4304/destroy"
+    ]
+  ],
+  "messages": [
+    "少女前线 Girls Frontline~ fairy",
+    "少女前线 Girls Frontline~ AK12",
+    "少女前线 Girls Frontline~ AN-94",
+    "少女前线 Girls Frontline~ HK416_805",
+    "少女前线 Girls Frontline~ kp31",
+    "少女前线 Girls Frontline~ rfb christmas",
+    "少女前线 Girls Frontline~ ro635_4504",
+    "少女前线 Girls Frontline~ ots14",
+    "少女前线 Girls Frontline~ carcono1891",
+    "少女前线 Girls Frontline~ g36c",
+    "少女前线 Girls Frontline~ saiga12",
+    "少女前线 Girls Frontline~ ump45",
+    "少女前线 Girls Frontline~ wa2000",
+    "机动战队~",
+    "战舰少女~",
+    "少女前线 Girls Frontline~ 95type",
+    "少女前线 Girls Frontline~ 97type",
+    "少女前线 Girls Frontline~ DSR50",
+    "少女前线 Girls Frontline~ UMP9",
+    "少女前线 Girls Frontline~ m4",
+    "少女前线 Girls Frontline~ zastavam21_4304"
+  ]
+}
