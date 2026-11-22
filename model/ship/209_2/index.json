@@ -14,69 +14,28 @@
 
   "motions": {
     "idle": [
-      {
-        "file": "daiji_idle_01.mtn",
-        "fade_in": 1000,
-        "fade_out": 1000,
-        "priority": 1
-      },
-      {
-        "file": "daiji_idle_02.mtn",
-        "fade_in": 1000,
-        "fade_out": 1000,
-        "priority": 1
-      },
-      {
-        "file": "MISULI.mtn",
-        "fade_in": 1000,
-        "fade_out": 1000,
-        "priority": 1
-      }
+      {"file": "daiji_idle_01.mtn", "fade_in": 1000, "fade_out": 1000, "priority": 1},
+      {"file": "daiji_idle_02.mtn", "fade_in": 1000, "fade_out": 1000, "priority": 1},
+      {"file": "MISULI.mtn", "fade_in": 1000, "fade_out": 1000, "priority": 1}
     ],
-
-    "tap_body": [
-      {
-        "file": "KISS.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "moxiong_01.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "moxiong_02.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "TUR_OPEN.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "TUR_CLOSE.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "GLASS_On.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "GLASS_Off.mtn",
-        "fade_in": 1000,
-        "fade_out": 0,
-        "priority": 2
-      }
+    "kiss": [
+      {"file": "KISS.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
+    ],
+    "moxiong": [
+      {"file": "moxiong_01.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2},
+      {"file": "moxiong_02.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
+    ],
+    "open": [
+      {"file": "TUR_OPEN.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
+    ],
+    "close": [
+      {"file": "TUR_CLOSE.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
+    ],
+    "glass_on": [
+      {"file": "GLASS_On.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
+    ],
+    "glass_off": [
+      {"file": "GLASS_Off.mtn", "fade_in": 1000, "fade_out": 0, "priority": 2}
     ]
   },
 

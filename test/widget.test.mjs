@@ -30,7 +30,7 @@ function browser(failOnce) {
       removeAttribute: name => attributes.delete(name),
       dataset: {}, style: {}, classList: { add() {}, remove() {} },
       remove() {},
-      addEventListener(event, listener) { this[event] = listener; },
+      addEventListener(event, listener) { this[event] = () => listener({ isTrusted: false }); },
       insertAdjacentHTML(_, html) {
         for (const [, id] of html.matchAll(/id="([^"]+)"/g)) nodes.set(id, element());
       },

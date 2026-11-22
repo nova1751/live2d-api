@@ -15,81 +15,32 @@
 
   "motions": {
     "idle": [
-      {
-        "file": "dadian_idle.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 1
-      },
-      {
-        "file": "dadian_idle1.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 1
-      },
-      {
-        "file": "dadian_idle2.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 1
-      }
+      {"file": "dadian_idle.mtn", "fade_in": 0, "fade_out": 0, "priority": 1},
+      {"file": "dadian_idle1.mtn", "fade_in": 0, "fade_out": 0, "priority": 1},
+      {"file": "dadian_idle2.mtn", "fade_in": 0, "fade_out": 0, "priority": 1}
     ],
-
-    "tap_body": [
-      {
-        "file": "dadian_smile_01.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_smile_02.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "ordinarily_spoiled.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_look_right.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_look_left.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_skirt.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_hide_bra.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_hide_plane.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      },
-      {
-        "file": "dadian_hide_plane_2.mtn",
-        "fade_in": 0,
-        "fade_out": 0,
-        "priority": 2
-      }
+    "hide_plane": [
+      {"file": "dadian_hide_plane.mtn", "fade_in": 0, "fade_out": 0, "priority": 2},
+      {"file": "dadian_hide_plane_2.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "skirt": [
+      {"file": "dadian_skirt.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "look_left": [
+      {"file": "dadian_look_left.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "look_right": [
+      {"file": "dadian_look_right.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "hide_bra": [
+      {"file": "dadian_hide_bra.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "spoiled": [
+      {"file": "ordinarily_spoiled.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
+    ],
+    "smile": [
+      {"file": "dadian_smile_01.mtn", "fade_in": 0, "fade_out": 0, "priority": 2},
+      {"file": "dadian_smile_02.mtn", "fade_in": 0, "fade_out": 0, "priority": 2}
     ]
   },
 

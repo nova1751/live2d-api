@@ -51,7 +51,8 @@ test('model settings reference packaged assets with exact path casing', () => {
     }
     for (const expression of setting.expressions ?? []) check(expression.file);
     for (const motion of Object.values(setting.motions ?? {}).flat()) {
-      if (!(preset && motion.sound && !motion.file)) check(motion.file);
+      assert.ok(motion.file || motion.sound || motion.command, file + ': empty motion');
+      if ('file' in motion) check(motion.file);
       if ('sound' in motion) check(motion.sound);
       if (motion.command?.startsWith('change_cos ')) check(motion.command.slice('change_cos '.length));
     }
