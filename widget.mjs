@@ -80,6 +80,23 @@ function createRenderer(base, legacy) {
 }
 
 // src/library/catalog.ts
+var categories = ["fairy", "doll", "adjutant", "npc", "squad", "background"];
+var forms = ["default", "normal", "destroy"];
+function rank(list, key) {
+  const i = list.indexOf(key);
+  return i < 0 ? list.length : i;
+}
+function orderCollection(ids, outfits) {
+  const natural = new Intl.Collator("en", { numeric: true });
+  const rows = ids.map((id) => {
+    const [category, character, version2, form] = id.split("/");
+    const outfit = outfits[[category, character, version2].join("/")];
+    const order = version2 === "base" ? -1 : outfit ?? (category === "fairy" && /^\d+$/.test(version2) ? Number(version2) : Number.MAX_SAFE_INTEGER);
+    return { id, category, character, version: version2, form, order };
+  });
+  rows.sort((a, b) => rank(categories, a.category) - rank(categories, b.category) || natural.compare(a.category, b.category) || natural.compare(a.character, b.character) || a.order - b.order || natural.compare(a.version, b.version) || rank(forms, a.form) - rank(forms, b.form) || natural.compare(a.form, b.form));
+  return rows.map((row) => row.id);
+}
 async function loadModelCatalog(input, collection) {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
@@ -93,7 +110,7 @@ async function loadModelCatalog(input, collection) {
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
   };
-  const ids = available.filter((id) => visibleId(id) === id);
+  const ids = collection ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id, source) {
     if (collection && !available.includes(id)) throw new Error("Model outside the selected collection: " + id);
     const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
@@ -136,7 +153,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-5a95442c9f76667d/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-1ae324f1d73c1f1f/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

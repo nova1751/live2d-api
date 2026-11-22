@@ -24,7 +24,7 @@ try {
   const library = await loadModelCatalog(catalogUrl, 'girls-frontline');
   const ids = library.ids.map((id) => id.split('/'));
   const initial = new URL(location.href).searchParams.get('model');
-  const first = [initial, 'doll/k2/3301/normal', library.ids[0]].find(
+  const first = [initial, library.ids[0]].find(
     (id) => id !== null && library.ids.includes(library.visibleId(id)),
   );
   if (!first) throw new Error('此目录中没有可预览的模型');

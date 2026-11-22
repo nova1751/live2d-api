@@ -34,13 +34,14 @@ for (const row of JSON.parse(gunTable) as { id: number; code: string; name: stri
   const name = names.get(row.name);
   if (name) guns.set(code, name);
 }
-const costumes = new Map<string, string>();
-for (const row of JSON.parse(skinTable) as { id: number; fit_gun: number; name: string }[]) {
+const costumes = new Map<string, { title: string; order: number }>();
+for (const row of JSON.parse(skinTable) as { id: number; fit_gun: number; name: string; order: number }[]) {
   const code = gunIds.get(row.fit_gun);
   const title = names.get(row.name);
-  if (code && title) costumes.set(code + '/' + row.id, title);
+  if (code && title) costumes.set(code + '/' + row.id, { title, order: row.order });
 }
 const labels: Record<string, string> = {};
+const outfitOrder: Record<string, number> = {};
 const captions: Record<string, string> = {};
 const english = new Map<string, string>();
 const legacyKeys = new Set<string>();
@@ -50,7 +51,11 @@ for (const [id, variants] of Object.entries(catalog.models)) {
   const name = guns.get(who);
   if (kind === 'doll' && name) labels[kind + '/' + who] = name;
   const costume = kind === 'doll' && costumes.get(who + '/' + skin);
-  if (costume) labels[[kind,who,skin].join('/')] = costume + '（' + skin + '）';
+  if (costume) {
+    const version = [kind, who, skin].join('/');
+    labels[version] = costume.title + '（' + skin + '）';
+    outfitOrder[version] = costume.order;
+  }
   for (const item of variants) {
     const base = join(root, 'sources', item.source);
     if (item.dialogue) {
@@ -103,6 +108,17 @@ for (const [who, archive, skin, forms] of [
   if (!catalog.models[old] || !catalog.models[target]) throw new Error('Missing archive pair ' + old);
   aliases[old] = target;
 }
-catalog.presentation = { labels, captions, aliases };
+// CN maintenance announcements, archived at https://gf-ogas.wiki/wiki/少女前线/历届版本更新及登录图
+// Position upgrades among this character's numbered outfits using the surrounding CN theme batches.
+for (const [batch, characters] of [
+  [19.5, ['m4a1', 'ar15']],                 // 2018-02-08
+  [27.5, ['m4-sopmod-ii', 'ump45']],         // 2018-08-16
+  [42.5, ['hk416', 'ump9', '88type']],       // 2019-08-08
+  [55.5, ['g11', 'ro635']],                  // 2020-08-20
+] as const) for (const character of characters) {
+  const version = 'doll/' + character + '/mod';
+  if (catalog.models[version + '/normal']) outfitOrder[version] = batch;
+}
+catalog.presentation = { labels, captions, aliases, outfitOrder };
 await writeFile(file, JSON.stringify(catalog) + '\n');
 console.log(Object.keys(labels).length, 'labels;', Object.keys(captions).length, 'subtitles;', Object.keys(aliases).length, 'archive aliases');

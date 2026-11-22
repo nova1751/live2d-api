@@ -1,6 +1,6 @@
 import { ModelTransition } from './transition';
 import { createFraming } from './framing';
-import { defaultDoll, loadModelCatalog } from './catalog';
+import { loadModelCatalog } from './catalog';
 
 export class CatalogModels {
   private library?: ReturnType<typeof loadModelCatalog>;
@@ -10,7 +10,15 @@ export class CatalogModels {
   private readonly key: string;
 
   constructor(private readonly url: string, private readonly options: LegacyOptions) {
-    this.key = 'live2d:model:' + url + (options.collection ? ':' + options.collection : '');
+    const suffix = options.collection ? ':' + options.collection : '';
+    const key = 'live2d:model:' + url + suffix;
+    // An immutable catalog URL changes on release. Keep selections scoped to the same GitHub collection.
+    const stable = (value: string) => value.replace(/(\/gh\/nova1751\/live2d-api)@catalog-[a-f0-9]{16}(\/catalog\/library\.json:girls-frontline)$/, '$1$2');
+    this.key = stable(key);
+    if (this.key !== key && !localStorage.getItem(this.key)) {
+      const previous = [key, ...Object.keys(localStorage)].find(name => stable(name) === this.key && localStorage.getItem(name));
+      if (previous) localStorage.setItem(this.key, localStorage.getItem(previous)!);
+    }
   }
   private open() {
     return this.library ??= loadModelCatalog(this.url, this.options.collection).catch(error => { this.library = undefined; throw error; });
@@ -33,7 +41,7 @@ export class CatalogModels {
   load(_id?: number, _texture?: number, _message?: string, start = false) {
     return this.select((ids, legacyIds, visibleId) => {
       const saved = localStorage.getItem(this.key);
-      if (this.options.collection) return this.options.modelId ?? (saved && ids.includes(visibleId(saved)) ? saved : ids.includes(defaultDoll) ? defaultDoll : ids[0]);
+      if (this.options.collection) return this.options.modelId ?? (saved && ids.includes(visibleId(saved)) ? saved : ids[0]);
       const legacy = legacyIds?.[Number(localStorage.getItem('modelId'))]?.[Number(localStorage.getItem('modelTexturesId'))];
       return this.options.modelId ?? (saved && ids.includes(visibleId(saved)) ? saved : legacy && ids.includes(legacy) ? legacy : ids[0]);
     }, start);

@@ -16,6 +16,7 @@ export interface ModelCatalog {
         labels: Record<string, string>;
         captions: Record<string, string>;
         aliases: Record<string, string>;
+        outfitOrder?: Record<string, number>;
     };
     audio?: Record<string, string[]>;
 }
@@ -25,7 +26,6 @@ export interface DialogueSource {
     audio: ReadonlyMap<string, string>;
 }
 export type Collection = 'girls-frontline';
-export declare const defaultDoll = "doll/k2/3301/normal";
 export declare function loadModelCatalog(input: string | URL, collection?: Collection): Promise<{
     ids: string[];
     visibleId: (id: string) => string;

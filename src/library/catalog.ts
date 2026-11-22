@@ -5,13 +5,34 @@ export interface ModelCatalog {
   legacyIds?: string[][];
   sources: Record<string, ModelSource>;
   models: Record<string, ModelVariant[]>;
-  presentation?: { labels: Record<string,string>; captions: Record<string,string>; aliases: Record<string,string> };
+  presentation?: { labels: Record<string,string>; captions: Record<string,string>; aliases: Record<string,string>; outfitOrder?: Record<string, number> };
   audio?: Record<string, string[]>;
 }
 export interface DialogueSource { url: string; captions?: Record<string,string>; audio: ReadonlyMap<string, string> }
 
 export type Collection = 'girls-frontline';
-export const defaultDoll = 'doll/k2/3301/normal';
+const categories = ['fairy', 'doll', 'adjutant', 'npc', 'squad', 'background'];
+const forms = ['default', 'normal', 'destroy'];
+function rank(list: string[], key: string) {
+  const i = list.indexOf(key);
+  return i < 0 ? list.length : i;
+}
+
+function orderCollection(ids: string[], outfits: Record<string, number>) {
+  const natural = new Intl.Collator('en', { numeric: true });
+  const rows = ids.map(id => {
+    const [category, character, version, form] = id.split('/');
+    const outfit = outfits[[category, character, version].join('/')];
+    const order = version === 'base' ? -1 : outfit ?? (category === 'fairy' && /^\d+$/.test(version)
+      ? Number(version) : Number.MAX_SAFE_INTEGER);
+    return { id, category, character, version, form, order };
+  });
+  rows.sort((a, b) => rank(categories, a.category) - rank(categories, b.category) ||
+    natural.compare(a.category, b.category) || natural.compare(a.character, b.character) ||
+    a.order - b.order || natural.compare(a.version, b.version) ||
+    rank(forms, a.form) - rank(forms, b.form) || natural.compare(a.form, b.form));
+  return rows.map(row => row.id);
+}
 
 export async function loadModelCatalog(input: string | URL, collection?: Collection) {
   const url = new URL(input, document.baseURI);
@@ -26,7 +47,7 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
   };
-  const ids = available.filter(id => visibleId(id) === id);
+  const ids = collection ? orderCollection(available.filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id: string, source?: string) {
     if (collection && !available.includes(id)) throw new Error('Model outside the selected collection: ' + id);
     const asset = catalog.models[id]?.find(item => item.manifest && (!source || item.source === source));
