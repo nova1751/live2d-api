@@ -20,23 +20,25 @@ jobs:
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: '24'
-          cache: npm
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          cache: true
       - name: Check release tag
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           version=$(node -p "require('./package.json').version")
           test "$GITHUB_REF_NAME" = "v$version"
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - name: Build the npm tarball
         run: npm pack --pack-destination "$RUNNER_TEMP" --silent
       - name: Check committed CDN files match the build
         run: test -z "$(git status --porcelain)"
-      - run: npm test
-      - run: npx --no-install playwright-core install --with-deps chromium-headless-shell
+      - run: pnpm test
+      - run: pnpm exec playwright-core install --with-deps chromium-headless-shell
       - name: Render the widget from the packed files
         run: |
           tar -xzf "$RUNNER_TEMP"/live2dapi-noa-*.tgz -C "$RUNNER_TEMP"
-          npm run test:browser -- "$RUNNER_TEMP/package"
+          pnpm run test:browser "$RUNNER_TEMP/package"
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: startsWith(github.ref, 'refs/tags/')
         with:

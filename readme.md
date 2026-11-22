@@ -53,7 +53,7 @@
 
 ### 自有 CDN 和模块调用
 
-面向大陆长期运行的站点，可以把同一份发布包部署到自己的静态站点或国内 CDN。在仓库运行 `npm ci` 和 `npm pack`，将生成的 `.tgz` 解压，把其中 `package/` 下的文件原样上传到一个版本目录，例如 `/live2d/1.1.0/`。跨域部署时，静态服务器需要允许页面读取资源（CORS），并为 `.js` 和 `.mjs` 返回 JavaScript MIME 类型。版本目录可以设置长缓存，升级时切换入口 URL。
+面向大陆长期运行的站点，可以把同一份发布包部署到自己的静态站点或国内 CDN。在仓库运行 `pnpm install --frozen-lockfile` 和 `npm pack`，将生成的 `.tgz` 解压，把其中 `package/` 下的文件原样上传到一个版本目录，例如 `/live2d/1.1.0/`。跨域部署时，静态服务器需要允许页面读取资源（CORS），并为 `.js` 和 `.mjs` 返回 JavaScript MIME 类型。版本目录可以设置长缓存，升级时切换入口 URL。
 
 ```html
 <script defer src="/live2d/1.1.0/autoload.js" data-position="right"></script>
@@ -118,20 +118,20 @@
 
 ## 本地开发
 
-使用 Node.js 22 或 24 和 npm。在仓库根目录执行 `npm ci`，再运行 `npm run dev`。打开终端打印的地址即可预览示例页；修改 TypeScript 后会自动重新构建，刷新页面即可查看。
+使用 Node.js 22 或 24，以及 `package.json` 固定的 pnpm 10.33.0。首次使用可执行 `npm install --global pnpm@10.33.0`。在仓库根目录执行 `pnpm install --frozen-lockfile`，再运行 `pnpm dev`。打开终端打印的地址即可预览示例页；修改 TypeScript 后会自动重新构建，刷新页面即可查看。
 
 | 命令 | 用途 |
 | --- | --- |
-| `npm run typecheck` | 严格检查项目 TypeScript 类型 |
-| `npm run build` | 检查类型，生成浏览器脚本和 npm 的类型声明 |
-| `npm test` | 验证新旧入口、模型目录、资源路径大小写和 Cubism 2 物理配置 |
-| `npm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `npx playwright-core install chromium-headless-shell` |
+| `pnpm run typecheck` | 严格检查项目 TypeScript 类型 |
+| `pnpm run build` | 检查类型，生成浏览器脚本和 npm 的类型声明 |
+| `pnpm test` | 验证新旧入口、模型目录、资源路径大小写和 Cubism 2 物理配置 |
+| `pnpm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `pnpm exec playwright-core install chromium-headless-shell` |
 
 业务代码在 `src/`。`widget.mts` 导出 `loadWidget` 和 `WidgetOptions`；`runtime/` 管理模型、提示和工具栏；`legacy-autoload.ts` 生成四个历史加载入口。修改源码后提交构建产物，以便 jsDelivr 可以直接读取 Git 提交中的脚本。CSS、模型、Cubism 渲染器和小游戏仍在原来的资源路径。
 
 ### 维护模型
 
-`model_list.json` 中的分组和皮肤顺序对应浏览器保存的数字 ID。新增皮肤时追加到对应组末尾。每套皮肤的入口为 `model/<皮肤目录>/index.json`，共用语音可以用相对路径引用。提交前运行 `npm test` 检查资源。
+`model_list.json` 中的分组和皮肤顺序对应浏览器保存的数字 ID。新增皮肤时追加到对应组末尾。每套皮肤的入口为 `model/<皮肤目录>/index.json`，共用语音可以用相对路径引用。提交前运行 `pnpm test` 检查资源。
 
 - 索米圣诞皮肤的节日及奖励语音，以及索米、RFB 原先只有语音的网页互动，使用各自皮肤的待机动作播放录音。核对上游时，圣诞索米和两套 DSR-50 的破损版本都缺少配置中列出的部分动作，网页点击列表仅保留同皮肤可用的动作。[上游模型快照](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac)
 - 斯洛卡伊的日语配置位于 `model/siluokayi/model.model-Japanese.json`。其中 10 段录音按台词从仓库历史恢复，保留原始 MP3 文件名。[原始语音目录](https://github.com/nova1751/live2d-api/tree/349289f4896fd6df725b757b2b2749684ac56fe1/model/siluokayi/voice)
@@ -140,9 +140,9 @@
 ## 发布到 npm
 
 1. 在 npm 的 `live2dapi-noa` 包设置中添加 GitHub Actions Trusted Publisher，用户填 `nova1751`，仓库填 `live2d-api`，工作流文件填 `publish.yml`，环境名留空。允许该工作流执行 `npm publish`。发布使用 OIDC，并生成来源证明。[npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/)
-2. 确认 `package.json` 与锁文件记录了待发版本，并将源码、构建产物和工作流合入 `main`。后续升级可用 `npm version <版本号> --no-git-tag-version` 同步两个文件。
+2. 在 `package.json` 更新待发版本，并将源码、构建产物和工作流合入 `main`。变更依赖时，运行 `pnpm install` 并一同提交 `pnpm-lock.yaml`。
 3. 在待发布的提交上创建并推送同版本标签，例如 `git tag v1.1.0` 和 `git push origin v1.1.0`。PR 和普通的 `main` 推送只运行验证。标签必须与包版本一致。
-4. Actions 使用锁文件安装依赖，构建 npm 包，检查生成文件和兼容性测试，并从解包后的目录验证 WebGL 渲染和换装。发布任务上传验证过的同一个 tarball。正式版使用 `latest`，预发布版（例如 `1.2.0-beta.1`）使用 `next`。发布后可用 `npm view live2dapi-noa@1.1.0 dist.integrity --registry=https://registry.npmjs.org` 核对注册表中的版本。
+4. Actions 使用 `pnpm install --frozen-lockfile` 安装依赖，通过 `npm pack` 构建 npm 包，检查生成文件和兼容性测试，并从解包后的目录验证 WebGL 渲染和换装。发布任务上传验证过的同一个 tarball。正式版使用 `latest`，预发布版（例如 `1.2.0-beta.1`）使用 `next`。发布后可用 `npm view live2dapi-noa@1.1.0 dist.integrity --registry=https://registry.npmjs.org` 核对注册表中的版本。
 
 ## 成果 Achievement
 
