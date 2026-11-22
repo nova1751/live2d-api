@@ -18,31 +18,55 @@
 
 ## 使用 How to use
 
-### 新接入（1.1.0 起）
+### 一行 CDN 接入
 
-把完整项目部署到网站的 `/live2d/` 目录，然后在页面的 `<head>` 中加入一行：
+按访客所在地区选一段放到页面的 `<head>` 中。以下地址固定到仓库已有的提交，可以直接使用。
+
+**中国大陆 · JSDMirror**
 
 ```html
-<script defer src="/live2d/autoload.js" data-position="right" data-mode="sequential"></script>
+<script defer src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@f13304e/autoload.js"></script>
 ```
+
+**海外 · raw.githack**
+
+```html
+<script defer src="https://rawcdn.githack.com/nova1751/live2d-api/f13304e55a5ac56b7e7c1d6379ef02eb4434a10b/autoload.js"></script>
+```
+
+入口会从相同版本目录加载样式、渲染器和模型，初次执行时视口小于 768px 会跳过加载。可以在同一个脚本标签上设置这两个属性。
 
 | 属性 | 可选值 | 默认值 |
 | --- | --- | --- |
 | `data-position` | `left`、`right` | `left` |
 | `data-mode` | `sequential`（顺序换装）、`random`（随机换装） | `sequential` |
 
-入口自动加载对应 CSS。页面初次执行脚本时，视口宽度小于 768px 会跳过加载。使用 CDN 时，将 `src` 换成同版本的完整地址，例如 jsDelivr 的 `https://cdn.jsdelivr.net/gh/nova1751/live2d-api@<commit>/autoload.js`（替换为包含新入口的提交 SHA），或 npm 1.1.0 发布后的 `https://unpkg.com/live2dapi-noa@1.1.0/autoload.js`。入口会从同一目录读取项目资源。
+**通过 npm CDN 接入**　`live2dapi-noa@1.1.0` 发布后，可使用固定版本的 UNPKG 地址。仅在准备升级时修改版本号。[UNPKG 使用说明](https://unpkg.com/)
+
+```html
+<script defer src="https://unpkg.com/live2dapi-noa@1.1.0/autoload.js" data-position="right" data-mode="random"></script>
+```
+
+完整模型包解压后约 224 MB，超过 jsDelivr 默认支持的 npm 包大小。大陆快捷示例使用 JSDMirror 的 GitHub 路径。公共镜像的可用性随线路和缓存而变化。[jsDelivr 大小限制](https://github.com/jsdelivr/jsdelivr#restrictions) · [JSDMirror 说明](https://github.com/jsdmirror/JSDMirror) · [raw.githack 生产地址](https://raw.githack.com/)
+
+### 自有 CDN 和模块调用
+
+面向大陆长期运行的站点，可以把同一份发布包部署到自己的静态站点或国内 CDN。在仓库运行 `npm ci` 和 `npm pack`，将生成的 `.tgz` 解压，把其中 `package/` 下的文件原样上传到一个版本目录，例如 `/live2d/1.1.0/`。跨域部署时，静态服务器需要允许页面读取资源（CORS），并为 `.js` 和 `.mjs` 返回 JavaScript MIME 类型。版本目录可以设置长缓存，升级时切换入口 URL。
+
+```html
+<script defer src="/live2d/1.1.0/autoload.js" data-position="right"></script>
+```
 
 需要按页面或用户操作控制加载时，可以直接使用 ES 模块：
 
 ```html
 <script type="module">
-  import { loadWidget } from "/live2d/widget.mjs";
+  import { loadWidget } from "/live2d/1.1.0/widget.mjs";
   await loadWidget({ position: "right", mode: "random" });
 </script>
 ```
 
-`loadWidget()` 在组件初始化后完成，模型和纹理随后异步加载。模块调用方自行决定是否在小屏幕加载。同一页面重复或并发调用只初始化一次，以第一次调用的配置为准。加载入口依赖失败时 Promise 会拒绝，可以再次调用。打包工具中可从 `live2dapi-noa` 导入 `loadWidget`，并传入 `baseUrl: "/live2d/"` 指向已部署的完整静态资源目录。
+`loadWidget()` 在组件初始化后完成，模型和纹理随后异步加载。模块调用方自行决定是否在小屏幕加载。同一页面重复或并发调用只初始化一次，以第一次调用的配置为准。加载入口依赖失败时 Promise 会拒绝，可以再次调用。打包工具中可从 `live2dapi-noa` 导入 `loadWidget`，并传入 `baseUrl: "/live2d/1.1.0/"` 指向已部署的完整静态资源目录。
 
 ### 兼容旧接入
 
@@ -68,7 +92,7 @@
    />
    ```
 
-2. 使用国内`npm`镜像节点引入。
+2. 使用 UNPKG 引入。
 
    ```html
    <!-- 顺序切换模型材质 -->
@@ -102,6 +126,13 @@
 | `npm run test:browser` | 启动示例页，在 Chromium 中检查 WebGL 绘制和换装；首次运行先执行 `npx playwright-core install chromium-headless-shell` |
 
 业务代码在 `src/`。`widget.mts` 导出 `loadWidget` 和 `WidgetOptions`；`runtime/` 管理模型、提示和工具栏；`legacy-autoload.ts` 生成四个历史加载入口。修改源码后提交构建产物，以便 jsDelivr 可以直接读取 Git 提交中的脚本。CSS、模型、Cubism 渲染器和小游戏仍在原来的资源路径。
+
+## 发布到 npm
+
+1. 在 npm 的 `live2dapi-noa` 包设置中添加 GitHub Actions Trusted Publisher，用户填 `nova1751`，仓库填 `live2d-api`，工作流文件填 `publish.yml`，环境名留空。允许该工作流执行 `npm publish`。发布使用 OIDC，并生成来源证明。[npm Trusted Publishing](https://docs.npmjs.com/trusted-publishers/)
+2. 确认 `package.json` 与锁文件记录了待发版本，并将源码、构建产物和工作流合入 `main`。当前待发版本为 `1.1.0`。后续升级可用 `npm version <版本号> --no-git-tag-version` 同步两个文件。
+3. 在待发布的提交上创建并推送同版本标签，例如 `git tag v1.1.0` 和 `git push origin v1.1.0`。PR 和普通的 `main` 推送只运行验证。标签必须与包版本一致。
+4. Actions 使用锁文件安装依赖，构建 npm 包，检查生成文件和兼容性测试，并从解包后的目录验证 WebGL 渲染和换装。发布任务上传验证过的同一个 tarball。正式版使用 `latest`，预发布版（例如 `1.2.0-beta.1`）使用 `next`。发布后可用 `npm view live2dapi-noa@1.1.0 dist.integrity --registry=https://registry.npmjs.org` 核对注册表中的版本。
 
 ## 成果 Achievement
 

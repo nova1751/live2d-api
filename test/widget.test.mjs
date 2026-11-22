@@ -115,23 +115,35 @@ test('module retries failed loads, shares initialization and uses the selected a
   assert.ok(requests.includes(base + 'asteroids.js'));
 });
 
-test('the script tag skips small screens and loads both assets and model relative to its URL', async t => {
-  const { context, document, requests, renders } = browser();
-  globalThis.document = document;
-  globalThis.window = context;
-  t.after(() => { delete globalThis.document; delete globalThis.window; });
+test('pinned legacy CDN loaders use their own version for scripts, models and the game', async () => {
+  for (const [path, cdn] of [
+    ['jsdelivr/sequential/autoload.min.js', 'https://cdn.test/gh/nova1751/live2d-api@v1.1.0/'],
+    ['npm/random/autoload.js', 'https://cdn.test/live2dapi-noa@1.1.0/'],
+  ]) {
+    const { context, document, requests, renders, nodes } = browser();
+    document.currentScript = { src: cdn + path + '?cache=1' };
+    vm.runInContext(read(path), context);
+    await settled();
+    nodes.get('waifu-tool-asteroids').click();
+    assert.ok(requests.includes(cdn + 'asteroids.js'));
+    assert.ok(requests.every(url => url.startsWith(cdn)));
+    assert.ok(renders[0].startsWith(cdn + 'model/'));
+    assert.equal(vm.runInContext('live2d_path', context), cdn);
+    assert.equal(typeof context.loadExternalResource, 'function');
+  }
+});
 
-  const src = new URL('autoload.js', root).href;
-  const entry = 'data:text/javascript,' + encodeURIComponent(read('autoload.js'));
+test('the script tag skips small screens and loads both assets and model relative to its URL', async () => {
+  const { context, document, requests, renders } = browser();
+  const src = base + 'autoload.js';
+  const entry = read('autoload.js');
   document.currentScript = { src, dataset: { position: 'right', mode: 'random' } };
   context.innerWidth = 767;
-  await import(entry + '#small');
+  vm.runInContext(entry, context);
   assert.deepEqual(requests, []);
 
   context.innerWidth = 768;
-  await import(entry + '#desktop');
-  // The entry starts a dynamic import. Wait for the widget it requested.
-  await import('../widget.mjs');
+  vm.runInContext(entry, context);
   await settled();
   assert.ok(requests.includes(new URL('css/right.css', src).href));
   assert.ok(requests.includes(new URL('jsdelivr/random/waifu-tips.js', src).href));

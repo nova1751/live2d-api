@@ -3,6 +3,10 @@
   "version": "1.1.0",
   "description": "nova1751自建的live-2d api",
   "main": "./widget.mjs",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "dev": "node scripts/build.mjs --dev",
     "typecheck": "tsc --noEmit",
