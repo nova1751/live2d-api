@@ -88,10 +88,17 @@ if (existsSync(viewer) && !existsSync(marker))
 mkdirSync(join(viewer, 'catalog'), { recursive: true });
 writeFileSync(marker, '');
 const files = readJson<{ files: string[] }>(join(repository, 'package.json')).files;
-for (const file of [...files, 'catalog/browser.mjs']) {
+for (const file of [...files, 'img/', 'catalog/browser.mjs', 'catalog/gallery.css', 'catalog/portraits/']) {
   const target = join(viewer, file);
   mkdirSync(dirname(target), { recursive: true });
   cpSync(join(repository, file), target, { recursive: true });
+}
+// A partial download can expose a historical ID when its preferred alias is absent.
+for (const [id, preferred] of Object.entries(library.presentation?.aliases ?? {})) {
+  if (library.models[id] && !library.models[preferred]) {
+    const portrait = (key: string) => join(viewer, 'catalog/portraits', key.replaceAll('/', '--') + '.webp');
+    cpSync(portrait(preferred), portrait(id));
+  }
 }
 let html = readFileSync(join(repository, 'catalog/index.html'), 'utf8');
 if (values.core) {

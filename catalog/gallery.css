@@ -1,0 +1,106 @@
+* { box-sizing: border-box }
+:root {
+  color-scheme: light;
+  --ink: #182c29;
+  --muted: #526760;
+  --line: #d7ded7;
+  --teal: #185750;
+  font: 16px/1.5 "DM Sans", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--ink);
+  background: #f7f8f3;
+}
+body { margin: 0 }
+button, input, select { font: inherit; color: inherit }
+button, select { cursor: pointer }
+a { color: inherit; text-decoration: none }
+a:hover { text-decoration: underline }
+button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #ce781c; outline-offset: 3px }
+[hidden] { display: none !important }
+.wrap { width: min(1380px, 93vw); margin-inline: auto }
+.masthead { background: #153b37; color: #fff }
+.mast, .mast nav, .brand, .intro, .collection-head, .filters, .links, .modes { display: flex; align-items: center }
+.mast { min-height: 62px; justify-content: space-between }
+.brand { gap: 10px; font-weight: 750; letter-spacing: .035em }
+.brand span:last-child { font: 600 .82rem/1 "IBM Plex Mono", monospace; color: #cee2d5; padding-left: 10px; border-left: 1px solid #759189 }
+.mark { width: 20px; height: 21px; background: #f2bd65; clip-path: polygon(50% 0,100% 25%,100% 48%,50% 23%,22% 38%,22% 62%,50% 77%,78% 63%,61% 55%,61% 37%,100% 56%,100% 76%,50% 100%,0 75%,0 25%) }
+.mast nav { gap: 26px; font-size: .88rem }
+.intro { gap: 16px; justify-content: space-between; align-items: end; padding: 32px 0 24px }
+h1,h2,p { margin: 0 }
+h1 { font-size: clamp(1.8rem,3.4vw,3rem); line-height: 1.16; letter-spacing: -.055em }
+h1 span { margin-left: .25em; color: var(--teal) }
+#totals, #matches, .kind, #result, #notice { color: var(--muted) }
+#totals { font-size: .9rem; font-variant-numeric: tabular-nums }
+.layout { display: grid; grid-template-columns: minmax(285px,.85fr) minmax(0,1.65fr); align-items: start; gap: clamp(22px,3vw,48px); padding-bottom: 48px }
+.preview-panel { position: sticky; top: 14px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff }
+.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; height: clamp(275px,32vw,425px);
+  background: radial-gradient(ellipse at 47% 56%, #64877a 0, #386258 49%, #193f3b 100%) }
+.stage::before, .stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1 }
+.stage::before { opacity: .19; background-image: linear-gradient(#b5cfc0 1px,transparent 1px),linear-gradient(90deg,#b5cfc0 1px,transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to top, #000, transparent 93%) }
+.stage::after { inset: 11% 8%; background: repeating-radial-gradient(circle at center,transparent 0,transparent 23%,#d3e7d433 23.2%,transparent 23.7%); }
+.stage-label { position: absolute; top: 14px; left: 16px; color: #f4faf4; font-size: .76rem; font-weight: 600; letter-spacing: .04em; z-index: 1; pointer-events: none }
+.stage-label::before { content: ""; display:inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #f9bf69 }
+#poster, .model-host { position: absolute; bottom: 3%; width: min(92%, 360px); aspect-ratio: 1; max-height: 94%; object-fit: contain }
+.model-host { display: grid; place-items: center; width: min(94%, 38vh, 370px); max-height: none }
+#stage #waifu { position: relative; inset: auto !important; width: 100%; margin: 0; transform: none; transition: none; line-height: 0 }
+#stage #live2d { display: block; width: 100%; height: auto; aspect-ratio: 1 }
+#stage #waifu > div:has(> #live2d) { width: 100% }
+#stage #waifu .waifu-model-still { height: auto; aspect-ratio: 1 }
+#stage #waifu-tips { z-index: 2; top: 0; left: 3%; margin: 0; width: 84%; min-height: 0; max-height: 52%; overflow: auto; border-radius: 8px; background: #fff9e9f5; color: #352d24; font-size: 13px; line-height: 1.5 }
+#stage #waifu-tool { top: 0; right: 0; left: auto; padding: 1px; background: #eff7f0ee; border-radius: 7px }
+#stage #waifu-tool button { height: clamp(24px,3.5vh,36px); min-height: 0; min-width: 30px }
+#stage #waifu-toggle { position: absolute; bottom: 25%; margin: 0; left: auto; width: auto; padding: 8px 14px; writing-mode: horizontal-tb; visibility: hidden }
+#stage #waifu-toggle.waifu-toggle-active { visibility: visible }
+.profile { padding: 19px 22px }
+.kind { font-size: .78rem; font-weight: 650 }
+.profile h2 { margin-top: 3px; font-size: clamp(1.45rem,2.4vw,2.1rem); line-height: 1.25 }
+#result { font: .78rem/1.4 "IBM Plex Mono", monospace; overflow-wrap: anywhere; margin: 4px 0 12px }
+.profile label { display: block; font-size: .8rem; font-weight: 650; margin-bottom: 4px }
+select, .search { background: #fff; border: 1px solid #becbc4; border-radius: 7px }
+select { padding: 8px; max-width: 100% }
+#variant { width: 100% }
+.links { margin-top: 13px; gap: 18px; font-size: .84rem }
+.links button, #more { border: 1px solid #b4c5bb; background: #f2f6f1; border-radius: 7px; padding: 6px 12px }
+.links a { color: var(--teal) }
+#notice:not(:empty) { margin-top: 8px; font-size: .82rem }
+.collection-head { justify-content: space-between; gap: 12px; margin-bottom: 14px }
+.collection-head h2 { font-size: 1.35rem; letter-spacing: -.03em }
+.modes { background: #e6ebe4; padding: 3px; border-radius: 8px }
+.modes button { border: 0; background: none; font-size: .84rem; padding: 5px 13px; border-radius: 6px }
+.modes button[aria-pressed="true"] { background: var(--teal); color: white }
+.filters { gap: 9px }
+.filters select { flex: 0 0 auto; font-size: .88rem; min-height: 40px }
+.search { display: flex; align-items: center; min-width: 0; flex: 1; gap: 10px; padding: 0 12px }
+.search span { width: 13px; height: 13px; border: 1.6px solid #61726b; border-radius: 50%; position: relative }
+.search span::after { content: ""; position: absolute; right: -4px; bottom: -2px; width: 6px; height: 1.6px; background: #61726b; transform: rotate(45deg) }
+.search input { min-width: 0; width: 100%; height: 39px; border: 0; background: transparent; font-size: .9rem }
+#matches { margin: 12px 0 10px; font-size: .8rem }
+.cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(127px,1fr)); gap: 12px }
+.card { display: flex; flex-direction: column; min-width: 0; position: relative; overflow: hidden; background: white; border: 1px solid var(--line); border-radius: 9px; padding: 0; text-align: left }
+.card[aria-pressed="true"] { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal) }
+.card[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 5px; right: 5px; border-radius: 50%; background: var(--teal); color: white; width: 18px; line-height: 18px; text-align: center; font-size: 12px }
+.art { width: 100%; aspect-ratio: 1.34; overflow: hidden; display: grid; place-items: start center; background: linear-gradient(135deg,#e8eee2,#d2dfd6) }
+.card:nth-child(3n+2) .art { background: linear-gradient(135deg,#f4ece0,#e7dcce) }
+.card:nth-child(3n) .art { background: linear-gradient(135deg,#e5ecee,#ced9df) }
+.art img { width: 100%; height: auto; transform: scale(1.16); transform-origin: 50% 14% }
+.art.wide img { width: 80%; transform: none; align-self: center }
+.caption { padding: 8px 10px 9px; display: grid; gap: 1px; width: 100% }
+.caption strong { overflow-wrap: anywhere; line-height: 1.3; font-size: .94rem }
+.caption small { font-size: .75rem; line-height: 1.45; color: var(--muted); overflow-wrap: anywhere }
+@media (hover:hover) { .card:hover { border-color: #628b79; box-shadow: 0 3px 9px #27463816 } }
+.paging { text-align: center; margin-top: 16px }
+@media (max-width:900px) { .layout { gap: 18px; grid-template-columns: minmax(240px,.8fr) minmax(0,1.2fr) } .cards { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)) } }
+@media (max-width:680px) {
+  .wrap { width: calc(100% - 28px) }
+  .mast { min-height: 50px }.mast nav { gap: 14px;font-size: .79rem }
+  .intro { display: block; padding: 20px 0 14px }.intro p { margin-top: 5px }
+  .layout { display: flex; flex-direction: column; gap: 24px }.layout > * { width: 100% }
+  .preview-panel { position: static }.stage { height: 260px }.model-host, #poster { width: min(88%,235px) }
+  .profile { padding: 13px 16px }.cards { grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap: 8px }
+}
+@media (max-height:750px) and (min-width:681px) { .preview-panel { position: static } }
+
+.examples { border-top: 1px solid var(--line); padding: 24px 0 40px }
+.examples h2 { font-size: 1.25rem; margin-bottom: 12px }
+.examples > div { display: flex; gap: 12px }
+.examples a { padding: 8px; max-width: 45%; border: 1px solid var(--line); border-radius: 9px; background: white }
+.examples img { display: block; width: auto; max-width: 100%; height: auto; max-height: 180px }

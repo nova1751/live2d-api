@@ -72,3 +72,15 @@ test('collection navigation starts with fairies and follows CN releases, then st
     if (ids.includes(normal)) assert.equal(ids[ids.indexOf(id) - 1], normal);
   }
 });
+
+test('every visible gallery form has a WebP portrait from its model', async () => {
+  const catalog = await json('catalog/library.json');
+  const ids = Object.keys(catalog.models).filter(id => !id.startsWith('other/') && !catalog.presentation.aliases[id]);
+  for (const id of ids) {
+    const url = new URL('../catalog/portraits/' + id.replaceAll('/', '--') + '.webp', import.meta.url);
+    const image = await readFile(url);
+    assert.equal(image.toString('ascii', 0, 4), 'RIFF', id);
+    assert.equal(image.toString('ascii', 8, 12), 'WEBP', id);
+    assert.equal(image.readUInt32LE(4) + 8, image.length, id);
+  }
+});

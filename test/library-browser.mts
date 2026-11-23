@@ -142,6 +142,14 @@ try {
   await page.waitForFunction(() => document.activeElement?.id === 'waifu-toggle');
   await page.keyboard.press('Space');
   await page.waitForSelector('#waifu:visible');
+  await page.locator('#search').fill('空降');
+  assert.equal(await page.locator('#cards button').count(), 1);
+  await page.locator('#by-form').click();
+  assert.equal(await page.locator('#cards button').count(), 3);
+  await page.locator('#cards button[data-id="fairy/airborne/2/default"]').click();
+  await page.waitForFunction(() => document.querySelector('#result').dataset.model === 'fairy/airborne/2/default');
+  assert.equal(new URL(page.url()).searchParams.get('model'), 'fairy/airborne/2/default');
+  assert.equal(await page.locator('#variant').inputValue(), 'fairy/airborne/2/default');
   assert.deepEqual(errors, []);
   console.log(keys.length, 'catalog selections and keyboard close/reopen passed');
 } finally {
