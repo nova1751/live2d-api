@@ -2,7 +2,7 @@
 
 [English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md) · **简体中文** · [在线图鉴](https://live2d-nova.vercel.app/catalog/) · [npm](https://www.npmjs.com/package/live2dapi-noa)
 
-在网页中加入可互动的少女前线角色。访客可以切换人物和装扮，点击角色时按模型配置播放动作、语音并显示台词。组件按需加载对应渲染器，根据每套造型的可见轮廓调整取景。
+在网页中加入可互动的少女前线角色。访客可以切换人物和装扮，点击角色时按模型配置播放动作、语音并显示台词。组件按需加载对应渲染器，根据每套造型的可见轮廓调整取景。台词气泡跟随人物上缘，工具栏靠人物右侧排列。图鉴较窄时，横向造型的工具栏移到人物上方靠右，给小队留出完整宽度。
 
 ## 快速接入
 
@@ -11,13 +11,13 @@
 **中国大陆**
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.1/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs"></script>
 ```
 
 **海外**
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.1/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs"></script>
 ```
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。
@@ -79,7 +79,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory ./models-offline
 
 ## 原版网页示例
 
-<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.1/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.1/img/02.png" height="200" alt="黑裙看板娘与互动提示">
+<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/02.png" height="200" alt="黑裙看板娘与互动提示">
 
 ## 开发与发布
 
