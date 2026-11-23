@@ -175,3 +175,44 @@ export async function checkNativeEvents(browser, base) {
     await page.close();
   }
 }
+
+export async function checkPackedCues(browser, base) {
+  const page = await browser.newPage();
+  try {
+    const root = base + 'gh/nova1751/live2d-api@cdn-abcdef/';
+    const folder = 'model/kp31/kp31_/normal/';
+    const source = await (await page.request.get(base + folder + 'index.json')).json();
+    const clip = source.motions.tap_body.find(entry => entry.file === 'motions/wedding.mtn');
+    const index = source.motions.tap_body.indexOf(clip);
+    const sound = new URL(clip.sound, base + folder).href;
+    delete clip.sound;
+    clip.file = '../../../../../live2d-api@cdn-abcdef-assets-3/' + folder + 'motions/wedding.mtn';
+    await page.route(base + 'packed-cues', route => route.fulfill({contentType:'text/html',body:'<!doctype html><button id="preview">Preview motion</button>'}));
+    await page.route(base + 'packed-cues.json', route => route.fulfill({json:{
+      schemaVersion:1, sources:{widget:{baseUrl:root}},models:{'doll/test/1/normal':[{source:'widget',manifest:folder+'index.json',
+        cues:{'motions/wedding.mtn':{sound,caption:'Matched the original motion'}}}]}
+    }}));
+    await page.route(base + 'gh/**', async route => {
+      const path = new URL(route.request().url()).pathname.split('/').slice(4).join('/');
+      if (path === folder+'index.json') await route.fulfill({json:source});
+      else await route.fulfill({response:await page.request.get(base+path)});
+    });
+    await page.goto(base + 'packed-cues');
+    await page.evaluate(async ({base,index}) => {
+      window.clips = [];
+      window.lines = [];
+      addEventListener('live2d:motions', e => { window.clips = e.detail; });
+      addEventListener('live2d:dialogue', e => window.lines.push(e.detail));
+      document.querySelector('#preview').onclick = () => window.loadlive2d.playMotion('tap_body',index);
+      const {loadWidget} = await import(base + 'widget.mjs');
+      await loadWidget({catalogUrl:base+'packed-cues.json',collection:'girls-frontline',baseUrl:base});
+    }, {base,index});
+    await page.waitForFunction(index => window.clips.some(c => c.group === 'tap_body' && c.index === index && c.voiced), index);
+    const requested = page.waitForResponse(r => r.url() === sound && r.ok());
+    await page.locator('#preview').click();
+    await requested;
+    await page.waitForFunction(() => window.lines.includes('Matched the original motion'));
+  } finally {
+    await page.close();
+  }
+}

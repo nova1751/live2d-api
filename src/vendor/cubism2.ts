@@ -249,9 +249,24 @@ function o(){n.L2DBaseModel.prototype.constructor.call(this),this.eyeBlink=new n
   var fixes = r.catalogFiles;
   if (fixes || r.catalogCues) {
     function resolved(path) { return fixes && Object.prototype.hasOwnProperty.call(fixes,path) ? fixes[path] : path; }
+    var manifestDir = new URL(r.modelHomeDir, document.baseURI);
+    function catalogCue(clip) {
+      var cues = r.catalogCues;
+      if (!cues) return;
+      var cue = cues[clip.sound] || cues[clip.file];
+      if (cue || !clip.file || !clip.file.startsWith("../")) return cue;
+      // The CDN control manifest points into a sibling asset tag. Preserve the
+      // complete outfit directory when looking up an original motion reference.
+      var asset = new URL(clip.file, manifestDir);
+      if (asset.origin !== manifestDir.origin) return;
+      var path = asset.pathname.replace(/(\/gh\/nova1751\/live2d-api@cdn-[a-f0-9]+)-assets-\d+\//, "$1/");
+      if (path !== asset.pathname && path.startsWith(manifestDir.pathname)) {
+        return cues[decodeURIComponent(path.slice(manifestDir.pathname.length))];
+      }
+    }
     for (var group of Object.keys(settings.motions || {})) {
       settings.motions[group] = settings.motions[group].filter(function(clip) {
-        var cue = r.catalogCues && (r.catalogCues[clip.sound] || r.catalogCues[clip.file]);
+        var cue = catalogCue(clip);
         if (cue && cue.sound) clip.sound = cue.sound;
         if (cue && cue.caption) clip.text = cue.caption;
         if (clip.file && !(clip.file = resolved(clip.file))) return false;
