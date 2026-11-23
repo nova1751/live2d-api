@@ -14,7 +14,7 @@ export interface ModelCatalog {
 }
 export interface DialogueSource { url: string; captions?: Record<string,string>; audio: ReadonlyMap<string, string> }
 
-export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2';
+export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2' | 'iron-saga' | 'warship-girls' | 'baoshi-yanwuyu';
 const categories = ['fairy', 'doll', 'adjutant', 'npc', 'squad', 'background'];
 const forms = ['default', 'normal', 'destroy'];
 function rank(list: string[], key: string) {

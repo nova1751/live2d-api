@@ -3,6 +3,8 @@ import { loadModelCatalog, loadWidget, selectWidgetModel } from '../widget.mjs';
 const gameNames = {
   'girls-frontline': ['少女前线','Girls’ Frontline'], 'azur-lane': ['碧蓝航线','Azur Lane'],
   'bang-dream': ['BanG Dream!','BanG Dream!'], houkai2: ['崩坏学园 2','Guns GirlZ'],
+  'iron-saga': ['机动战队','Iron Saga'], 'warship-girls': ['战舰少女 R','Warship Girls R'],
+  'baoshi-yanwuyu': ['宝石研物语','Baoshi Yanwuyu'],
 };
 const requestedGame = new URL(location.href).searchParams.get('collection') ?? '';
 const game = Object.prototype.hasOwnProperty.call(gameNames, requestedGame) ? requestedGame as keyof typeof gameNames : 'girls-frontline';

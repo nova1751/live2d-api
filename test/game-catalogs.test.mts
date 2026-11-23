@@ -93,3 +93,25 @@ test('resolving the same Azur Lane event in either language keeps its original r
   assert.match(zh.caption, /指挥官/);
   assert.match(en.caption, /Commander/);
 });
+
+test('curated Cubism 2 galleries resolve their published IDs and have real portraits', async (t) => {
+  const { loadModelCatalog } = await import('../widget.mjs');
+  t.mock.method(globalThis, 'fetch', async (url) => Response.json(await read(new URL(url).pathname.split('/').pop().replace('.json', ''))));
+  const document = Object.getOwnPropertyDescriptor(globalThis, 'document');
+  Object.defineProperty(globalThis, 'document', { configurable: true, value: { baseURI: 'https://example.org/' } });
+  t.after(() => { if (document) Object.defineProperty(globalThis, 'document', document); else delete globalThis.document; });
+
+  for (const [game, count] of [['iron-saga', 4], ['warship-girls', 3], ['baoshi-yanwuyu', 14]]) {
+    const url = new URL('/catalog/games/' + game + '.json', 'https://example.org');
+    const gallery = await loadModelCatalog(url, game, 'en');
+    assert.equal(gallery.ids.length, count);
+    assert.deepEqual(gallery.ids.sort(), Object.keys(gallery.gallery).sort());
+    for (const id of gallery.ids) {
+      const entry = gallery.gallery[id];
+      const portrait = await readFile(new URL('../catalog/' + entry.portrait, import.meta.url));
+      assert.equal(portrait.toString('ascii', 8, 12), 'WEBP', id);
+      assert.ok(entry.en && entry.outfitEn, id);
+      assert.match(gallery.resolve(id).modelUrl, /(?:@[\w-]*-assets-[56]\/|\/[\da-f]{40}\/).+\.json$/);
+    }
+  }
+});

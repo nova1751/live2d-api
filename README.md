@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://live2d-nova.vercel.app/catalog/"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/web-widget.svg" width="100%" alt="Live2D Web Widget"></a>
+<a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
 
 # Live2D 网页看板娘
 
@@ -12,18 +12,33 @@
 
 </div>
 
+## 在线示例
+
+点击一位角色即可进入对应造型，试播动作或放大全屏。
+
+| <a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 · 心智升级"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=azur-lane&amp;model=ship/10117/lafei"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="拉菲"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="松原花音"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=houkai2&amp;model=character/bronya/bronya"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="布洛妮娅"></a> |
+| :---: | :---: | :---: | :---: |
+| [AK-12 · 心智升级](https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal) | [拉菲](https://live2d-nova.vercel.app/catalog/?collection=azur-lane&model=ship/10117/lafei) | [松原花音](https://live2d-nova.vercel.app/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur) | [布洛妮娅](https://live2d-nova.vercel.app/catalog/?collection=houkai2&model=character/bronya/bronya) |
+
+另外两个可直接操作的示例 · [机动战队 · 斯洛卡伊](https://live2d-nova.vercel.app/catalog/?collection=iron-saga&model=character/siluokayi/base) · [战舰少女 R · 密苏里](https://live2d-nova.vercel.app/catalog/?collection=warship-girls&model=ship/209/2)
+
 ## 快速接入
 
-将模型清单和它引用的贴图、动作等文件一起部署，保留相对路径。跨域托管素材时需要允许 CORS。把下面的 `/models/haru/haru.model3.json` 换成自己的清单地址。Cubism 2 模型也可使用同一个入口，例如 `/models/character/model.json`。
+把下面的代码放在网页的 `</body>` 前。示例使用《机动战队》玛蒂尔达的实机模型，贴图、动作和语音随清单一起加载。
 
 ```html
 <script type="module">
   import { loadWidget } from "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/widget.mjs";
-  await loadWidget({ modelUrl: "/models/haru/haru.model3.json", position: "right" });
+
+  await loadWidget({
+    modelUrl: "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/madierda/index.json",
+    position: "right",
+    locale: "zh-CN",
+  });
 </script>
 ```
 
-主要面向中国大陆访客时，可把播放器域名换成 `cdn.jsdmirror.com`。模型及其素材从你提供的清单地址加载。
+换自己的角色时，把 `modelUrl` 指向 Cubism 2 的模型 JSON 或 Cubism 3–5 的 `.model3.json`，保留贴图和动作的相对路径。跨域部署需要素材服务器允许 CORS。面向中国大陆时，可以把示例中的两处 `cdn.jsdelivr.net` 都换成 `cdn.jsdmirror.com`。其他作品的素材域名由各自的图鉴目录决定。
 
 ## 通过 npm 或 pnpm 安装
 
@@ -86,7 +101,7 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 
 ## 按作品浏览
 
-图鉴默认打开少女前线。通过顶部作品栏切换到碧蓝航线、BanG Dream! 或崩坏学园 2。每栏都支持按人物或造型浏览、搜索和复制当前预览链接。BanG Dream! 还可以按乐队筛选，另外三个新增栏都可以手动选择原动作播放。
+图鉴按作品加载，支持按人物或造型搜索、切换和分享。BanG Dream! 还可以按乐队筛选。
 
 点击人物时优先采用模型自带的触摸事件。在没有匹配事件的可见部位，播放器会从该造型已有的动作中随机选择；有多个可选动作时尽量避免连续重复。待机动作和登录等专用事件保留各自的触发方式。
 
@@ -96,6 +111,9 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 | 碧蓝航线 | 178 | 按舰船与装扮归档，依照装扮 ID 和事件键匹配录音与中文台词 |
 | BanG Dream! | 2,769 | 九个乐队素材库，按乐队、人物和服装归档 |
 | 崩坏学园 2 | 19 | 八重樱两款造型归到同一人物；保留原动作，来源缺录音的事件可静音预览 |
+| 机动战队 | 4 | 玛蒂尔达和斯洛卡伊按原声清单播放，另外两位保留原动作。 |
+| 战舰少女 R | 3 | 密苏里、大淀和列克星敦（CV-16）的独立换装与动作。 |
+| 宝石研物语 | 14 | 按角色归并两作造型，保留清单指定的动作和音频。 |
 
 部署完整静态站后，可从任意网页使用同一模块入口加载指定作品。例如以下文件与网页同源，跨站使用时替换为站点的绝对地址。
 
@@ -109,11 +127,25 @@ await loadWidget({
 });
 ```
 
-其他两个目录为 `bang-dream.json`、`houkai2.json`，`collection` 取对应文件名去掉扩展名。新增目录按需请求固定 Git 提交下的原素材。大陆直连 GitHub 的可用性取决于访客网络。npm 包仅提供播放器。素材来源和重建方式见[模型目录维护说明](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)。
+各作品使用同名 JSON 目录。模型、贴图与语音保留在固定素材来源；部分作品会访问 GitHub 的原始文件域名。[各图鉴来源与维护说明](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+
+## API 与兼容性
+
+| 入口或选项 | 用途 |
+| --- | --- |
+| `loadWidget({ modelUrl, coreUrl })` | 直接加载单个模型。Cubism 2 使用旧版播放器；Cubism 3–5 清单（`.model3.json`）按需加载 `live2d-web` 的 WebGL2 渲染器及 Live2D Cubism Core。 |
+| `loadGirlsFrontline(options?)` | 挂载少女前线集合。可设置 `locale`、`modelId`、位置 `position`（`left` 或 `right`）和模式 `mode`（`sequential` 或 `random`）。 |
+| `selectWidgetModel(id)` | 挂载后使用稳定 ID 切换角色，可直接从图鉴复制 ID。 |
+| `loadModelCatalog(url, collection?, locale?)` | 获取可用 ID、对应语言的名称与原生清单地址。 |
+| `baseUrl` / `catalogUrl` / `coreUrl` | 分别指定播放器目录、模型目录 JSON 和 Cubism Core 地址。 |
+| 历史调用 | 支持 `initWidget(waifuPath, apiPath)`、数字模型 ID、`autoload.js`、随机或顺序加载器和独立 CSS。 |
+
+<details>
+<summary>作品快捷入口、离线预览与历史截图</summary>
 
 ## 少女前线一行脚本入口
 
-选择适合主要访客的 CDN，把一行代码放在 `</body>` 前。两个入口都跟随最新稳定版，默认显示简体中文。CDN 缓存更新后，新访问会加载新版本。需要锁定版本时，可将 `widget-latest` 换为 `widget-2.5.0`。
+选择适合主要访客的 CDN，把一行代码放在 `</body>` 前。两个入口都跟随最新稳定版，默认显示简体中文。CDN 缓存更新后，新访问会加载新版本。需要锁定版本时，可将 `widget-latest` 换为 `widget-2.7.0`。
 
 **中国大陆**
 
@@ -135,22 +167,7 @@ await loadWidget({
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。
 
-## API 与兼容性
-
-| 入口或选项 | 用途 |
-| --- | --- |
-| `loadWidget({ modelUrl, coreUrl })` | 直接加载单个模型。Cubism 2 使用旧版播放器；Cubism 3–5 清单（`.model3.json`）按需加载 `live2d-web` 的 WebGL2 渲染器及 Live2D Cubism Core。 |
-| `loadGirlsFrontline(options?)` | 挂载少女前线集合。可设置 `locale`、`modelId`、位置 `position`（`left` 或 `right`）和模式 `mode`（`sequential` 或 `random`）。 |
-| `selectWidgetModel(id)` | 挂载后使用稳定 ID 切换角色，可直接从图鉴复制 ID。 |
-| `loadModelCatalog(url, collection?, locale?)` | 获取可用 ID、对应语言的名称与原生清单地址。 |
-| `baseUrl` / `catalogUrl` / `coreUrl` | 分别指定播放器目录、模型目录 JSON 和 Cubism Core 地址。 |
-| 历史调用 | 支持 `initWidget(waifuPath, apiPath)`、数字模型 ID、`autoload.js`、随机或顺序加载器和独立 CSS。 |
-
 ## 少女前线示例与离线下载
-
-| <a href="https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/fairy--air_attack--1--default.webp" width="96" alt="空袭妖精"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/doll--ump9--mod--normal.webp" width="96" alt="UMP9 心智升级"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/squad--ags-30--base--default.webp" width="96" alt="AGS-30 小队"></a> |
-| :---: | :---: | :---: |
-| [空袭妖精](https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default) | [UMP9 心智升级](https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal) | [AGS-30 小队](https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default) |
 
 少女前线分栏收录已核对的公开收藏中 129 个条目、443 个可选形态，包含妖精、人形、副官、小队和背景。标准与战损形态各有独立 ID，7 个旧档 ID 仍指向对应装扮。统计范围和上游缺件记录见核对说明。[模型目录](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [来源与核对记录](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 
@@ -167,6 +184,8 @@ python -m http.server 8765 --bind 127.0.0.1 --directory ./models-offline
 ## 原版网页示例
 
 <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/02.png" height="200" alt="黑裙看板娘与互动提示">
+
+</details>
 
 ## 开发与发布
 

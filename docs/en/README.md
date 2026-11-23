@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://live2d-nova.vercel.app/catalog/?lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/web-widget.svg" width="100%" alt="Live2D Web Widget"></a>
+<a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
 
 # Live2D Web Widget
 
@@ -12,18 +12,33 @@ Embed an interactive Live2D model on your website. Load your own model manifest 
 
 </div>
 
+## Live examples
+
+Select a character to open that outfit, try a motion or switch to full screen.
+
+| <a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 MOD"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=azur-lane&amp;model=ship/10117/lafei&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="Laffey"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="Kanon Matsubara"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=houkai2&amp;model=character/bronya/bronya&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="Bronya"></a> |
+| :---: | :---: | :---: | :---: |
+| [AK-12 MOD](https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal&lang=en) | [Laffey](https://live2d-nova.vercel.app/catalog/?collection=azur-lane&model=ship/10117/lafei&lang=en) | [Kanon Matsubara](https://live2d-nova.vercel.app/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur&lang=en) | [Bronya](https://live2d-nova.vercel.app/catalog/?collection=houkai2&model=character/bronya/bronya&lang=en) |
+
+Two more playable examples · [Iron Saga · Slokai](https://live2d-nova.vercel.app/catalog/?collection=iron-saga&model=character/siluokayi/base&lang=en) · [Warship Girls R · Missouri](https://live2d-nova.vercel.app/catalog/?collection=warship-girls&model=ship/209/2&lang=en)
+
 ## Quick start
 
-Host the model manifest and the files it references together. Keep their relative paths intact and enable CORS when serving from another origin. Replace `/models/haru/haru.model3.json` with your own manifest URL. The same API accepts a Cubism 2 manifest such as `/models/character/model.json`.
+Paste this before the closing `</body>` tag. The example loads Matilda from Iron Saga, with textures, motions and voice lines referenced by her manifest.
 
 ```html
 <script type="module">
   import { loadWidget } from "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/widget.mjs";
-  await loadWidget({ modelUrl: "/models/haru/haru.model3.json", position: "right" });
+
+  await loadWidget({
+    modelUrl: "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/madierda/index.json",
+    position: "right",
+    locale: "en",
+  });
 </script>
 ```
 
-For mainland China, use `cdn.jsdmirror.com` for the runtime. Your model and its assets load from the manifest URL you supply.
+To use your own character, set `modelUrl` to a Cubism 2 manifest or a Cubism 3–5 `.model3.json`. Preserve relative asset paths and enable CORS on cross-origin hosts. For visitors in mainland China, replace both occurrences of `cdn.jsdelivr.net` with `cdn.jsdmirror.com`. Other galleries use the asset hosts specified in their catalogs.
 
 ## Install with npm or pnpm
 
@@ -86,7 +101,7 @@ Choose **Expand model** in the widget toolbar to give the current character more
 
 ## Browse by game
 
-The gallery opens on Girls’ Frontline (443 outfits). Use the game navigation to explore Azur Lane (178 outfits), BanG Dream! (2,769 outfits across nine band archives), or Guns GirlZ (19 outfits). Each has its own search, outfit selector and shareable model links. The three additional collections include manual motion previews. Azur Lane matches audio by skin and event. Guns GirlZ plays silently for events whose referenced recording is missing.
+The gallery loads one collection at a time. Search by character or outfit and share a link to the current form. BanG Dream! also supports filtering by band.
 
 A click first uses the model’s own touch mapping. On an unassigned visible region, the widget samples an eligible motion from that outfit and avoids immediate repeats when alternatives exist. Idle and lifecycle events retain their separate triggers.
 
@@ -103,11 +118,28 @@ await loadWidget({
 });
 ```
 
-The other catalogs are `bang-dream.json` and `houkai2.json`. Use their filename without the extension for `collection`. The three additional galleries fetch assets from pinned GitHub revisions. Model data stays outside the npm package. [Sources and catalog maintenance](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+Each additional collection uses a JSON catalog with the same name. Models, textures and recordings use pinned sources, including GitHub raw hosts for some games. [Gallery sources and maintenance](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+
+## API and compatibility
+
+| Entry or option | Usage |
+| --- | --- |
+| `loadWidget({ modelUrl, coreUrl })` | Render an individual model. Cubism 2 uses the legacy renderer. Cubism 3–5 manifests (`.model3.json`) load the WebGL2 backend from `live2d-web` and Live2D Cubism Core on demand. |
+| `loadGirlsFrontline(options?)` | Mount the collection. Set `locale`, `modelId`, `position` (`left` or `right`) or `mode` (`sequential` or `random`). |
+| `selectWidgetModel(id)` | Switch by stable ID after mounting. Copy an ID from the gallery. |
+| `loadModelCatalog(url, collection?, locale?)` | Read available IDs, localized labels and native manifest URLs. |
+| `baseUrl` / `catalogUrl` / `coreUrl` | Override the runtime directory, catalog JSON URL or Cubism Core URL independently. |
+| Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
+| Iron Saga | 4 | Matilda and Slokai use their voiced manifests. The other pilots retain their original motions. |
+| Warship Girls R | 3 | Individual outfits and motions for Missouri, Ōyodo and Lexington (CV-16). |
+| Baoshi Yanwuyu | 14 | Characters and forms from the first two games, with original motion and audio references. |
+
+<details>
+<summary>Collection shortcuts, offline previews and original screenshots</summary>
 
 ## One-script Girls’ Frontline preset
 
-Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.5.0`.
+Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.7.0`.
 
 **Global**
 
@@ -129,22 +161,7 @@ To follow published releases independently of Git branch caches, use the bootstr
 
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
 
-## API and compatibility
-
-| Entry or option | Usage |
-| --- | --- |
-| `loadWidget({ modelUrl, coreUrl })` | Render an individual model. Cubism 2 uses the legacy renderer. Cubism 3–5 manifests (`.model3.json`) load the WebGL2 backend from `live2d-web` and Live2D Cubism Core on demand. |
-| `loadGirlsFrontline(options?)` | Mount the collection. Set `locale`, `modelId`, `position` (`left` or `right`) or `mode` (`sequential` or `random`). |
-| `selectWidgetModel(id)` | Switch by stable ID after mounting. Copy an ID from the gallery. |
-| `loadModelCatalog(url, collection?, locale?)` | Read available IDs, localized labels and native manifest URLs. |
-| `baseUrl` / `catalogUrl` / `coreUrl` | Override the runtime directory, catalog JSON URL or Cubism Core URL independently. |
-| Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
-
 ## Girls’ Frontline examples and offline use
-
-| <a href="https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/fairy--air_attack--1--default.webp" width="96" alt="Airstrike Fairy"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/doll--ump9--mod--normal.webp" width="96" alt="UMP9 MOD"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/squad--ags-30--base--default.webp" width="96" alt="AGS-30"></a> |
-| :---: | :---: | :---: |
-| [Airstrike Fairy](https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default&lang=en) | [UMP9 MOD](https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal&lang=en) | [AGS-30](https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default&lang=en) |
 
 The Girls’ Frontline gallery lists 443 selectable forms across 129 entries from the audited public collections. It includes fairies, dolls, adjutants, squads and backgrounds. Standard and damaged variants have distinct IDs. Seven older IDs resolve to matching outfits. These counts describe the indexed sources. [Model catalog](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [Source audit](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 
@@ -161,6 +178,8 @@ Open `http://127.0.0.1:8765/viewer/catalog/?lang=en`. Use `--list` to inspect so
 ## Original widget examples
 
 <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/01.png" height="200" alt="Original red-dress companion with a speech bubble"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/02.png" height="200" alt="Original black-dress companion with interaction tips">
+
+</details>
 
 ## Development and releases
 

@@ -80,6 +80,15 @@ try {
   await page.addInitScript(() => { Math.random = () => 0; });
   const motionPath = '**/motions/wedding.mtn';
   const audioPath = '**/sounds/KP31_029.mp3';
+  // Exercise both quirks found in real Cubism 2 exports against the paired-playback test.
+  await page.route('**/kp31/kp31_/normal/index.json', async route => {
+    const response = await route.fetch();
+    const model = await response.json();
+    const clip = Object.values(model.motions).flat().find(entry => entry.file === 'motions/wedding.mtn');
+    clip.priority = 0;
+    const body = JSON.stringify(model).slice(0, -1) + ',}';
+    await route.fulfill({ response, body });
+  });
   for (const scenario of ['failure and retry', 'motion delayed', 'voice delayed']) {
     const gesture = scenario === 'voice delayed' ? 'tap' : 'click';
     await page.reload();

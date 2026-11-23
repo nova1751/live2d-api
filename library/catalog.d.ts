@@ -46,7 +46,7 @@ export interface DialogueSource {
     captions?: Record<string, string>;
     audio: ReadonlyMap<string, string>;
 }
-export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2';
+export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2' | 'iron-saga' | 'warship-girls' | 'baoshi-yanwuyu';
 export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
 export declare function loadModelCatalog(input: string | URL, collection?: Collection, locale?: WidgetLocale): Promise<{
     url: string;
