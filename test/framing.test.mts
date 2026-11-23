@@ -31,3 +31,18 @@ test('fits a wide group and gives an unmarked silhouette a stable baseline', () 
   assert.ok(Math.abs(project(90, camera.y, camera) - 0.97) < 0.001);
   assert.deepEqual(fitSilhouette(new Uint8Array(mask.length), initial), { scale: 1, x: 0, y: 0 });
 });
+
+test('fits tall and wide silhouettes within their bottom-centered viewports', () => {
+  for (const [left, top, right, bottom, expected] of [[50, 15, 75, 106, 0.7], [12, 45, 117, 80, 1.9]]) {
+    const mask = new Uint8Array(size * size);
+    rectangle(mask, left, top, right, bottom);
+    let aspect = 0;
+    const camera = fitSilhouette(mask, initial, undefined, ratio => { aspect = ratio; });
+    assert.equal(aspect, expected);
+    const width = Math.min(1, aspect), height = Math.min(1, 1 / aspect);
+    assert.ok(project(left, camera.x, camera) >= (1 - width) / 2);
+    assert.ok(project(right, camera.x, camera) <= (1 + width) / 2);
+    assert.ok(project(top, camera.y, camera) >= 1 - height);
+    assert.ok(Math.abs(project(bottom, camera.y, camera) - (1 - 0.03 * height)) < 0.001);
+  }
+});

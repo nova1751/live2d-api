@@ -4,11 +4,12 @@ export class ModelTransition {
   private still?: HTMLCanvasElement;
   private revision = 0;
 
-  begin() {
+  begin(getAspect: () => number) {
     const container = document.getElementById('waifu');
+    const surface = container?.querySelector<HTMLElement>('.waifu-surface');
     const revision = ++this.revision;
     if (container) {
-      if (this.still && !this.still.isConnected) container.prepend(this.still);
+      if (this.still && !this.still.isConnected) (surface ?? container).prepend(this.still);
       container.setAttribute('data-model-loading', '');
     }
     return (canvas: HTMLCanvasElement) => {
@@ -24,6 +25,7 @@ export class ModelTransition {
         this.still?.remove();
         this.still = context ? next : undefined;
       } finally {
+        if (surface) container.style.setProperty('--waifu-aspect', String(getAspect()));
         container.removeAttribute('data-model-loading');
       }
     };

@@ -64,10 +64,12 @@ function hide() {
 
 function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, start = false) {
   sessionStorage.removeItem('waifu-text');
-  document.body.insertAdjacentHTML('beforeend', `<div id="waifu">
+  const adaptive = options.collection === 'girls-frontline';
+  const canvas = '<canvas id="live2d" width="800" height="800"></canvas>';
+  document.body.insertAdjacentHTML('beforeend', `<div id="waifu"${adaptive ? ' class="waifu-adaptive"' : ''}>
     <div id="waifu-status" role="status" class="waifu-sr-only"></div>
     <div id="waifu-tips"></div>
-    <canvas id="live2d" width="800" height="800"></canvas>
+    ${adaptive ? `<div class="waifu-viewport"><div class="waifu-surface">${canvas}</div></div>` : canvas}
     <div id="waifu-tool"></div>
   </div>`);
   show();

@@ -133,7 +133,7 @@ async function loadModelCatalog(input, collection) {
 }
 
 // package.json
-var version = "2.3.2";
+var version = "2.3.3";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
