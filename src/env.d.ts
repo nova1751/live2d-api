@@ -15,6 +15,11 @@ interface InitWidget {
   (waifuPath: string, apiPath: string): void;
 }
 
+interface Event {
+  /** Set by a model renderer when it owns the caption for this click. */
+  live2dHandlesCaption?: boolean;
+}
+
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {

@@ -35,6 +35,8 @@ export async function checkNativeEvents(browser, base) {
       await page.evaluate(skin => loadlive2d('live2d', '/model/' + skin + '/index.json'), skin);
       await ready();
     };
+    const config = await (await page.request.get(base + 'waifu-tips.json')).json();
+    const preset = config.click.find(rule => rule.selector === '#live2d').text[0];
     const point = name => page.evaluate(name => {
       const model = modelsUnderTest.getModel(0);
       const areas = model.modelSetting.json.hit_areas;
@@ -66,6 +68,7 @@ export async function checkNativeEvents(browser, base) {
       await page.mouse.move(...body);
       await page.waitForTimeout(200); // Exercise the hover preparation path too.
       await page.mouse.click(...body);
+      assert.equal(await page.locator('#waifu-tips').textContent(), preset);
       assert.deepEqual(await page.evaluate(() => window.clickTrace), { preparations: 0, interactions: 0, hits: 1 }, skin);
     }
     await load('rfbchristmas/normal');
@@ -92,6 +95,8 @@ export async function checkNativeEvents(browser, base) {
     await page.mouse.click(bx, by);
     await standalone;
     await page.waitForFunction(() => !!modelsUnderTest.getModel(0).voice?.source);
+    assert.equal(await page.locator('#waifu-tips').textContent(), preset, 'sound-only action uses the configured preset');
+    assert.ok(await page.evaluate(() => !!modelsUnderTest.getModel(0).activeDialogue));
     await load('rfbchristmas/normal');
     const hand = await point('hand');
     const change = page.waitForFunction(() => modelsUnderTest.getModel(0).modelHomeDir.endsWith('/rfbchristmas/destroy/'));

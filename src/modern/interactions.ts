@@ -84,10 +84,10 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
         controller.signal.addEventListener('abort', () => { clearTimeout(timer); resolve(); }, { once: true });
       });
       if (controller.signal.aborted) return;
-      if (action.caption) {
-        speaking = true;
-        window.dispatchEvent(Object.assign(new CustomEvent('live2d:dialogue', { detail: action.caption }), { playback }));
-      }
+      const caption = action.caption?.trim();
+      speaking = true;
+      const event = caption ? new CustomEvent('live2d:dialogue', { detail: caption }) : new CustomEvent('live2d:preset');
+      window.dispatchEvent(Object.assign(event, { playback }));
       if (audio) {
         const finished = new Promise<void>(resolve => {
           audio.addEventListener('ended', () => resolve(), { once: true });
@@ -101,12 +101,14 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     finally { controller.abort(); if (current === controller) current = undefined; }
   }
   host.addEventListener('click', event => {
+    if (current) event.live2dHandlesCaption = true;
     const hits = stage.hitTest(event.clientX, event.clientY);
     for (const area of hits) {
       const candidates = actions.filter(a => a.area === area.toLowerCase() && a.weight > 0);
       if (candidates.length) {
         let roll = Math.random() * candidates.reduce((sum, a) => sum + a.weight, 0);
         const action = candidates.find(a => (roll -= a.weight) < 0) ?? candidates[candidates.length - 1];
+        event.live2dHandlesCaption = true;
         play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
         break;
       }
