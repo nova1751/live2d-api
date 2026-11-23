@@ -109,7 +109,7 @@ function L(canvas,url,options) {
   if (model) model.onPaint = options && options.onPaint;
   if (model) model.locale = options && options.locale;
   if (model) model.captions = options && options.captions;
-  if (model) { model.catalogFiles = options && options.files; model.bandIdle = options && options.bandIdle; model.randomTap = options && options.randomTap; }
+  if (model) { model.catalogFiles = options && options.files; model.catalogCues = options && options.cues; model.bandIdle = options && options.bandIdle; model.randomTap = options && options.randomTap; }
   if (model) model.soundAliases = options && options.soundAliases;
   if (model) model.startPending = !!(options && options.start && !document.hidden);
 }
@@ -247,10 +247,13 @@ o.prepareInteraction = function () {
 function o(){n.L2DBaseModel.prototype.constructor.call(this),this.eyeBlink=new n.L2DEyeBlink,this.motionRequest=0,this.modelHomeDir="",this.modelSetting=null,this.tmpMatrix=[]}Object.defineProperty(i,"__esModule",{value:!0}),i.default=o;var n=e(0),s=e(11),_=r(s),a=e(1),h=r(a),l=e(3),$=r(l);o.prototype=new n.L2DBaseModel,o.prototype.load=function(t,i,e){this.setUpdating(!0),this.setInitialized(!1),this.modelHomeDir=i.substring(0,i.lastIndexOf("/")+1),this.modelSetting=new _.default;var r=this;this.modelSetting.loadModelSetting(i,function(){
   var settings = r.modelSetting.json;
   var fixes = r.catalogFiles;
-  if (fixes) {
-    function resolved(path) { return Object.prototype.hasOwnProperty.call(fixes,path) ? fixes[path] : path; }
+  if (fixes || r.catalogCues) {
+    function resolved(path) { return fixes && Object.prototype.hasOwnProperty.call(fixes,path) ? fixes[path] : path; }
     for (var group of Object.keys(settings.motions || {})) {
       settings.motions[group] = settings.motions[group].filter(function(clip) {
+        var cue = r.catalogCues && (r.catalogCues[clip.sound] || r.catalogCues[clip.file]);
+        if (cue && cue.sound) clip.sound = cue.sound;
+        if (cue && cue.caption) clip.text = cue.caption;
         if (clip.file && !(clip.file = resolved(clip.file))) return false;
         if (clip.sound && !(clip.sound = resolved(clip.sound))) delete clip.sound;
         return true;
@@ -365,7 +368,7 @@ o.prototype.prepareTap = function (group, phase, index) {
     warm.motion = entry.file ? new Promise(function(resolve, reject) {
       owner.loadMotion(null, new URL(entry.file,new URL(owner.modelHomeDir,document.baseURI)).href, resolve, reject);
     }) : Promise.resolve(null);
-    if (entry.sound) warm.bytes = fetchRecording(this.modelHomeDir + entry.sound, warm.controller);
+    if (entry.sound) warm.bytes = fetchRecording(new URL(entry.sound, new URL(this.modelHomeDir, document.baseURI)).href, warm.controller);
     function discard() { if (owner.prepared === warm) owner.clearPrepared(); }
     warm.motion.catch(discard);
     if (warm.bytes) warm.bytes.catch(discard);
@@ -467,7 +470,7 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
   try {
     // Resume during the click. Both assets can then load in either order.
     var resumed = resumeAudio();
-    var audioURL = this.modelHomeDir + sound;
+    var audioURL = new URL(sound, new URL(this.modelHomeDir, document.baseURI)).href;
     var bytes = warm ? warm.bytes : fetchRecording(audioURL, voice.controller);
     var recording = warm && warm.recording || bytes.then(function(data){return voiceContext.decodeAudioData(data);});
     var animation = warm ? warm.motion : !file ? Promise.resolve(null) : new Promise(function (resolve, reject) {

@@ -1,0 +1,18 @@
+/** Match the exported path or a unique bare filename within the same model form. */
+export function nativeMotionLookup(paths: Set<string>, dialogueUrl?: string) {
+  const basenames = new Map<string, string | undefined>();
+  for (const path of paths) {
+    const name = path.slice(path.lastIndexOf('/') + 1);
+    basenames.set(name, basenames.has(name) ? undefined : path);
+  }
+  return (eventId: string, name: string) => {
+    let path = name.replace(/\.mtn$/i, '.motion3.json');
+    if (
+      eventId === '56309' &&
+      dialogueUrl?.endsWith('/generalliu_563/normal/generalliu_563.data.json') &&
+      path === 'motions/wedding_touch.motion3.json'
+    )
+      path = 'motions/wedding touch.motion3.json';
+    return paths.has(path) ? path : basenames.get(path);
+  };
+}

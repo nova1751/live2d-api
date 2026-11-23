@@ -82,6 +82,11 @@ if (existsSync(index)) {
   for (const [id, variants] of Object.entries(previous.models)) {
     for (const variant of variants) {
       const current = library.models[id]?.find(v => v.source === variant.source && v.manifest === variant.manifest);
+      if (current?.cueSource || variant.cueSource) {
+        delete variant.cueSource;
+        delete variant.cues;
+        if (current?.cueSource) { variant.cueSource = current.cueSource; variant.cues = current.cues; }
+      }
       if (current?.collectionDefault) variant.collectionDefault = true;
       else delete variant.collectionDefault;
     }

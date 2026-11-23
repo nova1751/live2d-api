@@ -55,6 +55,15 @@ for (const [id, items] of Object.entries(library.models)) {
   try {
     const primary = items.find(v => v.manifest);
     if (!primary) throw new Error('Missing model manifest');
+    for (const variant of items) {
+      if (!variant.cueSource || !library.sources[variant.cueSource]) continue;
+      for (const [motion,cue] of Object.entries(variant.cues ?? {})) {
+        if (cue.sound && !statSync(join(directory,'sources',variant.cueSource,cue.sound),{throwIfNoEntry:false})?.size) {
+          console.error(id,motion,cue.sound);
+          errors++;
+        }
+      }
+    }
     for (const chosen of new Set([primary, ...items.filter(v => v.collectionDefault)])) {
       if (!chosen.manifest) throw new Error('Missing collection manifest');
       const root = join(directory, 'sources', chosen.source);

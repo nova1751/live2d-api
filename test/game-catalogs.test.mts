@@ -115,3 +115,21 @@ test('curated Cubism 2 galleries resolve their published IDs and have real portr
     }
   }
 });
+
+test('recovered media stays with its original recording, motion and locale', async () => {
+  const az = await read('azur-lane'), bh = await read('houkai2'), audit = await read('audit');
+  const boise = az.models['ship/10229/boyixi_2'][0].cues.wedding;
+  assert.match(boise.sound, /\/102290\/propose\.ogg$/);
+  assert.ok(boise.caption && boise.captionEn);
+  assert.equal(az.models['ship/30116/xuefeng_3'][0].cues.touch_special.sound, undefined);
+  for (const [id, count] of [['character/xier/xier', 9], ['character/delisha/delisha', 5]]) {
+    const asset = bh.models[id][0];
+    assert.equal(Object.keys(asset.cues).length, count);
+    for (const [key, cue] of Object.entries(asset.cues)) {
+      const repair = audit.repairs.find(row => row.id === id && row.file === key);
+      assert.ok(cue.caption && cue.captionEn);
+      assert.equal(repair.from, asset.files[key]);
+      assert.match(repair.sha256, /^[a-f0-9]{64}$/);
+    }
+  }
+});

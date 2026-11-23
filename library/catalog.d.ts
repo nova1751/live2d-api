@@ -20,6 +20,7 @@ export interface GalleryEntry {
     portrait?: string;
 }
 export interface ModelVariant {
+    cueSource?: string;
     collectionDefault?: boolean;
     cues?: Record<string, GameCue>;
     files?: Record<string, string | null>;
@@ -62,7 +63,13 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
     visibleId: (id: string) => string;
     labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
-        cues: Record<string, GameCue> | undefined;
+        cues: {
+            [k: string]: {
+                sound: string | undefined;
+                caption: string | undefined;
+                captionEn?: string;
+            };
+        } | undefined;
         files: Record<string, string | null> | undefined;
         captions: Record<string, string> | undefined;
         modelUrl: string;
@@ -71,3 +78,27 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
     };
     legacyIds: string[][] | undefined;
 }>;
+export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale?: WidgetLocale, sourceBase?: string): {
+    url: string;
+    collection: Collection | undefined;
+    locale: WidgetLocale;
+    ids: string[];
+    gallery: Record<string, GalleryEntry> | undefined;
+    visibleId: (id: string) => string;
+    labels: Record<string, string>;
+    resolve: (id: string, source?: string) => {
+        cues: {
+            [k: string]: {
+                sound: string | undefined;
+                caption: string | undefined;
+                captionEn?: string;
+            };
+        } | undefined;
+        files: Record<string, string | null> | undefined;
+        captions: Record<string, string> | undefined;
+        modelUrl: string;
+        dialogue: DialogueSource | undefined;
+        soundAliases: Record<string, string> | undefined;
+    };
+    legacyIds: string[][] | undefined;
+};

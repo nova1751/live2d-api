@@ -1,3 +1,4 @@
+import { recoverHoukai } from './recover-houkai.mts';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -45,14 +46,14 @@ const recoveryOutfits = {
   'hhw/012/012_dream_festival_4_ur': '014_dream_festival_4_ur',
   'mygo/039/039_live_event_297_ur_活动297': '039_live_event_297_ur',
 };
-async function legacyOptions(files, folder, manifest, id) {
-  const aliases = {};
+async function legacyOptions(files, folder, manifest, id, recovery) {
+  const aliases = { ...recovery?.files };
   if (!manifest.model || !manifest.textures?.length) {
     unavailable.push({ id, reason: 'Missing model or textures' });
     return;
   }
   for (const file of new Set(pathsFor(manifest))) {
-    if (files.has(posix.join(folder, file))) continue;
+    if (files.has(posix.join(folder, file)) || aliases[file]) continue;
     if (file === manifest.model || manifest.textures.includes(file)) {
       unavailable.push({ id, file });
       return;
@@ -188,7 +189,9 @@ for (const f of bhFiles.keys()) {
     m = await json(bhBase + f);
   const person = folder === 'BYC' ? 'yazakura' : folder,
     id = 'character/' + person + '/' + folder;
-  const options = await legacyOptions(bhFiles, folder, m, id);
+  const recovery = await recoverHoukai(folder, m, bhBase, bhFiles);
+  const options = await legacyOptions(bhFiles, folder, m, id, recovery);
+  if (recovery && options) { options.cues = recovery.cues; repairs.push(...recovery.repairs); }
   if (options)
     add(houkai, id, 'archive', f, options, {
       name: bhNames[folder] || folder,
@@ -216,6 +219,7 @@ const [skins, words, names] = await Promise.all(
     'ShareCfg/name_code.json',
   ].map((p) => json(data + p)),
 );
+const jpWords = await json(data.replace('/CN/', '/JP/') + 'sharecfgdata/ship_skin_words.json');
 const [enSkins, enWords, enNames] = await Promise.all(
   [
     'ShareCfg/ship_skin_template.json',
@@ -263,6 +267,7 @@ const sounds = new Set(
     .split(/\r?\n/),
 );
 const keys = {
+  ...Object.fromEntries(['battle','detail','feeling1','feeling2','feeling3','feeling4','feeling5','hp_warning','lose','skill','unlock','upgrade','win_mvp'].map(key => [key,key])),
   touch_head: 'headtouch',
   touch_body: 'touch',
   touch_special: 'touch2',
@@ -310,13 +315,29 @@ for (const path of manifests) {
     const main = /^main_(\d+)$/.exec(group),
       key = keys[group] || (main && 'main' + main[1]);
     if (!key) continue;
-    const caption = main ? lines.main?.split('|')[+main[1] - 1] : lines[key];
-    const file = skin?.id + '/' + key + '.ogg';
+    function line(row) {
+      const value = main ? row?.main?.split('|')[+main[1] - 1] : row?.[key];
+      if (typeof value !== 'string' || !value.trim() || value.trim() === 'nil') return;
+      return value.trim();
+    }
+    let caption = line(lines);
+    let file = skin?.id + '/' + key + '.ogg';
+    let enLine = line(enWords[skin?.id]);
+    const original = ship?.id;
+    const jp = line(jpWords[skin?.id]);
+    const baseZh = line(words[original]), baseJp = line(jpWords[original]), baseEn = line(enWords[original]);
+    // ShipWordHelper resolves an empty/nil event through the default skin. A distinct
+    // localized line or a disabled voice key must never borrow that recording.
+    if (!sounds.has(file) && original && original !== skin?.id && lines.voice_key === 0 && baseZh && baseJp &&
+        (!caption || caption === baseZh) && (!jp || jp === baseJp) && (!enLine || enLine === baseEn) &&
+        sounds.has(original + '/' + key + '.ogg')) {
+      file = original + '/' + key + '.ogg';
+      caption ??= baseZh;
+      enLine ??= baseEn;
+    }
     const sound = sounds.has(file)
       ? raw + voiceRepo + '/' + voiceRev + '/audio/voiceline/' + file
       : undefined;
-    const enLines = enWords[skin?.id] || {};
-    const enLine = main ? enLines.main?.split('|')[+main[1] - 1] : enLines[key];
     if (sound || caption || enLine)
       cues[group] = {
         sound,

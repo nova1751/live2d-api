@@ -45,6 +45,13 @@ test('a native voice-only body event has a caption and no synthetic motion', asy
     captions:{'OTS14|DIALOGUE1':'今天有什么计划，说来听听吧。'}};
   const { actions } = await readActions('https://example.org/model.model3.json',source,new AbortController().signal);
   assert.deepEqual(actions,[{file:'',group:'voice',index:0,area:'body',weight:1,delay:0,sound:'voice.ogg',caption:source.captions['OTS14|DIALOGUE1']}]);
+  source.audio.clear();
+  const silent = await readActions('https://example.org/model.model3.json',source,new AbortController().signal);
+  assert.equal(silent.actions.length,1);
+  assert.equal(silent.actions[0].sound,undefined);
+  assert.equal(silent.actions[0].caption,source.captions['OTS14|DIALOGUE1']);
+  assert.equal(silent.actions[0].file,'');
+
 });
 
 test('the renderer preserves the CDN version delimiter and encodes reserved characters in filenames', async t => {

@@ -1,3 +1,4 @@
+import { nativeMotionLookup } from './native-events';
 import { prepareMotion } from './motion';
 import type { Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
@@ -29,27 +30,19 @@ export async function readActions(url: string, source: DialogueSource | undefine
   const groups = manifest.FileReferences.Motions ?? {};
   const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([,clips]) => clips.map(c => c.File)));
   const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
-  const byFilename = new Map<string, string | undefined>();
+  const matchMotion = nativeMotionLookup(paths, source?.url);
   function voiceFor(id: string) {
     const line = data?.voiceData[id];
     const code = line?.char_code?.toUpperCase(), key = line?.voice_key?.toUpperCase();
     return { caption: source?.captions?.[code + '|' + key] || line?.caption,
       sound: code && key ? source?.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined };
   }
-  for (const path of paths) {
-    const name = path.slice(path.lastIndexOf('/') + 1);
-    byFilename.set(name, byFilename.has(name) ? undefined : path);
-  }
   for (const [group, files] of Object.entries(groups)) {
     files.forEach((file, index) => {
       let hasEvent = false;
       if (data && source) {
         for (const [id, motion] of Object.entries(data.motionData)) {
-          const name = motion.motion_name.replace(/\.mtn$/i, '.motion3.json');
-          const corrected = id === '56309' && source.url.endsWith('/generalliu_563/normal/generalliu_563.data.json') &&
-            name === 'motions/wedding_touch.motion3.json' ? 'motions/wedding touch.motion3.json' : name;
-          const path = paths.has(corrected) ? corrected : byFilename.get(corrected);
-          if (path !== file.File) continue;
+          if (matchMotion(id, motion.motion_name) !== file.File) continue;
           hasEvent = true;
           if (Boolean(motion.is_hurt) !== (data.variant === 'destroy')) continue;
           const area = motion.touch_area && motion.touch_area !== '0' ? motion.touch_area.toLowerCase() : '';
@@ -78,7 +71,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
       if (motion.motion_name || !motion.touch_area || motion.touch_area === '0' ||
           Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !(motion.probability > 0)) continue;
       const voice = voiceFor(id);
-      if (voice.sound) actions.push({ file: '', group: 'voice', index: index++, area: motion.touch_area.toLowerCase(),
+      if (voice.sound || voice.caption?.trim()) actions.push({ file: '', group: 'voice', index: index++, area: motion.touch_area.toLowerCase(),
         weight: motion.probability, delay: Math.max(0, motion.delay || 0), ...voice });
     }
   }
@@ -157,7 +150,9 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       const caption = action.caption?.trim();
       speaking = true;
       const event = caption ? new CustomEvent('live2d:dialogue', { detail: caption }) : new CustomEvent('live2d:preset');
-      window.dispatchEvent(Object.assign(event, { playback }));
+      // With no motion or audio clock, use the widget's normal reading time after the native delay.
+      if (!action.file && !voice && caption) window.dispatchEvent(event);
+      else window.dispatchEvent(Object.assign(event, { playback }));
       if (!voice) finishLine();
     }
     // The backend calls update only once this specific motion owns the queue.

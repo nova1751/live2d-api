@@ -103,6 +103,9 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
   const response = await fetch(url);
   if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
   const catalog = await response.json();
+  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href);
+}
+function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBase = url.href) {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
   const audioBySource = /* @__PURE__ */ new Map();
   const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
@@ -130,10 +133,11 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
     const preferred = !source && collection && variants.find((item) => item.collectionDefault && item.manifest);
     const asset = preferred || variants.find((item) => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error("No model manifest for " + id);
-    const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
-    if (url.hostname === "cdn.jsdmirror.com" && base.hostname === "cdn.jsdelivr.net" && base.pathname.startsWith("/gh/nova1751/live2d-api@cdn-")) base.hostname = url.hostname;
-    const packs = base.hostname === "raw.githubusercontent.com" ? catalog.sources[asset.source].packs : void 0;
-    const assetUrl = (path) => {
+    const assetUrl = (path, sourceName = asset.source) => {
+      const source2 = catalog.sources[sourceName];
+      const base = new URL(source2.baseUrl, sourceBase);
+      if (url.hostname === "cdn.jsdmirror.com" && base.hostname === "cdn.jsdelivr.net" && base.pathname.startsWith("/gh/nova1751/live2d-api@cdn-")) base.hostname = url.hostname;
+      const packs = base.hostname === "raw.githubusercontent.com" ? source2.packs : void 0;
       const pack = packs?.find((p) => p.directories.some((dir) => path.startsWith(dir + "/")));
       const target = new URL(path.split("/").map(encodeURIComponent).join("/"), pack?.baseUrl ?? base);
       if (pack && url.hostname === "cdn.jsdmirror.com" && target.hostname === "cdn.jsdelivr.net") target.hostname = url.hostname;
@@ -148,16 +152,20 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
       }
       dialogue = { captions: locale === "en" ? void 0 : captions, url: assetUrl(asset.dialogue), audio };
     }
-    const cues = locale === "en" && asset.cues ? Object.fromEntries(
-      Object.entries(asset.cues).map(([group, cue]) => [group, { ...cue, caption: cue.captionEn || cue.caption }])
-    ) : asset.cues;
+    const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
+      Object.entries(asset.cues).map(([key, cue]) => [key, {
+        ...cue,
+        sound: asset.cueSource && cue.sound ? assetUrl(cue.sound, asset.cueSource) : cue.sound,
+        caption: locale === "en" ? cue.captionEn || cue.caption : cue.caption
+      }])
+    ) : void 0;
     return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.8.3";
+var version = "2.8.4";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -177,7 +185,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-d5fab70f79e7e599/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-e4889e2283d916db/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

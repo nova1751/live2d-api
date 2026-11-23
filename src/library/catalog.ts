@@ -2,7 +2,7 @@ export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
 export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
-export interface ModelVariant { collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
+export interface ModelVariant { cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
   gallery?: Record<string, GalleryEntry>;
@@ -45,6 +45,10 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
   const response = await fetch(url);
   if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
   const catalog: ModelCatalog = await response.json();
+  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href);
+}
+
+export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', sourceBase = url.href) {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error('Unsupported model catalog');
   const audioBySource = new Map<string, Map<string, string>>();
   const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
@@ -68,11 +72,12 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
     const preferred = !source && collection && variants.find(item => item.collectionDefault && item.manifest);
     const asset = preferred || variants.find(item => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error('No model manifest for ' + id);
-    const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
-    if (url.hostname === 'cdn.jsdmirror.com' && base.hostname === 'cdn.jsdelivr.net' &&
-        base.pathname.startsWith('/gh/nova1751/live2d-api@cdn-')) base.hostname = url.hostname;
-    const packs = base.hostname === 'raw.githubusercontent.com' ? catalog.sources[asset.source].packs : undefined;
-    const assetUrl = (path: string) => {
+    const assetUrl = (path: string, sourceName = asset.source) => {
+      const source = catalog.sources[sourceName];
+      const base = new URL(source.baseUrl, sourceBase);
+      if (url.hostname === 'cdn.jsdmirror.com' && base.hostname === 'cdn.jsdelivr.net' &&
+          base.pathname.startsWith('/gh/nova1751/live2d-api@cdn-')) base.hostname = url.hostname;
+      const packs = base.hostname === 'raw.githubusercontent.com' ? source.packs : undefined;
       const pack = packs?.find(p => p.directories.some(dir => path.startsWith(dir + '/')));
       const target = new URL(path.split('/').map(encodeURIComponent).join('/'), pack?.baseUrl ?? base);
       if (pack && url.hostname === 'cdn.jsdmirror.com' && target.hostname === 'cdn.jsdelivr.net') target.hostname = url.hostname;
@@ -87,9 +92,11 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
       }
       dialogue = { captions: locale === 'en' ? undefined : captions, url: assetUrl(asset.dialogue), audio };
     }
-    const cues = locale === 'en' && asset.cues ? Object.fromEntries(
-      Object.entries(asset.cues).map(([group, cue]) => [group, { ...cue, caption: cue.captionEn || cue.caption }])
-    ) : asset.cues;
+    const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
+      Object.entries(asset.cues).map(([key, cue]) => [key, { ...cue,
+        sound: asset.cueSource && cue.sound ? assetUrl(cue.sound, asset.cueSource) : cue.sound,
+        caption: locale === 'en' ? cue.captionEn || cue.caption : cue.caption }])
+    ) : undefined;
     return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };

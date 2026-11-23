@@ -1,3 +1,4 @@
+import { recoverNativeEvents } from './recover-native-events.mts';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { readJson, repository, type Library } from './library-files.mts';
@@ -140,5 +141,6 @@ for (const key of [...legacyKeys].sort()) {
   if (text) enCaptions[key] = text.replaceAll('//c', ',');
 }
 catalog.presentation = { labels, captions, aliases, outfitOrder, en: { labels: enLabels, captions: { ...enCaptions, ...legacyLines } } };
+recoverNativeEvents(catalog, root);
 await writeFile(file, JSON.stringify(catalog) + '\n');
 console.log(Object.keys(labels).length, 'labels;', Object.keys(captions).length, 'subtitles;', Object.keys(aliases).length, 'archive aliases');

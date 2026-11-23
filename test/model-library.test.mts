@@ -114,3 +114,21 @@ test('every visible gallery form has a WebP portrait from its model', async () =
     assert.equal(image.readUInt32LE(4) + 8, image.length, id);
   }
 });
+
+test('mixed-source gallery cues retain unique Cubism 2 motions and follow the catalog region', async t => {
+  const { loadModelCatalog } = await import('../widget.mjs');
+  const catalog = await json('catalog/library.json');
+  t.mock.method(globalThis, 'fetch', async () => Response.json(catalog));
+  const url = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@tag/catalog/library.json';
+  globalThis.document = { baseURI: url };
+  t.after(() => { delete globalThis.document; });
+  const id = 'doll/wa2000/306/normal';
+  const gallery = await loadModelCatalog(url, 'girls-frontline');
+  const model = gallery.resolve(id);
+  assert.match(model.modelUrl, /index\.json$/);
+  assert.match(model.cues['motions/touch_1.mtn'].sound, /^https:\/\/cdn\.jsdmirror\.com\/.+WA2000_DIALOGUE3_JP\.ogg$/i);
+  assert.equal((await loadModelCatalog(url)).resolve(id).cues, undefined);
+  catalog.sources.dump.baseUrl = '../../sources/dump/';
+  const offline = (await loadModelCatalog('https://example.test/viewer/catalog/library.json', 'girls-frontline')).resolve(id);
+  assert.match(offline.cues['motions/touch_1.mtn'].sound, /^https:\/\/example\.test\/sources\/dump\/audio\//);
+});
