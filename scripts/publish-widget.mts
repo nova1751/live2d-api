@@ -32,10 +32,12 @@ try {
   function publishLatest(version: string) {
     const ref = 'refs/heads/widget-latest';
     const base = '../live2d-api@widget-' + version + '/';
+    const shortcut = (name: string) => `const target = new URL('${base}${name}', import.meta.url);\ntarget.search = new URL(import.meta.url).search;\nawait import(target.href);\n`;
     git(['read-tree', '--empty']);
     for (const [name, content] of Object.entries({
       VERSION: version + '\n',
-      'girls-frontline.mjs': `const target = new URL('${base}girls-frontline.mjs', import.meta.url);\ntarget.search = new URL(import.meta.url).search;\nawait import(target.href);\n`,
+      'girls-frontline.mjs': shortcut('girls-frontline.mjs'),
+      'collections.mjs': shortcut('collections.mjs'),
       'widget.mjs': `export * from '${base}widget.mjs';\n`,
     })) {
       const blob = git(['hash-object', '-w', '--stdin'], content).toString().trim();
@@ -49,7 +51,8 @@ try {
         git(['fetch', '--no-tags', '--depth=1', 'origin', ref]);
         parent = git(['rev-parse', 'FETCH_HEAD']).toString().trim();
         const current = git(['show', parent + ':VERSION']).toString().trim();
-        if (version.localeCompare(current, 'en', { numeric: true }) <= 0) return;
+        const order = version.localeCompare(current, 'en', { numeric: true });
+        if (order < 0 || (order === 0 && git(['rev-parse', parent + '^{tree}']).toString().trim() === tree)) return;
       }
       const next = git(['commit-tree', tree, ...(parent ? ['-p', parent] : []), '-m', 'Track ' + tag]).toString().trim();
       try {
