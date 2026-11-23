@@ -32,8 +32,10 @@ export class CatalogModels {
       const id = selectId(library.ids, library.legacyIds, library.visibleId);
       const { modelUrl, dialogue, soundAliases, captions, cues, files } = library.resolve(id);
       let aspect = 1;
-      const framing = this.options.collection && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
-      const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
+      const fitCharacter = this.options.collection && !id.startsWith('background/');
+      const paintScale = fitCharacter ? 1.5 : 1;
+      const framing = fitCharacter ? createFraming(value => { aspect = value; }, paintScale) : undefined;
+      const onPaint = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
       await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
         randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: this.options.collection === 'bang-dream' });
       if (revision === this.sequence) {

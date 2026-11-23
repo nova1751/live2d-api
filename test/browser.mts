@@ -1,3 +1,4 @@
+import { checkPaintOverflow } from './paint-overflow.mts';
 import { checkNativeEvents, openLegacyDemo } from './native-events.mts';
 import assert from 'node:assert/strict';
 import { resolve } from 'node:path';
@@ -191,6 +192,7 @@ try {
   }
   assert.deepEqual(modernRequests, []);
   await checkNativeEvents(browser, url);
+  await checkPaintOverflow(browser, url);
   assert.deepEqual(errors, []);
   console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');
 } finally {

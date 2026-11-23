@@ -120,7 +120,7 @@ export function bindMessages(tips: Tips) {
     window.addEventListener(event, input => {
       const target = input.target;
       if (!(target instanceof Element) || input.live2dHandlesCaption) return;
-      const stage = event === 'click' && target.closest('#waifu .waifu-model-stage');
+      const stage = target.closest('.waifu-hit') || (event === 'click' && target.closest('#waifu .waifu-model-stage'));
       const canvas = stage ? document.getElementById('live2d') : target.closest('#live2d');
       const rule = tips[event].find(({ selector }) => target.closest(selector) || (stage && canvas?.closest(selector)));
       if (!rule || (event === 'mouseover' && rule.selector === previousSelector)) return;

@@ -73,11 +73,12 @@ function hide() {
 function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, start = false) {
   sessionStorage.removeItem('waifu-text');
   const adaptive = Boolean(options.collection);
-  const canvas = '<canvas id="live2d" width="800" height="800"></canvas>';
+  const size = adaptive ? 1200 : 800;
+  const canvas = `<canvas id="live2d" width="${size}" height="${size}"></canvas>`;
   document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}${adaptive && models instanceof CatalogModels ? ' data-initial-framing' : ''}>
     <div id="waifu-status" role="status" class="waifu-sr-only"></div>
     <div id="waifu-tips"></div>
-    ${adaptive ? `<div class="waifu-viewport"><div class="waifu-surface">${canvas}</div></div>` : canvas}
+    ${adaptive ? `<div class="waifu-viewport"><div class="waifu-hit" aria-hidden="true"></div><div class="waifu-surface">${canvas}</div></div>` : canvas}
     <div id="waifu-tool"></div>
   </div>`);
   show();

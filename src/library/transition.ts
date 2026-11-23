@@ -4,7 +4,7 @@ export class ModelTransition {
   private still?: HTMLCanvasElement;
   private revision = 0;
 
-  begin(getAspect: () => number) {
+  begin(getAspect: () => number, paintScale: number) {
     const container = document.getElementById('waifu');
     const surface = container?.querySelector<HTMLElement>('.waifu-surface');
     const revision = ++this.revision;
@@ -27,6 +27,7 @@ export class ModelTransition {
       } finally {
         if (surface) {
           const aspect = getAspect();
+          container.style.setProperty('--waifu-paint-scale', String(paintScale));
           container.style.setProperty('--waifu-aspect', String(aspect));
           container.toggleAttribute('data-wide-model', aspect >= 1.35);
         }

@@ -95,7 +95,11 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
   };
 }
 
-export function createFraming(setAspect?: (ratio: number) => void) {
+export function createFraming(setAspect?: (ratio: number) => void, paintScale = 1) {
+  // Centering the larger surface around the original square preserves every screen coordinate.
+  const forSurface = (camera: Camera): Camera => ({
+    scale: camera.scale / paintScale, x: camera.x / paintScale, y: camera.y / paintScale,
+  });
   const initial = { scale: 0.65, x: 0, y: 0 };
   let sampleCamera = initial;
   const sample = document.createElement('canvas');
@@ -105,7 +109,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
   const pose = new Uint8Array(mask.length);
   let frames = 0, nextSample = 0, firstSample: number | undefined;
   return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest, resizeSample?: (camera: Camera) => void): Camera | undefined {
-    if (!ctx) return authored;
+    if (!ctx) return forSurface(authored);
     const now = performance.now();
     if (now < nextSample) return;
     firstSample ??= now;
@@ -137,7 +141,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
         mask.set(pose);
         frames++;
       }
-    } catch { return authored; }
+    } catch { return forSurface(authored); }
     if (frames < 3 && now - firstSample < 3200) return;
     if (frames && resizeSample && sampleCamera === initial) {
       for (let i = 0; i < size; i++) {
@@ -149,7 +153,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
         return;
       }
     }
-    return frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect) : authored;
+    return forSurface(frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect) : authored);
   } };
 }
 export type Framing = ReturnType<typeof createFraming>;

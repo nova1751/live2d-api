@@ -30,26 +30,28 @@ function onDeviceMotion(event) {
     lastShake = now; shakePeak = null; model.startRandomMotion("shake", w.default.PRIORITY_NORMAL);
   } else shakePeak = { axis: axis, time: now };
 }
+var inputTarget;
 function o(id) {
   var canvas = document.getElementById(id);
   if (C === canvas) return;
-  if (C) {
-    C.removeEventListener("click", onModelClick);
-  C.removeEventListener("pointerdown", onPointerDown);
-  C.removeEventListener("pointerup", onPointerUp);
-  window.removeEventListener("devicemotion", onDeviceMotion);
-    C.removeEventListener("pointermove", onPointerMove);
-    C.removeEventListener("pointerleave", resetGaze);
-    C.removeEventListener("pointercancel", resetGaze);
+  if (inputTarget) {
+    inputTarget.removeEventListener("click", onModelClick);
+    inputTarget.removeEventListener("pointerdown", onPointerDown);
+    inputTarget.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("devicemotion", onDeviceMotion);
+    inputTarget.removeEventListener("pointermove", onPointerMove);
+    inputTarget.removeEventListener("pointerleave", resetGaze);
+    inputTarget.removeEventListener("pointercancel", resetGaze);
   }
   C = canvas;
-  C.addEventListener("click", onModelClick);
-  C.addEventListener("pointerdown", onPointerDown);
-  C.addEventListener("pointerup", onPointerUp);
+  inputTarget = canvas.closest(".waifu-viewport")?.querySelector(".waifu-hit") || canvas;
+  inputTarget.addEventListener("click", onModelClick);
+  inputTarget.addEventListener("pointerdown", onPointerDown);
+  inputTarget.addEventListener("pointerup", onPointerUp);
   window.addEventListener("devicemotion", onDeviceMotion);
-  C.addEventListener("pointermove", onPointerMove);
-  C.addEventListener("pointerleave", resetGaze);
-  C.addEventListener("pointercancel", resetGaze);
+  inputTarget.addEventListener("pointermove", onPointerMove);
+  inputTarget.addEventListener("pointerleave", resetGaze);
+  inputTarget.addEventListener("pointercancel", resetGaze);
 }
 function viewPoint(event) {
   if (!B) return;

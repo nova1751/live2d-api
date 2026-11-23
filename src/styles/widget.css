@@ -17,7 +17,7 @@
   width: 30px;
   min-height: 46px;
   line-height: 1;
-  z-index: 2;
+  z-index: calc(var(--waifu-z-index, 10) + 1);
   writing-mode: vertical-rl;
   transform: translateX(-100%);
   transition: transform 1s;
@@ -47,7 +47,7 @@
   position: fixed;
   transform: translateY(3px);
   transition: transform 0.3s ease-in-out, bottom 3s ease-in-out;
-  z-index: 1;
+  z-index: var(--waifu-z-index, 10);
 }
 
 #waifu.waifu-adaptive {
@@ -61,20 +61,39 @@
   --waifu-max-width: min(480px, calc(100vw - var(--waifu-left-inset) - var(--waifu-right-inset) - var(--waifu-side-space)));
   --waifu-max-height: min(410px, 60vh);
   --waifu-model-width: min(var(--waifu-max-width), calc(var(--waifu-max-height) * var(--waifu-aspect, 1)));
+  --waifu-model-height: calc(var(--waifu-model-width) / var(--waifu-aspect, 1));
+  pointer-events: none;
   width: calc(var(--waifu-model-width) + var(--waifu-side-space));
-  height: calc(var(--waifu-model-width) / var(--waifu-aspect, 1));
+  height: var(--waifu-model-height);
 }
-.waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; overflow: hidden; }
+.waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; container-type: size; overflow: visible; }
 /* Measure the first pose at its real size before revealing its controls. */
 #waifu[data-initial-framing] { visibility: hidden; }
 .waifu-surface {
+  --waifu-square: max(100cqw, 100cqh);
+  --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1) / 2);
   position: absolute;
   left: 50%;
-  bottom: 0;
+  bottom: calc(-1 * var(--waifu-bleed));
   transform: translateX(-50%);
-  width: max(100%, calc(100% / var(--waifu-aspect, 1)));
+  width: calc(var(--waifu-square) + 2 * var(--waifu-bleed));
   aspect-ratio: 1;
 }
+/* The renderer keeps the wider camera. Only the original viewport receives input. */
+.waifu-hit { position: absolute; inset: 0; cursor: grab; }
+#waifu:not([data-model-loading]) .waifu-hit,
+#waifu:not([data-model-loading]) .waifu-surface .waifu-model-stage::after { pointer-events: auto; }
+.waifu-surface .waifu-model-stage::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: var(--waifu-bleed);
+  transform: translateX(-50%);
+  width: 100cqw;
+  height: 100cqh;
+  cursor: grab;
+}
+.waifu-surface .waifu-model-stage canvas { pointer-events: none; }
 .waifu-surface > div, .waifu-surface #live2d { display: block; width: 100%; height: 100%; }
 #waifu.waifu-adaptive #waifu-tips {
   box-sizing: border-box;
@@ -94,6 +113,7 @@
 #waifu.waifu-adaptive #waifu-tips.waifu-tips-active { pointer-events: auto; }
 #waifu.waifu-adaptive #waifu-tool {
   z-index: 2;
+  pointer-events: auto;
   top: 0;
   bottom: 0;
   margin-block: auto;
@@ -208,7 +228,7 @@
   transition: fill 0.3s;
 }
 
-#waifu-tool svg:hover {
+#waifu-tool button:is(:hover, :focus-visible) svg {
   fill: #0684bd; /* #34495e */
 }
 
@@ -491,6 +511,7 @@
   display: grid;
   place-items: center;
   box-sizing: border-box;
+  overflow: clip;
   width: max-content;
   height: max-content;
   min-width: 100%;
