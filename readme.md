@@ -9,13 +9,13 @@ nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实�
 **中国大陆**
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.1/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.2/girls-frontline.mjs"></script>
 ```
 
 **海外**
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.1/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.2/girls-frontline.mjs"></script>
 ```
 
 这两个地址通过 CDN 读取 GitHub 的固定运行时快照。目录和历史内置模型采用相应 CDN 的 GitHub 地址，扩展模型使用目录所列 GitHub 上游的固定提交。Cubism 3–5 使用独立按需加载的渲染器和 Live2D 官方 Core。要自托管合法部署的 Core，可传入 `coreUrl`。
@@ -27,7 +27,7 @@ nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实�
 ```html
 <script type="module">
   import { loadGirlsFrontline, selectWidgetModel } from
-    "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.1/widget.mjs";
+    "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.2/widget.mjs";
   await loadGirlsFrontline({ position: "right", modelId: "doll/k2/3301/normal" });
   // 可在自己的角色选择器中调用
   // await selectWidgetModel("doll/56-1type/7706/normal");
@@ -75,7 +75,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory D:/Models/GFL
 
 目录和顺序切换共用同一份排序。妖精在最前，按一阶到三阶排列。同一人形的编号装扮按国服装扮表的实装批次顺序排列，同批次按数字编号，普通排在对应战损前面。原版先于装扮，可核实的心智升级按国服开放时间插入，缺少批次的造型置于已知批次之后。[国服装扮表](https://github.com/gf-data-tools/gf-data-ch/blob/c6c763ca71e6f8450232fbd30e26900c51d2c09b/stc/skin.json)
 
-少女前线人物按初始可见轮廓居中，长边目标为画布的 86%，为待机、动作和配件预留空间。动作期间镜头固定。切换时保留上个角色的一帧，直到新角色完成取景并画好才替换。背景沿用原构图。
+少女前线人物在载入时自动取景。竖向全身轮廓目标占画布高度的 93%，脚底下方约留 3%。横向展开的造型会按宽度等比缩小。水平中心优先参考模型标记的头部和躯干，缺少标记时按照可见像素分布居中。动作期间镜头固定。切换时保留上个角色的一帧，直到新角色完成取景并画好才替换。背景沿用原构图。
 
 ## 开发与发布
 

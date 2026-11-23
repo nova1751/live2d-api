@@ -1,7 +1,7 @@
 import { createLive2D, OFFICIAL_CUBISM_CORE_URL, type Live2DInstance } from 'live2d-web';
 
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
-import type { Live2DBackend, StageHandle } from 'live2d-web';
+import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
 import type { Camera, Framing } from './library/framing';
 import { readActions, bindInteractions } from './modern/interactions';
 import type { DialogueSource } from './library/catalog';
@@ -33,8 +33,11 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     const { actions, src: model, resolveAsset } = await readActions(src, dialogue, signal);
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
+    let modelHandle: ModelHandle | undefined;
     const backend: Live2DBackend | undefined = (framing || onPaint) && { ...cubismWebGL, createStage(element, options) {
       return graphics = cubismWebGL.createStage(element, options);
+    }, async loadModel(stage, url, options) {
+      return modelHandle = await cubismWebGL.loadModel(stage, url, options);
     } };
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
@@ -47,7 +50,8 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       const unsubscribe = graphics.onFrame(() => queueMicrotask(() => {
         if (signal.aborted) return;
         if (framing) {
-          const camera = framing.measure(output);
+          const { width, height } = graphics!.getSize();
+          const camera = framing.measure(output, (x, y) => modelHandle!.hitTest(x * width, y * height));
           if (camera) { framing = undefined; instance.setFit(fit(camera)); }
           return;
         }
