@@ -46,3 +46,17 @@ test('a native voice-only body event has a caption and no synthetic motion', asy
   const { actions } = await readActions('https://example.org/model.model3.json',source,new AbortController().signal);
   assert.deepEqual(actions,[{file:'',group:'voice',index:0,area:'body',weight:1,delay:0,sound:'voice.ogg',caption:source.captions['OTS14|DIALOGUE1']}]);
 });
+
+test('the renderer preserves the CDN version delimiter and encodes reserved characters in filenames', async t => {
+  const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
+  const { readActions } = await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].contents).toString('base64'));
+  const root = 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-ots14-527aac9245c0';
+  let requested;
+  t.mock.method(globalThis,'fetch',async url=>{
+    requested = String(url);
+    return Response.json({FileReferences:{}});
+  });
+  const { resolveAsset } = await readActions(root+'/model.model3.json',undefined,new AbortController().signal);
+  await resolveAsset('gh/nova1751/live2d-api@cdn-ots14-527aac9245c0/model #1.moc3');
+  assert.equal(requested,root+'/model%20%231.moc3');
+});

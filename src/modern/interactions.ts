@@ -85,7 +85,8 @@ export async function readActions(url: string, source: DialogueSource | undefine
   const oneShot = new Set(source || randomTap ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
   async function resolveAsset(path: string, requestSignal?: AbortSignal) {
     if (path === filename) return new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-    const asset = new URL('/' + path.split('/').map(encodeURIComponent).join('/'), url);
+    // jsDelivr parses repo@version before decoding path segments.
+    const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
     const response = await fetch(asset, { signal: requestSignal ?? signal });
     if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
     if (!asset.pathname.toLowerCase().endsWith('.motion3.json')) return response.blob();
