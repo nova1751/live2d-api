@@ -1,10 +1,10 @@
-# 少女前线 Live2D 网页组件
+# 少女前线 Live2D 网页看板娘
 
-nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实现模型选择、旧协议适配、动作与语音配对、台词显示和 CDN 发布。角色素材来自各自的上游收藏，Cubism 运行时和第三方组件的权利归各自作者。[在线演示](https://live2d-nova.vercel.app/) · [少女前线模型目录](https://nova1751.github.io/live2d-api/catalog/)
+用一行 HTML 在博客、文档站或静态网页的左下角添加少女前线看板娘。访客可以切换角色和造型，点击人物时，组件会按模型配置播放动作、语音并显示台词。[在线演示](https://live2d-nova.vercel.app/) · [挑选角色和造型](https://live2d-nova.vercel.app/catalog/)
 
-## OpenList 和普通网页
+## 在网页中引入
 
-在 OpenList「管理 → 设置 → 全局 → 自定义内容」加入一行。普通页面可直接放到 HTML。首次默认在左侧显示空袭妖精的一阶造型，切换人物、换装和恢复上次选择都在 443 个可选少女前线形态内。快捷入口在初始视口宽度至少 768 像素时加载，CSS 随模块自动引入。
+根据主要访客所在地区，复制下面其中一个 `<script>` 标签，放在页面的 `</body>` 前。要让全站显示看板娘，把它放进所有页面共用的布局模板即可。脚本会自动加载样式和模型，无需安装 npm 包。
 
 **中国大陆**
 
@@ -18,11 +18,13 @@ nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实�
 <script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.2/girls-frontline.mjs"></script>
 ```
 
-这两个地址通过 CDN 读取 GitHub 的固定运行时快照。目录和历史内置模型采用相应 CDN 的 GitHub 地址，扩展模型使用目录所列 GitHub 上游的固定提交。Cubism 3–5 使用独立按需加载的渲染器和 Live2D 官方 Core。要自托管合法部署的 Core，可传入 `coreUrl`。
+快捷入口在页面打开时检查视口宽度，达到 768 像素才显示。首次访问默认显示一阶空袭妖精，之后会在同一站点恢复上次选择的造型。
+
+两个入口固定到同一版本。组件、样式、模型目录和历史内置模型从所选 CDN 加载。扩展模型使用目录指定的 GitHub 上游地址。Cubism 3–5 模型还会按需加载新版渲染器和 Live2D 官方 Core，可用 `coreUrl` 指向自托管的 Core。
 
 ## 模块 API
 
-需要指定位置、模型或控制加载时机时，可直接导入 ES 模块。显式调用 API 时由调用方决定是否在小屏幕显示。
+要指定角色、改到右下角，或自行决定在什么屏幕宽度下显示，用下面的模块示例替换上面的快捷标签。在模型目录中预览造型后，从页面地址的 `model` 参数复制角色 ID 填入 `modelId`。如果地址中显示 `%2F`，将它换成 `/`。[打开模型目录](https://live2d-nova.vercel.app/catalog/)
 
 ```html
 <script type="module">
@@ -95,4 +97,4 @@ python -m http.server 8765 --bind 127.0.0.1 --directory D:/Models/GFL
 
 ## 素材与致谢
 
-本项目沿用了 fghrsh 的 API 协议和 stevenjoezhang 的组件设计，现代渲染使用 live2d-web 与 Cubism。历史素材修复、缺失资源及可核对的录音记录见来源清单。模型与录音沿用原作者授权条件。[历史 API](https://github.com/fghrsh/live2d_api) · [原看板娘组件](https://github.com/stevenjoezhang/live2d-widget) · [素材来源](docs/model-sources.json) · [渲染器许可](modern/THIRD_PARTY_NOTICES.md)
+本项目由 nova1751 维护，沿用了 fghrsh 的 API 协议和 stevenjoezhang 的组件设计，现代渲染使用 live2d-web 与 Cubism。角色素材来自各自的上游收藏，模型与录音沿用原作者授权条件，Cubism 运行时和第三方组件的权利归各自作者。历史素材修复、缺失资源及可核对的录音记录见来源清单。[历史 API](https://github.com/fghrsh/live2d_api) · [原看板娘组件](https://github.com/stevenjoezhang/live2d-widget) · [素材来源](docs/model-sources.json) · [渲染器许可](modern/THIRD_PARTY_NOTICES.md)
