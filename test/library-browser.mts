@@ -50,9 +50,11 @@ try {
     await selectWidgetModel(id);
   }, outside), /outside the selected collection/);
   const rect = await page.locator('canvas[data-painted]').boundingBox();
+  let tap = { x: 0, y: 0 };
   for (let y = 0.12; y < 0.9; y += 0.08) {
     for (const x of [0.5, 0.42, 0.58]) {
-      await page.mouse.click(rect.x + x * rect.width, rect.y + y * rect.height);
+      tap = { x: rect.x + x * rect.width, y: rect.y + y * rect.height };
+      await page.mouse.click(tap.x, tap.y);
       if (await page.evaluate(() => lines.length)) break;
     }
     if (await page.evaluate(() => lines.length)) break;
@@ -64,6 +66,37 @@ try {
   await page.waitForFunction(() => ends.includes(false), undefined, { timeout: 45000 });
   await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
   console.log('Touch triggered a voiced caption through completion:', line);
+
+  const tips = await (await page.request.get('http://127.0.0.1:' + port + '/viewer/waifu-tips.json')).json();
+  const presets = tips.click.find(rule => rule.selector === '#live2d').text;
+  await page.mouse.click(rect.x + 2, rect.y + 2);
+  assert.ok(presets.includes(await page.locator('#waifu-tips').textContent()), 'unmapped modern canvas click uses the preset');
+  // Replay the same hit without a caption or an audio key, with a delayed game event.
+  await page.route('**/56-1type_7706.data.json', async route => {
+    const response = await route.fetch();
+    const data = await response.json();
+    for (const voice of Object.values(data.voiceData)) { voice.voice_key = ''; voice.caption = ''; }
+    for (const motion of Object.values(data.motionData)) motion.delay = 350;
+    await route.fulfill({ response, json: data });
+  });
+  await page.evaluate(async () => {
+    const { selectWidgetModel } = await import('/viewer/widget.mjs');
+    await selectWidgetModel('doll/56-1type/7706/normal');
+  });
+  await page.waitForSelector('#waifu:not([data-model-loading])');
+  await page.evaluate(() => {
+    document.getElementById('waifu-tips').textContent = '';
+    window.presetCount = 0;
+    window.addEventListener('live2d:preset', () => window.presetCount++);
+  });
+  const soundsBefore = await page.evaluate(() => sounds.length);
+  await page.mouse.click(tap.x, tap.y);
+  assert.equal(await page.locator('#waifu-tips').textContent(), '', 'no premature canvas hint before the configured delay');
+  await page.waitForFunction(() => presetCount === 1);
+  assert.ok(presets.includes(await page.locator('#waifu-tips').textContent()));
+  assert.equal(await page.evaluate(() => sounds.length), soundsBefore);
+  await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'), undefined, { timeout: 45000 });
+  console.log('Modern preset verified for canvas clicks and delayed silent motions');
 
   // Stall an uncached manifest, then supersede that switch with a Cubism 2 model.
   let release!: () => void;

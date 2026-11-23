@@ -9,13 +9,13 @@ nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实�
 **中国大陆**
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.0/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.1/girls-frontline.mjs"></script>
 ```
 
 **海外**
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.0/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.1/girls-frontline.mjs"></script>
 ```
 
 这两个地址通过 CDN 读取 GitHub 的固定运行时快照。目录和历史内置模型采用相应 CDN 的 GitHub 地址，扩展模型使用目录所列 GitHub 上游的固定提交。Cubism 3–5 使用独立按需加载的渲染器和 Live2D 官方 Core。要自托管合法部署的 Core，可传入 `coreUrl`。
@@ -27,7 +27,7 @@ nova1751 维护的网页看板娘、模型目录和 OpenList 接入。项目实�
 ```html
 <script type="module">
   import { loadGirlsFrontline, selectWidgetModel } from
-    "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.0/widget.mjs";
+    "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.3.1/widget.mjs";
   await loadGirlsFrontline({ position: "right", modelId: "doll/k2/3301/normal" });
   // 可在自己的角色选择器中调用
   // await selectWidgetModel("doll/56-1type/7706/normal");
@@ -71,7 +71,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory D:/Models/GFL
 
 打开 `http://127.0.0.1:8765/viewer/catalog/`。下载器支持 `--list`、按来源选择的 `--source dump`，以及为完全离线预览提供合法部署的 Core 文件的 `--core <文件>`。预览页采用本地目录，在线默认使用 GitHub 中的固定素材。素材的公开可用性与再分发授权应分别核对。[Live2D Core](https://www.live2d.com/en/sdk/download/web/)
 
-当模型带游戏对话配置时，播放器按命中部位、普通或破损形态、动作名和 ID 匹配台词与日语录音，保留游戏配置的播放延迟。复核 dump 中的 2,840 份动作文件，2,839 份的曲线计数与导出内容不符。加载器按实际曲线重算新版动作的段数和控制点数，修正部分导出文件会被 Cubism 拒绝播放的问题；原始下载文件按固定提交保存。带游戏事件配置的点击动作播放一遍，待机动画继续循环。模型台词会持续到动作与声音都结束，再保留 1.2 秒淡出。没有对应台词或录音时仅使用所提供的内容。少女前线入口默认显示简体中文，语音保持日语。字幕按角色代号和语音编号复用，原始模型仍保留上游台词。1,340 个中文字幕键覆盖当前对话数据中全部有英文原文的条目，其中 11 条为项目翻译。缺少文字的语气声保留原录音。中文角色名、装扮名和绝大多数字幕取自[固定版本的国服数据表](https://github.com/gf-data-tools/gf-data-ch/tree/c6c763ca71e6f8450232fbd30e26900c51d2c09b)。
+当模型带游戏对话配置时，播放器按命中部位、普通或破损形态、动作名和 ID 匹配台词与日语录音，保留游戏配置的播放延迟。复核 dump 中的 2,840 份动作文件，2,839 份的曲线计数与导出内容不符。加载器按实际曲线重算新版动作的段数和控制点数，修正部分导出文件会被 Cubism 拒绝播放的问题；原始下载文件按固定提交保存。带游戏事件配置的点击动作播放一遍，待机动画继续循环。模型台词会持续到动作与声音都结束，再保留 1.2 秒淡出。有模型台词或匹配的翻译时优先显示；点击动作或语音缺少台词时，新旧播放器均从 `waifu-tips.json` 的 `click` 中选取适用于 `#live2d` 的预设提示，保持到本次互动结束。仅点击画布而未触发动作时短暂显示预设。预设文字不会触发额外录音。少女前线入口默认显示简体中文，语音保持日语。字幕按角色代号和语音编号复用，原始模型仍保留上游台词。1,340 个中文字幕键覆盖当前对话数据中全部有英文原文的条目，其中 11 条为项目翻译。缺少文字的语气声保留原录音。中文角色名、装扮名和绝大多数字幕取自[固定版本的国服数据表](https://github.com/gf-data-tools/gf-data-ch/tree/c6c763ca71e6f8450232fbd30e26900c51d2c09b)。
 
 目录和顺序切换共用同一份排序。妖精在最前，按一阶到三阶排列。同一人形的编号装扮按国服装扮表的实装批次顺序排列，同批次按数字编号，普通排在对应战损前面。原版先于装扮，可核实的心智升级按国服开放时间插入，缺少批次的造型置于已知批次之后。[国服装扮表](https://github.com/gf-data-tools/gf-data-ch/blob/c6c763ca71e6f8450232fbd30e26900c51d2c09b/stc/skin.json)
 

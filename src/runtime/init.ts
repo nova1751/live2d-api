@@ -1,5 +1,5 @@
 import { icons } from './icons';
-import { bindMessages, escapeText, finishDialogue, say, showDialogue } from './messages';
+import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson } from './request';
 import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
@@ -74,6 +74,10 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   window.addEventListener('live2d:dialogue', event => {
     const { detail, playback } = event as CustomEvent<unknown> & { playback?: object };
     if (typeof detail === 'string') showDialogue(detail, playback);
+  });
+  window.addEventListener('live2d:preset', event => {
+    const { playback } = event as Event & { playback?: object };
+    if (playback) showModelPreset(playback);
   });
   window.addEventListener('live2d:dialogue-end', event => {
     const detail = (event as CustomEvent).detail;

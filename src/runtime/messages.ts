@@ -16,6 +16,7 @@ export function escapeText(text: string): string {
   return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+let clickRules: Rule[] | undefined;
 let timer: number | undefined;
 let heldPlayback: object | undefined;
 
@@ -43,6 +44,17 @@ export function showDialogue(text: string, playback?: object) {
   if (!playback) { say(escapeText(text), 5000, 11); return; }
   heldPlayback = playback;
   display(escapeText(text), 11);
+}
+
+export function showModelPreset(playback: object) {
+  const canvas = document.getElementById('live2d');
+  if (!canvas) return;
+  const rule = clickRules?.find(({ selector }) => canvas.closest(selector));
+  // A click can arrive while the site's tips file is still in flight.
+  const text = rule ? pick(rule.text) : clickRules ? undefined : '指挥官，我在。';
+  if (!text) return;
+  heldPlayback = playback;
+  display(text.replace('{text}', () => escapeText(canvas.textContent ?? '')), 11);
 }
 
 export function finishDialogue(playback: object, interrupted: boolean) {
@@ -74,6 +86,7 @@ function dayNumber(date: string) {
 }
 
 export function bindMessages(tips: Tips) {
+  clickRules = tips.click;
   const idleMessages = [...tips.message.default];
   const now = new Date();
   const today = (now.getMonth() + 1) * 100 + now.getDate();
@@ -101,12 +114,15 @@ export function bindMessages(tips: Tips) {
 
   let previousSelector: string | undefined;
   for (const event of ['mouseover', 'click'] as const) {
-    window.addEventListener(event, ({ target }) => {
-      if (!(target instanceof Element)) return;
-      const rule = tips[event].find(({ selector }) => target.closest(selector));
+    window.addEventListener(event, input => {
+      const target = input.target;
+      if (!(target instanceof Element) || input.live2dHandlesCaption) return;
+      const stage = event === 'click' && target.closest('#waifu .waifu-model-stage');
+      const canvas = stage ? document.getElementById('live2d') : target.closest('#live2d');
+      const rule = tips[event].find(({ selector }) => target.closest(selector) || (stage && canvas?.closest(selector)));
       if (!rule || (event === 'mouseover' && rule.selector === previousSelector)) return;
       if (event === 'mouseover') previousSelector = rule.selector;
-      say(pick(rule.text).replace('{text}', () => escapeText(target.textContent ?? '')), 4000, 8);
+      say(pick(rule.text).replace('{text}', () => escapeText(target.textContent ?? '')), 4000, event === 'click' && canvas ? 11 : 8);
     });
   }
   const consoleGreeting = () => {};
