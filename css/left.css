@@ -2,7 +2,7 @@
 #waifu-toggle {
   border: 0;
   background-color: #fa0;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   bottom: 66px;
   color: #fff;
   cursor: pointer;
@@ -551,9 +551,14 @@
   left: 0;
 }
 #waifu.waifu-adaptive {
-  --waifu-paint-ratio: calc(max(1, 1 / var(--waifu-aspect, 1)) * var(--waifu-paint-scale, 1));
-  --waifu-max-width: min(480px, calc(100vw / var(--waifu-paint-ratio)), calc((100vw - var(--waifu-right-inset) - var(--waifu-side-space)) * 2 / (1 + var(--waifu-paint-ratio))));
-  left: calc(var(--waifu-model-width) * (var(--waifu-paint-ratio) - 1) / 2);
+  --waifu-max-width: min(480px, calc(100vw - var(--waifu-right-inset) - var(--waifu-side-space)));
+}
+body > #waifu.waifu-adaptive .waifu-surface canvas {
+  --waifu-crop-left: max(0px, calc((100% - 100cqw) / 2));
+  margin-left: var(--waifu-crop-left);
+  max-width: calc(100% - var(--waifu-crop-left));
+  object-fit: cover;
+  object-position: right center;
 }
 #waifu.waifu-adaptive #waifu-tips {
   max-width: calc(var(--waifu-model-width) - 2 * var(--waifu-left-inset));

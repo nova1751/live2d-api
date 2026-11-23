@@ -55,7 +55,7 @@ function o(id) {
 }
 function viewPoint(event) {
   if (!B) return;
-  var rect = C.getBoundingClientRect();
+  var rect = (C.closest(".waifu-surface") || C).getBoundingClientRect();
   if (!rect.width || !rect.height) return;
   var x = 2 * (event.clientX - rect.left) / rect.width - 1;
   var y = (1 - 2 * (event.clientY - rect.top) / rect.height) * C.height / C.width;

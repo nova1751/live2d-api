@@ -21,16 +21,21 @@ export async function checkPaintOverflow(browser, base) {
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
       const hit = await page.locator('.waifu-hit').boundingBox();
       const paint = await page.locator('#live2d').boundingBox();
+      const camera = await page.locator('.waifu-surface').boundingBox();
       const widget = await page.locator('#waifu').boundingBox();
       const square = Math.max(hit.width, hit.height);
       if (position === 'left') {
         assert.ok(Math.abs(paint.x) <= 1, JSON.stringify(paint));
-        assert.ok(paint.x + paint.width <= width + 1);
+        assert.ok(Math.abs(hit.x) <= 1 && Math.abs(widget.x) <= 1, JSON.stringify(hit));
+        assert.ok(Math.abs(paint.width - (camera.width + hit.width) / 2) <= 1);
+        assert.ok(await page.locator('#waifu-tips').evaluate(el => el.getBoundingClientRect().left >= 12));
         assert.ok(widget.x + widget.width <= width + 1);
+      } else {
+        assert.ok(Math.abs(paint.width - camera.width) <= 1);
       }
-      assert.ok(Math.abs(paint.width - square * 1.5) <= 1);
+      assert.ok(Math.abs(camera.width - square * 1.5) <= 1);
       assert.ok(Math.abs(widget.width - hit.width - 50) <= 1);
-      assert.ok(Math.abs(paint.x + paint.width / 2 - hit.x - hit.width / 2) <= 1);
+      assert.ok(Math.abs(camera.x + camera.width / 2 - hit.x - hit.width / 2) <= 1);
       assert.ok(Math.abs(paint.y + paint.height - square / 4 - hit.y - hit.height) <= 1);
       const point = { x: Math.floor(hit.x + hit.width / 2), y: Math.floor(hit.y - 14) };
       await page.evaluate(({ x, y }) => {
@@ -65,6 +70,21 @@ export async function checkPaintOverflow(browser, base) {
         await button.hover();
         assert.deepEqual(await colors(), ['rgb(6, 132, 189)', 'none']);
       }
+      await page.emulateMedia({ reducedMotion: 'no-preference' });
+      await page.locator('#waifu-tool-quit').click();
+      assert.equal(await page.locator('#waifu').isVisible(), false);
+      const tab = page.locator('#waifu-toggle');
+      assert.equal(await tab.getAttribute('aria-expanded'), 'false');
+      assert.deepEqual(await tab.evaluate(el => {
+        const style = getComputedStyle(el);
+        return [style.borderTopLeftRadius, style.borderBottomLeftRadius,
+          style.borderTopRightRadius, style.borderBottomRightRadius];
+      }), ['0px', '0px', '5px', '5px']);
+      await tab.focus();
+      await tab.press('Enter');
+      assert.equal(await page.locator('#waifu').isVisible(), true);
+      assert.equal(await tab.getAttribute('aria-expanded'), 'true');
+      await page.emulateMedia({ reducedMotion: 'reduce' });
     }
   } finally {
     await page.close();

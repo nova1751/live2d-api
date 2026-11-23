@@ -44,7 +44,13 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
     const backend: Live2DBackend | undefined = (framing || onPaint) && { ...cubismWebGL, createStage(element, options) {
-      return graphics = cubismWebGL.createStage(element, options);
+      graphics = cubismWebGL.createStage(element, options);
+      // Input uses the full camera, including any paint margin cropped at the screen edge.
+      graphics.toWorld = (x, y) => {
+        const rect = element.getBoundingClientRect();
+        return { x: x - rect.left, y: y - rect.top };
+      };
+      return graphics;
     }, async loadModel(stage, url, options) {
       return modelHandle = await cubismWebGL.loadModel(stage, url, options);
     } };
@@ -74,7 +80,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     if (pixel) pixel.width = pixel.height = 1;
     const sample = pixel?.getContext('2d', { willReadFrequently:true });
     const hitVisible = sample && graphics && output ? (event: MouseEvent, onHit: () => void) => {
-      const bounds = output.getBoundingClientRect();
+      const bounds = host.getBoundingClientRect();
       const x = Math.floor((event.clientX-bounds.left)*output.width/bounds.width);
       const y = Math.floor((event.clientY-bounds.top)*output.height/bounds.height);
       if (x < 0 || y < 0 || x >= output.width || y >= output.height) return;
