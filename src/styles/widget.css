@@ -1,26 +1,30 @@
 #waifu-toggle {
   border: 0;
   background-color: #fa0;
-  border-radius: 5px;
+  border-radius: 0 5px 5px 0;
   bottom: 66px;
   color: #fff;
   cursor: pointer;
   font-size: 12px;
   left: 0;
-  margin-left: -100px;
-  padding: 5px 2px 5px 5px;
+  visibility: hidden;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 7px 0;
   position: fixed;
-  transition: margin-left 1s;
-  width: 60px;
+  width: 32px;
+  min-height: 48px;
+  line-height: 1;
+  z-index: 2;
   writing-mode: vertical-rl;
 }
 
 #waifu-toggle.waifu-toggle-active {
-  margin-left: -50px;
+  visibility: visible;
 }
 
-#waifu-toggle.waifu-toggle-active:hover, #waifu-toggle:focus-visible {
-  margin-left: -30px;
+@media (pointer: coarse) {
+  #waifu-toggle { min-width: 44px; }
 }
 
 #waifu {

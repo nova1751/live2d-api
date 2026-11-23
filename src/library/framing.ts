@@ -15,18 +15,21 @@ function quantile(bins: Float64Array, total: number, fraction: number) {
 
 export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTest, setAspect?: (ratio: number) => void): Camera {
   const columns = new Float64Array(size);
+  const rows = new Float64Array(size);
   let top = size, bottom = 0, mass = 0;
   for (let i = 0; i < mask.length; i++) {
     if (!mask[i]) continue;
     const row = Math.floor(i / size);
     columns[i % size] += mask[i];
+    rows[row] += mask[i];
     mass += mask[i];
     top = Math.min(top, row);
     bottom = Math.max(bottom, row + 1);
   }
   if (!mass) return authored;
-  // Keep the full vertical silhouette, including narrow shoes. Allow only the
-  // sparsest horizontal tips of e.g. a long rifle to extend past the margins.
+  // A few detached particles high above the head can span half the canvas.
+  // Trim at most 0.1% of the alpha mass there, retaining two sample rows of slack.
+  top = Math.max(top, quantile(rows, mass, 0.001) - 2);
   const left = quantile(columns, mass, 0.001);
   const right = quantile(columns, mass, 0.999) + 1;
   const width = right - left, height = bottom - top;
@@ -68,6 +71,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
   sample.width = sample.height = size;
   const ctx = sample.getContext('2d', { willReadFrequently: true });
   const mask = new Uint8Array(size * size);
+  const pose = new Uint8Array(mask.length);
   let attempts = 0, frames = 0, nextSample = 0;
   return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest): Camera | undefined {
     if (!ctx) return authored;
@@ -81,11 +85,12 @@ export function createFraming(setAspect?: (ratio: number) => void) {
       let visible = 0;
       for (let i = 0; i < mask.length; i++) {
         const alpha = data[4 * i + 3];
-        if (alpha < 24) continue;
-        mask[i] = Math.max(mask[i], alpha);
-        visible++;
+        pose[i] = alpha >= 24 ? alpha : 0;
+        if (pose[i]) visible++;
       }
       if (visible >= 16) {
+        // Measure the settled pose; some rigs briefly show their setup pose on load.
+        mask.set(pose);
         frames++;
         nextSample = now + 80;
       }

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { fitSilhouette } from '../src/library/framing.ts';
+import { createFraming, fitSilhouette } from '../src/library/framing.ts';
 
 const initial = { scale: 0.65, x: 0, y: 0 };
 const size = 128;
@@ -30,6 +30,30 @@ test('fits a wide group and gives an unmarked silhouette a stable baseline', () 
   assert.ok(project(112, camera.x, camera) <= 0.98);
   assert.ok(Math.abs(project(90, camera.y, camera) - 0.97) < 0.001);
   assert.deepEqual(fitSilhouette(new Uint8Array(mask.length), initial), { scale: 1, x: 0, y: 0 });
+});
+
+test('frames the settled figure despite a wide setup pose and a faint detached particle', t => {
+  const initialPose = new Uint8Array(size * size);
+  rectangle(initialPose, 6, 7, 122, 115);
+  const settled = new Uint8Array(size * size);
+  rectangle(settled, 44, 50, 72, 113);
+  settled[3 * size + 58] = 32;
+  const rgba = new Uint8ClampedArray(size * size * 4);
+  const context = { clearRect() {}, drawImage() {}, getImageData: () => ({ data: rgba }) };
+  globalThis.document = { createElement: () => ({ getContext: () => context }) };
+  t.after(() => { delete globalThis.document; });
+  let now = 0;
+  t.mock.method(performance, 'now', () => now);
+  const framing = createFraming();
+  let camera;
+  for (const pose of [initialPose, settled, settled]) {
+    pose.forEach((value, index) => { rgba[4 * index + 3] = value; });
+    camera = framing.measure({});
+    now += 100;
+  }
+  assert.ok(camera);
+  assert.ok(project(50, camera.y, camera) < 0.09);
+  assert.ok(Math.abs(project(113, camera.y, camera) - 0.97) < 0.001);
 });
 
 test('fits tall and wide silhouettes within their bottom-centered viewports', () => {
