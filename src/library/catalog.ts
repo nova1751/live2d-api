@@ -59,6 +59,7 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
   const audioBySource = new Map<string, Map<string, string>>();
   const mainland = url.hostname === 'cdn.jsdmirror.com';
   function regionalUrl(href: string) {
+    if (href.startsWith('/gh/')) return new URL(href, sourceBase).href;
     if (!mainland) return href;
     return href.replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
       url.origin + '/gh/$1/$2@$3/').replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, url.origin + '/gh/');
@@ -108,11 +109,11 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     ) : undefined;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === 'number' && Number.isFinite(ratio) && ratio > 0 ? ratio : undefined;
-    const files = mainland && asset.files ? Object.fromEntries(Object.entries(asset.files)
+    const files = asset.files ? Object.fromEntries(Object.entries(asset.files)
       .map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
     return { cues, sceneAspect, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  const gallery = mainland && catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
+  const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
     .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
   return { url: url.href, collection, locale, ids, gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

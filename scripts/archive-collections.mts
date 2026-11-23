@@ -20,7 +20,11 @@ const cache = resolve(positionals[0]);
 mkdirSync(cache, { recursive: true });
 const scratch = mkdtempSync(join(cache, '.archive-'));
 const root = resolve(repository);
-const target = join(root, '.git');
+const target = execFileSync(
+  'git',
+  ['-c', 'safe.directory=' + root.replaceAll('\\', '/'), '-C', root, 'rev-parse', '--absolute-git-dir'],
+  { encoding: 'utf8' },
+).trim();
 const indexEnv = { ...process.env, GIT_INDEX_FILE: join(scratch, 'index') };
 function args(dir: string, ...command: string[]) {
   return [
@@ -224,7 +228,8 @@ try {
     else blob(file, rewritten);
   }
   // Legacy manifests refer to sibling pack tags via relative paths.
-  for (const tag of git(target, ['tag', '-l', 'cdn-b3ac5ae545e2-assets-*']).trim().split('\n')) {
+  for (let number = 1; number <= 7; number++) {
+    const tag = 'cdn-b3ac5ae545e2-assets-' + number;
     plan('https://cdn.jsdelivr.net/gh/nova1751/live2d-api@' + tag + '/').directories.add('model');
   }
   const sources = [];
@@ -262,6 +267,26 @@ try {
     blob,
   );
   blob('catalog/library.json', JSON.stringify(archivedLibrary));
+  // Keep the archive entry points on the same origin as its pinned catalogs, including on an embedding site.
+  blob(
+    'collections.mjs',
+    [
+      "import { loadWidget } from './widget.mjs';",
+      "const entry = new URL(import.meta.url), baseUrl = new URL('.', entry);",
+      "const collection = entry.searchParams.get('collection') || 'all';",
+      "const file = collection === 'all' || collection === 'girls-frontline' ? 'library.json' : 'games/' + encodeURIComponent(collection) + '.json';",
+      "if (innerWidth >= 768) await loadWidget({ collection, baseUrl, switchBy: 'outfit', catalogUrl: new URL('catalog/' + file, baseUrl), locale: entry.searchParams.get('lang') === 'en' ? 'en' : 'zh-CN' });",
+    ].join('\n'),
+  );
+  blob(
+    'girls-frontline.mjs',
+    [
+      'const entry = new URL(import.meta.url);',
+      "if (!entry.searchParams.has('collection')) entry.searchParams.set('collection', 'girls-frontline');",
+      "await import('./collections.mjs' + entry.search);",
+    ].join('\n'),
+  );
+  blob('latest.mjs', "await import('./girls-frontline.mjs' + new URL(import.meta.url).search);\n");
   blob(
     'archive-sources.json',
     JSON.stringify({ catalogCommit: head, modelIds: modelCount, sources, repairs }, null, 2),

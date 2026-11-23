@@ -115,6 +115,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
   const audioBySource = /* @__PURE__ */ new Map();
   const mainland = url.hostname === "cdn.jsdmirror.com";
   function regionalUrl(href) {
+    if (href.startsWith("/gh/")) return new URL(href, sourceBase).href;
     if (!mainland) return href;
     return href.replace(
       /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
@@ -172,10 +173,10 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     ) : void 0;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
-    const files = mainland && asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
+    const files = asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
     return { cues, sceneAspect, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  const gallery = mainland && catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
+  const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
   return { url: url.href, collection, locale, ids, gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 

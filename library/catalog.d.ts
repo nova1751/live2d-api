@@ -63,7 +63,9 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
     collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;
     ids: string[];
-    gallery: Record<string, GalleryEntry> | undefined;
+    gallery: {
+        [k: string]: GalleryEntry;
+    } | undefined;
     visibleId: (id: string) => string;
     labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
@@ -75,7 +77,9 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
             };
         } | undefined;
         sceneAspect: number | undefined;
-        files: Record<string, string | null> | undefined;
+        files: {
+            [k: string]: string | null;
+        } | undefined;
         captions: Record<string, string> | undefined;
         modelUrl: string;
         dialogue: DialogueSource | undefined;
@@ -88,7 +92,9 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
     collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;
     ids: string[];
-    gallery: Record<string, GalleryEntry> | undefined;
+    gallery: {
+        [k: string]: GalleryEntry;
+    } | undefined;
     visibleId: (id: string) => string;
     labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
@@ -100,7 +106,9 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
             };
         } | undefined;
         sceneAspect: number | undefined;
-        files: Record<string, string | null> | undefined;
+        files: {
+            [k: string]: string | null;
+        } | undefined;
         captions: Record<string, string> | undefined;
         modelUrl: string;
         dialogue: DialogueSource | undefined;

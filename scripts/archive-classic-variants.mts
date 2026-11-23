@@ -27,7 +27,8 @@ export function archiveClassicVariants(
   for (const path of entries.keys()) {
     if (!path.startsWith(base) || !path.includes('/live2dold/')) continue;
     const folder = posix.dirname(path);
-    (folders.get(folder) ?? folders.set(folder, []).get(folder)!).push(path);
+    if (!folders.has(folder)) folders.set(folder, []);
+    folders.get(folder)!.push(path);
   }
   const report: Report[] = [];
   const clean = (s: string) =>
@@ -76,7 +77,7 @@ export function archiveClassicVariants(
       }
       const available = [
         ...(folders.get(dir) ?? []),
-        ...['motions', 'expressions', 'sounds', 'model.1024', 'model.2048', 'texture'].flatMap(
+        ...['motions', 'expressions', 'sounds', 'voice', 'model.1024', 'model.2048', 'texture'].flatMap(
           (d) => folders.get(posix.join(dir, d)) ?? [],
         ),
       ];
@@ -105,10 +106,45 @@ export function archiveClassicVariants(
         });
       for (const [group, clips] of Object.entries(model.motions ?? {})) {
         model.motions![group] = clips.flatMap((c) => {
-          if (c.sound) c.sound = file(c.sound);
+          if (c.sound) c.sound = file(v.soundAliases?.[c.sound] ?? c.sound);
           if (c.file) c.file = file(c.file);
           return c.file || c.sound || c.text || c.command ? [c] : [];
         });
+      }
+      if (id.startsWith('doll/rfb/1601/') && v.manifest) {
+        // The two classic RFB lists declare the opposite outfit's clicks. Match the actual
+        // clips on disk against the native events for this exact outfit and damage state.
+        const native = variants.find((item) => item.source === 'dump' && item.dialogue);
+        const dump = decodeURIComponent(library.sources.dump.baseUrl).replace(/^\//, '');
+        const oid = native?.dialogue && entries.get(dump + native.dialogue);
+        if (!oid) throw Error('Missing RFB event table for ' + id);
+        const events: {
+          variant: string;
+          motionData: Record<
+            string,
+            { motion_name: string; is_hurt: number; touch_area: string; probability: number }
+          >;
+        } = JSON.parse(read(oid));
+        const declared = new Set(
+          Object.values(model.motions ?? {})
+            .flat()
+            .map((c) => c.file),
+        );
+        for (const e of Object.values(events.motionData)) {
+          if (
+            !e.touch_area ||
+            e.touch_area === '0' ||
+            e.probability <= 0 ||
+            Boolean(e.is_hurt) !== (events.variant === 'destroy')
+          )
+            continue;
+          if (!e.motion_name || !entries.has(posix.join(dir, e.motion_name)) || declared.has(e.motion_name))
+            continue;
+          const group = 'tap_' + e.touch_area;
+          ((model.motions ??= {})[group] ??= []).push({ file: e.motion_name });
+          declared.add(e.motion_name);
+          repairs['native ' + e.motion_name] = group;
+        }
       }
       if (!Object.keys(repairs).length) continue;
       // Keep the original file and write a playable sibling to preserve its relative asset paths.
