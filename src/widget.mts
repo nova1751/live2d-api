@@ -9,6 +9,8 @@ export type { WidgetLocale } from './library/catalog.js';
 export type WidgetMode = 'random' | 'sequential';
 export type WidgetPosition = 'left' | 'right';
 export interface WidgetOptions {
+  /** Initial zoom in the expanded viewer, in percent of fit (50–300, default 100). */
+  expandedZoom?: number;
   /** Directory containing model_list.json and the built-in models. */
   modelBaseUrl?: string | URL;
   /** A single model manifest to show in place of the built-in rotation. */
@@ -79,7 +81,7 @@ async function mount(base: string, options: WidgetOptions, mode: WidgetMode, pos
     if (!document.getElementById('waifu-toggle')) {
       initWidget({ cdnPath: base, collection, locale, ...(options.catalog && { catalog: options.catalog }), catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
-        coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
+        expandedZoom: options.expandedZoom, coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
   } catch (error) {
     style.remove();
@@ -94,7 +96,7 @@ export async function selectWidgetModel(id: string): Promise<void> {
   await select(id);
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }: WidgetOptions = {}): Promise<void> {
   if (catalog) {
     if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url ||
         collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
@@ -125,7 +127,7 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
     catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   }
   if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }, mode, position).catch(error => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }, mode, position).catch(error => {
     delete page[mounting];
     throw error;
   });

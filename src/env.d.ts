@@ -1,4 +1,5 @@
 interface LegacyOptions {
+  expandedZoom?: number;
   locale?: import('./library/catalog').WidgetLocale;
   waifuPath: string;
   cdnPath?: string;

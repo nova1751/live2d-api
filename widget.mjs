@@ -149,7 +149,7 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
 }
 
 // package.json
-var version = "2.7.0";
+var version = "2.8.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -231,6 +231,7 @@ async function mount(base, options, mode, position) {
         modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href,
         waifuPath: base + (locale === "en" ? "waifu-tips.en.json" : "waifu-tips.json"),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
+        expandedZoom: options.expandedZoom,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href
       });
     }
@@ -245,7 +246,7 @@ async function selectWidgetModel(id) {
   if (!select) throw new Error("Initialize the widget with a model catalog first");
   await select(id);
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom } = {}) {
   if (catalog) {
     if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url || collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
       throw new TypeError("Widget options conflict with the supplied catalog");
@@ -272,7 +273,7 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
     catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   }
   if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }, mode, position).catch((error) => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }, mode, position).catch((error) => {
     delete page[mounting];
     throw error;
   });

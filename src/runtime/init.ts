@@ -104,7 +104,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     asteroids,
     'switch-model': (event: Event) => models.nextModel(prepareStart(event)).catch(reportError),
     'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
-    expand: expandModel,
+    expand: () => expandModel(options.expandedZoom),
     photo: () => {
       say(translated('照好了嘛，是不是很可爱呢？', 'Did you get my good side?'), 6000, 9);
       if (window.loadlive2d.capture?.() || !window.Live2D) return;

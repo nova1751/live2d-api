@@ -97,7 +97,9 @@ The locale controls widget buttons, accessibility labels, greetings and fallback
 
 ## Expanded view
 
-Choose **Expand model** in the widget toolbar to give the current character more space. Motion playback, audio, dialogue and touch interaction continue on the same canvas. Choose **Fullscreen** in the expanded view to hide browser controls where supported. **Restore** returns the character to its original position. An embedding iframe needs fullscreen permission for browser fullscreen.
+Choose **Expand model** in the toolbar. **100%** fits the character to the current view. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. Scroll to inspect details at higher zoom and choose **Fit to view** to return to 100%.
+
+**Fullscreen** keeps the selected percentage and zoom controls. **Restore** returns the same canvas to the page with its current character and playback. An embedding iframe needs fullscreen permission from its host. To open at 150% each time, set `loadWidget({ modelUrl, expandedZoom: 150 })`.
 
 ## Browse by game
 
@@ -139,7 +141,7 @@ Each additional collection uses a JSON catalog with the same name. Models, textu
 
 ## One-script Girls’ Frontline preset
 
-Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.7.0`.
+Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.8.0`.
 
 **Global**
 

@@ -4,6 +4,8 @@ export type { WidgetLocale } from './library/catalog.js';
 export type WidgetMode = 'random' | 'sequential';
 export type WidgetPosition = 'left' | 'right';
 export interface WidgetOptions {
+    /** Initial zoom in the expanded viewer, in percent of fit (50–300, default 100). */
+    expandedZoom?: number;
     /** Directory containing model_list.json and the built-in models. */
     modelBaseUrl?: string | URL;
     /** A single model manifest to show in place of the built-in rotation. */
@@ -22,6 +24,6 @@ export interface WidgetOptions {
     baseUrl?: string | URL;
 }
 export declare function selectWidgetModel(id: string): Promise<void>;
-export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }?: WidgetOptions): Promise<void>;
+export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }?: WidgetOptions): Promise<void>;
 /** Mount the Girls’ Frontline collection and keep character changes inside it. */
 export declare function loadGirlsFrontline(options?: Omit<WidgetOptions, 'collection' | 'modelUrl' | 'modelBaseUrl'>): Promise<void>;
