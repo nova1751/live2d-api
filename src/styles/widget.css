@@ -48,6 +48,8 @@
   height: calc(var(--waifu-model-width) / var(--waifu-aspect, 1));
 }
 .waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; overflow: hidden; }
+/* Measure the first pose at its real size before revealing its controls. */
+#waifu[data-initial-framing] { visibility: hidden; }
 .waifu-surface {
   position: absolute;
   left: 50%;

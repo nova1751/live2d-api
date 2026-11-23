@@ -50,6 +50,9 @@
   inset: 0 var(--waifu-side-space) 0 0;
   overflow: hidden;
 }
+#waifu[data-initial-framing] {
+  visibility: hidden;
+}
 .waifu-surface {
   position: absolute;
   left: 50%;

@@ -25,18 +25,23 @@ export class CatalogModels {
   }
   private async select(selectId: (ids: string[], legacyIds: string[][] | undefined, visibleId: (id: string) => string) => string, start: boolean) {
     const revision = ++this.sequence;
-    const library = await this.open();
-    if (revision !== this.sequence) return;
-    const id = selectId(library.ids, library.legacyIds, library.visibleId);
-    const { modelUrl, dialogue, soundAliases, captions } = library.resolve(id);
-    let aspect = 1;
-    const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
-    const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
-    await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
-    if (revision === this.sequence) {
-      this.active = library.visibleId(id);
-      localStorage.setItem(this.key, id);
-      window.dispatchEvent(new CustomEvent('live2d:model', { detail: id }));
+    try {
+      const library = await this.open();
+      if (revision !== this.sequence) return;
+      const id = selectId(library.ids, library.legacyIds, library.visibleId);
+      const { modelUrl, dialogue, soundAliases, captions } = library.resolve(id);
+      let aspect = 1;
+      const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
+      const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
+      await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
+      if (revision === this.sequence) {
+        this.active = library.visibleId(id);
+        localStorage.setItem(this.key, id);
+        window.dispatchEvent(new CustomEvent('live2d:model', { detail: id }));
+      }
+    } catch (error) {
+      if (revision === this.sequence) document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+      throw error;
     }
   }
   load(_id?: number, _texture?: number, _message?: string, start = false) {

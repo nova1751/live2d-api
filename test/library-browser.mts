@@ -39,7 +39,18 @@ try {
       };
     }
   });
-  await page.goto('http://127.0.0.1:' + port + '/viewer/catalog/?model=doll/56-1type/7706/normal&lang=' + lang);
+  const modelBinary = /\.moc3?(?:\?|$)/i;
+  let releaseBinary!: () => void;
+  const pendingBinary = new Promise<void>(resolve => { releaseBinary = resolve; });
+  await page.route(modelBinary, async route => { await pendingBinary; await route.continue(); });
+  await page.goto('http://127.0.0.1:' + port + '/viewer/catalog/?model=doll/56-1type/7706/normal&lang=' + lang, { waitUntil: 'domcontentloaded' });
+  const widget = page.locator('#waifu');
+  await widget.waitFor({ state: 'attached' });
+  assert.equal(await widget.isVisible(), false, 'the temporary square frame should stay hidden');
+  releaseBinary();
+  await widget.waitFor({ state: 'visible', timeout: 45000 });
+  assert.ok(await widget.evaluate(el => el.style.getPropertyValue('--waifu-aspect')), 'first visible frame has its measured aspect');
+  await page.unroute(modelBinary);
   await page.waitForSelector('canvas[data-painted]', { timeout: 45000 });
   await page.waitForFunction(() => document.querySelector('#result').dataset.model?.endsWith('/normal'));
   assert.equal(await page.locator('#waifu-tool button').count(), 7);

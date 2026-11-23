@@ -44,7 +44,9 @@ function show() {
   byId('waifu-toggle').setAttribute('tabindex', '-1');
   byId('waifu-toggle').setAttribute('aria-expanded', 'true');
   byId('waifu').style.display = '';
-  setTimeout(() => { byId('waifu').style.bottom = '0'; }, 0);
+  const widget = byId('waifu');
+  if (widget.hasAttribute('data-initial-framing')) widget.style.bottom = '0';
+  else setTimeout(() => { widget.style.bottom = '0'; }, 0);
 }
 
 function prepareStart(event: Event) {
@@ -71,7 +73,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   sessionStorage.removeItem('waifu-text');
   const adaptive = options.collection === 'girls-frontline';
   const canvas = '<canvas id="live2d" width="800" height="800"></canvas>';
-  document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}>
+  document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}${adaptive && models instanceof CatalogModels ? ' data-initial-framing' : ''}>
     <div id="waifu-status" role="status" class="waifu-sr-only"></div>
     <div id="waifu-tips"></div>
     ${adaptive ? `<div class="waifu-viewport"><div class="waifu-surface">${canvas}</div></div>` : canvas}
