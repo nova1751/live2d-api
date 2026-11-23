@@ -1,2 +1,4 @@
 allowBuilds:
   esbuild: true
+patchedDependencies:
+  live2d-web@0.9.0: patches/live2d-web@0.9.0.patch

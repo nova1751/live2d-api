@@ -61,44 +61,94 @@ export async function readActions(url: string, source: DialogueSource | undefine
 
 export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal) {
   let current: AbortController | undefined;
+  let context: AudioContext | undefined;
   function stop() { current?.abort(); current = undefined; }
-  signal.addEventListener('abort', stop, { once: true });
+  signal.addEventListener('abort', () => { stop(); void context?.close(); }, { once: true });
+
+  async function prepareVoice(url: string, signal: AbortSignal) {
+    try {
+      context ??= new AudioContext();
+      // Unlock on the click itself; a document without audio permission can still animate.
+      if (context.state !== 'running') void context.resume().catch(() => {});
+      const response = await fetch(url, { signal });
+      if (!response.ok) throw Error('HTTP ' + response.status);
+      const buffer = await context.decodeAudioData(await response.arrayBuffer());
+      if (!signal.aborted && context.state === 'running') {
+        const voice = context.createBufferSource();
+        voice.buffer = buffer;
+        return voice;
+      }
+    } catch (error) {
+      if (!signal.aborted) console.warn('[Live2D] Voice unavailable', url, error);
+    }
+  }
+
   async function play(action: Action) {
     stop();
     const controller = current = new AbortController();
-    const audio = action.sound ? new Audio(action.sound) : undefined;
+    const signal = controller.signal;
     const playback = {};
+    let voice: AudioBufferSourceNode | undefined;
     let speaking = false;
+    let pendingCaption = 0;
+    let finishLine!: () => void;
+    const line = new Promise<void>(resolve => { finishLine = resolve; });
+    const ready = action.sound
+      ? prepareVoice(action.sound, signal).then(source => { voice = source; })
+      : Promise.resolve();
     function end(interrupted: boolean) {
       if (!speaking) return;
       speaking = false;
       window.dispatchEvent(new CustomEvent('live2d:dialogue-end', { detail: { playback, interrupted } }));
     }
-    controller.signal.addEventListener('abort', () => { audio?.pause(); end(true); }, { once: true });
-    const motion = stage.playMotion(action.group, action.index).then(result => {
-      if (result.status !== 'completed') controller.abort();
-    });
-    const line = async () => {
-      if (action.delay) await new Promise<void>(resolve => {
-        const timer = setTimeout(resolve, action.delay);
-        controller.signal.addEventListener('abort', () => { clearTimeout(timer); resolve(); }, { once: true });
-      });
-      if (controller.signal.aborted) return;
+    signal.addEventListener('abort', () => {
+      cancelAnimationFrame(pendingCaption);
+      if (voice) {
+        if (voice.onended) voice.stop();
+        voice.onended = null;
+        voice.disconnect();
+      }
+      end(true);
+      finishLine();
+    }, { once: true });
+    const now = () => voice ? voice.context.currentTime : performance.now() / 1000;
+    let lastTick: number | undefined;
+    let cue = 0;
+    function showCaption() {
+      if (signal.aborted || speaking) return;
+      if (now() < cue) { pendingCaption = requestAnimationFrame(showCaption); return; }
       const caption = action.caption?.trim();
       speaking = true;
       const event = caption ? new CustomEvent('live2d:dialogue', { detail: caption }) : new CustomEvent('live2d:preset');
       window.dispatchEvent(Object.assign(event, { playback }));
-      if (audio) {
-        const finished = new Promise<void>(resolve => {
-          audio.addEventListener('ended', () => resolve(), { once: true });
-          audio.addEventListener('error', () => resolve(), { once: true });
-          controller.signal.addEventListener('abort', () => resolve(), { once: true });
-        });
-        try { await audio.play(); await finished; } catch { /* Caption and motion remain available. */ }
+      if (!voice) finishLine();
+    }
+    // The backend calls update only once this specific motion owns the queue.
+    // The first model frame and the scheduled voice share a single time origin.
+    function update(frameSeconds: number) {
+      const currentTime = now();
+      if (lastTick === undefined) {
+        cue = currentTime + action.delay / 1000;
+        if (voice) {
+          voice.connect(voice.context.destination);
+          voice.onended = finishLine;
+          voice.start(cue);
+        }
+        showCaption();
       }
-    };
-    try { await Promise.all([motion, line()]); end(false); }
-    finally { controller.abort(); if (current === controller) current = undefined; }
+      const delta = lastTick === undefined ? 0 : Math.max(0, currentTime - lastTick);
+      lastTick = currentTime;
+      return voice ? delta : frameSeconds;
+    }
+    try {
+      const result = await stage.playMotion(action.group, action.index, { sync: { ready, signal, update } });
+      if (result.status === 'completed') { await line; end(false); }
+    } catch (error) {
+      if (!signal.aborted) throw error;
+    } finally {
+      controller.abort();
+      if (current === controller) current = undefined;
+    }
   }
   host.addEventListener('click', event => {
     if (current) event.live2dHandlesCaption = true;

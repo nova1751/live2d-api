@@ -134,7 +134,7 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
 }
 
 // package.json
-var version = "2.4.5";
+var version = "2.4.6";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";

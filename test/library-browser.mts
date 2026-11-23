@@ -21,10 +21,30 @@ try {
     window.lines = [];
     window.sounds = [];
     window.ends = [];
-    const start = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = function () {
-      window.sounds.push(this.currentSrc || this.src);
-      return start.call(this);
+    const urls = new WeakMap();
+    const read = Response.prototype.arrayBuffer;
+    Response.prototype.arrayBuffer = async function () {
+      const bytes = await read.call(this);
+      urls.set(bytes, this.url);
+      return bytes;
+    };
+    const decode = AudioContext.prototype.decodeAudioData;
+    AudioContext.prototype.decodeAudioData = async function (bytes) {
+      const buffer = await decode.call(this, bytes);
+      urls.set(buffer, urls.get(bytes));
+      return buffer;
+    };
+    const start = AudioBufferSourceNode.prototype.start;
+    AudioBufferSourceNode.prototype.start = function (...args) {
+      window.sounds.push(urls.get(this.buffer));
+      window.scheduledDelay = args[0] - this.context.currentTime;
+      const result = start.apply(this, args);
+      if (window.suspendOnStart) {
+        window.suspendOnStart = false;
+        window.speakingContext = this.context;
+        window.suspended = this.context.suspend();
+      }
+      return result;
     };
     window.addEventListener('live2d:dialogue', e => window.lines.push(e.detail));
     window.addEventListener('live2d:dialogue-end', e => window.ends.push(e.detail.interrupted));
@@ -82,13 +102,13 @@ try {
   }
   await checkControls(false);
   let tap = { x: 0, y: 0 };
-  for (let y = 0.12; y < 0.9; y += 0.08) {
+  searchHit: for (let y = 0.12; y < 0.9; y += 0.08) {
     for (const x of [0.5, 0.42, 0.58]) {
       tap = { x: rect.x + x * rect.width, y: rect.y + y * rect.height };
+      const requested = page.waitForRequest(/\.ogg$/i, { timeout: 350 }).catch(() => null);
       await page.mouse.click(tap.x, tap.y);
-      if (await page.evaluate(() => lines.length)) break;
+      if (await requested) break searchHit;
     }
-    if (await page.evaluate(() => lines.length)) break;
   }
   await page.waitForFunction(() => lines.length && sounds.length);
   const line = await page.evaluate(() => lines.at(-1));
@@ -106,6 +126,66 @@ try {
   await page.waitForFunction(() => ends.includes(false), undefined, { timeout: 45000 });
   await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
   console.log('Touch triggered a voiced caption through completion:', line);
+
+  const replayModel = async () => {
+    await page.evaluate(async () => {
+      const { selectWidgetModel } = await import('/viewer/widget.mjs');
+      await selectWidgetModel('doll/56-1type/7706/normal');
+    });
+    await page.waitForSelector('#waifu:not([data-model-loading])');
+  };
+  // Hold either asset on a cold model. A superseded click must never start a voice.
+  for (const held of [/\/(?:wedding_touch|touch_\d+)\.motion3\.json/i, /\.ogg$/i]) {
+    await replayModel();
+    const before = await page.evaluate(() => [sounds.length, lines.length, ends.length]);
+    let release!: () => void;
+    const gate = new Promise<void>(resolve => { release = resolve; });
+    await page.route(held, async route => { await gate; await route.continue().catch(() => {}); });
+    const pending = page.waitForRequest(held);
+    await page.mouse.click(tap.x, tap.y);
+    await pending;
+    await page.mouse.click(tap.x, tap.y);
+    await page.waitForTimeout(450);
+    assert.deepEqual(await page.evaluate(() => [sounds.length, lines.length, ends.length]), before);
+    release();
+    await page.waitForFunction(n => ends.length > n, before[2], { timeout: 45000 });
+    assert.deepEqual(await page.evaluate(() => [sounds.length, lines.length]), [before[0] + 1, before[1] + 1]);
+    await page.unroute(held);
+  }
+  // A declared recording that fails to load must still allow the motion and its caption.
+  await replayModel();
+  await page.route(/\.ogg$/i, route => route.abort());
+  const previous = await page.evaluate(() => [sounds.length, lines.length, ends.length]);
+  await page.mouse.click(tap.x, tap.y);
+  await page.waitForFunction(n => ends.length > n, previous[2], { timeout: 45000 });
+  assert.deepEqual(await page.evaluate(() => [sounds.length, lines.length]), [previous[0], previous[1] + 1]);
+  await page.unroute(/\.ogg$/i);
+  console.log('Verified held motion, held voice, replacement clicks and unavailable recording');
+
+  // A delayed voice and its caption must follow the audio clock through a pause.
+  const metadataRoute = '**/56-1type_7706.data.json';
+  await page.route(metadataRoute, async route => {
+    const response = await route.fetch();
+    const data = await response.json();
+    for (const motion of Object.values(data.motionData)) motion.delay = 350;
+    await route.fulfill({ response, json: data });
+  });
+  await replayModel();
+  const beforeCue = await page.evaluate(() => {
+    window.suspendOnStart = true;
+    return [sounds.length, lines.length, ends.length];
+  });
+  await page.mouse.click(tap.x, tap.y);
+  await page.waitForFunction(n => sounds.length > n, beforeCue[0]);
+  await page.evaluate(() => window.suspended);
+  await page.waitForTimeout(450);
+  assert.ok(Math.abs(await page.evaluate(() => window.scheduledDelay) - 0.35) < 0.02);
+  assert.equal(await page.evaluate(() => lines.length), beforeCue[1]);
+  await page.evaluate(() => window.speakingContext.resume());
+  await page.waitForFunction(n => ends.length > n, beforeCue[2], { timeout: 45000 });
+  assert.equal(await page.evaluate(() => lines.length), beforeCue[1] + 1);
+  await page.unroute(metadataRoute);
+  console.log('Verified native voice delay and suspended audio clock');
 
   const tips = await (await page.request.get('http://127.0.0.1:' + port + (english ? '/viewer/waifu-tips.en.json' : '/viewer/waifu-tips.json'))).json();
   const presets = tips.click.find(rule => rule.selector === '#live2d').text;

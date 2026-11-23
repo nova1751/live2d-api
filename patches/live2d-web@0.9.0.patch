@@ -1,0 +1,112 @@
+diff --git a/dist/contract-Jj-UVMwt.d.mts b/dist/contract-Jj-UVMwt.d.mts
+index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..f29806937ece77bd805a89471d0502131f204fce 100644
+--- a/dist/contract-Jj-UVMwt.d.mts
++++ b/dist/contract-Jj-UVMwt.d.mts
+@@ -126,6 +126,12 @@ interface ModelHandle {
+ }
+ type MotionPriority = 'force' | 'idle' | 'normal';
+ interface MotionOptions {
++  /** Optional external clock for this motion, starting at its first model update. */
++  sync?: {
++    ready: Promise<void>;
++    signal: AbortSignal;
++    update: (frameSeconds: number) => number;
++  };
+   /** Playback priority. 'force' interrupts anything (default). */
+   priority?: MotionPriority;
+   /** Overrides the motion-wide fade-in duration in milliseconds. */
+diff --git a/dist/model-CkKs9EQ2.mjs b/dist/model-CkKs9EQ2.mjs
+index 31ee427b871153d223b0ab55fb0ab9e65b183d70..db0acb545c48abf1485b9ee452153412dd324688 100644
+--- a/dist/model-CkKs9EQ2.mjs
++++ b/dist/model-CkKs9EQ2.mjs
+@@ -13892,7 +13892,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 			this.getModel().loadParameters();
+ 			this.motionUpdated = false;
+ 			if (this._motionManager.isFinished()) this.scheduleIdle();
+-			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), deltaSeconds);
++			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), this.motionSync?.update(deltaSeconds) ?? deltaSeconds);
+ 			this.getModel().saveParameters();
+ 			this.settleFinishedMotions();
+ 			this.scheduler.onLateUpdate(this.getModel(), deltaSeconds);
+@@ -13905,7 +13905,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 			this.getModel().loadParameters();
+ 			this.motionUpdated = false;
+ 			if (this._motionManager.isFinished()) this.scheduleIdle();
+-			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), deltaSeconds);
++			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), this.motionSync?.update(deltaSeconds) ?? deltaSeconds);
+ 			this.getModel().saveParameters();
+ 		});
+ 		this.settleFinishedMotions();
+@@ -13979,7 +13979,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 	settleFinishedMotions() {
+ 		this.motionStates.settleFinished((handle) => this._motionManager.isFinishedByHandle(handle));
+ 	}
+-	async playMotion(group, index, priority, fade = {}) {
++	async playMotion(group, index, priority, fade = {}, sync) {
+ 		if (this.disposed) return { status: "disposed" };
+ 		if (this.renderError) throw this.renderError;
+ 		const count = this.setting.getMotionCount(group);
+@@ -13991,8 +13991,18 @@ var FrameworkModel = class extends CubismUserModel {
+ 		const generation = ++this.motionGeneration;
+ 		let handle;
+ 		let playback;
++		let cancelLoading;
+ 		try {
+-			const asset = await this.loadMotionAsset(group, selected);
++			const loading = this.loadMotionAsset(group, selected);
++			let asset;
++			if (sync) {
++				const cancelled = new Promise((_, reject) => {
++					cancelLoading = () => reject(sync.signal.reason);
++					sync.signal.addEventListener("abort", cancelLoading, { once: true });
++					if (sync.signal.aborted) cancelLoading();
++				});
++				[asset] = await Promise.race([Promise.all([loading, sync.ready]), cancelled]);
++			} else asset = await loading;
+ 			if (this.disposed) return { status: "disposed" };
+ 			if (generation !== this.motionGeneration) return { status: "skipped" };
+ 			if (hasMotionFadeOverride(fade)) {
+@@ -14000,6 +14010,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 				if (this.disposed) return { status: "disposed" };
+ 				if (generation !== this.motionGeneration) return { status: "skipped" };
+ 			}
++			sync?.signal.throwIfAborted();
+ 			playback = preparePlaybackMotion(asset, fade, (buffer) => this.parseMotion(buffer, `${group}:${selected}`, group, selected), (motion) => ACubismMotion.delete(motion));
+ 			handle = this._motionManager.startMotionPriority(playback.motion, playback.autoDelete, priority);
+ 			if (handle === -1) {
+@@ -14013,8 +14024,25 @@ var FrameworkModel = class extends CubismUserModel {
+ 			if (this.disposed) return { status: "disposed" };
+ 			if (generation === this.motionGeneration) this._motionManager.setReservePriority(0);
+ 			throw error;
++		} finally {
++			if (cancelLoading) sync.signal.removeEventListener("abort", cancelLoading);
++		}
++		this.motionSync = sync;
++		const finished = this.motionStates.track(handle);
++		if (!sync) return finished;
++		const cancel = () => {
++			if (this.disposed || this.motionSync !== sync) return;
++			this.motionSync = undefined;
++			this._motionManager.stopAllMotions();
++			this.motionStates.interruptActive();
++		};
++		sync.signal.addEventListener("abort", cancel, { once: true });
++		try {
++			return await finished;
++		} finally {
++			sync.signal.removeEventListener("abort", cancel);
++			if (this.motionSync === sync) this.motionSync = undefined;
+ 		}
+-		return this.motionStates.track(handle);
+ 	}
+ 	hitTestStagePoint(x, y) {
+ 		if (this.disposed || !this.layoutMatrix) return [];
+@@ -14188,7 +14216,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 			playMotion: (group, index, options) => {
+ 				validateMotionOptions(options);
+ 				const fade = resolveMotionFade(options);
+-				return this.playMotion(group, index, MOTION_PRIORITIES[options?.priority ?? "force"], fade);
++				return this.playMotion(group, index, MOTION_PRIORITIES[options?.priority ?? "force"], fade, options?.sync);
+ 			},
+ 			onAfterMotionUpdate: (callback) => {
+ 				this.afterMotionCallbacks.add(callback);
