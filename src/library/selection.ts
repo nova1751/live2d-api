@@ -57,7 +57,7 @@ export class CatalogModels {
       let aspect = sceneAspect ?? 1;
       const fitCharacter = this.options.collection && !sceneAspect && !id.startsWith('background/');
       const paintScale = fitCharacter ? 1.5 : 1;
-      const framing = fitCharacter ? createFraming(value => { aspect = value; }, paintScale) : undefined;
+      const framing = fitCharacter ? createFraming(value => { aspect = value; }, paintScale, collection === 'bang-dream') : undefined;
       const onPaint = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
       await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, sceneAspect, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
         randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: collection === 'bang-dream' });

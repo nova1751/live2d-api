@@ -22,6 +22,22 @@ test('frames head and shoes with a low baseline and centers an authored torso be
   assert.ok(Math.abs(project(86, camera.y, camera) - 0.97) < 0.001);
 });
 
+test('carries a cropped portrait below the viewport without changing the head-to-torso scale', () => {
+  const mask = new Uint8Array(size * size);
+  for (const [left, right, top] of [[43, 84, 24], [13, 112, 52]]) {
+    mask.fill(0);
+    rectangle(mask, left, top, right, 100);
+    let aspect;
+    const body = fitSilhouette(mask, initial, undefined, value => { aspect = value; });
+    const portrait = fitSilhouette(mask, initial, undefined, () => {}, true);
+    assert.equal(portrait.scale, body.scale);
+    assert.equal(portrait.x, body.x);
+    const height = Math.min(1, 1 / aspect);
+    assert.ok(project(100, portrait.y, portrait) > 1 + 0.02 * height);
+    assert.ok(project(100, body.y, body) < 1);
+  }
+});
+
 test('fits a wide group and gives an unmarked silhouette a stable baseline', () => {
   const mask = new Uint8Array(size * size);
   rectangle(mask, 13, 54, 112, 90);

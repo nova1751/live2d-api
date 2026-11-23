@@ -43,7 +43,7 @@ function quantile(bins: Float64Array, total: number, fraction: number) {
   return bins.length - 1;
 }
 
-export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTest, setAspect?: (ratio: number) => void): Camera {
+export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTest, setAspect?: (ratio: number) => void, croppedPortrait = false): Camera {
   const columns = new Float64Array(size);
   const rows = new Float64Array(size);
   let top = size, bottom = 0, mass = 0;
@@ -91,11 +91,13 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
   return {
     scale: initial.scale * zoom,
     x: (0.5 - centerX / size) * zoom,
-    y: 0.5 - 0.03 * viewHeight + (0.5 - bottom / size) * zoom,
+    // Leave room below feet, but carry a portrait's cut edge through the viewport
+    // so sampling error and small vertical motions cannot reveal a seam.
+    y: 0.5 + (croppedPortrait ? 0.025 : -0.03) * viewHeight + (0.5 - bottom / size) * zoom,
   };
 }
 
-export function createFraming(setAspect?: (ratio: number) => void, paintScale = 1) {
+export function createFraming(setAspect?: (ratio: number) => void, paintScale = 1, croppedPortrait = false) {
   // Centering the larger surface around the original square preserves every screen coordinate.
   const forSurface = (camera: Camera): Camera => ({
     scale: camera.scale / paintScale, x: camera.x / paintScale, y: camera.y / paintScale,
@@ -153,7 +155,7 @@ export function createFraming(setAspect?: (ratio: number) => void, paintScale = 
         return;
       }
     }
-    return forSurface(frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect) : authored);
+    return forSurface(frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect, croppedPortrait) : authored);
   } };
 }
 export type Framing = ReturnType<typeof createFraming>;
