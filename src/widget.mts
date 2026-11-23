@@ -4,6 +4,8 @@ import { runtimeDirectory, defaultLibraryUrl, githubLibrary } from './distributi
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
+import type { WidgetLocale } from './library/catalog.js';
+export type { WidgetLocale } from './library/catalog.js';
 export type WidgetMode = 'random' | 'sequential';
 export type WidgetPosition = 'left' | 'right';
 export interface WidgetOptions {
@@ -13,6 +15,7 @@ export interface WidgetOptions {
   modelUrl?: string | URL;
   /** Optional self-hosted Cubism Core for modern models. */
   coreUrl?: string | URL;
+  locale?: WidgetLocale;
   collection?: import('./library/catalog.js').Collection;
   catalogUrl?: string | URL;
   modelId?: string;
@@ -56,7 +59,7 @@ function loadScript<K extends 'initWidget' | 'loadlive2d'>(
 }
 
 async function mount(base: string, options: WidgetOptions, mode: WidgetMode, position: WidgetPosition) {
-  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = options;
+  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale } = options;
   const style = document.createElement('link');
   style.rel = 'stylesheet';
   style.href = base + `css/${position}.css`;
@@ -72,7 +75,7 @@ async function mount(base: string, options: WidgetOptions, mode: WidgetMode, pos
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, collection, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + 'waifu-tips.json',
+      initWidget({ cdnPath: base, collection, locale, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
@@ -89,7 +92,8 @@ export async function selectWidgetModel(id: string): Promise<void> {
   await select(id);
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }: WidgetOptions = {}): Promise<void> {
+  if (locale && locale !== 'en' && locale !== 'zh-CN') throw new TypeError('Unsupported widget locale');
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
   if (catalogUrl && modelUrl) throw new TypeError('Choose catalogUrl or modelUrl');
@@ -105,7 +109,7 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   base.hash = '';
   if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }, mode, position).catch(error => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }, mode, position).catch(error => {
     delete page[mounting];
     throw error;
   });

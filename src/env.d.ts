@@ -1,4 +1,5 @@
 interface LegacyOptions {
+  locale?: import('./library/catalog').WidgetLocale;
   waifuPath: string;
   cdnPath?: string;
   apiPath?: string;
@@ -23,7 +24,7 @@ interface Event {
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
+    (canvas: string, model: string, options?: { locale?: import('./library/catalog').WidgetLocale; onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
     capture?(): boolean;
     prepareInteraction?(): boolean;
     show?(start: boolean): void;

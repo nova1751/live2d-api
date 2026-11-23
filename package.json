@@ -1,8 +1,8 @@
 {
   "name": "live2dapi-noa",
-  "version": "2.3.3",
+  "version": "2.4.0",
   "packageManager": "pnpm@10.33.0",
-  "description": "nova1751 的少女前线 Live2D 网页组件与历史加载器",
+  "description": "Girls’ Frontline Live2D widget for the web, with Chinese and English captions and Cubism 2–5 rendering.",
   "main": "./widget.mjs",
   "publishConfig": {
     "access": "public",
@@ -24,8 +24,10 @@
   },
   "keywords": [
     "live2d",
-    "model",
-    "api"
+    "girls-frontline",
+    "cubism",
+    "webgl",
+    "widget"
   ],
   "bugs": {
     "url": "https://github.com/nova1751/live2d-api/issues"
@@ -58,7 +60,10 @@
     "modern/",
     "waifu-tips.json",
     "live2d.min.js",
-    "asteroids.js"
+    "asteroids.js",
+    "waifu-tips.en.json",
+    "README.zh-CN.md",
+    "README.md"
   ],
   "jsdelivr": "autoload.js",
   "unpkg": "autoload.js"

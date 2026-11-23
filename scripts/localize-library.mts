@@ -4,42 +4,50 @@ import { readJson, repository, type Library } from './library-files.mts';
 
 const root = process.argv[2];
 if (!root) throw new Error('Pass the downloaded model library directory');
-const revision = 'c6c763ca71e6f8450232fbd30e26900c51d2c09b';
-async function table(path: string) {
-  if (process.argv[3]) return readFile(join(process.argv[3], path.replaceAll('/', '_')), 'utf8');
-  const response = await fetch('https://raw.githubusercontent.com/gf-data-tools/gf-data-ch/' + revision + '/' + path);
-  if (!response.ok) throw new Error(path + ': HTTP ' + response.status);
-  return response.text();
+async function loadTables(region: string, revision: string, cache?: string) {
+  async function table(path: string) {
+    if (cache) return readFile(join(cache, path.replaceAll('/', '_')), 'utf8');
+    const response = await fetch('https://raw.githubusercontent.com/gf-data-tools/gf-data-' + region + '/' + revision + '/' + path);
+    if (!response.ok) throw new Error(path + ': HTTP ' + response.status);
+    return response.text();
+  }
+  const [oldVoice, newVoice, gunTable, gunNames, skinTable, skinNames] = await Promise.all([
+    'asset/profilesconfig/charactervoice.txt', 'asset/profilesconfig/newcharactervoice.txt',
+    'stc/gun.json', 'asset/table/gun.txt', 'stc/skin.json', 'asset/table/skin.txt',
+  ].map(table));
+  const voice = new Map<string, string>();
+  for (const line of (oldVoice + '\n' + newVoice).split(/\r?\n/)) {
+    const match = /^([^|]+)\|([^|]+)\|(.+)$/.exec(line);
+    if (match) voice.set((match[1] + '|' + match[2]).toUpperCase(), match[3].replace(/<>|\\n/g, '\n').trim());
+  }
+  const names = new Map((gunNames + '\n' + skinNames).split(/\r?\n/).map(line => {
+    const cut = line.indexOf(',');
+    return [line.slice(0, cut), line.slice(cut + 1)] as const;
+  }));
+  const guns = new Map<string, string>();
+  const gunIds = new Map<number, string>();
+  for (const row of JSON.parse(gunTable) as { id: number; code: string; name: string }[]) {
+    const code = row.code.toLowerCase().replaceAll(' ', '-');
+    gunIds.set(row.id, code);
+    const name = names.get(row.name);
+    if (name) guns.set(code, name);
+  }
+  const costumes = new Map<string, { title: string; order: number }>();
+  for (const row of JSON.parse(skinTable) as { id: number; fit_gun: number; name: string; order: number }[]) {
+    const code = gunIds.get(row.fit_gun);
+    const title = names.get(row.name);
+    if (code && title) costumes.set(code + '/' + row.id, { title, order: row.order });
+  }
+  return { voice, guns, costumes };
 }
 const file = join(repository, 'catalog/library.json');
 const catalog = readJson<Library>(file);
-const [oldVoice, newVoice, gunTable, gunNames, skinTable, skinNames] = await Promise.all([
-  'asset/profilesconfig/charactervoice.txt', 'asset/profilesconfig/newcharactervoice.txt',
-  'stc/gun.json', 'asset/table/gun.txt', 'stc/skin.json', 'asset/table/skin.txt',
-].map(table));
-const voice = new Map<string, string>();
-for (const line of (oldVoice + '\n' + newVoice).split(/\r?\n/)) {
-  const match = /^([^|]+)\|([^|]+)\|(.+)$/.exec(line);
-  if (match) voice.set((match[1] + '|' + match[2]).toUpperCase(), match[3].replace(/<>|\\n/g, '\n').trim());
-}
-const names = new Map((gunNames + '\n' + skinNames).split(/\r?\n/).map(line => {
-  const cut = line.indexOf(',');
-  return [line.slice(0, cut), line.slice(cut + 1)] as const;
-}));
-const guns = new Map<string, string>();
-const gunIds = new Map<number, string>();
-for (const row of JSON.parse(gunTable) as { id: number; code: string; name: string }[]) {
-  const code = row.code.toLowerCase().replaceAll(' ', '-');
-  gunIds.set(row.id, code);
-  const name = names.get(row.name);
-  if (name) guns.set(code, name);
-}
-const costumes = new Map<string, { title: string; order: number }>();
-for (const row of JSON.parse(skinTable) as { id: number; fit_gun: number; name: string; order: number }[]) {
-  const code = gunIds.get(row.fit_gun);
-  const title = names.get(row.name);
-  if (code && title) costumes.set(code + '/' + row.id, { title, order: row.order });
-}
+const [{ voice, guns, costumes }, us] = await Promise.all([
+  loadTables('ch', 'c6c763ca71e6f8450232fbd30e26900c51d2c09b', process.argv[3]),
+  loadTables('us', '5be9af6692083246bd288b9326d0e576dbecb4f0', process.argv[4]),
+]);
+const enLabels: Record<string,string> = {};
+const enCaptions: Record<string,string> = {};
 const labels: Record<string, string> = {};
 const outfitOrder: Record<string, number> = {};
 const captions: Record<string, string> = {};
@@ -48,6 +56,12 @@ const legacyKeys = new Set<string>();
 for (const [id, variants] of Object.entries(catalog.models)) {
   if (id.startsWith('other/')) continue;
   const [kind, who, skin] = id.split('/');
+  if (kind === 'doll') {
+    const name = us.guns.get(who);
+    if (name) enLabels[kind + '/' + who] = name;
+    const costume = us.costumes.get(who + '/' + skin);
+    if (costume) enLabels[[kind, who, skin].join('/')] = costume.title.replaceAll('//c', ',') + ' (' + skin + ')';
+  }
   const name = guns.get(who);
   if (kind === 'doll' && name) labels[kind + '/' + who] = name;
   const costume = kind === 'doll' && costumes.get(who + '/' + skin);
@@ -119,6 +133,12 @@ for (const [batch, characters] of [
   const version = 'doll/' + character + '/mod';
   if (catalog.models[version + '/normal']) outfitOrder[version] = batch;
 }
-catalog.presentation = { labels, captions, aliases, outfitOrder };
+// Older manifests can use numbered clips without a game voice key.
+const legacyLines = readJson<Record<string,string>>(join(repository, 'scripts/legacy-lines.en.json'));
+for (const key of [...legacyKeys].sort()) {
+  const text = english.get(key) || us.voice.get(key);
+  if (text) enCaptions[key] = text.replaceAll('//c', ',');
+}
+catalog.presentation = { labels, captions, aliases, outfitOrder, en: { labels: enLabels, captions: { ...enCaptions, ...legacyLines } } };
 await writeFile(file, JSON.stringify(catalog) + '\n');
 console.log(Object.keys(labels).length, 'labels;', Object.keys(captions).length, 'subtitles;', Object.keys(aliases).length, 'archive aliases');

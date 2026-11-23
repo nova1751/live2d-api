@@ -1,3 +1,4 @@
+export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource {
     baseUrl: string;
 }
@@ -16,6 +17,10 @@ export interface ModelCatalog {
         labels: Record<string, string>;
         captions: Record<string, string>;
         aliases: Record<string, string>;
+        en?: {
+            labels: Record<string, string>;
+            captions: Record<string, string>;
+        };
         outfitOrder?: Record<string, number>;
     };
     audio?: Record<string, string[]>;
@@ -26,7 +31,7 @@ export interface DialogueSource {
     audio: ReadonlyMap<string, string>;
 }
 export type Collection = 'girls-frontline';
-export declare function loadModelCatalog(input: string | URL, collection?: Collection): Promise<{
+export declare function loadModelCatalog(input: string | URL, collection?: Collection, locale?: WidgetLocale): Promise<{
     ids: string[];
     visibleId: (id: string) => string;
     labels: Record<string, string>;

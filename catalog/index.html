@@ -4,48 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#173d39">
-  <title>少女前线模型图鉴 · Live2D</title>
+  <title data-en="Girls’ Frontline Model Gallery · Live2D">少女前线模型图鉴 · Live2D</title>
   <link rel="stylesheet" href="./gallery.css">
 </head>
 <body>
   <header class="masthead"><div class="wrap mast">
-    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>少女前线 <span>Live2D</span></a>
-    <nav aria-label="项目导航"><a href="#collection">图鉴</a><a href="#examples">示例</a><a href="https://github.com/nova1751/live2d-api#在网页中引入">网页接入 ↗</a></nav>
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span><span data-en="Girls’ Frontline">少女前线</span> <span>Live2D</span></a>
+    <nav aria-label="项目导航" data-en-aria-label="Project navigation"><a href="#collection" data-en="Gallery">图鉴</a><a href="#examples" data-en="Examples">示例</a><a href="https://github.com/nova1751/live2d-api/blob/main/README.zh-CN.md#快速接入" data-en="Embed ↗">网页接入 ↗</a><a id="language" href="?lang=en" lang="en" hreflang="en">English</a></nav>
   </div></header>
   <main class="wrap" id="top">
-    <div class="intro"><h1>少女前线<span>模型图鉴</span></h1><p id="totals"></p></div>
+    <div class="intro"><h1><b data-en="Girls’ Frontline">少女前线</b><span data-en="Model gallery">模型图鉴</span></h1><p id="totals"></p></div>
     <div class="layout">
       <section class="preview-panel" aria-labelledby="model-name">
         <div class="stage" id="stage">
-          <span class="stage-label">Live2D 预览</span>
+          <span class="stage-label" data-en="Live2D preview">Live2D 预览</span>
           <img id="poster" alt="" hidden>
           <div class="model-host" id="model-host"></div>
         </div>
         <div class="profile">
           <p class="kind" id="model-category"></p>
-          <h2 id="model-name">正在载入模型</h2>
+          <h2 id="model-name" data-en="Loading model">正在载入模型</h2>
           <p id="result" role="status"></p>
-          <label for="variant">当前造型</label><select id="variant" disabled></select>
-          <div class="links"><button id="share" type="button">复制预览链接</button><a id="manifest" hidden>模型清单 ↗</a></div>
+          <label for="variant" data-en="Current outfit">当前造型</label><select id="variant" disabled></select>
+          <div class="links"><button id="share" type="button" data-en="Copy preview link">复制预览链接</button><a id="manifest" hidden data-en="Model manifest ↗">模型清单 ↗</a></div>
           <p id="notice" role="status"></p>
         </div>
       </section>
       <section id="collection" aria-labelledby="collection-title">
-        <div class="collection-head"><h2 id="collection-title">浏览图鉴</h2>
-          <div class="modes" aria-label="浏览方式"><button type="button" id="by-character" aria-pressed="true">按人物</button><button type="button" id="by-form" aria-pressed="false">按造型</button></div>
+        <div class="collection-head"><h2 id="collection-title" data-en="Explore the collection">浏览图鉴</h2>
+          <div class="modes" aria-label="浏览方式" data-en-aria-label="Browse by"><button type="button" id="by-character" aria-pressed="true" data-en="Characters">按人物</button><button type="button" id="by-form" aria-pressed="false" data-en="Outfits">按造型</button></div>
         </div>
-        <div class="filters"><label class="search"><span aria-hidden="true"></span><input id="search" type="search" aria-label="搜索人物、造型或代号" placeholder="搜索人物、造型或代号"></label>
-          <select id="category" aria-label="按分类筛选"><option value="">全部分类</option></select>
+        <div class="filters"><label class="search"><span aria-hidden="true"></span><input id="search" type="search" aria-label="搜索人物、造型或代号" data-en-aria-label="Search characters, outfits or IDs" placeholder="搜索人物、造型或代号" data-en-placeholder="Search characters, outfits or IDs"></label>
+          <select id="category" aria-label="按分类筛选" data-en-aria-label="Filter by category"><option value="" data-en="All categories">全部分类</option></select>
         </div>
         <p id="matches" role="status"></p>
-        <div id="cards" class="cards" aria-label="模型列表"></div>
-        <div class="paging"><button id="more" type="button" hidden>显示更多</button></div>
+        <div id="cards" class="cards" aria-label="模型列表" data-en-aria-label="Model list"></div>
+        <div class="paging"><button id="more" type="button" hidden data-en="Show more">显示更多</button></div>
       </section>
     </div>
     <section id="examples" class="examples" aria-labelledby="examples-title">
-      <h2 id="examples-title">原版网页示例</h2>
-      <div><a href="../img/01.png"><img src="../img/01.png" alt="红裙看板娘、台词气泡和右侧工具栏" loading="lazy"></a>
-      <a href="../img/02.png"><img src="../img/02.png" alt="黑裙看板娘及互动提示" loading="lazy"></a></div>
+      <h2 id="examples-title" data-en="Original widget examples">原版网页示例</h2>
+      <div><a href="../img/01.png"><img src="../img/01.png" alt="红裙看板娘、台词气泡和右侧工具栏" data-en-alt="Original companion with a red dress, a speech bubble and toolbar" loading="lazy"></a>
+      <a href="../img/02.png"><img src="../img/02.png" alt="黑裙看板娘及互动提示" data-en-alt="Original companion in a black dress with an interaction tip" loading="lazy"></a></div>
     </section>
   </main>
   <script type="module" src="./browser.mjs"></script>

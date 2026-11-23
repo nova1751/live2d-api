@@ -97,7 +97,7 @@ function orderCollection(ids, outfits) {
   rows.sort((a, b) => rank(categories, a.category) - rank(categories, b.category) || natural.compare(a.category, b.category) || natural.compare(a.character, b.character) || a.order - b.order || natural.compare(a.version, b.version) || rank(forms, a.form) - rank(forms, b.form) || natural.compare(a.form, b.form));
   return rows.map((row) => row.id);
 }
-async function loadModelCatalog(input, collection) {
+async function loadModelCatalog(input, collection, locale = "zh-CN") {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
@@ -106,6 +106,7 @@ async function loadModelCatalog(input, collection) {
   const audioBySource = /* @__PURE__ */ new Map();
   const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
   const presentation = collection ? catalog.presentation : void 0;
+  const localized = locale === "en" ? presentation?.en : presentation;
   const visibleId = (id) => {
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
@@ -125,15 +126,15 @@ async function loadModelCatalog(input, collection) {
         audio = new Map((catalog.audio?.[asset.source] ?? []).map((path) => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { captions: presentation?.captions, url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: locale === "en" ? void 0 : localized?.captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { captions: presentation?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { captions: localized?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, visibleId, labels: presentation?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { ids, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.3.3";
+var version = "2.4.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -153,7 +154,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-1ae324f1d73c1f1f/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-0cb4f982723bf0f0/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;
@@ -191,7 +192,7 @@ function loadScript(url, exportName, asteroidsUrl) {
   return scripts.get(url);
 }
 async function mount(base, options, mode, position) {
-  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = options;
+  const { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale } = options;
   const style = document.createElement("link");
   style.rel = "stylesheet";
   style.href = base + `css/${position}.css`;
@@ -208,10 +209,11 @@ async function mount(base, options, mode, position) {
       initWidget({
         cdnPath: base,
         collection,
+        locale,
         catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href,
         modelId,
         modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href,
-        waifuPath: base + "waifu-tips.json",
+        waifuPath: base + (locale === "en" ? "waifu-tips.en.json" : "waifu-tips.json"),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href
       });
@@ -227,7 +229,8 @@ async function selectWidgetModel(id) {
   if (!select) throw new Error("Initialize the widget with a model catalog first");
   await select(id);
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale } = {}) {
+  if (locale && locale !== "en" && locale !== "zh-CN") throw new TypeError("Unsupported widget locale");
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
   if (catalogUrl && modelUrl) throw new TypeError("Choose catalogUrl or modelUrl");
@@ -240,7 +243,7 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   base.hash = "";
   if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
   if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection }, mode, position).catch((error) => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }, mode, position).catch((error) => {
     delete page[mounting];
     throw error;
   });

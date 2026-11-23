@@ -91,7 +91,7 @@ select { padding: 8px; max-width: 100% }
 @media (max-width:900px) { .layout { gap: 18px; grid-template-columns: minmax(240px,.8fr) minmax(0,1.2fr) } .cards { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)) } }
 @media (max-width:680px) {
   .wrap { width: calc(100% - 28px) }
-  .mast { min-height: 50px }.mast nav { gap: 14px;font-size: .79rem }
+  .mast { min-height: 50px; flex-wrap: wrap; gap: 6px 16px; padding-block: 8px }.mast nav { flex-wrap: wrap; gap: 8px 14px; font-size: .79rem }
   .intro { display: block; padding: 20px 0 14px }.intro p { margin-top: 5px }
   .layout { display: flex; flex-direction: column; gap: 24px }.layout > * { width: 100% }
   .preview-panel { position: static }.stage { height: 260px }#poster { width: min(88%,235px) }
