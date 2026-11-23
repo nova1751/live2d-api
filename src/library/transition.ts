@@ -25,7 +25,11 @@ export class ModelTransition {
         this.still?.remove();
         this.still = context ? next : undefined;
       } finally {
-        if (surface) container.style.setProperty('--waifu-aspect', String(getAspect()));
+        if (surface) {
+          const aspect = getAspect();
+          container.style.setProperty('--waifu-aspect', String(aspect));
+          container.toggleAttribute('data-wide-model', aspect >= 1.35);
+        }
         container.removeAttribute('data-model-loading');
       }
     };

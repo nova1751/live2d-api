@@ -32,7 +32,7 @@ h1 span { margin-left: .25em; color: var(--teal) }
 #totals { font-size: .9rem; font-variant-numeric: tabular-nums }
 .layout { display: grid; grid-template-columns: minmax(285px,1fr) minmax(0,1.5fr); align-items: start; gap: clamp(22px,3vw,48px); padding-bottom: 48px }
 .preview-panel { position: sticky; top: 14px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff }
-.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; height: clamp(275px,32vw,425px);
+.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; --gallery-model-height: clamp(275px,32vw,425px); --gallery-headroom: 124px; padding: var(--gallery-headroom) 6px 6px;
   background: radial-gradient(ellipse at 47% 56%, #64877a 0, #386258 49%, #193f3b 100%) }
 .stage::before, .stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1 }
 .stage::before { opacity: .19; background-image: linear-gradient(#b5cfc0 1px,transparent 1px),linear-gradient(90deg,#b5cfc0 1px,transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to top, #000, transparent 93%) }
@@ -40,13 +40,14 @@ h1 span { margin-left: .25em; color: var(--teal) }
 .stage-label { position: absolute; top: 14px; left: 16px; color: #f4faf4; font-size: .76rem; font-weight: 600; letter-spacing: .04em; z-index: 1; pointer-events: none }
 .stage-label::before { content: ""; display:inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #f9bf69 }
 #poster, .model-host { position: absolute; bottom: 3%; width: min(92%, 360px); aspect-ratio: 1; max-height: 94%; object-fit: contain }
-.model-host { display: grid; place-items: center; container-type: size; bottom: 4px; width: calc(100% - 12px); height: calc(100% - 12px); aspect-ratio: auto; max-height: none }
-#stage #waifu.waifu-adaptive { --waifu-max-width: 100cqw; --waifu-max-height: 100cqh; width: min(var(--waifu-max-width), calc(var(--waifu-max-height) * var(--waifu-aspect, 1))) }
-#stage #waifu { position: relative; inset: auto !important; width: 100%; margin: 0; transform: none; transition: none; line-height: 0 }
+.model-host { position: relative; bottom: auto; display: grid; place-items: center; container-type: inline-size; width: 100%; aspect-ratio: auto; max-height: none }
+.model-host:not(:has(.waifu-adaptive)), .model-host:has(.waifu-toggle-active) { min-height: var(--gallery-model-height) }
+#stage #waifu.waifu-adaptive { --waifu-max-width: calc(100cqw - var(--waifu-side-space)); --waifu-max-height: calc(var(--gallery-model-height) - 12px) }
+#stage #waifu { position: relative; inset: auto !important; margin: 0; transform: none; transition: none; line-height: 0 }
 #stage #live2d { display: block; width: 100%; height: auto; aspect-ratio: 1 }
 #stage #waifu > div:has(> #live2d) { width: 100% }
-#stage #waifu-tips { z-index: 2; top: 0; left: 3%; margin: 0; width: 84%; min-height: 0; max-height: 52%; overflow: auto; border-radius: 8px; background: #fff9e9f5; color: #352d24; font-size: 13px; line-height: 1.5 }
-#stage #waifu-tool { top: 0; right: 0; left: auto; padding: 1px; background: #eff7f0ee; border-radius: 7px }
+#stage #waifu.waifu-adaptive #waifu-tips { max-height: calc(var(--gallery-headroom) - 34px - var(--waifu-top-tools)); border-radius: 8px; background: #fff9e9f5; color: #352d24; font-size: 13px; line-height: 1.5 }
+#stage #waifu-tool { padding: 1px; background: #eff7f0ee; border-radius: 7px }
 #stage #waifu-tool button { height: clamp(24px,3.5vh,36px); min-height: 0; min-width: 30px }
 #stage #waifu-toggle { position: absolute; bottom: 25%; margin: 0; left: auto; width: auto; padding: 8px 14px; writing-mode: horizontal-tb; visibility: hidden }
 #stage #waifu-toggle.waifu-toggle-active { visibility: visible }
@@ -94,7 +95,7 @@ select { padding: 8px; max-width: 100% }
   .mast { min-height: 50px; flex-wrap: wrap; gap: 6px 16px; padding-block: 8px }.mast nav { flex-wrap: wrap; gap: 8px 14px; font-size: .79rem }
   .intro { display: block; padding: 20px 0 14px }.intro p { margin-top: 5px }
   .layout { display: flex; flex-direction: column; gap: 24px }.layout > * { width: 100% }
-  .preview-panel { position: static }.stage { height: 260px }#poster { width: min(88%,235px) }
+  .preview-panel { position: static }.stage { --gallery-model-height: 260px }#poster { width: min(88%,235px) }
   .profile { padding: 13px 16px }.cards { grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap: 8px }
 }
 @media (max-height:750px) and (min-width:681px) { .preview-panel { position: static } }
@@ -104,3 +105,21 @@ select { padding: 8px; max-width: 100% }
 .examples > div { display: flex; gap: 12px }
 .examples a { padding: 8px; max-width: 45%; border: 1px solid var(--line); border-radius: 9px; background: white }
 .examples img { display: block; width: auto; max-width: 100%; height: auto; max-height: 180px }
+
+/* Keep the full width for groups on compact preview panels. */
+@container (max-width: 520px) {
+  #stage #waifu[data-wide-model] {
+    --waifu-side-space: 0px;
+    --waifu-top-tools: 46px;
+  }
+  #stage #waifu[data-wide-model] #waifu-tool {
+    display: flex;
+    top: auto;
+    bottom: calc(100% + 2px);
+    width: max-content;
+    max-width: 100%;
+    max-height: 44px;
+    overflow: auto;
+  }
+  #stage #waifu[data-wide-model] #waifu-tool button { flex: 0 0 auto; width: auto; }
+}

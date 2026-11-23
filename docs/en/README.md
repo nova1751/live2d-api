@@ -2,7 +2,7 @@
 
 **English** · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md) · [Live gallery](https://live2d-nova.vercel.app/catalog/?lang=en) · [npm](https://www.npmjs.com/package/live2dapi-noa)
 
-Add an interactive Girls’ Frontline character to a website. Visitors can change outfits and click characters to play their authored motions, voice lines and subtitles. The widget loads the renderer required by the selected model and frames each outfit to its visible silhouette.
+Add an interactive Girls’ Frontline character to a website. Visitors can change outfits and click characters to play their authored motions, voice lines and subtitles. The widget loads the renderer required by the selected model and frames each outfit to its visible silhouette. Captions sit above the model and controls sit beside it. On narrow gallery panels, wide groups keep the full preview width, with controls in a row above them.
 
 ## Quick start
 
@@ -11,13 +11,13 @@ Place one module script before `</body>`. Choose the CDN closest to your audienc
 **Global**
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.1/girls-frontline.mjs?lang=en"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs?lang=en"></script>
 ```
 
 **Mainland China**
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.1/girls-frontline.mjs?lang=en"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs?lang=en"></script>
 ```
 
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
@@ -79,7 +79,7 @@ Open `http://127.0.0.1:8765/viewer/catalog/?lang=en`. Use `--list` to inspect so
 
 ## Original widget examples
 
-<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.1/img/01.png" height="200" alt="Original red-dress companion with a speech bubble"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.1/img/02.png" height="200" alt="Original black-dress companion with interaction tips">
+<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/01.png" height="200" alt="Original red-dress companion with a speech bubble"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/02.png" height="200" alt="Original black-dress companion with interaction tips">
 
 ## Development and releases
 

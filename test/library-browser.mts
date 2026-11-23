@@ -53,6 +53,20 @@ try {
   }, outside), /outside the selected collection/);
   await page.waitForSelector('#waifu:not([data-model-loading])');
   const rect = await page.locator('.waifu-viewport').boundingBox();
+  async function checkControls(inRow: boolean) {
+    const bounds = await page.locator('.waifu-viewport').boundingBox();
+    const tips = await page.locator('#waifu-tips').boundingBox();
+    const tools = await page.locator('#waifu-tool').boundingBox();
+    const panel = await page.locator('#stage').boundingBox();
+    assert.ok(tips.y >= panel.y && tips.y + tips.height < bounds.y);
+    assert.ok(Math.abs(tips.x + tips.width / 2 - bounds.x - bounds.width / 2) <= 1);
+    assert.ok(tools.x + tools.width <= panel.x + panel.width + 1);
+    if (inRow) {
+      assert.ok(tools.y + tools.height <= bounds.y);
+      assert.ok(tips.y + tips.height <= tools.y);
+    } else assert.ok(tools.x >= bounds.x + bounds.width);
+  }
+  await checkControls(false);
   let tap = { x: 0, y: 0 };
   for (let y = 0.12; y < 0.9; y += 0.08) {
     for (const x of [0.5, 0.42, 0.58]) {
@@ -149,6 +163,7 @@ try {
     await page.setViewportSize({ width, height: 850 });
     const wide = await page.locator('.waifu-viewport').boundingBox();
     const stage = await page.locator('#stage').boundingBox();
+    await checkControls(true);
     assert.ok(wide.width > 1.5 * wide.height && wide.width > 0.9 * stage.width);
     assert.ok(wide.x >= stage.x && wide.x + wide.width <= stage.x + stage.width + 1);
   }
