@@ -2,7 +2,7 @@ export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
 export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
-export interface ModelVariant { sceneAspect?: number; cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
+export interface ModelVariant { hiddenDrawables?: string[]; sceneAspect?: number; cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
   gallery?: Record<string, GalleryEntry>;
@@ -111,7 +111,7 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     const sceneAspect = typeof ratio === 'number' && Number.isFinite(ratio) && ratio > 0 ? ratio : undefined;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files)
       .map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
-    return { cues, sceneAspect, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
     .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;

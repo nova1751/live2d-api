@@ -6,7 +6,7 @@ import type { Camera, Framing } from './library/framing';
 import { readActions, bindInteractions } from './modern/interactions';
 import type { DialogueSource, GameCue } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, hiddenDrawables?: readonly string[]) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -43,7 +43,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
-    const backend: Live2DBackend | undefined = (framing || onPaint) && { ...cubismWebGL, createStage(element, options) {
+    const backend: Live2DBackend | undefined = (framing || onPaint || hiddenDrawables?.length) ? { ...cubismWebGL, createStage(element, options) {
       graphics = cubismWebGL.createStage(element, options);
       // Input uses the full camera, including any paint margin cropped at the screen edge.
       graphics.toWorld = (x, y) => {
@@ -52,8 +52,8 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       };
       return graphics;
     }, async loadModel(stage, url, options) {
-      return modelHandle = await cubismWebGL.loadModel(stage, url, options);
-    } };
+      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables });
+    } } : undefined;
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,

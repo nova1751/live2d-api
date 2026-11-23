@@ -1,4 +1,5 @@
 import { recoverHoukai } from './recover-houkai.mts';
+import { preserveSceneCurtains } from './library-files.mts';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -20,6 +21,7 @@ function add(lib, id, source, manifest, options, display) {
   lib.gallery[id] = display;
 }
 async function save(name, data) {
+  if (name === 'azur-lane') preserveSceneCurtains(join(destination, name + '.json'), data);
   await writeFile(
     join(destination, name + '.json'),
     JSON.stringify(data) + '\n',

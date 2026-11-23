@@ -54,13 +54,13 @@ export class CatalogModels {
         id = library.ids[0];
       }
       if (!id) throw new Error('No model in collection: ' + collection);
-      const { modelUrl, dialogue, soundAliases, captions, cues, files, sceneAspect } = library.resolve(id);
+      const { modelUrl, dialogue, soundAliases, captions, cues, files, hiddenDrawables, sceneAspect } = library.resolve(id);
       let aspect = sceneAspect ?? 1;
       const fitCharacter = this.options.collection && !sceneAspect && !id.startsWith('background/');
       const paintScale = fitCharacter ? 1.5 : 1;
       const framing = fitCharacter ? catalogFraming(id, value => { aspect = value; }, paintScale, collection === 'bang-dream') : undefined;
       const onPaint = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
-      await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, sceneAspect, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
+      await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, sceneAspect, hiddenDrawables, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
         randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: collection === 'bang-dream' });
       if (revision === this.sequence) {
         this.active = library.visibleId(id);

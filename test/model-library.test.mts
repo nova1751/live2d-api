@@ -5,6 +5,18 @@ import { transform } from 'esbuild';
 
 const json = async path => JSON.parse(await readFile(new URL('../' + path, import.meta.url)));
 
+test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewriting', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const source = await json('catalog/library.json');
+  const id = 'doll/dsr50/10501/normal';
+  for (const base of ['https://cdn.jsdmirror.com/', 'https://archive.invalid/']) {
+    const catalog = parseModelCatalog(source, new URL('catalog/library.json', base), 'girls-frontline');
+    const hidden = catalog.resolve(id, 'dump').hiddenDrawables;
+    for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hidden?.includes(name));
+    assert.equal(catalog.resolve('doll/6p62/8610/normal', 'dump').hiddenDrawables, undefined);
+  }
+});
+
 test('all seven mainland catalogs resolve pinned models, recordings and absolute repairs through the mirror', async () => {
   const { collections, parseModelCatalog } = await import('../src/library/catalog.ts');
   const mirror = 'https://cdn.jsdmirror.com';

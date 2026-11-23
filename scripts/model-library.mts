@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
 import { join, posix, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
-import { readJson, repository, type Source, type Library } from './library-files.mts';
+import { preserveSceneCurtains, readJson, repository, type Source, type Library } from './library-files.mts';
 
 type Variant = Library['models'][string][number];
 type Ref = { path: string };
@@ -177,8 +177,10 @@ for (const [id, variants] of Object.entries(ordered)) {
 }
 sources.dump.packs = [{ baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-ots14-' + dump.slice(0,12) + '/',
   directories: [...directories, 'audio/OTS14'] }];
+const catalogPath = join(repository, 'catalog/library.json');
+preserveSceneCurtains(catalogPath, { sources, models: ordered });
 writeFileSync(
-  join(repository, 'catalog/library.json'),
+  catalogPath,
   JSON.stringify({ schemaVersion: 1, legacyIds, sources, models: ordered, audio }) + '\n',
 );
 console.log(Object.keys(models).length, 'forms;', audio.dump.length, 'voice files');
