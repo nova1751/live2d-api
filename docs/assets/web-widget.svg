@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="280" viewBox="0 0 1280 280" role="img" aria-labelledby="title">
+  <title id="title">Live2D Web Widget · Cubism 2–5</title>
+  <defs>
+    <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#c4dbcb" opacity=".09"/></pattern>
+    <linearGradient id="bg"><stop stop-color="#102d29"/><stop offset="1" stop-color="#28514a"/></linearGradient>
+  </defs>
+  <rect width="1280" height="280" rx="16" fill="url(#bg)"/><rect width="1280" height="280" fill="url(#grid)"/>
+  <g fill="none" stroke="#ebc675" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" transform="translate(1020 49)">
+    <rect x="0" y="0" width="165" height="165" rx="32" opacity=".28"/>
+    <path d="M92 37h39v39m0-39L89 79M73 128H34V89m0 39 42-42"/>
+  </g>
+  <g font-family="system-ui, sans-serif"><text x="62" y="70" fill="#edca80" font-size="20" letter-spacing="4">CUBISM 2–5</text>
+  <text x="58" y="163" fill="#f4f5e9" font-size="80" font-weight="700">Live2D Web Widget</text>
+  <text x="63" y="223" fill="#c4d8ca" font-size="24">nova1751 / live2d-api</text></g>
+</svg>

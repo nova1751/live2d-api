@@ -45,6 +45,17 @@ try {
   await page.waitForSelector('#live2d[data-painted="true"]', { timeout: 45000 });
   const canvas = page.locator('#live2d');
   await page.addStyleTag({ content: '#waifu {transition:none!important;bottom:0!important} #waifu-tips {visibility:hidden}' });
+  const mountedCanvas = await canvas.elementHandle();
+  const normalWidth = (await canvas.boundingBox()).width;
+  const enlarge = page.locator('#waifu-tool-expand');
+  await enlarge.focus();
+  await enlarge.press('Enter');
+  await page.waitForSelector('#waifu-expanded[open] #live2d');
+  assert.ok((await canvas.boundingBox()).width > normalWidth);
+  await page.keyboard.press('Escape');
+  await page.waitForSelector('#waifu-expanded', { state: 'detached' });
+  assert.ok(await mountedCanvas.evaluate(el => el === document.getElementById('live2d')));
+  assert.ok(await enlarge.evaluate(el => el === document.activeElement));
   const before = await canvas.screenshot();
   await canvas.hover();
   await page.mouse.click(650, 180);

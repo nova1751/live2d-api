@@ -421,3 +421,68 @@
 @media (prefers-reduced-motion: reduce) {
   #waifu, #waifu-toggle, #waifu-tool, #waifu-tips, #waifu-tips.waifu-tips-active { animation: none; transition: none; }
 }
+
+#waifu-expanded {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #e9efeb;
+  color: #173d39;
+}
+#waifu-expanded::backdrop { background: #173d39b3; }
+.waifu-expanded-stage {
+  --view-headroom: clamp(74px, 16vh, 152px);
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: var(--view-headroom) 12px 12px;
+  background: radial-gradient(ellipse at center, #fafbf7, #dbe6e0);
+}
+.waifu-view-controls {
+  position: absolute;
+  z-index: 5;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: flex;
+  gap: 6px;
+}
+.waifu-view-controls button {
+  font: 600 14px/1.2 system-ui, sans-serif;
+  color: #173d39;
+  background: #fff;
+  border: 1px solid #a8bab0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  min-height: 40px;
+  cursor: pointer;
+}
+#waifu-expanded #waifu {
+  position: relative;
+  inset: auto !important;
+  margin: 0;
+  transform: none;
+  transition: none;
+}
+#waifu-expanded #waifu.waifu-adaptive {
+  --waifu-max-width: calc(100vw - var(--waifu-side-space) - 28px);
+  --waifu-max-height: calc(100dvh - var(--view-headroom) - 20px);
+}
+#waifu-expanded #waifu:not(.waifu-adaptive) #live2d {
+  width: min(calc(100vw - 68px), calc(100dvh - var(--view-headroom) - 20px));
+  height: auto;
+  display: block;
+  aspect-ratio: 1;
+}
+#waifu-expanded #waifu-tips { max-height: calc(var(--view-headroom) - 12px); overflow: auto; }
+#waifu-expanded #waifu-tool { opacity: 1; }
+#waifu-expanded #waifu-tool-expand, #waifu-expanded #waifu-tool-quit { display: none; }

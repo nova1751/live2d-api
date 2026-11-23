@@ -1,16 +1,88 @@
 <div align="center">
 
-<a href="https://live2d-nova.vercel.app/catalog/"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/live2d-banner.webp" width="100%" alt="少女前线 Live2D 网页看板娘，右侧为播放器实际渲染的 UMP9 心智升级造型"></a>
+<a href="https://live2d-nova.vercel.app/catalog/"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/web-widget.svg" width="100%" alt="Live2D Web Widget"></a>
 
-# 少女前线 Live2D 网页看板娘
+# Live2D 网页看板娘
 
-一行脚本，把少女前线角色放进网页。点击人物播放动作、语音和台词，也可以为她切换装扮。
+在网站中嵌入可互动的 Live2D 模型。你可以加载自己的模型清单，也可以接入现成图鉴，按人物和造型切换。
 
 <a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm 稳定版"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="构建与测试"></a> <a href="#api-与兼容性"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#素材与致谢"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="代码许可 ISC"></a>
 
 **[打开在线图鉴](https://live2d-nova.vercel.app/catalog/)** · [快速接入](#快速接入) · [模块 API](#api-与兼容性) · [English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md)
 
 </div>
+
+## 快速接入
+
+将模型清单和它引用的贴图、动作等文件一起部署，保留相对路径。跨域托管素材时需要允许 CORS。把下面的 `/models/haru/haru.model3.json` 换成自己的清单地址。Cubism 2 模型也可使用同一个入口，例如 `/models/character/model.json`。
+
+```html
+<script type="module">
+  import { loadWidget } from "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/widget.mjs";
+  await loadWidget({ modelUrl: "/models/haru/haru.model3.json", position: "right" });
+</script>
+```
+
+主要面向中国大陆访客时，可把播放器域名换成 `cdn.jsdmirror.com`。模型及其素材从你提供的清单地址加载。
+
+## 通过 npm 或 pnpm 安装
+
+```sh
+npm install live2dapi-noa
+# 或
+pnpm add live2dapi-noa
+```
+
+在页面挂载后执行。使用服务端渲染的项目，可在客户端生命周期函数中调用。
+
+```ts
+import { loadWidget } from 'live2dapi-noa';
+
+await loadWidget({
+  modelUrl: '/models/haru/haru.model3.json',
+  locale: 'zh-CN',
+  position: 'right',
+});
+```
+
+npm 包包含 JS 播放器、样式、TypeScript 声明和两套界面文案。模型、贴图、动作和录音托管在 GitHub。项目打包器移动入口文件后，组件会从 GitHub CDN 加载同版本的运行文件；可通过 `baseUrl` 指定国内运行时目录或自托管目录。直接通过 CDN 使用模块 API 时，从快捷入口同目录的 `widget.mjs` 导入相同函数即可。
+
+## 使用自己的模型目录
+
+多个模型可以共用一个静态 JSON 目录。为每个造型取一个稳定 ID，`baseUrl` 相对于目录文件解析，`manifest` 相对于该素材源解析。以下示例假定目录放在 `/models/catalog.json`，两份模型位于相邻的子目录。
+
+```json
+{
+  "schemaVersion": 1,
+  "sources": { "local": { "baseUrl": "./" } },
+  "models": {
+    "haru/original": [{ "source": "local", "manifest": "haru/haru.model3.json" }],
+    "companion/original": [{ "source": "local", "manifest": "companion/model.json" }]
+  }
+}
+```
+
+```js
+await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' });
+```
+
+挂载后，可在自己的选择器中调用 `selectWidgetModel(id)` 切换造型。
+
+## 界面语言与人物台词
+
+组件按需加载渲染器。内置图鉴根据造型的可见轮廓取景。台词气泡位于人物上方，工具栏靠右垂直居中。在较窄的图鉴里，横向造型的工具栏会移到上方。
+
+| 配置位置 | 简体中文（默认） | 英文 |
+| --- | --- | --- |
+| 快捷入口 | 省略参数或添加 `?lang=zh-CN` | 添加 `?lang=en` |
+| 模块 API | `locale: 'zh-CN'` | `locale: 'en'` |
+| 在线图鉴 | [中文图鉴](https://live2d-nova.vercel.app/catalog/) | [英文图鉴](https://live2d-nova.vercel.app/catalog/?lang=en) |
+
+语言设置适用于工具栏、无障碍标签、问候和预设提示。图鉴切换语言时会保留当前造型。游戏台词按动作和语音事件匹配：英文优先读取事件原有字幕，中文按角色和语音编号查找译文。旧模型也支持按语音编号或内嵌原句匹配译文。互动缺少台词时显示所选语言的预设提示。字幕保留到动作和语音结束，两种语言都播放模型原有录音。新版模型会等动作和录音就绪，从动作首帧按模型配置的延迟播放语音。录音缺失或加载失败时，仍会播放动作并显示对应台词。
+
+## 放大与全屏
+
+点击看板娘工具栏的 **放大查看**，当前人物会移到大图舞台，动作、台词、语音和点击互动继续使用同一块画布。在支持的浏览器里，点 **全屏** 可以进一步隐藏浏览器界面。点 **还原** 即可回到网页原位。嵌入 iframe 时，浏览器全屏还需要宿主页面授予全屏权限。
 
 ## 按作品浏览
 
@@ -39,9 +111,9 @@ await loadWidget({
 
 其他两个目录为 `bang-dream.json`、`houkai2.json`，`collection` 取对应文件名去掉扩展名。新增目录按需请求固定 Git 提交下的原素材。大陆直连 GitHub 的可用性取决于访客网络。npm 包仅提供播放器。素材来源和重建方式见[模型目录维护说明](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)。
 
-## 快速接入
+## 少女前线一行脚本入口
 
-选择适合主要访客的 CDN，把一行代码放在 `</body>` 前。两个入口都跟随最新稳定版，默认显示简体中文。CDN 缓存更新后，新访问会加载新版本。需要锁定版本时，可将 `widget-latest` 换为 `widget-2.4.4`。
+选择适合主要访客的 CDN，把一行代码放在 `</body>` 前。两个入口都跟随最新稳定版，默认显示简体中文。CDN 缓存更新后，新访问会加载新版本。需要锁定版本时，可将 `widget-latest` 换为 `widget-2.5.0`。
 
 **中国大陆**
 
@@ -63,56 +135,24 @@ await loadWidget({
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。
 
-## 通过 npm 或 pnpm 安装
-
-```sh
-npm install live2dapi-noa
-# 或
-pnpm add live2dapi-noa
-```
-
-在页面挂载后执行。使用服务端渲染的项目，可在客户端生命周期函数中调用。
-
-```ts
-import { loadGirlsFrontline, selectWidgetModel } from 'live2dapi-noa';
-
-await loadGirlsFrontline({ locale: 'zh-CN', position: 'right', modelId: 'doll/k2/3301/normal' });
-// 在自己的角色选择器中调用
-await selectWidgetModel('doll/56-1type/7706/normal');
-```
-
-npm 包包含 JS 播放器、样式、TypeScript 声明和两套界面文案。模型、贴图、动作和录音托管在 GitHub。项目打包器移动入口文件后，组件会从 GitHub CDN 加载同版本的运行文件；可通过 `baseUrl` 指定国内运行时目录或自托管目录。直接通过 CDN 使用模块 API 时，从快捷入口同目录的 `widget.mjs` 导入相同函数即可。
-
-## 界面语言与人物台词
-
-组件按需加载渲染器，按每套造型的可见轮廓取景。台词气泡位于人物上方，工具栏靠右垂直居中。在较窄的图鉴里，横向造型的工具栏会移到上方。
-
-| 配置位置 | 简体中文（默认） | 英文 |
-| --- | --- | --- |
-| 快捷入口 | 省略参数或添加 `?lang=zh-CN` | 添加 `?lang=en` |
-| 模块 API | `locale: 'zh-CN'` | `locale: 'en'` |
-| 在线图鉴 | [中文图鉴](https://live2d-nova.vercel.app/catalog/) | [英文图鉴](https://live2d-nova.vercel.app/catalog/?lang=en) |
-
-语言设置适用于工具栏、无障碍标签、问候和预设提示。图鉴切换语言时会保留当前造型。游戏台词按动作和语音事件匹配：英文优先读取事件原有字幕，中文按角色和语音编号查找译文。旧模型也支持按语音编号或内嵌原句匹配译文。互动缺少台词时显示所选语言的预设提示。字幕保留到动作和语音结束，两种语言都播放模型原有录音。新版模型会等动作和录音就绪，从动作首帧按模型配置的延迟播放语音。录音缺失或加载失败时，仍会播放动作并显示对应台词。
-
 ## API 与兼容性
 
 | 入口或选项 | 用途 |
 | --- | --- |
+| `loadWidget({ modelUrl, coreUrl })` | 直接加载单个模型。Cubism 2 使用旧版播放器；Cubism 3–5 清单（`.model3.json`）按需加载 `live2d-web` 的 WebGL2 渲染器及 Live2D Cubism Core。 |
 | `loadGirlsFrontline(options?)` | 挂载少女前线集合。可设置 `locale`、`modelId`、位置 `position`（`left` 或 `right`）和模式 `mode`（`sequential` 或 `random`）。 |
 | `selectWidgetModel(id)` | 挂载后使用稳定 ID 切换角色，可直接从图鉴复制 ID。 |
-| `loadModelCatalog(url, 'girls-frontline', locale?)` | 获取可用 ID、对应语言的名称与原生清单地址。 |
-| `loadWidget({ modelUrl, coreUrl })` | 直接加载单个模型。Cubism 2 使用旧版播放器；Cubism 3–5 清单（`.model3.json`）按需加载 `live2d-web` 的 WebGL2 渲染器及 Live2D Cubism Core。 |
+| `loadModelCatalog(url, collection?, locale?)` | 获取可用 ID、对应语言的名称与原生清单地址。 |
 | `baseUrl` / `catalogUrl` / `coreUrl` | 分别指定播放器目录、模型目录 JSON 和 Cubism Core 地址。 |
 | 历史调用 | 支持 `initWidget(waifuPath, apiPath)`、数字模型 ID、`autoload.js`、随机或顺序加载器和独立 CSS。 |
 
-## 模型目录与离线下载
+## 少女前线示例与离线下载
 
 | <a href="https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/fairy--air_attack--1--default.webp" width="96" alt="空袭妖精"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/doll--ump9--mod--normal.webp" width="96" alt="UMP9 心智升级"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/squad--ags-30--base--default.webp" width="96" alt="AGS-30 小队"></a> |
 | :---: | :---: | :---: |
 | [空袭妖精](https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default) | [UMP9 心智升级](https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal) | [AGS-30 小队](https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default) |
 
-图鉴收录已核对的公开收藏中 129 个条目、443 个可选形态，包含妖精、人形、副官、小队和背景。标准与战损形态各有独立 ID，7 个旧档 ID 仍指向对应装扮。统计范围和上游缺件记录见核对说明。[模型目录](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [来源与核对记录](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
+少女前线分栏收录已核对的公开收藏中 129 个条目、443 个可选形态，包含妖精、人形、副官、小队和背景。标准与战损形态各有独立 ID，7 个旧档 ID 仍指向对应装扮。统计范围和上游缺件记录见核对说明。[模型目录](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [来源与核对记录](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 
 安装 Node.js 24 和 Git，在仓库根目录运行：
 
@@ -140,7 +180,7 @@ pnpm exec playwright-core install chromium-headless-shell
 pnpm run test:browser .
 ```
 
-`pnpm dev` 启动演示站。准备好本地素材后，运行 `node test/library-browser.mts ./models-offline` 验证图鉴和真实模型。发布时推送与包版本对应的 `vX.Y.Z` 标签，CI 验证 tarball，发布固定 GitHub 快照，并通过 OIDC 将同一份已测试播放器发布到 npm。[发布流程](https://github.com/nova1751/live2d-api/blob/main/.github/workflows/publish.yml)
+`pnpm demo` 启动演示站。准备好本地素材后，运行 `node test/library-browser.mts ./models-offline` 验证图鉴和真实模型。发布时推送与包版本对应的 `vX.Y.Z` 标签，CI 验证 tarball，发布固定 GitHub 快照，并通过 OIDC 将同一份已测试播放器发布到 npm。[发布流程](https://github.com/nova1751/live2d-api/blob/main/.github/workflows/publish.yml)
 
 ## 素材与致谢
 

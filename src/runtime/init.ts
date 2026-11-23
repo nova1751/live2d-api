@@ -1,4 +1,5 @@
 import { setLanguage, translated } from './locale';
+import { expandModel } from './expand';
 import { icons } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson } from './request';
@@ -97,12 +98,13 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     if (typeof url === 'string') models.costume(url).catch(reportError);
   });
   const labels = { hitokoto: translated('听一句话', 'Hear a quote'), asteroids: translated('启动小游戏', 'Play Asteroids'), 'switch-model': translated('切换人物', 'Next character'),
-    'switch-texture': translated('切换造型', 'Next outfit'), photo: translated('保存照片', 'Save a picture'), info: translated('项目信息', 'Project information'), quit: translated('收起看板娘', 'Hide companion') };
+    'switch-texture': translated('切换造型', 'Next outfit'), expand: translated('放大查看', 'Expand model'), photo: translated('保存照片', 'Save a picture'), info: translated('项目信息', 'Project information'), quit: translated('收起看板娘', 'Hide companion') };
   const actions = {
     hitokoto: () => hitokoto(options.locale).catch(reportError),
     asteroids,
     'switch-model': (event: Event) => models.nextModel(prepareStart(event)).catch(reportError),
     'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
+    expand: expandModel,
     photo: () => {
       say(translated('照好了嘛，是不是很可爱呢？', 'Did you get my good side?'), 6000, 9);
       if (window.loadlive2d.capture?.() || !window.Live2D) return;
@@ -115,9 +117,12 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   for (const name of Array.isArray(options.tools) ? options.tools : Object.keys(actions)) {
     if (options.modelUrl && (name === 'switch-model' || name === 'switch-texture')) continue;
     if (!Object.prototype.hasOwnProperty.call(actions, name)) continue;
+    if (name === 'expand' && typeof document.createElement('dialog').showModal !== 'function') continue;
     const tool = name as keyof typeof actions;
     byId('waifu-tool').insertAdjacentHTML('beforeend', `<button type="button" id="waifu-tool-${tool}" aria-label="${labels[tool]}" title="${labels[tool]}">${icons[tool]}</button>`);
-    byId('waifu-tool-' + tool).addEventListener('click', actions[tool]);
+    const button = byId('waifu-tool-' + tool);
+    if (tool === 'expand') button.setAttribute('aria-haspopup', 'dialog');
+    button.addEventListener('click', actions[tool]);
   }
   models.load(undefined, undefined, undefined, start).catch(reportError);
   getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(reportError);

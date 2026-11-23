@@ -1,8 +1,8 @@
 {
   "name": "live2dapi-noa",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "packageManager": "pnpm@10.33.0",
-  "description": "少女前线 Live2D 网页看板娘，支持中英文台词与 Cubism 2–5 模型。",
+  "description": "可嵌入网页的 Live2D 播放器，支持自定义模型、角色图鉴和 Cubism 2–5。",
   "main": "./widget.mjs",
   "publishConfig": {
     "access": "public",
