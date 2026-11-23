@@ -90,6 +90,8 @@ await loadWidget({
 
 The package includes the JS runtime, styles, TypeScript declarations and both sets of UI messages. Models, textures, motions and recordings are hosted on GitHub. When a bundler relocates the entry, the runtime loads its matching GitHub CDN release. Set `baseUrl` to the mainland runtime directory or to your own deployed copy. For a CDN-only module integration, import the same functions from `widget.mjs` next to the shortcut.
 
+The gallery indexes seven collections. Some assets live in tagged snapshots of this repository, while others come from pinned upstream commits. With the mainland shortcut, the built-in catalogs resolve models, textures, motions, recordings and file overrides through `cdn.jsdmirror.com`. Set `coreUrl` separately to host Cubism Core for modern models.
+
 ## Bring your own catalog
 
 Give each outfit a stable ID in a static JSON catalog. The source base URL resolves against the catalog URL, and manifest paths resolve against that source. In this example, save the catalog at `/models/catalog.json` alongside two model folders.

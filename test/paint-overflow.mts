@@ -10,7 +10,7 @@ export async function checkPaintOverflow(browser, base) {
       schemaVersion: 1, sources: { local: { baseUrl: './model/' } },
       models: { 'fairy/test/1/default': [{ source: 'local', manifest: 'fairy/air_attack/index.json' }] },
     } }));
-    for (const [width, position] of [[1100, 'left'], [390, 'right']]) {
+    for (const [width, position] of [[1100, 'left'], [390, 'left'], [390, 'right']]) {
       await page.setViewportSize({ width, height: 820 });
       await page.goto(base + 'overflow-test');
       await page.evaluate(async ({ base, position }) => {
@@ -23,6 +23,11 @@ export async function checkPaintOverflow(browser, base) {
       const paint = await page.locator('#live2d').boundingBox();
       const widget = await page.locator('#waifu').boundingBox();
       const square = Math.max(hit.width, hit.height);
+      if (position === 'left') {
+        assert.ok(Math.abs(paint.x) <= 1, JSON.stringify(paint));
+        assert.ok(paint.x + paint.width <= width + 1);
+        assert.ok(widget.x + widget.width <= width + 1);
+      }
       assert.ok(Math.abs(paint.width - square * 1.5) <= 1);
       assert.ok(Math.abs(widget.width - hit.width - 50) <= 1);
       assert.ok(Math.abs(paint.x + paint.width / 2 - hit.x - hit.width / 2) <= 1);

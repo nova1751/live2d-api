@@ -113,6 +113,14 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
 function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBase = url.href) {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
   const audioBySource = /* @__PURE__ */ new Map();
+  const mainland = url.hostname === "cdn.jsdmirror.com";
+  function regionalUrl(href) {
+    if (!mainland) return href;
+    return href.replace(
+      /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
+      url.origin + "/gh/$1/$2@$3/"
+    ).replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, url.origin + "/gh/");
+  }
   const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
   const presentation = collection ? catalog.presentation : void 0;
   const localized = locale === "en" ? presentation?.en : presentation;
@@ -141,12 +149,10 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     const assetUrl = (path, sourceName = asset.source) => {
       const source2 = catalog.sources[sourceName];
       const base = new URL(source2.baseUrl, sourceBase);
-      if (url.hostname === "cdn.jsdmirror.com" && base.hostname === "cdn.jsdelivr.net" && base.pathname.startsWith("/gh/nova1751/live2d-api@cdn-")) base.hostname = url.hostname;
       const packs = base.hostname === "raw.githubusercontent.com" ? source2.packs : void 0;
       const pack = packs?.find((p) => p.directories.some((dir) => path.startsWith(dir + "/")));
       const target = new URL(path.split("/").map(encodeURIComponent).join("/"), pack?.baseUrl ?? base);
-      if (pack && url.hostname === "cdn.jsdmirror.com" && target.hostname === "cdn.jsdelivr.net") target.hostname = url.hostname;
-      return target.href;
+      return regionalUrl(target.href);
     };
     let dialogue;
     if (asset.dialogue) {
@@ -160,19 +166,20 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
       Object.entries(asset.cues).map(([key, cue]) => [key, {
         ...cue,
-        sound: asset.cueSource && cue.sound ? assetUrl(cue.sound, asset.cueSource) : cue.sound,
+        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : regionalUrl(cue.sound)),
         caption: locale === "en" ? cue.captionEn || cue.caption : cue.caption
       }])
     ) : void 0;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
-    return { cues, sceneAspect, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const files = mainland && asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
+    return { cues, sceneAspect, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.9.3";
+var version = "2.9.4";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";

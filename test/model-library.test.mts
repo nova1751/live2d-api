@@ -5,6 +5,24 @@ import { transform } from 'esbuild';
 
 const json = async path => JSON.parse(await readFile(new URL('../' + path, import.meta.url)));
 
+test('all seven mainland catalogs resolve pinned models, recordings and absolute repairs through the mirror', async () => {
+  const { collections, parseModelCatalog } = await import('../src/library/catalog.ts');
+  const mirror = 'https://cdn.jsdmirror.com';
+  for (const game of collections) {
+    const path = game === 'girls-frontline' ? 'catalog/library.json' : 'catalog/games/' + game + '.json';
+    const catalog = parseModelCatalog(await json(path), new URL(path, mirror), game);
+    const recordings = new Set();
+    for (const id of catalog.ids) {
+      const { modelUrl, dialogue, files, cues } = catalog.resolve(id);
+      if (dialogue) recordings.add(dialogue.audio);
+      for (const url of [modelUrl, dialogue?.url, ...Object.values(files ?? {}), ...Object.values(cues ?? {}).map(cue => cue.sound)]) {
+        if (url && /^https?:/.test(url)) assert.equal(new URL(url).origin, mirror, id + ' ' + url);
+      }
+    }
+    for (const audio of recordings) for (const url of audio.values()) assert.equal(new URL(url).origin, mirror);
+  }
+});
+
 test('OTs-14 uses native events and regional packs in the gallery and preserves legacy and offline sources', async t => {
   const { loadModelCatalog } = await import('../widget.mjs');
   const catalog = await json('catalog/library.json');

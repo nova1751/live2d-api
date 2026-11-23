@@ -1,7 +1,11 @@
 @import "./widget.css";
 #waifu { left: 0; }
 #waifu.waifu-adaptive {
-  --waifu-max-width: min(480px, calc(100vw - var(--waifu-right-inset) - var(--waifu-side-space)));
+  /* Keep the whole animation surface on screen, including the paint margin outside the hit area. */
+  --waifu-paint-ratio: calc(max(1, 1 / var(--waifu-aspect, 1)) * var(--waifu-paint-scale, 1));
+  --waifu-max-width: min(480px, calc(100vw / var(--waifu-paint-ratio)),
+    calc((100vw - var(--waifu-right-inset) - var(--waifu-side-space)) * 2 / (1 + var(--waifu-paint-ratio))));
+  left: calc(var(--waifu-model-width) * (var(--waifu-paint-ratio) - 1) / 2);
 }
 #waifu.waifu-adaptive #waifu-tips {
   max-width: calc(var(--waifu-model-width) - 2 * var(--waifu-left-inset));
