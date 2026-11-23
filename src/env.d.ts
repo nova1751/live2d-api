@@ -5,7 +5,8 @@ interface LegacyOptions {
   cdnPath?: string;
   apiPath?: string;
   tools?: string[];
-  collection?: import('./library/catalog').Collection;
+  collection?: import('./library/catalog').CollectionScope;
+  switchBy?: 'character' | 'outfit';
   catalogUrl?: string;
   catalog?: import('./library/catalog').LoadedModelCatalog;
   modelId?: string;

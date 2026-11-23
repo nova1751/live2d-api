@@ -1,11 +1,13 @@
-import { loadWidget, type WidgetMode, type WidgetPosition } from './widget.mjs';
+import { loadWidget, type WidgetMode, type WidgetPosition, type WidgetOptions } from './widget.mjs';
 
 import { scriptDirectory } from './distribution';
 
 const script = document.currentScript as HTMLScriptElement | null;
 if (script && window.innerWidth >= 768) {
   const { mode, position } = script.dataset;
+  const collection = new URL(script.src, document.baseURI).searchParams.get('collection');
   loadWidget({
+    ...(collection !== null && { collection: collection as WidgetOptions['collection'], switchBy: 'outfit' }),
     locale: script.dataset.locale === 'en' ? 'en' : 'zh-CN',
     baseUrl: scriptDirectory(script.src),
     catalogUrl: script.dataset.catalogUrl,

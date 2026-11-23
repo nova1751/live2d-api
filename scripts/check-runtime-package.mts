@@ -4,7 +4,7 @@ import { join } from 'node:path';
 
 const root = process.argv[2];
 const files = await readdir(root, { recursive: true });
-assert.ok(files.includes('girls-frontline.mjs') && files.includes('autoload.js') && files.includes('live2d.min.js'));
+assert.ok(files.includes('collections.mjs') && files.includes('girls-frontline.mjs') && files.includes('autoload.js') && files.includes('live2d.min.js'));
 assert.ok(files.some(file => file.replaceAll('\\', '/') === 'modern/renderer.mjs'));
 for (const file of ['README.md', 'docs/en/README.md', 'waifu-tips.en.json', 'waifu-tips.json', 'widget.d.mts', 'library/catalog.d.ts']) {
   assert.ok(files.some(path => path.replaceAll('\\', '/') === file), 'Missing ' + file);

@@ -24,6 +24,34 @@
 
 ## 快速接入
 
+### 按作品引入
+
+把脚本放在网页的 `</body>` 前。不带参数时，“切换人物”按图鉴顺序逐个切换造型，一部作品结束后进入下一部，最后回到第一部。作品目录按需加载，刷新后恢复上次选择。
+
+```html
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
+```
+
+只展示碧蓝航线时，给**脚本地址**加上 `?collection=azur-lane`。切到底会回到该作品的第一个造型。海外可将域名换为 `cdn.jsdelivr.net`。
+
+```html
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=azur-lane"></script>
+```
+
+| 轮换顺序 | 作品 | `collection` |
+| --- | --- | --- |
+| 1 | 少女前线 | `girls-frontline` |
+| 2 | 碧蓝航线 | `azur-lane` |
+| 3 | BanG Dream! | `bang-dream` |
+| 4 | 崩坏学园 2 | `houkai2` |
+| 5 | 机动战队 | `iron-saga` |
+| 6 | 战舰少女 R | `warship-girls` |
+| 7 | 宝石研物语 | `baoshi-yanwuyu` |
+
+`collection=all` 与通用入口省略参数相同。加 `lang=en` 使用英文。快捷入口在视口宽度达到 768 CSS 像素时显示。原有 `girls-frontline.mjs` 和 `latest.mjs` 不带参数时继续使用少女前线。模型贴图与语音的来源见各作品目录。
+
+### 接入自定义模型
+
 把下面的代码放在网页的 `</body>` 前。示例使用《机动战队》玛蒂尔达的实机模型，贴图、动作和语音随清单一起加载。
 
 ```html

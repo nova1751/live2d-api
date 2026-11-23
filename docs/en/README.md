@@ -24,6 +24,34 @@ Two more playable examples · [Iron Saga · Slokai](https://nova1751.github.io/l
 
 ## Quick start
 
+### Embed a collection
+
+Place the script before `</body>`. By default, **Switch character** advances through each outfit in catalog order, continues into the next game and wraps at the end. The widget loads each catalog when needed and restores the previous selection on reload.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
+```
+
+For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=azur-lane&amp;lang=en"></script>
+```
+
+| Order | Game | `collection` |
+| --- | --- | --- |
+| 1 | Girls’ Frontline | `girls-frontline` |
+| 2 | Azur Lane | `azur-lane` |
+| 3 | BanG Dream! | `bang-dream` |
+| 4 | Guns GirlZ | `houkai2` |
+| 5 | Iron Saga | `iron-saga` |
+| 6 | Warship Girls R | `warship-girls` |
+| 7 | Baoshi Yanwuyu | `baoshi-yanwuyu` |
+
+Use `collection=all` for the same rotation as the default shortcut. The mainland China mirror is `cdn.jsdmirror.com`. Shortcuts mount at viewport widths of 768 CSS pixels or greater. Existing `girls-frontline.mjs` and `latest.mjs` embeds still select Girls’ Frontline when no collection is specified.
+
+### Embed a custom model
+
 Paste this before the closing `</body>` tag. The example loads Matilda from Iron Saga, with textures, motions and voice lines referenced by her manifest.
 
 ```html

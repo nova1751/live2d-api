@@ -33,6 +33,7 @@ const entries = [
   { entryPoints: ['src/standalone.ts'], outfile: 'live2d.min.js', format: 'iife', bundle: true,
     minify: true, banner: { js: legacyEngine.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
+  { entryPoints: ['src/collections.mts'], outfile: 'collections.mjs', format: 'esm' },
   { entryPoints: ['src/girls-frontline.mts'], outfile: 'girls-frontline.mjs', format: 'esm' },
   { entryPoints: ['src/latest.mts'], outfile: 'latest.mjs', format: 'esm', bundle: true, target: 'es2022' },
   { entryPoints: ['src/pages/catalog.ts'], outfile: 'catalog/browser.mjs', format: 'esm', target: 'es2022' },

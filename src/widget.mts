@@ -4,6 +4,7 @@ import { runtimeDirectory, defaultLibraryUrl, githubLibrary } from './distributi
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
+import { collections, collectionCatalogUrl } from './library/catalog.js';
 import type { WidgetLocale } from './library/catalog.js';
 export type { WidgetLocale } from './library/catalog.js';
 export type WidgetMode = 'random' | 'sequential';
@@ -18,7 +19,8 @@ export interface WidgetOptions {
   /** Optional self-hosted Cubism Core for modern models. */
   coreUrl?: string | URL;
   locale?: WidgetLocale;
-  collection?: import('./library/catalog.js').Collection;
+  collection?: import('./library/catalog.js').CollectionScope;
+  switchBy?: 'character' | 'outfit';
   catalogUrl?: string | URL;
   /** Reuse the catalog already loaded by a gallery, including its collection and locale. */
   catalog?: import('./library/catalog.js').LoadedModelCatalog;
@@ -79,7 +81,7 @@ async function mount(base: string, options: WidgetOptions, mode: WidgetMode, pos
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, collection, locale, ...(options.catalog && { catalog: options.catalog }), catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
+      initWidget({ cdnPath: base, collection, switchBy: options.switchBy, locale, ...(options.catalog && { catalog: options.catalog }), catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         expandedZoom: options.expandedZoom, coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
@@ -96,7 +98,7 @@ export async function selectWidgetModel(id: string): Promise<void> {
   await select(id);
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, switchBy, locale, expandedZoom }: WidgetOptions = {}): Promise<void> {
   if (catalog) {
     if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url ||
         collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
@@ -106,6 +108,8 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
     collection = catalog.collection;
     locale = catalog.locale;
   }
+  if (collection !== undefined && collection !== 'all' && !collections.includes(collection)) throw new TypeError('Unknown Live2D collection: ' + collection);
+  if (collection === 'all' && (modelUrl || modelBaseUrl)) throw new TypeError('Choose a collection or an explicit model source');
   if (locale && locale !== 'en' && locale !== 'zh-CN') throw new TypeError('Unsupported widget locale');
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
@@ -121,13 +125,10 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   base.search = '';
   base.hash = '';
   if (!catalogUrl && !modelUrl && !modelBaseUrl) {
-    if (collection && collection !== 'girls-frontline') {
-      throw new TypeError('Provide the game catalogUrl from your gallery deployment');
-    }
-    catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+    catalogUrl = collection ? collectionCatalogUrl(githubLibrary(base), collection) : defaultLibraryUrl(base);
   }
   if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }, mode, position).catch(error => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, switchBy, locale, expandedZoom }, mode, position).catch(error => {
     delete page[mounting];
     throw error;
   });

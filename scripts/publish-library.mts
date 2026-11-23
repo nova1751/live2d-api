@@ -1,11 +1,14 @@
 import { execFileSync } from 'node:child_process';
-import { libraryTag } from './library-tag.mts';
+import { gameFiles, libraryTag } from './library-tag.mts';
 
 const git = (args, input, env) => execFileSync('git', args, { input, encoding: 'utf8', env }).trim();
-git(['diff', '--exit-code', 'HEAD', '--', 'catalog/library.json']);
+git(['diff', '--exit-code', 'HEAD', '--', 'catalog/library.json', ...gameFiles.map(file => 'catalog/games/' + file)]);
 const tag = await libraryTag();
 const blob = git(['rev-parse', 'HEAD:catalog/library.json']);
-const catalog = git(['mktree'], '100644 blob ' + blob + '\tlibrary.json\n');
+const entries = git(['ls-tree', 'HEAD:catalog/games', '--', ...gameFiles]);
+if (entries.split('\n').length !== gameFiles.length) throw new Error('Incomplete game catalog snapshot');
+const games = git(['mktree'], entries + '\n');
+const catalog = git(['mktree'], '040000 tree ' + games + '\tgames\n100644 blob ' + blob + '\tlibrary.json\n');
 const tree = git(['mktree'], '040000 tree ' + catalog + '\tcatalog\n');
 const identity = { ...process.env, GIT_AUTHOR_NAME: 'Live2D CDN', GIT_COMMITTER_NAME: 'Live2D CDN',
   GIT_AUTHOR_EMAIL: 'noreply@github.com', GIT_COMMITTER_EMAIL: 'noreply@github.com',

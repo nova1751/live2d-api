@@ -53,11 +53,14 @@ export interface DialogueSource {
     captions?: Record<string, string>;
     audio: ReadonlyMap<string, string>;
 }
-export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2' | 'iron-saga' | 'warship-girls' | 'baoshi-yanwuyu';
+export declare const collections: readonly ["girls-frontline", "azur-lane", "bang-dream", "houkai2", "iron-saga", "warship-girls", "baoshi-yanwuyu"];
+export type Collection = typeof collections[number];
+export type CollectionScope = Collection | 'all';
+export declare function collectionCatalogUrl(libraryUrl: string, collection?: CollectionScope): string;
 export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
 export declare function loadModelCatalog(input: string | URL, collection?: Collection, locale?: WidgetLocale): Promise<{
     url: string;
-    collection: Collection | undefined;
+    collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;
     ids: string[];
     gallery: Record<string, GalleryEntry> | undefined;
@@ -82,7 +85,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
 }>;
 export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale?: WidgetLocale, sourceBase?: string): {
     url: string;
-    collection: Collection | undefined;
+    collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;
     ids: string[];
     gallery: Record<string, GalleryEntry> | undefined;

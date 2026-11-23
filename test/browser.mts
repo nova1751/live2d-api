@@ -1,3 +1,4 @@
+import { checkCollectionShortcut } from './collection-shortcut.mts';
 import { checkPaintOverflow } from './paint-overflow.mts';
 import { checkNativeEvents, checkPackedCues, openLegacyDemo } from './native-events.mts';
 import assert from 'node:assert/strict';
@@ -194,6 +195,7 @@ try {
   await checkNativeEvents(browser, url);
   await checkPackedCues(browser, url);
   await checkPaintOverflow(browser, url);
+  await checkCollectionShortcut(browser, url);
   assert.deepEqual(errors, []);
   console.log('Verified natural idle animation, silent skin changes, paired mouse/touch interactions and return to idle.');
 } finally {

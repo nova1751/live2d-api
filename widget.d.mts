@@ -13,7 +13,8 @@ export interface WidgetOptions {
     /** Optional self-hosted Cubism Core for modern models. */
     coreUrl?: string | URL;
     locale?: WidgetLocale;
-    collection?: import('./library/catalog.js').Collection;
+    collection?: import('./library/catalog.js').CollectionScope;
+    switchBy?: 'character' | 'outfit';
     catalogUrl?: string | URL;
     /** Reuse the catalog already loaded by a gallery, including its collection and locale. */
     catalog?: import('./library/catalog.js').LoadedModelCatalog;
@@ -24,6 +25,6 @@ export interface WidgetOptions {
     baseUrl?: string | URL;
 }
 export declare function selectWidgetModel(id: string): Promise<void>;
-export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }?: WidgetOptions): Promise<void>;
+export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, switchBy, locale, expandedZoom }?: WidgetOptions): Promise<void>;
 /** Mount the Girls’ Frontline collection and keep character changes inside it. */
 export declare function loadGirlsFrontline(options?: Omit<WidgetOptions, 'collection' | 'modelUrl' | 'modelBaseUrl'>): Promise<void>;

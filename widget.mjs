@@ -81,6 +81,10 @@ function createRenderer(base, legacy) {
 }
 
 // src/library/catalog.ts
+var collections = ["girls-frontline", "azur-lane", "bang-dream", "houkai2", "iron-saga", "warship-girls", "baoshi-yanwuyu"];
+function collectionCatalogUrl(libraryUrl, collection) {
+  return !collection || collection === "all" || collection === "girls-frontline" ? libraryUrl : new URL("games/" + collection + ".json", libraryUrl).href;
+}
 var categories = ["fairy", "doll", "adjutant", "npc", "squad", "background"];
 var forms = ["default", "normal", "destroy"];
 function rank(list, key) {
@@ -167,7 +171,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.8.7";
+var version = "2.9.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -187,7 +191,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-e4889e2283d916db/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-1ed6de23bf6d60e3/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;
@@ -242,6 +246,7 @@ async function mount(base, options, mode, position) {
       initWidget({
         cdnPath: base,
         collection,
+        switchBy: options.switchBy,
         locale,
         ...options.catalog && { catalog: options.catalog },
         catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href,
@@ -264,7 +269,7 @@ async function selectWidgetModel(id) {
   if (!select) throw new Error("Initialize the widget with a model catalog first");
   await select(id);
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, switchBy, locale, expandedZoom } = {}) {
   if (catalog) {
     if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url || collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
       throw new TypeError("Widget options conflict with the supplied catalog");
@@ -273,6 +278,8 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
     collection = catalog.collection;
     locale = catalog.locale;
   }
+  if (collection !== void 0 && collection !== "all" && !collections.includes(collection)) throw new TypeError("Unknown Live2D collection: " + collection);
+  if (collection === "all" && (modelUrl || modelBaseUrl)) throw new TypeError("Choose a collection or an explicit model source");
   if (locale && locale !== "en" && locale !== "zh-CN") throw new TypeError("Unsupported widget locale");
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
@@ -285,13 +292,10 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   base.search = "";
   base.hash = "";
   if (!catalogUrl && !modelUrl && !modelBaseUrl) {
-    if (collection && collection !== "girls-frontline") {
-      throw new TypeError("Provide the game catalogUrl from your gallery deployment");
-    }
-    catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+    catalogUrl = collection ? collectionCatalogUrl(githubLibrary(base), collection) : defaultLibraryUrl(base);
   }
   if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale, expandedZoom }, mode, position).catch((error) => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, switchBy, locale, expandedZoom }, mode, position).catch((error) => {
     delete page[mounting];
     throw error;
   });
