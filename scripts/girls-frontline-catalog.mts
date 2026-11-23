@@ -135,7 +135,7 @@ write(out + '/index.json', { schemaVersion: 1, sources, characters });
 const guide = ['# 少女前线模型目录', '',
   '点人物代号查看其版本列表，点版本查看普通、破损等形态。表内数量按形态统计。', '',
   '本表保留两份旧收藏与历史看板娘的映射。新版演示的完整列表见[少女前线统一目录](../index.html)。“已接入”表示有旧看板娘入口。“待接入 moc”有旧格式来源，仍需核验素材完整性与再分发授权。“仅 moc3”的上游入口见形态记录的 sources[].manifest，可用新版渲染器加载。', '',
-  '[机器可读总目录](index.json) · [来源与授权说明](../../README.zh-CN.md#模型目录与离线下载)', ''];
+  '[机器可读总目录](index.json) · [来源与授权说明](../../README.md#模型目录与离线下载)', ''];
 for (const [category, label] of Object.entries(categories)) {
   guide.push('## ' + label, '', '| 对象 | 版本 | 已接入 | 待接入 moc | 仅 moc3 |', '| --- | --- | ---: | ---: | ---: |',
     ...rows.get(category), '');
