@@ -70,3 +70,38 @@ test('fits tall and wide silhouettes within their bottom-centered viewports', ()
     assert.ok(Math.abs(project(bottom, camera.y, camera) - (1 - 0.03 * height)) < 0.001);
   }
 });
+
+test('waits out a black setup layer and remeasures a clipped outfit before revealing it', t => {
+  const rgba = new Uint8ClampedArray(size * size * 4);
+  const context = { clearRect() {}, drawImage() {}, getImageData: () => ({ data: rgba }) };
+  globalThis.document = { createElement: () => ({ getContext: () => context }) };
+  t.after(() => { delete globalThis.document; });
+  let now = 0;
+  t.mock.method(performance, 'now', () => now);
+  const framing = createFraming();
+  const views = [];
+  function sample() {
+    now += 100;
+    return framing.measure({}, undefined, view => views.push(view));
+  }
+  rgba.fill(128);
+  for (let i = 0; i < rgba.length; i += 4) rgba.fill(0, i, i + 3);
+  for (let i = 0; i < 12; i++) assert.equal(sample(), undefined);
+  function pose(top, bottom) {
+    rgba.fill(0);
+    for (let y = top; y < bottom; y++) {
+      for (let x = 45; x < 81; x++) rgba[(y * size + x) * 4 + 3] = 255;
+    }
+  }
+  pose(56, 128);
+  for (let i = 0; i < 3; i++) assert.equal(sample(), undefined);
+  assert.equal(views.length, 1);
+  assert.ok(views[0].scale < framing.initial.scale);
+  pose(61, 106);
+  assert.equal(sample(), undefined);
+  assert.equal(sample(), undefined);
+  const camera = sample();
+  assert.ok(camera);
+  const feet = 0.5 + camera.y + (106 / size - 0.5) * camera.scale / views[0].scale;
+  assert.ok(Math.abs(feet - 0.97) < 0.001);
+});

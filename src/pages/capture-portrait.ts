@@ -12,9 +12,9 @@ function portrait(id: string, coreUrl?: string) {
   let settle: number | undefined;
   return new Promise<string>((resolve, reject) => {
     // Some skins fade in from a completely transparent first pose.
-    const measure: typeof camera.measure = (canvas, hits) => {
+    const measure: typeof camera.measure = (canvas, hits, resizeSample) => {
       settle ??= performance.now() + 650;
-      return performance.now() < settle ? undefined : camera.measure(canvas, hits);
+      return performance.now() < settle ? undefined : camera.measure(canvas, hits, resizeSample);
     };
     const onPaint = (canvas: HTMLCanvasElement) => {
       try {

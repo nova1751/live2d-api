@@ -263,6 +263,19 @@ try {
   }
   await page.setViewportSize({ width: 1100, height: 850 });
 
+  // This outfit fades out a black setup layer and lists interaction clips without their directory.
+  await page.evaluate(async () => {
+    const { selectWidgetModel } = await import('/viewer/widget.mjs');
+    await selectWidgetModel('doll/dsr50/10501/normal');
+  });
+  await page.waitForSelector('#waifu:not([data-model-loading])');
+  const dsr = await page.locator('.waifu-viewport').boundingBox();
+  assert.ok(dsr.width / dsr.height < 0.85, 'the portrait is framed around the character');
+  const voice = page.waitForRequest(/DSR50_[^/]+\.ogg$/i);
+  const motion = page.waitForRequest(/(?:touch_5|wedding_touch)\.motion3\.json/i);
+  await page.mouse.click(dsr.x + dsr.width * 0.50, dsr.y + dsr.height * 0.12);
+  await Promise.all([voice, motion]);
+
   const keys = process.argv.includes('--all') ? Object.keys(catalog.models).filter(id => !id.startsWith('other/')) : ['doll/an94/archive/normal', 'fairy/air_attack/1/default'];
   for (const id of keys) {
     await page.evaluate(async id => {

@@ -26,11 +26,20 @@ export async function readActions(url: string, source: DialogueSource | undefine
     }),
   ]);
   const actions: Action[] = [];
-  for (const [group, files] of Object.entries(manifest.FileReferences.Motions ?? {})) {
+  const groups = manifest.FileReferences.Motions ?? {};
+  const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
+  const byFilename = new Map<string, string | undefined>();
+  for (const path of paths) {
+    const name = path.slice(path.lastIndexOf('/') + 1);
+    byFilename.set(name, byFilename.has(name) ? undefined : path);
+  }
+  for (const [group, files] of Object.entries(groups)) {
     files.forEach((file, index) => {
       if (data && source) {
         for (const [id, motion] of Object.entries(data.motionData)) {
-          if (motion.motion_name.replace(/\.mtn$/i, '.motion3.json') !== file.File ||
+          const name = motion.motion_name.replace(/\.mtn$/i, '.motion3.json');
+          const path = paths.has(name) ? name : byFilename.get(name);
+          if (path !== file.File ||
               Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !motion.touch_area || motion.touch_area === '0') continue;
           const line = data.voiceData[id];
           const code = line?.char_code?.toUpperCase();

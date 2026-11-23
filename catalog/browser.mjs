@@ -67,7 +67,9 @@ const tiers = english ? { "1": "Tier 1", "2": "Tier 2", "3": "Tier 3" } : { "1":
 const states = english ? { normal: "Standard", destroy: "Damaged" } : { normal: "标准", destroy: "战损" };
 const portrait = (id) => "./portraits/" + encodeURIComponent(id.split("/").join("--")) + ".webp";
 const attachWidget = () => {
-  for (const child of Array.from(document.body.querySelectorAll(":scope > #waifu, :scope > #waifu-toggle"))) host.append(child);
+  for (const child of Array.from(document.body.querySelectorAll(":scope > #waifu, :scope > #waifu-toggle"))) {
+    (child.id === "waifu-toggle" ? find("stage") : host).append(child);
+  }
 };
 new MutationObserver(attachWidget).observe(document.body, { childList: true });
 const firstPaint = new MutationObserver(() => {

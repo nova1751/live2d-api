@@ -51,7 +51,8 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         if (signal.aborted) return;
         if (framing) {
           const { width, height } = graphics!.getSize();
-          const camera = framing.measure(output, (x, y) => modelHandle!.hitTest(x * width, y * height));
+          const camera = framing.measure(output, (x, y) => modelHandle!.hitTest(x * width, y * height),
+            wider => instance.setFit(fit(wider)));
           if (camera) { framing = undefined; instance.setFit(fit(camera)); }
           return;
         }

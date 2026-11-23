@@ -51,7 +51,9 @@ const portrait = (id: string) => './portraits/' + encodeURIComponent(id.split('/
 
 // Host the standard widget in the preview panel, including a later reopen after it was hidden.
 const attachWidget = () => {
-  for (const child of Array.from(document.body.querySelectorAll(':scope > #waifu, :scope > #waifu-toggle'))) host.append(child);
+  for (const child of Array.from(document.body.querySelectorAll(':scope > #waifu, :scope > #waifu-toggle'))) {
+    (child.id === 'waifu-toggle' ? find('stage') : host).append(child);
+  }
 };
 new MutationObserver(attachWidget).observe(document.body, { childList: true });
 const firstPaint = new MutationObserver(() => {

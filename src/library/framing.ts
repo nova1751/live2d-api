@@ -67,21 +67,31 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
 
 export function createFraming(setAspect?: (ratio: number) => void) {
   const initial = { scale: 0.65, x: 0, y: 0 };
+  let sampleCamera = initial;
   const sample = document.createElement('canvas');
   sample.width = sample.height = size;
   const ctx = sample.getContext('2d', { willReadFrequently: true });
   const mask = new Uint8Array(size * size);
   const pose = new Uint8Array(mask.length);
-  let attempts = 0, frames = 0, nextSample = 0;
-  return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest): Camera | undefined {
+  let attempts = 0, frames = 0, nextSample = 0, firstSample: number | undefined;
+  return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest, resizeSample?: (camera: Camera) => void): Camera | undefined {
     if (!ctx) return authored;
     const now = performance.now();
     if (now < nextSample) return;
-    attempts++;
+    firstSample ??= now;
     try {
       ctx.clearRect(0, 0, size, size);
       ctx.drawImage(canvas, 0, 0, size, size);
       const { data } = ctx.getImageData(0, 0, size, size);
+      // Some rigs fade a full-screen black layer out of their setup pose.
+      // Keep the last character on screen until the new silhouette can be measured.
+      const darkCorner = (i: number) => data[i + 3] > 3 && Math.max(data[i], data[i + 1], data[i + 2]) < 12;
+      if ([0, 4 * (size - 1), 4 * size * (size - 1), data.length - 4].every(darkCorner) &&
+          now - firstSample < 2400) {
+        nextSample = now + 80;
+        return;
+      }
+      attempts++;
       let visible = 0;
       for (let i = 0; i < mask.length; i++) {
         const alpha = data[4 * i + 3];
@@ -96,7 +106,16 @@ export function createFraming(setAspect?: (ratio: number) => void) {
       }
     } catch { return authored; }
     if (frames < 3 && attempts < 10) return;
-    return frames ? fitSilhouette(mask, initial, hitTest, setAspect) : authored;
+    if (frames && resizeSample && sampleCamera === initial) {
+      for (let i = 0; i < size; i++) {
+        if (Math.max(mask[i], mask[(size - 1) * size + i], mask[i * size], mask[i * size + size - 1]) < 96) continue;
+        sampleCamera = { ...initial, scale: initial.scale * 0.6 };
+        attempts = frames = 0;
+        resizeSample(sampleCamera);
+        return;
+      }
+    }
+    return frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect) : authored;
   } };
 }
 export type Framing = ReturnType<typeof createFraming>;

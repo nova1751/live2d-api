@@ -1,7 +1,7 @@
 #waifu-toggle {
   border: 0;
   background-color: #fa0;
-  border-radius: 0 5px 5px 0;
+  border-radius: 5px;
   bottom: 66px;
   color: #fff;
   cursor: pointer;
@@ -10,21 +10,34 @@
   visibility: hidden;
   box-sizing: border-box;
   margin: 0;
-  padding: 7px 0;
+  padding: 5px 0;
   position: fixed;
-  width: 32px;
-  min-height: 48px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  min-height: 46px;
   line-height: 1;
   z-index: 2;
   writing-mode: vertical-rl;
+  transform: translateX(-100%);
+  transition: transform 1s;
 }
 
 #waifu-toggle.waifu-toggle-active {
   visibility: visible;
+  transform: translateX(calc(-100% + 10px));
+}
+
+#waifu-toggle.waifu-toggle-active:is(:hover, :focus-visible) {
+  transform: translateX(0);
 }
 
 @media (pointer: coarse) {
-  #waifu-toggle { min-width: 44px; }
+  #waifu-toggle.waifu-toggle-active::after {
+    content: "";
+    position: absolute;
+    inset: 0 -34px 0 0;
+  }
 }
 
 #waifu {
