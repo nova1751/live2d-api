@@ -50,7 +50,7 @@ function createRenderer(base, legacy) {
       base + "modern/renderer.mjs"
     ).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap);
+      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap, options?.sceneAspect);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -159,13 +159,15 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
         caption: locale === "en" ? cue.captionEn || cue.caption : cue.caption
       }])
     ) : void 0;
-    return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const ratio = asset.sceneAspect;
+    const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
+    return { cues, sceneAspect, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.8.6";
+var version = "2.8.7";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";

@@ -26,7 +26,7 @@ interface Event {
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { randomTap?: boolean; bandIdle?: boolean; files?: Record<string,string|null>; cues?: Record<string,import('./library/catalog').GameCue>; locale?: import('./library/catalog').WidgetLocale; onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
+    (canvas: string, model: string, options?: { sceneAspect?: number; randomTap?: boolean; bandIdle?: boolean; files?: Record<string,string|null>; cues?: Record<string,import('./library/catalog').GameCue>; locale?: import('./library/catalog').WidgetLocale; onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
     playMotion?(group: string, index: number): boolean;
     capture?(): boolean;
     prepareInteraction?(): boolean;

@@ -20,6 +20,7 @@ export interface GalleryEntry {
     portrait?: string;
 }
 export interface ModelVariant {
+    sceneAspect?: number;
     cueSource?: string;
     collectionDefault?: boolean;
     cues?: Record<string, GameCue>;
@@ -70,6 +71,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
                 captionEn?: string;
             };
         } | undefined;
+        sceneAspect: number | undefined;
         files: Record<string, string | null> | undefined;
         captions: Record<string, string> | undefined;
         modelUrl: string;
@@ -94,6 +96,7 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
                 captionEn?: string;
             };
         } | undefined;
+        sceneAspect: number | undefined;
         files: Record<string, string | null> | undefined;
         captions: Record<string, string> | undefined;
         modelUrl: string;

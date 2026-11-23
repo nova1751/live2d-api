@@ -347,6 +347,10 @@ for (const path of manifests) {
           typeof caption === 'string' ? localize(caption.trim()) : undefined,
       };
   }
+  // These scene rigs include a full artboard and parked meshes beyond its edge.
+  // Ratios use the canvas dimensions from each pinned moc3, including its HX edition.
+  const scene = code.replace(/_hx$/, '');
+  const sceneAspect = scene === 'aimudeng_2' ? 6000 / 6502 : scene === 'ankeleiqi_2' ? 9 / 7 : undefined;
   const portrait = portraits.get(code.toLowerCase()) || portraits.get(painting);
   const englishOutfit =
     skin && (skin.group_index ? english(enSkins[skin.id]?.name) : 'Original');
@@ -356,7 +360,7 @@ for (const path of manifests) {
     id,
     'archive',
     path,
-    { cues },
+    { cues, sceneAspect },
     {
       name: localize(ship?.name || skin?.name || code),
       en: english(enSkins[skin?.ship_group * 10]?.name) || undefined,

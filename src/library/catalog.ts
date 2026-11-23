@@ -2,7 +2,7 @@ export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
 export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
-export interface ModelVariant { cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
+export interface ModelVariant { sceneAspect?: number; cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
   gallery?: Record<string, GalleryEntry>;
@@ -97,7 +97,9 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
         sound: asset.cueSource && cue.sound ? assetUrl(cue.sound, asset.cueSource) : cue.sound,
         caption: locale === 'en' ? cue.captionEn || cue.caption : cue.caption }])
     ) : undefined;
-    return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const ratio = asset.sceneAspect;
+    const sceneAspect = typeof ratio === 'number' && Number.isFinite(ratio) && ratio > 0 ? ratio : undefined;
+    return { cues, sceneAspect, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

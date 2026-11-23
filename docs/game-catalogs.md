@@ -37,6 +37,10 @@
 
 崩坏学园 2 另比对了 Eikanya、L01den 和 lzy4ever 的专属子树，三者是同一棵 Git 树，共 241 个文件，独立音频数为零。战舰少女 R 在这三份导出中均未找到独立录音。KISGP 也收录了部分同名游戏模型。[L01den](https://github.com/L01den/live2d-models/tree/486d18466be50f646035f0d82c97e9b017b1cce4) · [lzy4ever](https://github.com/lzy4ever/Live2d-model-se) · [KISGP](https://github.com/KISGP/model/tree/8caffe3e36a176b00cca5dda4e438e4d70e1f073)
 
+## 碧蓝航线的场景取景
+
+埃姆登「黑白的夜之主」与安克雷奇「海豚、海洋、游泳课」的普通版和 HX 版包含整幅场景，并把部分活动布景停在原画框外。图鉴按这四份模型的 Cubism 画布比例显示，分别为 6000∶6502 和 9∶7。动作将布景移入画框时即可看到。其他造型继续按可见轮廓取景。
+
 ## 更新目录
 
 三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可复核项目 CDN 素材在国内镜像上的路径。宝石研物语始终从目录中固定的 GitHub 原始文件地址读取。

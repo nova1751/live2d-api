@@ -6,7 +6,7 @@ import type { Camera, Framing } from './library/framing';
 import { readActions, bindInteractions } from './modern/interactions';
 import type { DialogueSource, GameCue } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -15,6 +15,15 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   const host = document.createElement('div');
   host.className = 'waifu-model-stage';
   host.style.cssText = 'position:absolute;inset:0;cursor:grab';
+  // Scene rigs park scenery outside their Cubism artboard to animate it into view.
+  // Fit into a viewport of the authored aspect so the GPU clips that scenery naturally.
+  if (sceneAspect && sceneAspect > 0 && Number.isFinite(sceneAspect)) {
+    Object.assign(host.style, {
+      inset: 'auto auto 0 50%', transform: 'translateX(-50%)',
+      width: Math.min(1, sceneAspect) * 100 + '%',
+      height: Math.min(1, 1 / sceneAspect) * 100 + '%', overflow: 'hidden',
+    });
+  }
   const visibility = canvas.style.visibility;
   canvas.before(wrapper);
   wrapper.append(canvas, host);

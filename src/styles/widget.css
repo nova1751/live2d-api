@@ -187,6 +187,8 @@
 }
 
 #waifu .waifu-model-still {
+  object-fit: contain;
+  object-position: center bottom;
   position: absolute;
   inset: 0;
   width: 100%;
