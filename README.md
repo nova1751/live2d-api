@@ -1,8 +1,16 @@
+<div align="center">
+
+<a href="https://live2d-nova.vercel.app/catalog/"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/live2d-banner.webp" width="100%" alt="少女前线 Live2D 网页看板娘，右侧为播放器实际渲染的 UMP9 心智升级造型"></a>
+
 # 少女前线 Live2D 网页看板娘
 
-[English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md) · **简体中文** · [在线图鉴](https://live2d-nova.vercel.app/catalog/) · [npm](https://www.npmjs.com/package/live2dapi-noa)
+一行脚本，把少女前线角色放进网页。点击人物播放动作、语音和台词，也可以为她切换装扮。
 
-在网页中加入可互动的少女前线角色。访客可以切换人物和装扮，点击角色时按模型配置播放动作、语音并显示台词。组件按需加载对应渲染器，根据每套造型的可见轮廓调整取景。台词气泡跟随人物上缘，工具栏靠人物右侧排列。图鉴较窄时，横向造型的工具栏移到人物上方靠右，给小队留出完整宽度。
+<a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm 稳定版"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="构建与测试"></a> <a href="#api-与兼容性"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#素材与致谢"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="代码许可 ISC"></a>
+
+**[打开在线图鉴](https://live2d-nova.vercel.app/catalog/)** · [快速接入](#快速接入) · [模块 API](#api-与兼容性) · [English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md)
+
+</div>
 
 ## 快速接入
 
@@ -44,6 +52,8 @@ npm 包包含 JS 播放器、样式、TypeScript 声明和两套界面文案。�
 
 ## 界面语言与人物台词
 
+组件按需加载渲染器，按每套造型的可见轮廓取景。台词气泡位于人物上方，工具栏靠右垂直居中。在较窄的图鉴里，横向造型的工具栏会移到上方。
+
 | 配置位置 | 简体中文（默认） | 英文 |
 | --- | --- | --- |
 | 快捷入口 | 省略参数或添加 `?lang=zh-CN` | 添加 `?lang=en` |
@@ -64,6 +74,10 @@ npm 包包含 JS 播放器、样式、TypeScript 声明和两套界面文案。�
 | 历史调用 | 支持 `initWidget(waifuPath, apiPath)`、数字模型 ID、`autoload.js`、随机或顺序加载器和独立 CSS。 |
 
 ## 模型目录与离线下载
+
+| <a href="https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/fairy--air_attack--1--default.webp" width="96" alt="空袭妖精"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/doll--ump9--mod--normal.webp" width="96" alt="UMP9 心智升级"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/squad--ags-30--base--default.webp" width="96" alt="AGS-30 小队"></a> |
+| :---: | :---: | :---: |
+| [空袭妖精](https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default) | [UMP9 心智升级](https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal) | [AGS-30 小队](https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default) |
 
 图鉴收录已核对的公开收藏中 129 个条目、443 个可选形态，包含妖精、人形、副官、小队和背景。标准与战损形态各有独立 ID，7 个旧档 ID 仍指向对应装扮。统计范围和上游缺件记录见核对说明。[模型目录](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [来源与核对记录](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 

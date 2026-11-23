@@ -1,8 +1,16 @@
+<div align="center">
+
+<a href="https://live2d-nova.vercel.app/catalog/?lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/live2d-banner.webp" width="100%" alt="UMP9 MOD, rendered by the Live2D widget"></a>
+
 # Girls’ Frontline Live2D Widget
 
-**English** · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md) · [Live gallery](https://live2d-nova.vercel.app/catalog/?lang=en) · [npm](https://www.npmjs.com/package/live2dapi-noa)
+Add an interactive Girls’ Frontline character to your website with one script. Click a character to play its motions, voice lines and dialogue.
 
-Add an interactive Girls’ Frontline character to a website. Visitors can change outfits and click characters to play their authored motions, voice lines and subtitles. The widget loads the renderer required by the selected model and frames each outfit to its visible silhouette. Captions sit above the model and controls sit beside it. On narrow gallery panels, wide groups keep the full preview width, with controls in a row above them.
+<a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm version"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="Build and tests"></a> <a href="#api-and-compatibility"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#credits-and-licensing"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="Code license: ISC"></a>
+
+**[Open the gallery](https://live2d-nova.vercel.app/catalog/?lang=en)** · [Quick start](#quick-start) · [Module API](#api-and-compatibility) · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md)
+
+</div>
 
 ## Quick start
 
@@ -44,6 +52,8 @@ The package includes the JS runtime, styles, TypeScript declarations and both se
 
 ## Languages and dialogue
 
+The widget loads the renderer each model needs and fits the canvas to the visible figure. Captions sit above the figure and the toolbar sits to its right. In narrow gallery panels, wide formations have their tools above them.
+
 | Setting | Simplified Chinese (default) | English |
 | --- | --- | --- |
 | Shortcut URL | Omit the query or use `?lang=zh-CN` | `?lang=en` |
@@ -64,6 +74,10 @@ The locale controls widget buttons, accessibility labels, greetings and fallback
 | Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
 
 ## Collection and offline use
+
+| <a href="https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/fairy--air_attack--1--default.webp" width="96" alt="Airstrike Fairy"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/doll--ump9--mod--normal.webp" width="96" alt="UMP9 MOD"></a> | <a href="https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/catalog/portraits/squad--ags-30--base--default.webp" width="96" alt="AGS-30"></a> |
+| :---: | :---: | :---: |
+| [Airstrike Fairy](https://live2d-nova.vercel.app/catalog/?model=fairy/air_attack/1/default&lang=en) | [UMP9 MOD](https://live2d-nova.vercel.app/catalog/?model=doll/ump9/mod/normal&lang=en) | [AGS-30](https://live2d-nova.vercel.app/catalog/?model=squad/ags-30/base/default&lang=en) |
 
 The gallery lists 443 selectable forms across 129 entries from the audited public collections. It includes fairies, dolls, adjutants, squads and backgrounds. Standard and damaged variants have distinct IDs. Seven older IDs resolve to matching outfits. These counts describe the indexed sources. [Model catalog](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [Source audit](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 
