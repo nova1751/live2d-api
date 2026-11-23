@@ -29,8 +29,9 @@ export class CatalogModels {
     if (revision !== this.sequence) return;
     const id = selectId(library.ids, library.legacyIds, library.visibleId);
     const { modelUrl, dialogue, soundAliases, captions } = library.resolve(id);
-    const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming() : undefined;
-    const onPaint = this.options.collection ? this.transition.begin() : undefined;
+    let aspect = 1;
+    const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
+    const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
     await window.loadlive2d('live2d', modelUrl, { start, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
     if (revision === this.sequence) {
       this.active = library.visibleId(id);

@@ -1,6 +1,6 @@
 {
   "name": "live2dapi-noa",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "packageManager": "pnpm@10.33.0",
   "description": "nova1751 的少女前线 Live2D 网页组件与历史加载器",
   "main": "./widget.mjs",

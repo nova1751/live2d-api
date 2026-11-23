@@ -49,7 +49,8 @@ try {
     const { selectWidgetModel } = await import('/viewer/widget.mjs');
     await selectWidgetModel(id);
   }, outside), /outside the selected collection/);
-  const rect = await page.locator('canvas[data-painted]').boundingBox();
+  await page.waitForSelector('#waifu:not([data-model-loading])');
+  const rect = await page.locator('.waifu-viewport').boundingBox();
   let tap = { x: 0, y: 0 };
   for (let y = 0.12; y < 0.9; y += 0.08) {
     for (const x of [0.5, 0.42, 0.58]) {
@@ -126,6 +127,21 @@ try {
   assert.equal(await page.locator('.waifu-model-still').count(), 0);
   assert.equal(await page.locator('#result').getAttribute('data-model'), 'fairy/air_attack/1/default');
   console.log('Delayed and superseded model switch retained a painted frame');
+
+  // A wide composition uses the landscape space, including after a mobile resize.
+  await page.evaluate(async () => {
+    const { selectWidgetModel } = await import('/viewer/widget.mjs');
+    await selectWidgetModel('squad/ags-30/base/default');
+  });
+  await page.waitForSelector('#waifu:not([data-model-loading])');
+  for (const width of [1100, 390]) {
+    await page.setViewportSize({ width, height: 850 });
+    const wide = await page.locator('.waifu-viewport').boundingBox();
+    const stage = await page.locator('#stage').boundingBox();
+    assert.ok(wide.width > 1.5 * wide.height && wide.width > 0.9 * stage.width);
+    assert.ok(wide.x >= stage.x && wide.x + wide.width <= stage.x + stage.width + 1);
+  }
+  await page.setViewportSize({ width: 1100, height: 850 });
 
   const keys = process.argv.includes('--all') ? Object.keys(catalog.models).filter(id => !id.startsWith('other/')) : ['doll/an94/archive/normal', 'fairy/air_attack/1/default'];
   for (const id of keys) {
