@@ -1,3 +1,5 @@
+import { translated } from './locale';
+
 type Text = string | string[];
 interface Rule { selector: string; text: Text }
 interface Tips {
@@ -51,7 +53,7 @@ export function showModelPreset(playback: object) {
   if (!canvas) return;
   const rule = clickRules?.find(({ selector }) => canvas.closest(selector));
   // A click can arrive while the site's tips file is still in flight.
-  const text = rule ? pick(rule.text) : clickRules ? undefined : '指挥官，我在。';
+  const text = rule ? pick(rule.text) : clickRules ? undefined : translated('指挥官，我在。', 'Right here, Commander.');
   if (!text) return;
   heldPlayback = playback;
   display(text.replace('{text}', () => escapeText(canvas.textContent ?? '')), 11);
@@ -72,12 +74,13 @@ function welcome(times: Tips['time']): Text {
       if (start <= now && now <= end) return text;
     }
   }
-  const title = `欢迎阅读<span>「${escapeText(document.title.split(' - ')[0])}」</span>`;
+  const page = escapeText(document.title.split(' - ')[0]);
+  const title = translated(`欢迎阅读<span>「${page}」</span>`, `Welcome to <span>${page}</span>!`);
   if (!document.referrer) return title;
   const { hostname } = new URL(document.referrer);
   if (hostname === location.hostname) return title;
   const engines: Record<string, string> = { baidu: '百度', so: '360搜索', google: '谷歌搜索' };
-  return `Hello！来自 <span>${escapeText(engines[hostname.split('.')[1]] ?? hostname)}</span> 的朋友<br>${title}`;
+  return translated(`Hello！来自 <span>${escapeText(engines[hostname.split('.')[1]] ?? hostname)}</span> 的朋友<br>${title}`, `Hello, visitor from <span>${escapeText(hostname)}</span>!<br>${title}`);
 }
 
 function dayNumber(date: string) {

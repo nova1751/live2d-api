@@ -1,3 +1,4 @@
+export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string }
 export interface ModelVariant { source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
@@ -5,7 +6,7 @@ export interface ModelCatalog {
   legacyIds?: string[][];
   sources: Record<string, ModelSource>;
   models: Record<string, ModelVariant[]>;
-  presentation?: { labels: Record<string,string>; captions: Record<string,string>; aliases: Record<string,string>; outfitOrder?: Record<string, number> };
+  presentation?: { labels: Record<string,string>; captions: Record<string,string>; aliases: Record<string,string>; en?: { labels: Record<string,string>; captions: Record<string,string> }; outfitOrder?: Record<string, number> };
   audio?: Record<string, string[]>;
 }
 export interface DialogueSource { url: string; captions?: Record<string,string>; audio: ReadonlyMap<string, string> }
@@ -34,7 +35,7 @@ function orderCollection(ids: string[], outfits: Record<string, number>) {
   return rows.map(row => row.id);
 }
 
-export async function loadModelCatalog(input: string | URL, collection?: Collection) {
+export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN') {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
@@ -43,6 +44,7 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
   const audioBySource = new Map<string, Map<string, string>>();
   const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
   const presentation = collection ? catalog.presentation : undefined;
+  const localized = locale === 'en' ? presentation?.en : presentation;
   const visibleId = (id: string) => {
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
@@ -63,9 +65,9 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
         audio = new Map((catalog.audio?.[asset.source] ?? []).map(path => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { captions: presentation?.captions, url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: locale === 'en' ? undefined : localized?.captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { captions: presentation?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { captions: localized?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, visibleId, labels: presentation?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { ids, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

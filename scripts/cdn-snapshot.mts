@@ -49,7 +49,7 @@ for (const group of [...families.values()].sort((a, b) => b.size - a.size)) {
 
 const packageFiles = siteFiles(readJson('package.json').files).filter(path => path !== 'model/');
 const core = files.filter(file => packageFiles.some(path => path.endsWith('/') ? file.path.startsWith(path) : file.path === path)
-  || ['readme.md', 'docs/model-sources.json', 'LICENSE'].includes(file.path));
+  || ['readme.md', 'README.md', 'docs/model-sources.json', 'LICENSE'].includes(file.path));
 for (const skin of readJson('model_list.json').models.flat()) {
   const path = 'model/' + skin + '/index.json';
   const dir = posix.dirname(path);

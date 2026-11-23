@@ -18,7 +18,7 @@ try {
   const git = (args: string[], input?: Buffer) => execFileSync('git', args, { env, input });
   const { files, version } = JSON.parse(git(['show', 'HEAD:package.json']).toString());
   const tag = 'widget-' + version;
-  const entries = git(['ls-tree', '-rz', 'HEAD', '--', ...files, 'readme.md']);
+  const entries = git(['ls-tree', '-rz', 'HEAD', '--', ...files]);
   git(['read-tree', '--empty']);
   git(['update-index', '-z', '--index-info'], entries);
   const tree = git(['write-tree']).toString().trim();

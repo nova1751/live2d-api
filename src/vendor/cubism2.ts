@@ -105,6 +105,7 @@ function L(canvas,url,options) {
     B.scale(model.framing.initial.scale, model.framing.initial.scale);
   }
   if (model) model.onPaint = options && options.onPaint;
+  if (model) model.locale = options && options.locale;
   if (model) model.captions = options && options.captions;
   if (model) model.soundAliases = options && options.soundAliases;
   if (model) model.startPending = !!(options && options.start && !document.hidden);
@@ -372,7 +373,8 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
       handle = manager.startMotionPrio(motion, priority);
     } else manager.setReservePriority(0);
     var caption = dialogue || entry.text;
-    if (interactive && owner.captions && sound && (!caption || !/[\u3400-\u9fff]/.test(caption))) {
+    if (owner.locale === "en" && caption && owner.captions) caption = owner.captions[caption] || caption;
+    if (interactive && owner.captions && sound && (owner.locale === "en" || !caption || !/[\u3400-\u9fff]/.test(caption))) {
       var clip = /(?:^|\/)([^/]+)_([^_/]+)_JP\.[^.]+$/i.exec(sound);
       if (clip) caption = owner.captions[(clip[1] + "|" + clip[2]).toUpperCase()] || caption;
     }

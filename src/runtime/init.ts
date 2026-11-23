@@ -1,3 +1,4 @@
+import { setLanguage, translated } from './locale';
 import { icons } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson } from './request';
@@ -10,10 +11,14 @@ const byId = (id: string) => document.getElementById(id)!;
 function reportError(error: unknown) {
   console.error('[Live2D]', error);
   const status = document.getElementById('waifu-status');
-  if (status) { status.textContent = '加载失败，请检查网络或切换模型后重试。'; say(status.textContent, 5000, 10); }
+  if (status) { status.textContent = translated('加载失败，请检查网络或切换模型后重试。', 'Could not load the model. Check your connection or try another character.'); say(status.textContent, 5000, 10); }
 }
 
-async function hitokoto() {
+async function hitokoto(locale?: LegacyOptions['locale']) {
+  if (locale === 'en') {
+    say(['One step at a time, Commander.', 'Even on a quiet day, there is something worth noticing.'], 6000, 9);
+    return;
+  }
   const quote = await getJson<{ from: string; creator: string; hitokoto: string }>('https://v1.hitokoto.cn');
   say(escapeText(quote.hitokoto), 6000, 9);
   setTimeout(() => {
@@ -50,7 +55,7 @@ function hide() {
   const restoreFocus = byId('waifu').contains(document.activeElement);
   window.loadlive2d.hide?.();
   localStorage.setItem('waifu-display', String(Date.now()));
-  say('愿你有一天能与重要的人重逢。', 2000, 11);
+  say(translated('愿你有一天能与重要的人重逢。', 'I hope you meet the people you miss again.'), 2000, 11);
   byId('waifu').style.bottom = '-500px';
   hideTimer = setTimeout(() => {
     byId('waifu').style.display = 'none';
@@ -66,7 +71,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   sessionStorage.removeItem('waifu-text');
   const adaptive = options.collection === 'girls-frontline';
   const canvas = '<canvas id="live2d" width="800" height="800"></canvas>';
-  document.body.insertAdjacentHTML('beforeend', `<div id="waifu"${adaptive ? ' class="waifu-adaptive"' : ''}>
+  document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}>
     <div id="waifu-status" role="status" class="waifu-sr-only"></div>
     <div id="waifu-tips"></div>
     ${adaptive ? `<div class="waifu-viewport"><div class="waifu-surface">${canvas}</div></div>` : canvas}
@@ -89,15 +94,15 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     const url = (event as CustomEvent<unknown>).detail;
     if (typeof url === 'string') models.costume(url).catch(reportError);
   });
-  const labels = { hitokoto: '听一句话', asteroids: '启动小游戏', 'switch-model': '切换人物',
-    'switch-texture': '切换造型', photo: '保存照片', info: '项目信息', quit: '收起看板娘' };
+  const labels = { hitokoto: translated('听一句话', 'Hear a quote'), asteroids: translated('启动小游戏', 'Play Asteroids'), 'switch-model': translated('切换人物', 'Next character'),
+    'switch-texture': translated('切换造型', 'Next outfit'), photo: translated('保存照片', 'Save a picture'), info: translated('项目信息', 'Project information'), quit: translated('收起看板娘', 'Hide companion') };
   const actions = {
-    hitokoto: () => hitokoto().catch(reportError),
+    hitokoto: () => hitokoto(options.locale).catch(reportError),
     asteroids,
     'switch-model': (event: Event) => models.nextModel(prepareStart(event)).catch(reportError),
     'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
     photo: () => {
-      say('照好了嘛，是不是很可爱呢？', 6000, 9);
+      say(translated('照好了嘛，是不是很可爱呢？', 'Did you get my good side?'), 6000, 9);
       if (window.loadlive2d.capture?.() || !window.Live2D) return;
       window.Live2D.captureName = 'photo.png';
       window.Live2D.captureFrame = true;
@@ -119,7 +124,8 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
 window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
   const options = typeof input === 'string' ? { waifuPath: input, apiPath } : input;
   if (document.getElementById('waifu-toggle')) return;
-  document.body.insertAdjacentHTML('beforeend', '<button type="button" id="waifu-toggle" aria-label="打开看板娘" aria-controls="waifu"><span>看板娘</span></button>');
+  setLanguage(options.locale);
+  document.body.insertAdjacentHTML('beforeend', `<button type="button" id="waifu-toggle" aria-label="${translated('打开看板娘', 'Show companion')}" aria-controls="waifu"><span>${translated('看板娘', 'Companion')}</span></button>`);
   const toggle = byId('waifu-toggle');
   toggle.setAttribute('aria-expanded', 'false');
   const models = options.catalogUrl ? new CatalogModels(options.catalogUrl, options) : new LegacyModels(options);

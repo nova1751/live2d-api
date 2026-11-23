@@ -6,6 +6,9 @@ const root = process.argv[2];
 const files = await readdir(root, { recursive: true });
 assert.ok(files.includes('girls-frontline.mjs') && files.includes('autoload.js') && files.includes('live2d.min.js'));
 assert.ok(files.some(file => file.replaceAll('\\', '/') === 'modern/renderer.mjs'));
+for (const file of ['README.md', 'README.zh-CN.md', 'waifu-tips.en.json', 'waifu-tips.json', 'widget.d.mts', 'library/catalog.d.ts']) {
+  assert.ok(files.some(path => path.replaceAll('\\', '/') === file), 'Missing ' + file);
+}
 let size = 0;
 for (const file of files) {
   assert.doesNotMatch(file, /^(?:model(?:[\\/]|_list\.json|$)|catalog(?:[\\/]|$)|img(?:[\\/]|$))|\.(?:moc3?|mtn|png|mp3|ogg|wav)$/i);

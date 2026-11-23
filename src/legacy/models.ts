@@ -1,9 +1,10 @@
+import { translated } from '../runtime/locale';
 import { getJson } from '../runtime/request';
 import { globalModels, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
-const changed = '我的新衣服好看嘛？';
+const changed = () => translated('我的新衣服好看嘛？', 'How do you like my new outfit?');
 const storedId = (key: string) => Number(localStorage.getItem(key)) || 0;
 
 export class LegacyModels {
@@ -67,7 +68,7 @@ export class LegacyModels {
       url = this.base + 'get/?id=' + id + '-' + texture;
     }
     if (revision !== this.revision) return;
-    const ready = window.loadlive2d('live2d', url, { start, coreUrl: this.options.coreUrl });
+    const ready = window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl });
     if (ready) await ready;
     if (revision !== this.revision) return;
     if (!this.options.modelUrl) {
@@ -85,7 +86,7 @@ export class LegacyModels {
     const entry = (await this.list()).models[id];
     const skins = Array.isArray(entry) ? entry : [entry];
     const index = skins.findIndex(skin => new URL(this.base + 'model/' + skin + '/index.json', document.baseURI).href === target);
-    if (index >= 0) await this.load(id, index, changed, false, revision, true);
+    if (index >= 0) await this.load(id, index, changed(), false, revision, true);
   }
 
   async nextModel(start = false) {
@@ -94,7 +95,7 @@ export class LegacyModels {
     if (this.useCDN) {
       const { models, messages } = await this.list();
       const id = (current + 1) % models.length;
-      return this.load(id, 0, messages[id], start, revision);
+      return this.load(id, 0, translated(messages[id], 'Ready for duty!'), start, revision);
     }
     const { model } = await getJson<{ model: { id: number; message: string } }>(
       this.base + 'switch/?id=' + current,
@@ -109,12 +110,12 @@ export class LegacyModels {
     if (this.useCDN) {
       const entry = (await this.list()).models[id];
       const count = Array.isArray(entry) ? entry.length : 1;
-      return this.load(id, MODE === 'random' ? texture : (texture + 1) % count, changed, start, revision);
+      return this.load(id, MODE === 'random' ? texture : (texture + 1) % count, changed(), start, revision);
     }
     const { textures } = await getJson<{ textures: { id: number } }>(
       this.base + 'rand_textures/?id=' + id + '-' + texture,
     );
-    if (textures.id === 1 && texture === 1) say('我还没有其他衣服呢！', 4000, 10);
-    else await this.load(id, textures.id, changed, start, revision);
+    if (textures.id === 1 && texture === 1) say(translated('我还没有其他衣服呢！', 'This is my only outfit so far!'), 4000, 10);
+    else await this.load(id, textures.id, changed(), start, revision);
   }
 }

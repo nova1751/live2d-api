@@ -60,7 +60,17 @@ test('collection navigation starts with fairies and follows CN releases, then st
   globalThis.document = { baseURI: 'https://example.org/' };
   t.after(() => { if (previous) globalThis.document = previous; else delete globalThis.document; });
   t.mock.method(globalThis, 'fetch', async () => Response.json(catalog));
-  const { ids } = await loadModelCatalog('catalog.json', 'girls-frontline');
+  const zh = await loadModelCatalog('catalog.json', 'girls-frontline');
+  const en = await loadModelCatalog('catalog.json', 'girls-frontline', 'en');
+  const { ids } = zh;
+  assert.deepEqual(en.ids, ids);
+  const doll = 'doll/56-1type/7706';
+  assert.match(en.labels[doll], /Peerless Nunchaku Dance/);
+  const original = zh.resolve(doll + '/normal'), localized = en.resolve(doll + '/normal');
+  assert.equal(localized.modelUrl, original.modelUrl);
+  assert.equal(localized.dialogue.url, original.dialogue.url);
+  assert.equal(localized.dialogue.captions, undefined);
+  assert.match(en.resolve('doll/kp31/archive/normal').captions['一步也不会退让的。'], /inch/);
   assert.equal(ids[0], 'fairy/air_attack/1/default');
   assert.ok(ids.slice(0, 27).every(id => id.startsWith('fairy/')));
   const versions = who => [...new Set(ids.filter(id => id.startsWith('doll/' + who + '/')).map(id => id.split('/')[2]))];

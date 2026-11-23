@@ -2,6 +2,27 @@
 import { loadModelCatalog, loadGirlsFrontline, selectWidgetModel } from "../widget.mjs";
 const catalogUrl = new URL("./library.json", import.meta.url);
 const find = (id) => document.getElementById(id);
+const locale = new URL(location.href).searchParams.get("lang") === "en" ? "en" : "zh-CN";
+const english = locale === "en";
+const t = (zh, en) => english ? en : zh;
+const language = find("language");
+if (english) {
+  document.documentElement.lang = locale;
+  for (const el of Array.from(document.querySelectorAll("[data-en]"))) el.textContent = el.dataset.en;
+  for (const name of ["aria-label", "placeholder", "alt"]) {
+    for (const el of Array.from(document.querySelectorAll("[data-en-" + name + "]"))) el.setAttribute(name, el.getAttribute("data-en-" + name));
+  }
+  const guide = document.querySelector('a[href*="README.zh-CN"]');
+  guide.href = "https://github.com/nova1751/live2d-api#quick-start";
+  language.textContent = "简体中文";
+  language.lang = language.hreflang = "zh-CN";
+}
+function updateLanguageLink() {
+  const target = new URL(location.href);
+  target.searchParams.set("lang", english ? "zh-CN" : "en");
+  language.href = target.href;
+}
+updateLanguageLink();
 const search = find("search");
 const category = find("category");
 const variant = find("variant");
@@ -11,8 +32,22 @@ const notice = find("notice");
 const poster = find("poster");
 const more = find("more");
 const host = find("model-host");
-const categories = { fairy: "妖精", doll: "人形", adjutant: "副官", npc: "其他人物", squad: "小队", background: "背景" };
-const names = {
+const categories = english ? { fairy: "Fairy", doll: "T-Doll", adjutant: "Adjutant", npc: "NPC", squad: "Squad", background: "Background" } : { fairy: "妖精", doll: "人形", adjutant: "副官", npc: "其他人物", squad: "小队", background: "背景" };
+const names = english ? {
+  air_attack: "Airstrike Fairy",
+  airborne: "Parachute Fairy",
+  armor: "Armor Fairy",
+  command: "Command Fairy",
+  fighting: "Warrior Fairy",
+  fortress: "Fortress Fairy",
+  golden: "Golden Fairy",
+  shield: "Shield Fairy",
+  target: "Taunt Fairy",
+  npc_kalina: "Kalina",
+  gelina: "Kalina",
+  william: "William",
+  "m4-sopmod-ii": "M4 SOPMOD II"
+} : {
   air_attack: "空袭妖精",
   airborne: "空降妖精",
   armor: "装甲妖精",
@@ -27,8 +62,9 @@ const names = {
   gelina: "格琳娜",
   william: "威廉"
 };
-const versions = { base: "原版", mod: "心智升级", archive: "旧档", "archive-alt": "旧档·另一造型", "archive-christmas": "圣诞旧档" };
-const states = { normal: "标准", destroy: "战损" };
+const versions = english ? { base: "Original", mod: "Neural upgrade", archive: "Archive", "archive-alt": "Archive (alternate)", "archive-christmas": "Christmas archive" } : { base: "原版", mod: "心智升级", archive: "旧档", "archive-alt": "旧档·另一造型", "archive-christmas": "圣诞旧档" };
+const tiers = english ? { "1": "Tier 1", "2": "Tier 2", "3": "Tier 3" } : { "1": "一阶", "2": "二阶", "3": "三阶" };
+const states = english ? { normal: "Standard", destroy: "Damaged" } : { normal: "标准", destroy: "战损" };
 const portrait = (id) => "./portraits/" + encodeURIComponent(id.split("/").join("--")) + ".webp";
 const attachWidget = () => {
   for (const child of Array.from(document.body.querySelectorAll(":scope > #waifu, :scope > #waifu-toggle"))) host.append(child);
@@ -79,14 +115,14 @@ try {
       const name = document.createElement("strong");
       name.textContent = row.name;
       const sub = document.createElement("small");
-      sub.textContent = groupCards ? categories[row.kind] + " · " + groups.get(row.character).length + " 个造型" : row.form;
+      sub.textContent = groupCards ? categories[row.kind] + " · " + groups.get(row.character).length + t(" 个造型", groups.get(row.character).length === 1 ? " form" : " forms") : row.form;
       caption.append(name, sub);
       button.append(art, caption);
       fragment.append(button);
     }
     cards.replaceChildren(fragment);
     highlight();
-    find("matches").textContent = items.length ? "显示 " + Math.min(limit, items.length) + " / " + items.length + " 项" : "没有匹配的模型，请更换关键词或分类。";
+    find("matches").textContent = items.length ? t("显示 ", "Showing ") + Math.min(limit, items.length) + " / " + items.length + t(" 项", " results") : t("没有匹配的模型，请更换关键词或分类。", "No matches. Try another name or category.");
     more.hidden = limit >= items.length;
   }, describe = function(row) {
     active = row;
@@ -101,12 +137,12 @@ try {
     highlight();
   };
   var highlight2 = highlight, drawCards2 = drawCards, describe2 = describe;
-  const library = await loadModelCatalog(catalogUrl, "girls-frontline");
+  const library = await loadModelCatalog(catalogUrl, "girls-frontline", locale);
   const models = library.ids.map((id) => {
     const [kind, code, version, state] = id.split("/");
     const character = kind + "/" + code;
     const name = library.labels[character] || names[code] || code.toUpperCase();
-    const outfit = library.labels[character + "/" + version]?.replace(name + "-", "") || (kind === "fairy" ? { "1": "一阶", "2": "二阶", "3": "三阶" }[version] ?? version : versions[version] ?? version);
+    const outfit = library.labels[character + "/" + version]?.replace(name + "-", "") || (kind === "fairy" ? tiers : versions)[version] || version;
     const form = [outfit, states[state]].filter(Boolean).join(" · ");
     return { id, kind, character, name, form, terms: [id, name, form, categories[kind]].join(" ").toLowerCase() };
   });
@@ -116,23 +152,23 @@ try {
     if (!groups.has(model.character)) groups.set(model.character, []);
     groups.get(model.character).push(model);
   }
-  if (!models.length) throw new Error("目录中没有可预览的模型");
+  if (!models.length) throw new Error(t("目录中没有可预览的模型", "The catalog has no models to preview."));
   for (const kind of new Set(models.map((model) => model.kind))) category.add(new Option(categories[kind] ?? kind, kind));
-  find("totals").textContent = groups.size + " 个图鉴条目　/　" + models.length + " 个造型";
+  find("totals").textContent = groups.size + t(" 个图鉴条目　/　", " entries / ") + models.length + t(" 个造型", " forms");
   const requested = new URL(location.href).searchParams.get("model");
   const initial = byId.get(library.visibleId(requested ?? "")) ?? models[0];
   let active = initial, groupCards = true, limit = 24, revision = 0;
   let ready = false;
   async function select(id) {
     const ticket = ++revision;
-    notice.textContent = "正在载入…";
+    notice.textContent = t("正在载入…", "Loading…");
     try {
       await selectWidgetModel(id);
       if (ticket === revision) notice.textContent = "";
     } catch (error) {
       if (ticket === revision) {
         variant.value = active.id;
-        notice.textContent = "模型载入失败，可重新选择。" + (error instanceof Error ? error.message : "");
+        notice.textContent = t("模型载入失败，可重新选择。", "Could not load this model. Try selecting it again. ") + (error instanceof Error ? error.message : "");
       }
     }
   }
@@ -170,7 +206,7 @@ try {
   find("share").addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(location.href);
-      notice.textContent = "预览链接已复制";
+      notice.textContent = t("预览链接已复制", "Preview link copied.");
     } catch {
       notice.textContent = location.href;
     }
@@ -184,16 +220,17 @@ try {
     const url = new URL(location.href);
     url.searchParams.set("model", id);
     history.replaceState(null, "", url);
+    updateLanguageLink();
   });
   describe(initial);
   poster.src = portrait(initial.id);
   poster.hidden = false;
   drawCards();
-  await loadGirlsFrontline({ catalogUrl, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
+  await loadGirlsFrontline({ locale, catalogUrl, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
   attachWidget();
   ready = true;
   variant.disabled = false;
   drawCards();
 } catch (error) {
-  notice.textContent = "图鉴载入失败。" + (error instanceof Error ? error.message : String(error));
+  notice.textContent = t("图鉴载入失败。", "Could not load the gallery. ") + (error instanceof Error ? error.message : String(error));
 }

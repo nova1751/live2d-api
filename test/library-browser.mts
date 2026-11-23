@@ -5,6 +5,8 @@ import { resolve } from 'node:path';
 import { context } from 'esbuild';
 import { chromium } from 'playwright-core';
 
+const english = process.argv.includes('--en');
+const lang = english ? 'en' : 'zh-CN';
 const directory = resolve(process.argv[2]);
 const catalog = JSON.parse(await readFile(resolve(directory, 'library.json'), 'utf8'));
 const server = await context({ stdin: { contents: '' }, write: false });
@@ -37,7 +39,7 @@ try {
       };
     }
   });
-  await page.goto('http://127.0.0.1:' + port + '/viewer/catalog/?model=doll/56-1type/7706/normal');
+  await page.goto('http://127.0.0.1:' + port + '/viewer/catalog/?model=doll/56-1type/7706/normal&lang=' + lang);
   await page.waitForSelector('canvas[data-painted]', { timeout: 45000 });
   await page.waitForFunction(() => document.querySelector('#result').dataset.model?.endsWith('/normal'));
   assert.equal(await page.locator('#waifu-tool button').count(), 7);
@@ -62,13 +64,22 @@ try {
   }
   await page.waitForFunction(() => lines.length && sounds.length);
   const line = await page.evaluate(() => lines.at(-1));
-  assert.match(line, /[\u3400-\u9fff]/);
+  if (english) {
+    const asset = catalog.models['doll/56-1type/7706/normal'][0];
+    const metadata = JSON.parse(await readFile(resolve(directory, 'sources', asset.source, asset.dialogue), 'utf8'));
+    const sound = new URL(await page.evaluate(() => sounds.at(-1))).pathname.toUpperCase();
+    assert.ok(Object.values(metadata.voiceData).some(v => v.caption === line &&
+      sound.endsWith('/' + (v.char_code + '_' + v.voice_key + '_JP.OGG').toUpperCase())));
+    assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+    assert.match(await page.locator('#language').getAttribute('href'), /lang=zh-CN/);
+    assert.match(await page.locator('#variant option:checked').textContent(), /Peerless Nunchaku Dance/);
+  } else assert.match(line, /[\u3400-\u9fff]/);
   assert.equal(await page.locator('#waifu-tips').textContent(), line);
   await page.waitForFunction(() => ends.includes(false), undefined, { timeout: 45000 });
   await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
   console.log('Touch triggered a voiced caption through completion:', line);
 
-  const tips = await (await page.request.get('http://127.0.0.1:' + port + '/viewer/waifu-tips.json')).json();
+  const tips = await (await page.request.get('http://127.0.0.1:' + port + (english ? '/viewer/waifu-tips.en.json' : '/viewer/waifu-tips.json'))).json();
   const presets = tips.click.find(rule => rule.selector === '#live2d').text;
   await page.mouse.click(rect.x + 2, rect.y + 2);
   assert.ok(presets.includes(await page.locator('#waifu-tips').textContent()), 'unmapped modern canvas click uses the preset');
@@ -151,14 +162,14 @@ try {
     }, id);
     await page.waitForSelector('canvas[data-painted]:visible', { timeout: 25000 });
   }
-  await page.getByRole('button', { name: '收起看板娘' }).focus();
+  await page.getByRole('button', { name: english ? 'Hide companion' : '收起看板娘' }).focus();
   await page.keyboard.press('Enter');
-  const toggle = page.getByRole('button', { name: '打开看板娘' });
+  const toggle = page.getByRole('button', { name: english ? 'Show companion' : '打开看板娘' });
   await toggle.waitFor();
   await page.waitForFunction(() => document.activeElement?.id === 'waifu-toggle');
   await page.keyboard.press('Space');
   await page.waitForSelector('#waifu:visible');
-  await page.locator('#search').fill('空降');
+  await page.locator('#search').fill(english ? 'Parachute' : '空降');
   assert.equal(await page.locator('#cards button').count(), 1);
   await page.locator('#by-form').click();
   assert.equal(await page.locator('#cards button').count(), 3);

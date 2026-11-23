@@ -21,7 +21,7 @@ export class CatalogModels {
     }
   }
   private open() {
-    return this.library ??= loadModelCatalog(this.url, this.options.collection).catch(error => { this.library = undefined; throw error; });
+    return this.library ??= loadModelCatalog(this.url, this.options.collection, this.options.locale).catch(error => { this.library = undefined; throw error; });
   }
   private async select(selectId: (ids: string[], legacyIds: string[][] | undefined, visibleId: (id: string) => string) => string, start: boolean) {
     const revision = ++this.sequence;
@@ -32,7 +32,7 @@ export class CatalogModels {
     let aspect = 1;
     const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
     const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
-    await window.loadlive2d('live2d', modelUrl, { start, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
+    await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
     if (revision === this.sequence) {
       this.active = library.visibleId(id);
       localStorage.setItem(this.key, id);
