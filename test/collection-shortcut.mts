@@ -33,8 +33,11 @@ export async function checkCollectionShortcut(browser, base) {
             reference.width = canvas.width;
             reference.height = canvas.height;
             reference.getContext('2d').drawImage(canvas,0,0);
-            window.outgoingFrame = reference.toDataURL();
             copy(canvas);
+            // The replacement can paint between two Playwright calls. Compare inside the
+            // actual capture callback, while both canvases still belong to this transition.
+            window.frameMatched = document.querySelector('.waifu-model-still')?.toDataURL() === reference.toDataURL();
+            loadlive2d.onNextPaint = frame;
           });
         });
         let release;
@@ -42,9 +45,8 @@ export async function checkCollectionShortcut(browser, base) {
         await page.route(base+'model/fairy/air_attack/index.json', async route => { await gate; await route.continue(); }, { times:1 });
         try {
           await next();
-          await page.waitForSelector('.waifu-model-still');
-          assert.ok(await page.evaluate(() => !!window.outgoingFrame &&
-            document.querySelector('.waifu-model-still').toDataURL() === window.outgoingFrame));
+          await page.waitForFunction(() => typeof window.frameMatched === 'boolean');
+          assert.equal(await page.evaluate(() => window.frameMatched), true);
         } finally { release(); }
         await page.waitForSelector('#waifu:not([data-model-loading]) canvas');
         assert.equal(await page.locator('.waifu-model-still').count(),0);
