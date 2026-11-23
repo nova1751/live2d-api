@@ -11,13 +11,13 @@
 **中国大陆**
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.3/girls-frontline.mjs"></script>
 ```
 
 **海外**
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.2/girls-frontline.mjs"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.3/girls-frontline.mjs"></script>
 ```
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。
@@ -79,7 +79,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory ./models-offline
 
 ## 原版网页示例
 
-<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.2/img/02.png" height="200" alt="黑裙看板娘与互动提示">
+<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/02.png" height="200" alt="黑裙看板娘与互动提示">
 
 ## 开发与发布
 

@@ -64,7 +64,10 @@ try {
     if (inRow) {
       assert.ok(tools.y + tools.height <= bounds.y);
       assert.ok(tips.y + tips.height <= tools.y);
-    } else assert.ok(tools.x >= bounds.x + bounds.width);
+    } else {
+      assert.ok(tools.x >= bounds.x + bounds.width);
+      assert.ok(Math.abs(tools.y + tools.height / 2 - bounds.y - bounds.height / 2) <= 1);
+    }
   }
   await checkControls(false);
   let tap = { x: 0, y: 0 };
