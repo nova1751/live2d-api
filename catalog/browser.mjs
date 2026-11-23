@@ -12,8 +12,8 @@ if (english) {
   for (const name of ["aria-label", "placeholder", "alt"]) {
     for (const el of Array.from(document.querySelectorAll("[data-en-" + name + "]"))) el.setAttribute(name, el.getAttribute("data-en-" + name));
   }
-  const guide = document.querySelector('a[href*="README.zh-CN"]');
-  guide.href = "https://github.com/nova1751/live2d-api#quick-start";
+  const guide = find("embed-guide");
+  guide.href = "https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md#quick-start";
   language.textContent = "简体中文";
   language.lang = language.hreflang = "zh-CN";
 }
