@@ -1,20 +1,33 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { parseConfigFileTextToJson } from 'typescript';
+import { parseModelCatalog, type Collection } from '../src/library/catalog.ts';
 
 // Probe the pinned manifests and every distinct dependency in the curated Cubism 2 galleries.
 const mainland = process.argv.includes('--mainland');
+async function checkAsset(url: string) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(45000) });
+      assert.ok(response.ok && !response.headers.get('content-type')?.includes('text/html'), response.status + ' ' + url);
+      assert.ok((await response.arrayBuffer()).byteLength, 'Empty asset ' + url);
+      return;
+    } catch (error) {
+      if (attempt === 3 || !(error instanceof TypeError || error instanceof DOMException)) throw new Error('Checking ' + url, { cause: error });
+    }
+  }
+}
 for (const game of ['iron-saga', 'warship-girls', 'baoshi-yanwuyu']) {
   const catalog = JSON.parse(await readFile(new URL('../catalog/games/' + game + '.json', import.meta.url), 'utf8'));
   const dependencies = new Set<string>();
   let paired = 0;
-  for (const [id, variants] of Object.entries(catalog.models)) {
-    const [asset] = variants as Array<{ source: string; manifest: string }>;
-    const url = new URL(asset.manifest, catalog.sources[asset.source].baseUrl);
-    if (mainland && url.hostname === 'cdn.jsdelivr.net') url.hostname = 'cdn.jsdmirror.com';
+  const origin = mainland ? 'https://cdn.jsdmirror.com' : 'https://cdn.jsdelivr.net';
+  const library = parseModelCatalog(catalog, new URL('/catalog/games/' + game + '.json', origin), game as Collection);
+  for (const id of library.ids) {
+    const url = new URL(library.resolve(id).modelUrl);
     const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
     assert.ok(response.ok, id + ' manifest ' + response.status + ' ' + url);
-    const parsed = parseConfigFileTextToJson(asset.manifest, await response.text());
+    const parsed = parseConfigFileTextToJson(url.pathname, await response.text());
     assert.ok(!parsed.error, id + ' invalid manifest');
     const model = parsed.config;
     assert.ok(model.model && model.textures?.length, id + ' missing geometry or texture');
@@ -28,16 +41,7 @@ for (const game of ['iron-saga', 'warship-girls', 'baoshi-yanwuyu']) {
   }
   const pending = [...dependencies];
   while (pending.length) {
-    await Promise.all(pending.splice(0, 6).map(async url => {
-      const response = await fetch(url, { headers: { Range: 'bytes=0-31' }, signal: AbortSignal.timeout(30000) });
-      try {
-        assert.ok(response.ok && !response.headers.get('content-type')?.includes('text/html'), response.status + ' ' + url);
-        const reader = response.body!.getReader();
-        const first = await reader.read();
-        assert.ok(first.value?.length, 'Empty asset ' + url);
-        await reader.cancel();
-      } finally { if (!response.body?.locked) await response.body?.cancel(); }
-    }));
+    await Promise.all(pending.splice(0, 3).map(checkAsset));
   }
   console.log(game, Object.keys(catalog.models).length, 'forms,', dependencies.size, 'reachable assets,', paired, 'forms with motion-linked audio');
 }

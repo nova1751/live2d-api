@@ -1,4 +1,4 @@
-import { nativeMotionLookup } from './native-events';
+import { nativeMotionLookup, nativeTouchArea } from './native-events';
 import { prepareMotion } from './motion';
 import type { Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
@@ -19,7 +19,7 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
 
 export async function readActions(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false) {
   const [manifest, data] = await Promise.all([
-    json<{FileReferences: {Motions?: Record<string, MotionFile[]>}}>(url, signal),
+    json<{HitAreas?: { Name: string }[]; FileReferences: {Motions?: Record<string, MotionFile[]>}}>(url, signal),
     source && json<Metadata>(source.url, signal).catch(error => {
       if (signal.aborted) throw error;
       console.warn('[Live2D] Dialogue data unavailable', error);
@@ -27,6 +27,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
     }),
   ]);
   const actions: Action[] = [];
+  const hitNames = new Set(manifest.HitAreas?.map(hit => hit.Name.toLowerCase()));
   const groups = manifest.FileReferences.Motions ?? {};
   const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([,clips]) => clips.map(c => c.File)));
   const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
@@ -47,7 +48,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
           if (Boolean(motion.is_hurt) !== (data.variant === 'destroy')) continue;
           const area = motion.touch_area && motion.touch_area !== '0' ? motion.touch_area.toLowerCase() : '';
           if (!area && !randomTap) continue;
-          actions.push({ file: file.File, group, index, area, weight: motion.probability,
+          actions.push({ file: file.File, group, index, area: nativeTouchArea(area, hitNames), weight: motion.probability,
             delay: Math.max(0, motion.delay || 0), ...voiceFor(id) });
         }
       } else if (cues && !/^idle$/i.test(group)) {
@@ -71,7 +72,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
       if (motion.motion_name || !motion.touch_area || motion.touch_area === '0' ||
           Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !(motion.probability > 0)) continue;
       const voice = voiceFor(id);
-      if (voice.sound || voice.caption?.trim()) actions.push({ file: '', group: 'voice', index: index++, area: motion.touch_area.toLowerCase(),
+      if (voice.sound || voice.caption?.trim()) actions.push({ file: '', group: 'voice', index: index++, area: nativeTouchArea(motion.touch_area.toLowerCase(), hitNames),
         weight: motion.probability, delay: Math.max(0, motion.delay || 0), ...voice });
     }
   }

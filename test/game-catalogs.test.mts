@@ -119,6 +119,18 @@ test('curated Cubism 2 galleries resolve their published IDs and have real portr
 test('recovered media stays with its original recording, motion and locale', async () => {
   const az = await read('azur-lane'), bh = await read('houkai2'), audit = await read('audit');
   const boise = az.models['ship/10229/boyixi_2'][0].cues.wedding;
+  const dress = az.models['ship/20705/kewei_4'][0].cues;
+  for (const [group, file] of [['main_3_ex','main3_ex'], ['touch_special_ex','touch2_ex'], ['home_ex','home_ex']]) {
+    assert.ok(dress[group].sound.endsWith('/207053/' + file + '.ogg'));
+    assert.ok(dress[group].caption && dress[group].captionEn);
+    assert.notEqual(dress[group].caption, dress[group.slice(0,-3)].caption);
+  }
+  const mei = bh.models['character/mie/mie'][0];
+  assert.equal(Object.keys(mei.files).length, 7);
+  for (const [file, url] of Object.entries(mei.files)) {
+    assert.ok(url.endsWith('/mei/sounds/' + file.split('/')[1]));
+    assert.ok(audit.repairs.some(row => row.id === 'character/mie/mie' && row.file === file && row.from === url));
+  }
   assert.match(boise.sound, /\/102290\/propose\.ogg$/);
   assert.ok(boise.caption && boise.captionEn);
   assert.equal(az.models['ship/30116/xuefeng_3'][0].cues.touch_special.sound, undefined);

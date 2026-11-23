@@ -165,6 +165,7 @@ const bhFiles = await tree(bhRepo, 'cdf9de1d37f197e37b6b3c6fe40c487c17867714');
 const bhBase = raw + bhRepo + '/' + bhCommit + '/崩坏学园2/';
 houkai.sources.archive = { baseUrl: bhBase };
 const bhNames = {
+  mie: '雷电芽衣',
   BYC: '八重樱',
   Kiana: '琪亚娜',
   Kiro: '时雨绮罗',
@@ -195,7 +196,7 @@ for (const f of bhFiles.keys()) {
   if (options)
     add(houkai, id, 'archive', f, options, {
       name: bhNames[folder] || folder,
-      en: person,
+      en: folder === 'mie' ? 'Raiden Mei' : person,
       outfitEn: folder === 'BYC' || folder === 'yazakura' ? folder : 'Original',
       outfit: folder === 'BYC' || folder === 'yazakura' ? folder : '原版',
       portrait: './games/portraits/' + folder + '.webp',
@@ -220,6 +221,8 @@ const [skins, words, names] = await Promise.all(
   ].map((p) => json(data + p)),
 );
 const jpWords = await json(data.replace('/CN/', '/JP/') + 'sharecfgdata/ship_skin_words.json');
+const extraWords = await Promise.all(['CN', 'JP', 'EN'].map(lang =>
+  json(data.replace('/CN/', '/' + lang + '/') + 'ShareCfg/ship_skin_words_extra.json')));
 const [enSkins, enWords, enNames] = await Promise.all(
   [
     'ShareCfg/ship_skin_template.json',
@@ -312,6 +315,22 @@ for (const path of manifests) {
   const cues = {},
     lines = words[skin?.id] || {};
   for (const group of Object.keys(refs.Motions || {})) {
+    if (group.endsWith('_ex')) {
+      const baseGroup = group.slice(0, -3);
+      const mainIndex = /^main_(\d+)$/.exec(baseGroup)?.[1];
+      const field = mainIndex ? 'main' : keys[baseGroup];
+      const file = skin?.id + '/' + (mainIndex ? 'main' + mainIndex : field) + '_ex.ogg';
+      if (!field || !sounds.has(file)) continue;
+      const lines = extraWords.map(table => {
+        const rows = table[skin.id]?.[field];
+        if (!Array.isArray(rows) || rows.length !== 1 || rows[0][0] !== 1100) return;
+        const line = mainIndex ? rows[0][1].split('|')[Number(mainIndex) - 1] : rows[0][1];
+        return line && line !== 'nil' ? line.trim() : undefined;
+      });
+      if (lines.every(Boolean)) cues[group] = { sound: raw + voiceRepo + '/' + voiceRev + '/audio/voiceline/' + file,
+        caption: localize(lines[0]), captionEn: english(lines[2]) };
+      continue;
+    }
     const main = /^main_(\d+)$/.exec(group),
       key = keys[group] || (main && 'main' + main[1]);
     if (!key) continue;

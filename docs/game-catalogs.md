@@ -7,7 +7,7 @@
 | 少女前线 | 延用原目录及离线下载工具。刘氏步枪 563 标准款事件 56309 按清单内含空格的动作路径匹配。G11、G41、刘易斯、RFB、SAT8、Vector 的 8 个缺词键采用逐条核对过的社区转写或中译，仅用于中文模式。[台词资料示例](https://gf-ogas.wiki/wiki/少女前线:G11) |
 | 碧蓝航线 | [模型与缩略图](https://github.com/Chaoray/AzurLane-Live2D-Viewer/tree/88cb6e56a0ad472fe7e546509f096545d2bbc5b9)、[中文装扮及台词](https://github.com/AzurLaneTools/AzurLaneData/tree/4cca5c2437007b62d30a6235fcfc0c0203231378)、[日文语音](https://github.com/Fernando2603/AzurLane/tree/219db8feba07058dde232c461218bdacaaefdc17/audio/voiceline)。优先使用对应装扮的录音。允许继承的语音键按游戏规则核对默认装扮以及中、日、英文本，再绑定同一事件的录音。模型的命中区域名称用于点击。 |
 | BanG Dream! | 使用 [U1s1-king](https://github.com/U1s1-king) 的九个 dsh-live2d 乐队仓库。独立版人物编号按各仓库的角色表映射到游戏编号，服装名称及时间来自[游戏数据归档](https://github.com/haneoka-gakuen/bangdream-live2d/tree/2ed0434efb999b78bc282ad27b3964395a32340a)。松原花音与长崎爽世两套服装按原 buildData 的 bundleName 和 fileName 补回 15 个引用。 |
-| 崩坏学园 2 | [原始 19 份模型](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/崩坏学园2)。希儿与德丽莎使用第二份导出核对动作、录音及字幕。其他 17 个造型仍有 124 个缺音频的引用，播放时保留原动作。 |
+| 崩坏学园 2 | 19 个造型。希儿与德丽莎有经动作核对的录音和字幕，芽衣另补回 7 段原始录音。其他 16 个造型仍有 117 个缺音频的引用，播放时保留原动作。[原始模型](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/崩坏学园2) |
 
 点击未映射部位时，旧模型按实际网格命中，新模型在没有命名命中区域时读取渲染帧的像素透明度。随机动作复用该动作已有的录音、字幕和播放时序，空白画布不触发随机动作。
 
@@ -37,13 +37,19 @@
 
 崩坏学园 2 另比对了 Eikanya、L01den 和 lzy4ever 的专属子树，三者是同一棵 Git 树，共 241 个文件，独立音频数为零。战舰少女 R 在这三份导出中均未找到独立录音。KISGP 也收录了部分同名游戏模型。[L01den](https://github.com/L01den/live2d-models/tree/486d18466be50f646035f0d82c97e9b017b1cce4) · [lzy4ever](https://github.com/lzy4ever/Live2d-model-se) · [KISGP](https://github.com/KISGP/model/tree/8caffe3e36a176b00cca5dda4e438e4d70e1f073)
 
+## 2.9.5 互动媒体复核
+
+2.9.5 补回可畏「值日时的春心萌动」的三个特殊互动。返港、第三句主界面台词和特殊触摸分别使用同装扮 207053 的 `home_ex`、`main3_ex` 和 `touch2_ex` 日语录音，字幕来自中服及美服的额外台词表。当前目录共 2,255 个带台词的动作组，其中 2,254 个带录音。[额外台词表](https://github.com/AzurLaneTools/AzurLaneData/blob/4cca5c2437007b62d30a6235fcfc0c0203231378/CN/ShareCfg/ship_skin_words_extra.json) · [对应装扮录音](https://github.com/Fernando2603/AzurLane/tree/219db8feba07058dde232c461218bdacaaefdc17/audio/voiceline/207053)
+
+芽衣沿用 `mie/model.json` 的原动作、录音文件名和时序。另一导出的 `mei` 目录收录了同名 WAV，对应的七个动作文件与当前造型逐字节相同。七个原文本编号暂缺可核实的字幕表。[补录来源](https://github.com/AzharRizkiZ/Live2D-Model/tree/fab804971d22fcbcefbc6e4277d1e09424e9143c/assets/models/Honkai-Impact/mei)
+
 ## 碧蓝航线的场景取景
 
 埃姆登「黑白的夜之主」与安克雷奇「海豚、海洋、游泳课」的普通版和 HX 版包含整幅场景，并把部分活动布景停在原画框外。图鉴按这四份模型的 Cubism 画布比例显示，分别为 6000∶6502 和 9∶7。动作将布景移入画框时即可看到。其他造型继续按可见轮廓取景。
 
 ## 更新目录
 
-三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可复核项目 CDN 素材在国内镜像上的路径。宝石研物语始终从目录中固定的 GitHub 原始文件地址读取。
+三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可按播放器的国内地址解析规则复核三个系列。
 
 在仓库根目录运行以下命令。导入工具需要 Node、Git 和网络。已提交的目录可直接用于常规构建；重导时才会读取上游 Git 树和清单。第一次导入会下载元数据并缓存到 `node_modules/.cache/game-sources`。语音归档采用 Git 部分克隆，仅枚举路径。
 

@@ -1,4 +1,4 @@
-import { nativeMotionLookup } from '../src/modern/native-events.ts';
+import { nativeMotionLookup, nativeTouchArea } from '../src/modern/native-events.ts';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -80,7 +80,7 @@ for (const id of gallery.ids) {
       counts.textWithoutAudio++;
       reasons.push('textWithoutAudio');
     }
-    if (!hits.has(event.touch_area.toLowerCase())) {
+    if (!hits.has(nativeTouchArea(event.touch_area.toLowerCase(), hits))) {
       counts.missingHitName++;
       reasons.push('missingHitName');
     }

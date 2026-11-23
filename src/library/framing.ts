@@ -62,6 +62,23 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
   top = Math.max(top, quantile(rows, mass, 0.001) - 2);
   const left = quantile(columns, mass, 0.001);
   const right = quantile(columns, mass, 0.999) + 1;
+  // A sword tip can extend below a cropped thigh. Anchor the horizontal cut of the
+  // figure when only a thin prop remains below it. Full-length figures keep their feet.
+  if (croppedPortrait) {
+    let tail = 0;
+    for (let y = bottom - 1; y > Math.max(top + 2, bottom - (bottom - top) * 0.25); y--) {
+      tail += rows[y];
+      if (tail > mass * 0.035) break;
+      let cut = 0;
+      for (let x = left; x < right; x++) {
+        if (mask[(y - 2) * size + x] >= 96 && mask[(y - 1) * size + x] >= 96 && mask[y * size + x] < 24) cut++;
+      }
+      if (cut >= Math.max(3, (right - left) * 0.18) && rows[y] < rows[y - 1] * 0.5) {
+        bottom = y;
+        break;
+      }
+    }
+  }
   const width = right - left, height = bottom - top;
   // Both backends project onto a square. The visible viewport is its
   // bottom-centered subrectangle, so pointer and camera coordinates stay shared.
@@ -167,9 +184,14 @@ const subjectFrames: ReadonlyMap<string, readonly [number, number, number, numbe
   ['doll/56-1type/7706/destroy', [139, 103, 215, 189]],
 ]);
 
+const croppedForms = new Set([
+  'character/himeko/himeko', 'character/Kiana/Kiana', 'character/shin/shin', 'character/xier/xier',
+  'character/madierda/base', 'npc/william/1/destroy',
+]);
+
 export function catalogFraming(id: string, setAspect?: (ratio: number) => void, paintScale = 1, croppedPortrait = false): Framing {
   const bounds = subjectFrames.get(id);
-  if (!bounds) return createFraming(setAspect, paintScale, croppedPortrait);
+  if (!bounds) return createFraming(setAspect, paintScale, croppedPortrait || croppedForms.has(id));
   const [left, top, right, bottom] = bounds;
   const width = right - left, height = bottom - top;
   const aspect = setAspect ? width / height : 1;

@@ -112,5 +112,7 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
       .map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
     return { cues, sceneAspect, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  const gallery = mainland && catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
+    .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
+  return { url: url.href, collection, locale, ids, gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

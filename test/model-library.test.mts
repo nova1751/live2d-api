@@ -14,6 +14,8 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
     const recordings = new Set();
     for (const id of catalog.ids) {
       const { modelUrl, dialogue, files, cues } = catalog.resolve(id);
+      const portrait = catalog.gallery?.[id]?.portrait;
+      if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);
       if (dialogue) recordings.add(dialogue.audio);
       for (const url of [modelUrl, dialogue?.url, ...Object.values(files ?? {}), ...Object.values(cues ?? {}).map(cue => cue.sound)]) {
         if (url && /^https?:/.test(url)) assert.equal(new URL(url).origin, mirror, id + ' ' + url);

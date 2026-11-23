@@ -63,6 +63,16 @@ test('fits a wide group and gives an unmarked silhouette a stable baseline', () 
   assert.deepEqual(fitSilhouette(new Uint8Array(mask.length), initial), { scale: 1, x: 0, y: 0 });
 });
 
+test('anchors the cut edge of a half portrait even when a thin weapon extends below it', () => {
+  const mask = new Uint8Array(size * size);
+  rectangle(mask, 41, 20, 77, 94);
+  rectangle(mask, 78, 80, 79, 106);
+  const portrait = fitSilhouette(mask, initial, undefined, () => {}, true);
+  const full = fitSilhouette(mask, initial, undefined, () => {});
+  assert.ok(project(94, portrait.y, portrait) > 1);
+  assert.ok(project(106, full.y, full) < 1);
+});
+
 test('frames the settled figure despite a wide setup pose and a faint detached particle', t => {
   const initialPose = new Uint8Array(size * size);
   rectangle(initialPose, 6, 7, 122, 115);

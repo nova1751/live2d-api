@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { posix } from 'node:path';
 import { json, raw, tree } from './game-sources.mts';
 
 const repo = 'RedBeanN/HSoD2';
@@ -37,6 +38,7 @@ async function bytes(url: string) {
 }
 
 export async function recoverHoukai(folder: string, manifest: Manifest, originalBase: string, originalTree: Map<string,string>) {
+  if (folder === 'mie') return recoverMei(manifest, originalTree);
   const outfit = outfits[folder];
   if (!outfit) return;
   const directory = 'model/' + outfit + '/';
@@ -88,4 +90,30 @@ export async function recoverHoukai(folder: string, manifest: Manifest, original
     });
   }
   return { files, cues, repairs };
+}
+
+async function recoverMei(manifest: Manifest, originalTree: Map<string,string>) {
+  const repo = 'AzharRizkiZ/Live2D-Model', rev = 'fab804971d22fcbcefbc6e4277d1e09424e9143c';
+  const root = 'assets/models/Honkai-Impact/';
+  const archive = await tree(repo, rev);
+  const manifestUrl = raw + repo + '/' + rev + '/' + root + 'mie/model.json';
+  assert.equal(archive.get(root + 'mie/model.json'), originalTree.get('mie/model.json'));
+  const files: Record<string,string> = {};
+  const repairs = [];
+  for (const clip of Object.values(manifest.motions).flat()) {
+    if (!clip.sound || files[clip.sound]) continue;
+    assert.match(clip.sound, /^sound\/mei_live2d_\d{3}\.wav$/);
+    const motionHash = originalTree.get('mie/' + clip.file);
+    assert.ok(motionHash);
+    assert.equal(archive.get(root + 'mei/' + clip.file), motionHash);
+    const path = root + 'mei/sounds/' + posix.basename(clip.sound);
+    const from = raw + repo + '/' + rev + '/' + path;
+    const wav = await bytes(from);
+    assert.equal(wav.toString('ascii',0,4), 'RIFF');
+    assert.equal(wav.toString('ascii',8,12), 'WAVE');
+    assert.equal(createHash('sha1').update('blob ' + wav.length + '\0').update(wav).digest('hex'), archive.get(path));
+    files[clip.sound] = from;
+    repairs.push({ id:'character/mie/mie', file:clip.sound, from, manifestUrl, sha256:createHash('sha256').update(wav).digest('hex') });
+  }
+  return { files, cues: undefined, repairs };
 }

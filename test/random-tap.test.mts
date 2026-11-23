@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
+import { nativeTouchArea } from '../src/modern/native-events.ts';
 
 test('touch rules win and only visible, unmapped taps rotate through eligible motions', async t => {
   const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
@@ -91,4 +92,10 @@ test('the renderer preserves the CDN version delimiter and encodes reserved char
   const { resolveAsset } = await readActions(root+'/model.model3.json',undefined,new AbortController().signal);
   await resolveAsset('gh/nova1751/live2d-api@cdn-ots14-527aac9245c0/model #1.moc3');
   assert.equal(requested,root+'/model%20%231.moc3');
+});
+test('touch events can use the sole numbered head of 7706 without joining ambiguous hit areas', () => {
+  assert.equal(nativeTouchArea('head', new Set(['head3', 'body', 'leg'])), 'head3');
+  assert.equal(nativeTouchArea('head', new Set(['head2', 'head3'])), 'head');
+  assert.equal(nativeTouchArea('leg2', new Set(['leg1'])), 'leg2');
+  assert.equal(nativeTouchArea('leg', new Set(['leg', 'leg2'])), 'leg');
 });
