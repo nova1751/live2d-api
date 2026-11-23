@@ -4,6 +4,26 @@ import test from 'node:test';
 import { transform } from 'esbuild';
 
 const json = async path => JSON.parse(await readFile(new URL('../' + path, import.meta.url)));
+
+test('OTs-14 uses native events and regional packs in the gallery and preserves legacy and offline sources', async t => {
+  const { loadModelCatalog } = await import('../widget.mjs');
+  const catalog = await json('catalog/library.json');
+  const url = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@tag/catalog/library.json';
+  globalThis.document = { baseURI: url };
+  t.after(() => { delete globalThis.document; });
+  t.mock.method(globalThis, 'fetch', async () => Response.json(catalog));
+  const id = 'doll/ots14/1203/normal';
+  const gallery = await loadModelCatalog(url, 'girls-frontline');
+  const native = gallery.resolve(id);
+  assert.match(native.modelUrl, /^https:\/\/cdn\.jsdmirror\.com\/.+@cdn-ots14-.+\.model3\.json$/);
+  assert.equal(new URL(native.dialogue.url).hostname, 'cdn.jsdmirror.com');
+  assert.equal(new URL(native.dialogue.audio.get('AUDIO/OTS14/OTS14_DIALOGUE1_JP.OGG')).hostname, 'cdn.jsdmirror.com');
+  const classic = await loadModelCatalog(url);
+  assert.match(classic.resolve(id).modelUrl, /model\/ost14\/.+index\.json$/);
+  catalog.sources.dump.baseUrl = '../../sources/dump/';
+  const offline = await loadModelCatalog('http://localhost/viewer/catalog/library.json', 'girls-frontline');
+  assert.match(offline.resolve(id).modelUrl, /^http:\/\/localhost\/sources\/dump\/models\//);
+});
 test('portable catalog retains the original numeric addresses and pinned assets', async () => {
   const catalog = await json('catalog/library.json');
   const original = await json('model_list.json');

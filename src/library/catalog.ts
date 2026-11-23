@@ -1,8 +1,8 @@
 export type WidgetLocale = 'zh-CN' | 'en';
-export interface ModelSource { baseUrl: string }
+export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
 export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
-export interface ModelVariant { cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
+export interface ModelVariant { collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
   gallery?: Record<string, GalleryEntry>;
@@ -64,12 +64,20 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
   const ids = collection === 'girls-frontline' ? orderCollection(available.filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id: string, source?: string) {
     if (collection && !available.includes(id)) throw new Error('Model outside the selected collection: ' + id);
-    const asset = catalog.models[id]?.find(item => item.manifest && (!source || item.source === source));
+    const variants = catalog.models[id] ?? [];
+    const preferred = !source && collection && variants.find(item => item.collectionDefault && item.manifest);
+    const asset = preferred || variants.find(item => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error('No model manifest for ' + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
     if (url.hostname === 'cdn.jsdmirror.com' && base.hostname === 'cdn.jsdelivr.net' &&
         base.pathname.startsWith('/gh/nova1751/live2d-api@cdn-')) base.hostname = url.hostname;
-    const assetUrl = (path: string) => new URL(path.split('/').map(encodeURIComponent).join('/'), base).href;
+    const packs = base.hostname === 'raw.githubusercontent.com' ? catalog.sources[asset.source].packs : undefined;
+    const assetUrl = (path: string) => {
+      const pack = packs?.find(p => p.directories.some(dir => path.startsWith(dir + '/')));
+      const target = new URL(path.split('/').map(encodeURIComponent).join('/'), pack?.baseUrl ?? base);
+      if (pack && url.hostname === 'cdn.jsdmirror.com' && target.hostname === 'cdn.jsdelivr.net') target.hostname = url.hostname;
+      return target.href;
+    };
     let dialogue: DialogueSource | undefined;
     if (asset.dialogue) {
       let audio = audioBySource.get(asset.source);

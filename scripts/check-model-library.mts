@@ -53,22 +53,25 @@ const library = readJson<Library>(join(directory, 'library.json'));
 let errors = 0;
 for (const [id, items] of Object.entries(library.models)) {
   try {
-    const chosen = items.find((v) => v.manifest);
-    if (!chosen?.manifest) throw new Error('Missing model manifest');
-    const root = join(directory, 'sources', chosen.source);
-    const manifest = join(root, chosen.manifest);
-    for (const path of references(readJson<Manifest>(manifest), chosen.soundAliases ?? {})) {
-      if (!path) continue;
-      const file = statSync(join(dirname(manifest), decodeURIComponent(path)), { throwIfNoEntry: false });
-      if (!file?.isFile() || !file.size) {
-        console.error(id, path);
-        errors++;
+    const primary = items.find(v => v.manifest);
+    if (!primary) throw new Error('Missing model manifest');
+    for (const chosen of new Set([primary, ...items.filter(v => v.collectionDefault)])) {
+      if (!chosen.manifest) throw new Error('Missing collection manifest');
+      const root = join(directory, 'sources', chosen.source);
+      const manifest = join(root, chosen.manifest);
+      for (const path of references(readJson<Manifest>(manifest), chosen.soundAliases ?? {})) {
+        if (!path) continue;
+        const file = statSync(join(dirname(manifest), decodeURIComponent(path)), { throwIfNoEntry: false });
+        if (!file?.isFile() || !file.size) {
+          console.error(id, path);
+          errors++;
+        }
       }
-    }
-    if (chosen.dialogue) {
-      const { motionData, voiceData } = readJson<Record<string, unknown>>(join(root, chosen.dialogue));
-      if (!motionData || !voiceData || typeof motionData !== 'object' || typeof voiceData !== 'object')
-        throw new Error('Invalid dialogue metadata');
+      if (chosen.dialogue) {
+        const { motionData, voiceData } = readJson<Record<string, unknown>>(join(root, chosen.dialogue));
+        if (!motionData || !voiceData || typeof motionData !== 'object' || typeof voiceData !== 'object')
+          throw new Error('Invalid dialogue metadata');
+      }
     }
   } catch (error) {
     console.error(id, error);

@@ -164,6 +164,17 @@ const ordered = Object.fromEntries(
     .map((key) => [key, models[key]]),
 );
 const audio = { dump: [...paths].filter((p) => p.startsWith('audio/') && p.endsWith('.ogg')) };
+// The older OTs-14 conversions lack the native event-to-voice table. Keep them for numeric IDs.
+const directories = new Set<string>();
+for (const [id, variants] of Object.entries(ordered)) {
+  if (!id.startsWith('doll/ots14/')) continue;
+  const native = variants.find(v => v.source === 'dump' && v.dialogue);
+  if (!native?.manifest) continue;
+  native.collectionDefault = true;
+  directories.add(posix.dirname(posix.dirname(native.manifest)));
+}
+sources.dump.packs = [{ baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-ots14-' + dump.slice(0,12) + '/',
+  directories: [...directories, 'audio/OTS14'] }];
 writeFileSync(
   join(repository, 'catalog/library.json'),
   JSON.stringify({ schemaVersion: 1, legacyIds, sources, models: ordered, audio }) + '\n',

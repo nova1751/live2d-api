@@ -1,6 +1,10 @@
 export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource {
     baseUrl: string;
+    packs?: {
+        baseUrl: string;
+        directories: string[];
+    }[];
 }
 export interface GameCue {
     sound?: string;
@@ -16,6 +20,7 @@ export interface GalleryEntry {
     portrait?: string;
 }
 export interface ModelVariant {
+    collectionDefault?: boolean;
     cues?: Record<string, GameCue>;
     files?: Record<string, string | null>;
     source: string;

@@ -31,3 +31,18 @@ test('touch rules win and only visible, unmapped taps rotate through eligible mo
   lifetime.abort();
   await tap();assert.equal(played.length,9);
 });
+
+test('a native voice-only body event has a caption and no synthetic motion', async t => {
+  const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
+  const { readActions } = await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].contents).toString('base64'));
+  const manifest = { FileReferences: { Motions: { Idle: [{ File: 'idle.motion3.json' }] } } };
+  const motion = { motion_name:'', touch_area:'body', probability:1, delay:0, is_hurt:0 };
+  const voice = { char_code:'OTs14', voice_key:'DIALOGUE1', caption:'Hello' };
+  const data = { variant:'normal', motionData: { touch:motion, login:{...motion,touch_area:'0'}, absent:{...motion,motion_name:'missing.mtn'} },
+    voiceData:{touch:voice,login:voice,absent:voice} };
+  t.mock.method(globalThis,'fetch',async url=>Response.json(url.endsWith('/data.json')?data:manifest));
+  const source = {url:'https://example.org/data.json',audio:new Map([['AUDIO/OTS14/OTS14_DIALOGUE1_JP.OGG','voice.ogg']]),
+    captions:{'OTS14|DIALOGUE1':'今天有什么计划，说来听听吧。'}};
+  const { actions } = await readActions('https://example.org/model.model3.json',source,new AbortController().signal);
+  assert.deepEqual(actions,[{file:'',group:'voice',index:0,area:'body',weight:1,delay:0,sound:'voice.ogg',caption:source.captions['OTS14|DIALOGUE1']}]);
+});

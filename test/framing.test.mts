@@ -105,3 +105,23 @@ test('waits out a black setup layer and remeasures a clipped outfit before revea
   const feet = 0.5 + camera.y + (106 / size - 0.5) * camera.scale / views[0].scale;
   assert.ok(Math.abs(feet - 0.97) < 0.001);
 });
+
+test('waits through transparent setup and ignores the isolated cinematic strip on OTs-14 5602', t => {
+  const rgba = new Uint8ClampedArray(size * size * 4);
+  const context = { clearRect() {}, drawImage() {}, getImageData: () => ({ data: rgba }) };
+  globalThis.document = { createElement: () => ({ getContext: () => context }) };
+  t.after(() => { delete globalThis.document; });
+  let now = 0, aspect;
+  t.mock.method(performance, 'now', () => now);
+  const framing = createFraming(value => { aspect = value; });
+  const sample = () => { now += 85; return framing.measure({}); };
+  for (let i = 0; i < 12; i++) assert.equal(sample(), undefined);
+  for (let y = 5; y < 7; y++) for (let x = 0; x < size; x++) rgba[4 * (y * size + x) + 3] = 255;
+  for (let y = 59; y < 104; y++) for (let x = 48; x < 82; x++) rgba.fill(255, 4 * (y * size + x), 4 * (y * size + x + 1));
+  sample();
+  sample();
+  const camera = sample();
+  assert.ok(aspect < 1 && camera);
+  assert.ok(Math.abs(project(59, camera.y, camera) - 0.04) < 0.001);
+  assert.ok(Math.abs(project(104, camera.y, camera) - 0.97) < 0.001);
+});

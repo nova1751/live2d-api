@@ -126,11 +126,19 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
   const ids = collection === "girls-frontline" ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id, source) {
     if (collection && !available.includes(id)) throw new Error("Model outside the selected collection: " + id);
-    const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
+    const variants = catalog.models[id] ?? [];
+    const preferred = !source && collection && variants.find((item) => item.collectionDefault && item.manifest);
+    const asset = preferred || variants.find((item) => item.manifest && (!source || item.source === source));
     if (!asset?.manifest) throw new Error("No model manifest for " + id);
     const base = new URL(catalog.sources[asset.source].baseUrl, response.url || url);
     if (url.hostname === "cdn.jsdmirror.com" && base.hostname === "cdn.jsdelivr.net" && base.pathname.startsWith("/gh/nova1751/live2d-api@cdn-")) base.hostname = url.hostname;
-    const assetUrl = (path) => new URL(path.split("/").map(encodeURIComponent).join("/"), base).href;
+    const packs = base.hostname === "raw.githubusercontent.com" ? catalog.sources[asset.source].packs : void 0;
+    const assetUrl = (path) => {
+      const pack = packs?.find((p) => p.directories.some((dir) => path.startsWith(dir + "/")));
+      const target = new URL(path.split("/").map(encodeURIComponent).join("/"), pack?.baseUrl ?? base);
+      if (pack && url.hostname === "cdn.jsdmirror.com" && target.hostname === "cdn.jsdelivr.net") target.hostname = url.hostname;
+      return target.href;
+    };
     let dialogue;
     if (asset.dialogue) {
       let audio = audioBySource.get(asset.source);
@@ -149,7 +157,7 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
 }
 
 // package.json
-var version = "2.8.0";
+var version = "2.8.1";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -169,7 +177,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-0cb4f982723bf0f0/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-d5fab70f79e7e599/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

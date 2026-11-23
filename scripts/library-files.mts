@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import type { ModelCatalog, ModelVariant } from '../src/library/catalog.ts';
+import type { ModelCatalog, ModelSource, ModelVariant } from '../src/library/catalog.ts';
 
-export interface Source {
+export interface Source extends ModelSource {
   repository: string;
   commit: string;
   scope: string[];

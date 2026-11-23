@@ -30,6 +30,12 @@ export async function readActions(url: string, source: DialogueSource | undefine
   const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([,clips]) => clips.map(c => c.File)));
   const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
   const byFilename = new Map<string, string | undefined>();
+  function voiceFor(id: string) {
+    const line = data?.voiceData[id];
+    const code = line?.char_code?.toUpperCase(), key = line?.voice_key?.toUpperCase();
+    return { caption: source?.captions?.[code + '|' + key] || line?.caption,
+      sound: code && key ? source?.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined };
+  }
   for (const path of paths) {
     const name = path.slice(path.lastIndexOf('/') + 1);
     byFilename.set(name, byFilename.has(name) ? undefined : path);
@@ -48,12 +54,8 @@ export async function readActions(url: string, source: DialogueSource | undefine
           if (Boolean(motion.is_hurt) !== (data.variant === 'destroy')) continue;
           const area = motion.touch_area && motion.touch_area !== '0' ? motion.touch_area.toLowerCase() : '';
           if (!area && !randomTap) continue;
-          const line = data.voiceData[id];
-          const code = line?.char_code?.toUpperCase();
-          const key = line?.voice_key?.toUpperCase();
           actions.push({ file: file.File, group, index, area, weight: motion.probability,
-            delay: Math.max(0, motion.delay || 0), caption: source.captions?.[code + '|' + key] || line?.caption,
-            sound: code && key ? source.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined });
+            delay: Math.max(0, motion.delay || 0), ...voiceFor(id) });
         }
       } else if (cues && !/^idle$/i.test(group)) {
         actions.push({file:file.File, group, index, area:group.toLowerCase(), weight:1, delay:0,
@@ -69,7 +71,18 @@ export async function readActions(url: string, source: DialogueSource | undefine
     });
   }
   const filename = decodeURIComponent(new URL(url).pathname.slice(1));
-  const oneShot = new Set(source || randomTap ? actions.filter(a => !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
+  // Some native touch events have a recording and intentionally leave the motion empty.
+  if (data && source) {
+    let index = 0;
+    for (const [id, motion] of Object.entries(data.motionData)) {
+      if (motion.motion_name || !motion.touch_area || motion.touch_area === '0' ||
+          Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !(motion.probability > 0)) continue;
+      const voice = voiceFor(id);
+      if (voice.sound) actions.push({ file: '', group: 'voice', index: index++, area: motion.touch_area.toLowerCase(),
+        weight: motion.probability, delay: Math.max(0, motion.delay || 0), ...voice });
+    }
+  }
+  const oneShot = new Set(source || randomTap ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
   async function resolveAsset(path: string, requestSignal?: AbortSignal) {
     if (path === filename) return new Blob([JSON.stringify(manifest)], { type: 'application/json' });
     const asset = new URL('/' + path.split('/').map(encodeURIComponent).join('/'), url);
@@ -164,6 +177,11 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       return voice ? delta : frameSeconds;
     }
     try {
+      if (!action.file) {
+        await ready;
+        if (!signal.aborted) { update(0); await line; end(false); }
+        return;
+      }
       const result = await stage.playMotion(action.group, action.index, { sync: { ready, signal, update } });
       if (result.status === 'completed') { await line; end(false); }
     } catch (error) {
@@ -174,7 +192,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     }
   }
   const idleOrSystem = /^(idle|wait|standby|start|login|tick|shake|mail|mission|complete|home|wedding)/i;
-  const fallback = hitVisible ? actions.filter(action => action.weight > 0 && !idleFiles.has(action.file) && !idleOrSystem.test(action.group) &&
+  const fallback = hitVisible ? actions.filter(action => action.file && action.weight > 0 && !idleFiles.has(action.file) && !idleOrSystem.test(action.group) &&
     !/(?:^|[/_])(?:idle|wait|standby|login|wedding)/i.test(action.file)) : [];
   let lastFile: string | undefined;
   function playFallback() {

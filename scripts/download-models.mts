@@ -69,6 +69,7 @@ for (const [name, spec] of Object.entries(library.sources)) {
   }
   materialize(name, spec);
   spec.baseUrl = 'sources/' + name + '/';
+  delete spec.packs;
 }
 for (const [id, variants] of Object.entries(library.models)) {
   library.models[id] = variants.filter((v) => selected.has(v.source));
@@ -77,7 +78,14 @@ for (const [id, variants] of Object.entries(library.models)) {
 const index = join(output, 'library.json');
 if (existsSync(index)) {
   const previous = readJson<Library>(index);
-  // An existing checkout can pick up updated display names, captions and archive aliases.
+  // A change of display preference among the same downloaded variants needs no new files.
+  for (const [id, variants] of Object.entries(previous.models)) {
+    for (const variant of variants) {
+      const current = library.models[id]?.find(v => v.source === variant.source && v.manifest === variant.manifest);
+      if (current?.collectionDefault) variant.collectionDefault = true;
+      else delete variant.collectionDefault;
+    }
+  }
   if (!isDeepStrictEqual({ ...previous, presentation: library.presentation }, { ...library, presentation: library.presentation }))
     throw new Error('Different catalog already exists: ' + index);
 }

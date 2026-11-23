@@ -21,3 +21,12 @@
 用 `node scripts/model-library.mts <Eikanya checkout> <jacksen168 checkout>` 重建固定来源，再执行 `node scripts/localize-library.mts <本地完整素材目录>` 合并中英文名称、字幕和旧档映射。英文名称与旧语音键使用[固定美服数据](https://github.com/gf-data-tools/gf-data-us/tree/5be9af6692083246bd288b9326d0e576dbecb4f0)，新版模型英文台词取自对应动作的原始对话记录。对于仅有内嵌原句的旧版索米模型，项目提供逐句英文翻译。
 
 运行 `node scripts/catalog-portraits.mts <本地完整素材目录>` 为新增造型生成缩略图。历史分类由 `scripts/girls-frontline-catalog.mts` 生成。内置素材按角色家族分为七个固定 GitHub 快照，每包预算 38 MB。模型素材更新使用 `node scripts/cdn-snapshot.mts <提交> --publish`。
+## OTs-14 的展示与原声
+
+图鉴收录樱吹雪（1203）、紫雨心（3001）、晚宴的统治者（4501）和天意佳人（5602），每款都有标准与战损两个形态。图鉴使用带游戏事件表的 Cubism 3 清单。旧版数字 ID 和直接引用的 Cubism 2 清单仍可使用。[八套模型及 41 段日语原声](https://github.com/nova1751/live2d-api/tree/cdn-ots14-527aac9245c0) · [上游固定提交](https://github.com/GFL-Live2D/dump/tree/527aac9245c06444d5d0259be843740915b715fd)
+
+樱吹雪标准款的身体触摸事件指定录音并留空动作名，点击时人物继续待机并播放对应台词。战损款的事件表没有指定录音。天意佳人标准款的场景上沿有独立黑边，轮廓测量会忽略这类细长黑边，让婚纱全身进入取景范围。
+
+国内镜像和海外 CDN 共用同一份固定快照。维护者可用 `node scripts/publish-model-packs.mts <dump 仓库路径>` 从上游 Git 对象复核快照，再加 `--publish` 推送对应素材标签。
+
+2.8.1 核对时，少女前线 443 个可选形态均在浏览器生成了非空画面。对 7 个背景之外的 436 张初始画面，按最大连续可见区域筛查高度不足视口 60%、宽度不足 85% 且重心在视口 65% 以下的情况，命中 0 张。此项测量覆盖加载后的取景，后续动作沿用该镜头。

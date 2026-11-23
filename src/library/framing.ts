@@ -3,6 +3,36 @@ const authored: Camera = { scale: 1, x: 0, y: 0 };
 const size = 128;
 type HitTest = (x: number, y: number) => readonly string[];
 
+// Cinematic borders can appear when the camera backs out past the authored stage.
+// Ignore an isolated, thin black strip touching both sides only for the fit measurement.
+function omitLetterbox(pose: Uint8Array, rgba: Uint8ClampedArray, bottom: boolean) {
+  const row = (i: number) => (bottom ? size - 1 - i : i) * size;
+  let first = 0;
+  while (first < size / 4 && !pose.subarray(row(first), row(first) + size).some(Boolean)) first++;
+  let end = first;
+  while (end < size / 4) {
+    const start = row(end);
+    let dark = 0;
+    for (let x = 0; x < size; x++) {
+      const i = start + x;
+      if (pose[i] && Math.max(rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2]) < 24) dark++;
+    }
+    if (dark < size * 0.95 || !pose[start] || !pose[start + size - 1]) break;
+    end++;
+  }
+  if (end === first || end - first > 4) return 0;
+  for (let i = end; i < end + 2; i++) {
+    if (pose.subarray(row(i), row(i) + size).some(Boolean)) return 0;
+  }
+  let removed = 0;
+  for (let i = first; i < end; i++) {
+    const strip = pose.subarray(row(i), row(i) + size);
+    for (const alpha of strip) if (alpha) removed++;
+    strip.fill(0);
+  }
+  return removed;
+}
+
 // Pixel coordinates in a low-resolution copy of the initial, wider view.
 function quantile(bins: Float64Array, total: number, fraction: number) {
   let sum = 0;
@@ -73,7 +103,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
   const ctx = sample.getContext('2d', { willReadFrequently: true });
   const mask = new Uint8Array(size * size);
   const pose = new Uint8Array(mask.length);
-  let attempts = 0, frames = 0, nextSample = 0, firstSample: number | undefined;
+  let frames = 0, nextSample = 0, firstSample: number | undefined;
   return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest, resizeSample?: (camera: Camera) => void): Camera | undefined {
     if (!ctx) return authored;
     const now = performance.now();
@@ -91,7 +121,7 @@ export function createFraming(setAspect?: (ratio: number) => void) {
         nextSample = now + 80;
         return;
       }
-      attempts++;
+      nextSample = now + 80;
       let visible = 0;
       for (let i = 0; i < mask.length; i++) {
         const alpha = data[4 * i + 3];
@@ -99,18 +129,22 @@ export function createFraming(setAspect?: (ratio: number) => void) {
         if (pose[i]) visible++;
       }
       if (visible >= 16) {
+        visible -= omitLetterbox(pose, data, false);
+        visible -= omitLetterbox(pose, data, true);
+      }
+      if (visible >= 16) {
         // Measure the settled pose; some rigs briefly show their setup pose on load.
         mask.set(pose);
         frames++;
-        nextSample = now + 80;
       }
     } catch { return authored; }
-    if (frames < 3 && attempts < 10) return;
+    if (frames < 3 && now - firstSample < 3200) return;
     if (frames && resizeSample && sampleCamera === initial) {
       for (let i = 0; i < size; i++) {
         if (Math.max(mask[i], mask[(size - 1) * size + i], mask[i * size], mask[i * size + size - 1]) < 96) continue;
         sampleCamera = { ...initial, scale: initial.scale * 0.6 };
-        attempts = frames = 0;
+        frames = 0;
+        firstSample = now;
         resizeSample(sampleCamera);
         return;
       }
