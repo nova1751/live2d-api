@@ -13,6 +13,8 @@ export interface WidgetOptions {
     locale?: WidgetLocale;
     collection?: import('./library/catalog.js').Collection;
     catalogUrl?: string | URL;
+    /** Reuse the catalog already loaded by a gallery, including its collection and locale. */
+    catalog?: import('./library/catalog.js').LoadedModelCatalog;
     modelId?: string;
     mode?: WidgetMode;
     position?: WidgetPosition;
@@ -20,6 +22,6 @@ export interface WidgetOptions {
     baseUrl?: string | URL;
 }
 export declare function selectWidgetModel(id: string): Promise<void>;
-export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }?: WidgetOptions): Promise<void>;
+export declare function loadWidget({ mode, position, baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }?: WidgetOptions): Promise<void>;
 /** Mount the Girls’ Frontline collection and keep character changes inside it. */
 export declare function loadGirlsFrontline(options?: Omit<WidgetOptions, 'collection' | 'modelUrl' | 'modelBaseUrl'>): Promise<void>;

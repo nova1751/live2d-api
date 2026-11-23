@@ -1,6 +1,12 @@
-import { loadModelCatalog, loadGirlsFrontline, selectWidgetModel } from '../widget.mjs';
+import { loadModelCatalog, loadWidget, selectWidgetModel } from '../widget.mjs';
 
-const catalogUrl = new URL('./library.json', import.meta.url);
+const gameNames = {
+  'girls-frontline': ['少女前线','Girls’ Frontline'], 'azur-lane': ['碧蓝航线','Azur Lane'],
+  'bang-dream': ['BanG Dream!','BanG Dream!'], houkai2: ['崩坏学园 2','Guns GirlZ'],
+};
+const requestedGame = new URL(location.href).searchParams.get('collection') ?? '';
+const game = Object.prototype.hasOwnProperty.call(gameNames, requestedGame) ? requestedGame as keyof typeof gameNames : 'girls-frontline';
+const catalogUrl = new URL(game === 'girls-frontline' ? './library.json' : './games/' + game + '.json', import.meta.url);
 const find = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
 const locale = new URL(location.href).searchParams.get('lang') === 'en' ? 'en' : 'zh-CN';
 const english = locale === 'en';
@@ -23,6 +29,12 @@ function updateLanguageLink() {
   language.href = target.href;
 }
 updateLanguageLink();
+document.querySelector('.intro h1 b')!.textContent = gameNames[game][english ? 1 : 0];
+document.title = gameNames[game][english ? 1 : 0] + t('模型图鉴 · Live2D', ' model gallery · Live2D');
+for (const link of Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-game]'))) {
+  if (link.dataset.game === game) link.setAttribute('aria-current','page');
+  if (english) link.search += '&lang=en';
+}
 const search = find<HTMLInputElement>('search');
 const category = find<HTMLSelectElement>('category');
 const variant = find<HTMLSelectElement>('variant');
@@ -47,7 +59,8 @@ const tiers: Record<string,string> = english
   ? { '1': 'Tier 1', '2': 'Tier 2', '3': 'Tier 3' }
   : { '1': '一阶', '2': '二阶', '3': '三阶' };
 const states: Record<string, string> = english ? { normal: 'Standard', destroy: 'Damaged' } : { normal: '标准', destroy: '战损' };
-const portrait = (id: string) => './portraits/' + encodeURIComponent(id.split('/').join('--')) + '.webp';
+Object.assign(categories, {ship:t('舰船','Ships'),character:t('角色','Characters'),hhw:'Hello, Happy World!',afterglow:'Afterglow',avemujica:'Ave Mujica',morfonica:'Morfonica',mygo:'MyGO!!!!!',pastelpalettes:'Pastel＊Palettes',poppinparty:'Poppin’Party',ras:'RAISE A SUILEN',roselia:'Roselia'});
+const gflPortrait = (id: string) => './portraits/' + encodeURIComponent(id.split('/').join('--')) + '.webp';
 
 // Host the standard widget in the preview panel, including a later reopen after it was hidden.
 const attachWidget = () => {
@@ -65,16 +78,25 @@ const firstPaint = new MutationObserver(() => {
 firstPaint.observe(host, { attributes: true, childList: true, subtree: true });
 
 try {
-  const library = await loadModelCatalog(catalogUrl, 'girls-frontline', locale);
+  const library = await loadModelCatalog(catalogUrl, game, locale);
+  const portrait = (id: string) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map(id => {
     const [kind, code, version, state] = id.split('/');
     const character = kind + '/' + code;
+    const entry = library.gallery?.[id];
+    if (entry) {
+      const name = english && entry.en || entry.name;
+      const form = english && entry.outfitEn || entry.outfit;
+      return {id,kind,character,name,form,terms:[id,name,entry.name,form,entry.outfit,categories[kind]].join(' ').toLowerCase()};
+    }
     const name = library.labels[character] || names[code] || code.toUpperCase();
     const outfit = library.labels[character + '/' + version]?.replace(name + '-', '') ||
       (kind === 'fairy' ? tiers : versions)[version] || version;
     const form = [outfit, states[state]].filter(Boolean).join(' · ');
     return { id, kind, character, name, form, terms: [id, name, form, categories[kind]].join(' ').toLowerCase() };
   });
+  if (library.gallery) models.sort((a,b)=>a.name.localeCompare(b.name,locale) ||
+    (library.gallery![a.id].date ?? Infinity) - (library.gallery![b.id].date ?? Infinity) || a.id.localeCompare(b.id,'en',{numeric:true}));
   type Model = typeof models[number];
   const byId = new Map(models.map(model => [model.id, model]));
   const groups = new Map<string, Model[]>();
@@ -120,8 +142,9 @@ try {
       image.width = image.height = 240;
       image.loading = 'lazy';
       image.decoding = 'async';
-      image.src = portrait(row.id);
-      art.append(image);
+      const thumbnail = portrait(row.id);
+      if (thumbnail) { image.src = thumbnail; art.append(image); }
+      else art.textContent = row.name.slice(0,2);
       const caption = document.createElement('span');
       caption.className = 'caption';
       const name = document.createElement('strong');
@@ -149,7 +172,19 @@ try {
     manifest.hidden = false;
     highlight();
   }
+  const motion = find<HTMLSelectElement>('motion');
+  window.addEventListener('live2d:motions', event => {
+    if (game === 'girls-frontline') return;
+    const clips = (event as CustomEvent<Array<{group:string,index:number,voiced:boolean}>>).detail;
+    motion.replaceChildren(...clips.map(({group,index,voiced})=>new Option(
+      group + ' · ' + (index+1) + (voiced ? t(' · 原声',' · voiced') : ''), JSON.stringify([group,index]))));
+    find('audition').hidden = !clips.length;
+  });
+  find('play-motion').addEventListener('click', () => {
+    if (motion.value) { const [group,index]=JSON.parse(motion.value); window.loadlive2d.playMotion?.(group,index); }
+  });
   async function select(id: string) {
+    find('audition').hidden = true;
     const ticket = ++revision;
     notice.textContent = t('正在载入…', 'Loading…');
     try {
@@ -203,10 +238,10 @@ try {
     updateLanguageLink();
   });
   describe(initial);
-  poster.src = portrait(initial.id);
-  poster.hidden = false;
+  const initialPortrait = portrait(initial.id);
+  if (initialPortrait) { poster.src = initialPortrait; poster.hidden = false; }
   drawCards();
-  await loadGirlsFrontline({ locale, catalogUrl, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
+  await loadWidget({ catalog: library, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
   attachWidget();
   ready = true;
   variant.disabled = false;

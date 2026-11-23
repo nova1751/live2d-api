@@ -1,6 +1,14 @@
 /*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */
-import { loadModelCatalog, loadGirlsFrontline, selectWidgetModel } from "../widget.mjs";
-const catalogUrl = new URL("./library.json", import.meta.url);
+import { loadModelCatalog, loadWidget, selectWidgetModel } from "../widget.mjs";
+const gameNames = {
+  "girls-frontline": ["少女前线", "Girls’ Frontline"],
+  "azur-lane": ["碧蓝航线", "Azur Lane"],
+  "bang-dream": ["BanG Dream!", "BanG Dream!"],
+  houkai2: ["崩坏学园 2", "Guns GirlZ"]
+};
+const requestedGame = new URL(location.href).searchParams.get("collection") ?? "";
+const game = Object.prototype.hasOwnProperty.call(gameNames, requestedGame) ? requestedGame : "girls-frontline";
+const catalogUrl = new URL(game === "girls-frontline" ? "./library.json" : "./games/" + game + ".json", import.meta.url);
 const find = (id) => document.getElementById(id);
 const locale = new URL(location.href).searchParams.get("lang") === "en" ? "en" : "zh-CN";
 const english = locale === "en";
@@ -23,6 +31,12 @@ function updateLanguageLink() {
   language.href = target.href;
 }
 updateLanguageLink();
+document.querySelector(".intro h1 b").textContent = gameNames[game][english ? 1 : 0];
+document.title = gameNames[game][english ? 1 : 0] + t("模型图鉴 · Live2D", " model gallery · Live2D");
+for (const link of Array.from(document.querySelectorAll("[data-game]"))) {
+  if (link.dataset.game === game) link.setAttribute("aria-current", "page");
+  if (english) link.search += "&lang=en";
+}
 const search = find("search");
 const category = find("category");
 const variant = find("variant");
@@ -65,7 +79,8 @@ const names = english ? {
 const versions = english ? { base: "Original", mod: "Neural upgrade", archive: "Archive", "archive-alt": "Archive (alternate)", "archive-christmas": "Christmas archive" } : { base: "原版", mod: "心智升级", archive: "旧档", "archive-alt": "旧档·另一造型", "archive-christmas": "圣诞旧档" };
 const tiers = english ? { "1": "Tier 1", "2": "Tier 2", "3": "Tier 3" } : { "1": "一阶", "2": "二阶", "3": "三阶" };
 const states = english ? { normal: "Standard", destroy: "Damaged" } : { normal: "标准", destroy: "战损" };
-const portrait = (id) => "./portraits/" + encodeURIComponent(id.split("/").join("--")) + ".webp";
+Object.assign(categories, { ship: t("舰船", "Ships"), character: t("角色", "Characters"), hhw: "Hello, Happy World!", afterglow: "Afterglow", avemujica: "Ave Mujica", morfonica: "Morfonica", mygo: "MyGO!!!!!", pastelpalettes: "Pastel＊Palettes", poppinparty: "Poppin’Party", ras: "RAISE A SUILEN", roselia: "Roselia" });
+const gflPortrait = (id) => "./portraits/" + encodeURIComponent(id.split("/").join("--")) + ".webp";
 const attachWidget = () => {
   for (const child of Array.from(document.body.querySelectorAll(":scope > #waifu, :scope > #waifu-toggle"))) {
     (child.id === "waifu-toggle" ? find("stage") : host).append(child);
@@ -110,8 +125,11 @@ try {
       image.width = image.height = 240;
       image.loading = "lazy";
       image.decoding = "async";
-      image.src = portrait(row.id);
-      art.append(image);
+      const thumbnail = portrait(row.id);
+      if (thumbnail) {
+        image.src = thumbnail;
+        art.append(image);
+      } else art.textContent = row.name.slice(0, 2);
       const caption = document.createElement("span");
       caption.className = "caption";
       const name = document.createElement("strong");
@@ -139,15 +157,23 @@ try {
     highlight();
   };
   var highlight2 = highlight, drawCards2 = drawCards, describe2 = describe;
-  const library = await loadModelCatalog(catalogUrl, "girls-frontline", locale);
+  const library = await loadModelCatalog(catalogUrl, game, locale);
+  const portrait = (id) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map((id) => {
     const [kind, code, version, state] = id.split("/");
     const character = kind + "/" + code;
+    const entry = library.gallery?.[id];
+    if (entry) {
+      const name2 = english && entry.en || entry.name;
+      const form2 = english && entry.outfitEn || entry.outfit;
+      return { id, kind, character, name: name2, form: form2, terms: [id, name2, entry.name, form2, entry.outfit, categories[kind]].join(" ").toLowerCase() };
+    }
     const name = library.labels[character] || names[code] || code.toUpperCase();
     const outfit = library.labels[character + "/" + version]?.replace(name + "-", "") || (kind === "fairy" ? tiers : versions)[version] || version;
     const form = [outfit, states[state]].filter(Boolean).join(" · ");
     return { id, kind, character, name, form, terms: [id, name, form, categories[kind]].join(" ").toLowerCase() };
   });
+  if (library.gallery) models.sort((a, b) => a.name.localeCompare(b.name, locale) || (library.gallery[a.id].date ?? Infinity) - (library.gallery[b.id].date ?? Infinity) || a.id.localeCompare(b.id, "en", { numeric: true }));
   const byId = new Map(models.map((model) => [model.id, model]));
   const groups = /* @__PURE__ */ new Map();
   for (const model of models) {
@@ -161,7 +187,24 @@ try {
   const initial = byId.get(library.visibleId(requested ?? "")) ?? models[0];
   let active = initial, groupCards = true, limit = 24, revision = 0;
   let ready = false;
+  const motion = find("motion");
+  window.addEventListener("live2d:motions", (event) => {
+    if (game === "girls-frontline") return;
+    const clips = event.detail;
+    motion.replaceChildren(...clips.map(({ group, index, voiced }) => new Option(
+      group + " · " + (index + 1) + (voiced ? t(" · 原声", " · voiced") : ""),
+      JSON.stringify([group, index])
+    )));
+    find("audition").hidden = !clips.length;
+  });
+  find("play-motion").addEventListener("click", () => {
+    if (motion.value) {
+      const [group, index] = JSON.parse(motion.value);
+      window.loadlive2d.playMotion?.(group, index);
+    }
+  });
   async function select(id) {
+    find("audition").hidden = true;
     const ticket = ++revision;
     notice.textContent = t("正在载入…", "Loading…");
     try {
@@ -225,10 +268,13 @@ try {
     updateLanguageLink();
   });
   describe(initial);
-  poster.src = portrait(initial.id);
-  poster.hidden = false;
+  const initialPortrait = portrait(initial.id);
+  if (initialPortrait) {
+    poster.src = initialPortrait;
+    poster.hidden = false;
+  }
   drawCards();
-  await loadGirlsFrontline({ locale, catalogUrl, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
+  await loadWidget({ catalog: library, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
   attachWidget();
   ready = true;
   variant.disabled = false;

@@ -4,9 +4,9 @@ import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
 import type { Camera, Framing } from './library/framing';
 import { readActions, bindInteractions } from './modern/interactions';
-import type { DialogueSource } from './library/catalog';
+import type { DialogueSource, GameCue } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -30,7 +30,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   }
   signal.addEventListener('abort', cleanup, { once: true });
   try {
-    const { actions, src: model, resolveAsset } = await readActions(src, dialogue, signal);
+    const { actions, idleFiles, src: model, resolveAsset } = await readActions(src, dialogue, signal, cues, randomTap);
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
@@ -60,9 +60,28 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         onPaint?.(output);
       }));
     }
-    const stopInteraction = bindInteractions(host, instance, actions, signal);
+    // Unnamed regions need a visible-pixel test while WebGL's drawing buffer still holds the frame.
+    const pixel = randomTap && output && graphics ? document.createElement('canvas') : undefined;
+    if (pixel) pixel.width = pixel.height = 1;
+    const sample = pixel?.getContext('2d', { willReadFrequently:true });
+    const hitVisible = sample && graphics && output ? (event: MouseEvent, onHit: () => void) => {
+      const bounds = output.getBoundingClientRect();
+      const x = Math.floor((event.clientX-bounds.left)*output.width/bounds.width);
+      const y = Math.floor((event.clientY-bounds.top)*output.height/bounds.height);
+      if (x < 0 || y < 0 || x >= output.width || y >= output.height) return;
+      const unsubscribe = graphics!.onFrame(() => queueMicrotask(() => {
+        unsubscribe();
+        if (signal.aborted) return;
+        sample.clearRect(0,0,1,1);
+        sample.drawImage(output,x,y,1,1,0,0,1,1);
+        if (sample.getImageData(0,0,1,1).data[3] > 16) onHit();
+      }));
+    } : undefined;
+    const interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible);
+    window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
     return {
-      pause: () => { stopInteraction(); instance.pause(); },
+      playMotion: interaction.playMotion,
+      pause: () => { interaction.stop(); instance.pause(); },
       resume: () => instance.resume(),
       capture() {
         requestAnimationFrame(() => {

@@ -223,3 +223,23 @@ test('npm shortcuts fetch the default catalog from the corresponding GitHub CDN'
     assert.equal(renders[0], assets + 'model/' + models[0][0] + '/index.json');
   }
 });
+test('the gallery and widget can share one catalog request and parsed index', async t => {
+  const { context, document, requests, renders } = browser();
+  globalThis.document = document;
+  globalThis.window = context;
+  t.after(() => { delete globalThis.document; delete globalThis.window; });
+  const { loadWidget, loadModelCatalog } = await import('../widget.mjs?gallery-test');
+  const url = base + 'library.json';
+  t.mock.method(globalThis, 'fetch', async input => {
+    requests.push(String(input));
+    return Response.json({
+      schemaVersion: 1, sources: { local: { baseUrl: './' } },
+      models: { demo: [{ source: 'local', manifest: 'demo/index.json' }] },
+    });
+  });
+  const catalog = await loadModelCatalog(url);
+  await loadWidget({ baseUrl: base, catalog, modelId: 'demo' });
+  await settled();
+  assert.deepEqual(renders, [base + 'demo/index.json']);
+  assert.equal(requests.filter(request => String(request) === url).length, 1);
+});

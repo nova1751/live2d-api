@@ -50,7 +50,7 @@ function createRenderer(base, legacy) {
       base + "modern/renderer.mjs"
     ).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint);
+      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -72,6 +72,7 @@ function createRenderer(base, legacy) {
     else legacy?.show?.(start);
   };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
+  render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
   render.capture = () => {
     if (controller) stage?.capture();
     return !!controller;
@@ -107,11 +108,22 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
   const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
   const presentation = collection ? catalog.presentation : void 0;
   const localized = locale === "en" ? presentation?.en : presentation;
+  const captions = collection === "girls-frontline" && locale !== "en" ? {
+    "G11_0|LOADING": "唔，再让我睡会儿～",
+    "G11_0|TIP": "这个……了解一下哦。",
+    "G41|MOOD1": "啊哈哈哈。",
+    "LEWIS|AGREE": "好，好。",
+    "RFB|AGREE": "好！",
+    "RFB|APPRECIATE": "好厉害！",
+    "SAT8|MOOD2": "诶，等、等一下！",
+    "VECTOR|MOOD2": "啊！",
+    ...localized?.captions
+  } : localized?.captions;
   const visibleId = (id) => {
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
   };
-  const ids = collection ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
+  const ids = collection === "girls-frontline" ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id, source) {
     if (collection && !available.includes(id)) throw new Error("Model outside the selected collection: " + id);
     const asset = catalog.models[id]?.find((item) => item.manifest && (!source || item.source === source));
@@ -126,15 +138,18 @@ async function loadModelCatalog(input, collection, locale = "zh-CN") {
         audio = new Map((catalog.audio?.[asset.source] ?? []).map((path) => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { captions: locale === "en" ? void 0 : localized?.captions, url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: locale === "en" ? void 0 : captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { captions: localized?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const cues = locale === "en" && asset.cues ? Object.fromEntries(
+      Object.entries(asset.cues).map(([group, cue]) => [group, { ...cue, caption: cue.captionEn || cue.caption }])
+    ) : asset.cues;
+    return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.4.8";
+var version = "2.5.0";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
@@ -210,6 +225,7 @@ async function mount(base, options, mode, position) {
         cdnPath: base,
         collection,
         locale,
+        ...options.catalog && { catalog: options.catalog },
         catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href,
         modelId,
         modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href,
@@ -229,7 +245,15 @@ async function selectWidgetModel(id) {
   if (!select) throw new Error("Initialize the widget with a model catalog first");
   await select(id);
 }
-async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale } = {}) {
+async function loadWidget({ mode = "sequential", position = "left", baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale } = {}) {
+  if (catalog) {
+    if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url || collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
+      throw new TypeError("Widget options conflict with the supplied catalog");
+    }
+    catalogUrl = catalog.url;
+    collection = catalog.collection;
+    locale = catalog.locale;
+  }
   if (locale && locale !== "en" && locale !== "zh-CN") throw new TypeError("Unsupported widget locale");
   if (!["random", "sequential"].includes(mode)) throw new TypeError("Invalid Live2D mode");
   if (!["left", "right"].includes(position)) throw new TypeError("Invalid Live2D position");
@@ -241,9 +265,14 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   base.search = "";
   base.hash = "";
-  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) {
+    if (collection && collection !== "girls-frontline") {
+      throw new TypeError("Provide the game catalogUrl from your gallery deployment");
+    }
+    catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+  }
   if (modelId && !catalogUrl) throw new TypeError("modelId requires a catalog");
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }, mode, position).catch((error) => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }, mode, position).catch((error) => {
     delete page[mounting];
     throw error;
   });

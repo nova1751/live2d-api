@@ -12,6 +12,27 @@ Add an interactive Girls’ Frontline character to your website with one script.
 
 </div>
 
+## Browse by game
+
+The gallery opens on Girls’ Frontline (443 outfits). Use the game navigation to explore Azur Lane (178 outfits), BanG Dream! (2,769 outfits across nine band archives), or Guns GirlZ (19 outfits). Each has its own search, outfit selector and shareable model links. The three additional collections include manual motion previews. Azur Lane matches audio by skin and event. Guns GirlZ plays silently for events whose referenced recording is missing.
+
+A click first uses the model’s own touch mapping. On an unassigned visible region, the widget samples an eligible motion from that outfit and avoids immediate repeats when alternatives exist. Idle and lifecycle events retain their separate triggers.
+
+On a deployment of the full static site, use the same widget module for all four games. Use absolute deployment URLs when embedding from another origin.
+
+```js
+import { loadWidget } from '/widget.mjs';
+
+await loadWidget({
+  collection: 'azur-lane',
+  catalogUrl: '/catalog/games/azur-lane.json',
+  modelId: 'ship/10117/lafei',
+  locale: 'en',
+});
+```
+
+The other catalogs are `bang-dream.json` and `houkai2.json`. Use their filename without the extension for `collection`. The three additional galleries fetch assets from pinned GitHub revisions. Model data stays outside the npm package. [Sources and catalog maintenance](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+
 ## Quick start
 
 Place one module script before `</body>`. Choose the CDN closest to your audience. Both examples select English and follow the latest stable release once the CDN cache refreshes. To pin a release, replace `widget-latest` with `widget-2.4.4`.

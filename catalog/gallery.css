@@ -59,7 +59,7 @@ select, .search { background: #fff; border: 1px solid #becbc4; border-radius: 7p
 select { padding: 8px; max-width: 100% }
 #variant { width: 100% }
 .links { margin-top: 13px; gap: 18px; font-size: .84rem }
-.links button, #more { border: 1px solid #b4c5bb; background: #f2f6f1; border-radius: 7px; padding: 6px 12px }
+.links button, .motion button, #more { border: 1px solid #b4c5bb; background: #f2f6f1; border-radius: 7px; padding: 6px 12px }
 .links a { color: var(--teal) }
 #notice:not(:empty) { margin-top: 8px; font-size: .82rem }
 .collection-head { justify-content: space-between; gap: 12px; margin-bottom: 14px }
@@ -122,3 +122,12 @@ select { padding: 8px; max-width: 100% }
   }
   #stage #waifu[data-wide-model] #waifu-tool button { flex: 0 0 auto; width: auto; }
 }
+
+.games { display:flex; flex-wrap:wrap; gap:.4rem; margin:1.5rem 0 0; }
+.games a { padding:.5rem 1rem; border:1px solid #bbc9c5; border-radius:2rem; color:#27433f; text-decoration:none; }
+.games a[aria-current="page"] { background:#173d39; border-color:#173d39; color:white; }
+.games a:hover { border-color:#173d39; }
+#audition { margin-top:.75rem; }
+.motion { display:flex; align-items:center; gap:.5rem; }
+.motion select { flex:1; min-width:0; }
+.motion button { padding:.5rem .85rem; }

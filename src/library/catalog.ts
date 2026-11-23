@@ -1,8 +1,11 @@
 export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string }
-export interface ModelVariant { source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
+export interface GameCue { sound?: string; caption?: string; captionEn?: string }
+export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
+export interface ModelVariant { cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
+  gallery?: Record<string, GalleryEntry>;
   legacyIds?: string[][];
   sources: Record<string, ModelSource>;
   models: Record<string, ModelVariant[]>;
@@ -11,7 +14,7 @@ export interface ModelCatalog {
 }
 export interface DialogueSource { url: string; captions?: Record<string,string>; audio: ReadonlyMap<string, string> }
 
-export type Collection = 'girls-frontline';
+export type Collection = 'girls-frontline' | 'azur-lane' | 'bang-dream' | 'houkai2';
 const categories = ['fairy', 'doll', 'adjutant', 'npc', 'squad', 'background'];
 const forms = ['default', 'normal', 'destroy'];
 function rank(list: string[], key: string) {
@@ -35,6 +38,8 @@ function orderCollection(ids: string[], outfits: Record<string, number>) {
   return rows.map(row => row.id);
 }
 
+export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
+
 export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN') {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
@@ -45,11 +50,18 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
   const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
   const presentation = collection ? catalog.presentation : undefined;
   const localized = locale === 'en' ? presentation?.en : presentation;
+  // Community transcriptions are keyed by exact recording. Prefer catalog-provided translations.
+  const captions = collection === 'girls-frontline' && locale !== 'en' ? {
+    'G11_0|LOADING':'唔，再让我睡会儿～','G11_0|TIP':'这个……了解一下哦。',
+    'G41|MOOD1':'啊哈哈哈。','LEWIS|AGREE':'好，好。','RFB|AGREE':'好！',
+    'RFB|APPRECIATE':'好厉害！','SAT8|MOOD2':'诶，等、等一下！','VECTOR|MOOD2':'啊！',
+    ...localized?.captions
+  } : localized?.captions;
   const visibleId = (id: string) => {
     const alias = presentation?.aliases[id];
     return alias && available.includes(alias) ? alias : id;
   };
-  const ids = collection ? orderCollection(available.filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
+  const ids = collection === 'girls-frontline' ? orderCollection(available.filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
   function resolve(id: string, source?: string) {
     if (collection && !available.includes(id)) throw new Error('Model outside the selected collection: ' + id);
     const asset = catalog.models[id]?.find(item => item.manifest && (!source || item.source === source));
@@ -65,9 +77,12 @@ export async function loadModelCatalog(input: string | URL, collection?: Collect
         audio = new Map((catalog.audio?.[asset.source] ?? []).map(path => [path.toUpperCase(), assetUrl(path)]));
         audioBySource.set(asset.source, audio);
       }
-      dialogue = { captions: locale === 'en' ? undefined : localized?.captions, url: assetUrl(asset.dialogue), audio };
+      dialogue = { captions: locale === 'en' ? undefined : captions, url: assetUrl(asset.dialogue), audio };
     }
-    return { captions: localized?.captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const cues = locale === 'en' && asset.cues ? Object.fromEntries(
+      Object.entries(asset.cues).map(([group, cue]) => [group, { ...cue, caption: cue.captionEn || cue.caption }])
+    ) : asset.cues;
+    return { cues, files: asset.files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
-  return { ids, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { url: url.href, collection, locale, ids, gallery: catalog.gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

@@ -1,6 +1,6 @@
 import { prepareMotion } from './motion';
 import type { Live2DInstance } from 'live2d-web';
-import type { DialogueSource } from '../library/catalog';
+import type { DialogueSource, GameCue } from '../library/catalog';
 
 interface MotionFile { File: string; Sound?: string }
 interface Metadata {
@@ -16,7 +16,7 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   return response.json();
 }
 
-export async function readActions(url: string, source: DialogueSource | undefined, signal: AbortSignal) {
+export async function readActions(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false) {
   const [manifest, data] = await Promise.all([
     json<{FileReferences: {Motions?: Record<string, MotionFile[]>}}>(url, signal),
     source && json<Metadata>(source.url, signal).catch(error => {
@@ -27,6 +27,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
   ]);
   const actions: Action[] = [];
   const groups = manifest.FileReferences.Motions ?? {};
+  const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([,clips]) => clips.map(c => c.File)));
   const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
   const byFilename = new Map<string, string | undefined>();
   for (const path of paths) {
@@ -35,27 +36,40 @@ export async function readActions(url: string, source: DialogueSource | undefine
   }
   for (const [group, files] of Object.entries(groups)) {
     files.forEach((file, index) => {
+      let hasEvent = false;
       if (data && source) {
         for (const [id, motion] of Object.entries(data.motionData)) {
           const name = motion.motion_name.replace(/\.mtn$/i, '.motion3.json');
-          const path = paths.has(name) ? name : byFilename.get(name);
-          if (path !== file.File ||
-              Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !motion.touch_area || motion.touch_area === '0') continue;
+          const corrected = id === '56309' && source.url.endsWith('/generalliu_563/normal/generalliu_563.data.json') &&
+            name === 'motions/wedding_touch.motion3.json' ? 'motions/wedding touch.motion3.json' : name;
+          const path = paths.has(corrected) ? corrected : byFilename.get(corrected);
+          if (path !== file.File) continue;
+          hasEvent = true;
+          if (Boolean(motion.is_hurt) !== (data.variant === 'destroy')) continue;
+          const area = motion.touch_area && motion.touch_area !== '0' ? motion.touch_area.toLowerCase() : '';
+          if (!area && !randomTap) continue;
           const line = data.voiceData[id];
           const code = line?.char_code?.toUpperCase();
           const key = line?.voice_key?.toUpperCase();
-          actions.push({ file: file.File, group, index, area: motion.touch_area.toLowerCase(), weight: motion.probability,
+          actions.push({ file: file.File, group, index, area, weight: motion.probability,
             delay: Math.max(0, motion.delay || 0), caption: source.captions?.[code + '|' + key] || line?.caption,
             sound: code && key ? source.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined });
         }
+      } else if (cues && !/^idle$/i.test(group)) {
+        actions.push({file:file.File, group, index, area:group.toLowerCase(), weight:1, delay:0,
+          sound:cues[group]?.sound ?? (file.Sound ? new URL(file.Sound,url).href : undefined), caption:cues[group]?.caption});
       } else if (/^tap_?/i.test(group)) {
         actions.push({ file: file.File, group, index, area: group.replace(/^tap_?/i, '').toLowerCase(), weight: 1, delay: 0,
           sound: file.Sound ? new URL(file.Sound, url).href : undefined });
       }
+      if (randomTap && !hasEvent && !cues && (data || !/^tap_?/i.test(group)) && !/^idle/i.test(group) && !idleFiles.has(file.File)) {
+        actions.push({file:file.File, group, index, area:'', weight:1, delay:0,
+          sound:file.Sound ? new URL(file.Sound,url).href : undefined});
+      }
     });
   }
   const filename = decodeURIComponent(new URL(url).pathname.slice(1));
-  const oneShot = new Set(source ? actions.map(action => new URL(action.file, url).href) : []);
+  const oneShot = new Set(source || randomTap ? actions.filter(a => !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
   async function resolveAsset(path: string, requestSignal?: AbortSignal) {
     if (path === filename) return new Blob([JSON.stringify(manifest)], { type: 'application/json' });
     const asset = new URL('/' + path.split('/').map(encodeURIComponent).join('/'), url);
@@ -65,10 +79,10 @@ export async function readActions(url: string, source: DialogueSource | undefine
     const clip = prepareMotion(await response.json(), oneShot.has(asset.href));
     return new Blob([JSON.stringify(clip)], { type: 'application/json' });
   }
-  return { actions, src: filename, resolveAsset };
+  return { actions, idleFiles, src: filename, resolveAsset };
 }
 
-export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal) {
+export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void) {
   let current: AbortController | undefined;
   let context: AudioContext | undefined;
   function stop() { current?.abort(); current = undefined; }
@@ -159,6 +173,18 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       if (current === controller) current = undefined;
     }
   }
+  const idleOrSystem = /^(idle|wait|standby|start|login|tick|shake|mail|mission|complete|home|wedding)/i;
+  const fallback = hitVisible ? actions.filter(action => action.weight > 0 && !idleFiles.has(action.file) && !idleOrSystem.test(action.group) &&
+    !/(?:^|[/_])(?:idle|wait|standby|login|wedding)/i.test(action.file)) : [];
+  let lastFile: string | undefined;
+  function playFallback() {
+    if (signal.aborted || current || !fallback.length) return;
+    const other = fallback.filter(a => a.file !== lastFile);
+    const pool = other.length ? other : fallback;
+    const action = pool[Math.floor(Math.random()*pool.length)];
+    lastFile = action.file;
+    play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
+  }
   host.addEventListener('click', event => {
     if (current) event.live2dHandlesCaption = true;
     const hits = stage.hitTest(event.clientX, event.clientY);
@@ -169,14 +195,22 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
         const action = candidates.find(a => (roll -= a.weight) < 0) ?? candidates[candidates.length - 1];
         event.live2dHandlesCaption = true;
         play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
-        break;
+        return;
       }
-      if (area.toLowerCase() === 'head' && stage.getModelInfo().expressions.length) {
-        stage.expression().catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
-        break;
-      }
+    }
+    if (fallback.length && hitVisible) {
+      event.live2dHandlesCaption = true;
+      if (hits.length) playFallback();
+      else hitVisible(event, playFallback);
+    } else if (hits.some(area => area.toLowerCase() === 'head') && stage.getModelInfo().expressions.length) {
+      stage.expression().catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
     }
   }, { signal });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); }, { signal });
-  return stop;
+  return { stop, playMotion(group: string, index: number) {
+    const action = actions.find(item => item.group === group && item.index === index);
+    if (!action || signal.aborted) return false;
+    play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
+    return true;
+  } };
 }

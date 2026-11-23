@@ -10,6 +10,7 @@ export class CatalogModels {
   private readonly key: string;
 
   constructor(private readonly url: string, private readonly options: LegacyOptions) {
+    if (options.catalog) this.library = Promise.resolve(options.catalog);
     const suffix = options.collection ? ':' + options.collection : '';
     const key = 'live2d:model:' + url + suffix;
     // An immutable catalog URL changes on release. Keep selections scoped to the same GitHub collection.
@@ -29,11 +30,12 @@ export class CatalogModels {
       const library = await this.open();
       if (revision !== this.sequence) return;
       const id = selectId(library.ids, library.legacyIds, library.visibleId);
-      const { modelUrl, dialogue, soundAliases, captions } = library.resolve(id);
+      const { modelUrl, dialogue, soundAliases, captions, cues, files } = library.resolve(id);
       let aspect = 1;
-      const framing = this.options.collection === 'girls-frontline' && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
+      const framing = this.options.collection && !id.startsWith('background/') ? createFraming(value => { aspect = value; }) : undefined;
       const onPaint = this.options.collection ? this.transition.begin(() => aspect) : undefined;
-      await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases });
+      await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
+        randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: this.options.collection === 'bang-dream' });
       if (revision === this.sequence) {
         this.active = library.visibleId(id);
         localStorage.setItem(this.key, id);

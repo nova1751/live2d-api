@@ -44,7 +44,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
     const { signal } = controller;
     return import(/* webpackIgnore: true */ /* @vite-ignore */ base + 'modern/renderer.mjs').then(async module => {
       if (signal.aborted) return;
-      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint);
+      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -55,6 +55,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
   render.hide = () => { hidden = true; if (controller) stage?.pause(); else legacy?.hide?.(); };
   render.show = start => { hidden = false; if (controller) stage?.resume(); else legacy?.show?.(start); };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
+  render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
   render.capture = () => { if (controller) stage?.capture(); return !!controller; };
   return render;
 }

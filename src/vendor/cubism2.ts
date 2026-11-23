@@ -107,9 +107,16 @@ function L(canvas,url,options) {
   if (model) model.onPaint = options && options.onPaint;
   if (model) model.locale = options && options.locale;
   if (model) model.captions = options && options.captions;
+  if (model) { model.catalogFiles = options && options.files; model.bandIdle = options && options.bandIdle; model.randomTap = options && options.randomTap; }
   if (model) model.soundAliases = options && options.soundAliases;
   if (model) model.startPending = !!(options && options.start && !document.hidden);
 }
+L.playMotion = function(group,index) {
+  var model = R.getModel(0);
+  if (!model || !model.initialized || model.hidden || !model.modelSetting.json.motions[group]?.[index]) return false;
+  L.prepareInteraction();
+  return model.startMotion(group,index,w.default.PRIORITY_NORMAL);
+};
 L.prepareInteraction = function () { return e(10).default.prepareInteraction(); };
 L.show = function (start) {
   var model = R.getModel(0);
@@ -132,13 +139,48 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
     if (prepare) return model.prepareTap(group, prepare);
     return model.startRandomMotion(group, $.default.PRIORITY_NORMAL, dialogue);
   }
+  function randomTap() {
+    if (!model.randomTap || gesture !== "click" || prepare === "hover" || !model.containsPoint(x,y)) return false;
+    if (!model.tapChoices) {
+      var choices = [], seen = new Set(), idle = new Set();
+      var motions = data.motions || {};
+      Object.entries(motions).forEach(function(pair) {
+        if (/^(idle|wait|standby)/i.test(pair[0])) pair[1].forEach(function(clip){idle.add(clip.file);});
+      });
+      Object.entries(motions).forEach(function(pair) {
+        var group = pair[0];
+        if (/^(idle|wait|standby|start|login|tick|shake|flick|mail|born|morning|afternoon|evening|change_cos)/i.test(group)) return;
+        pair[1].forEach(function(clip,index) {
+          if (!clip.file || clip.command || idle.has(clip.file) || /(?:^|[/_])idle/i.test(clip.file)) return;
+          var key = JSON.stringify([clip.file, clip.sound, clip.text]);
+          if (!seen.has(key)) { seen.add(key); choices.push({group:group,index:index,key:key}); }
+        });
+      });
+      model.tapChoices = choices;
+    }
+    var choices = model.tapChoices;
+    if (!choices.length) return false;
+    if (click) click.live2dHandlesCaption = true;
+    if (model.activeDialogue) return true;
+    var choice = model.prepared && choices.find(function(c){return c.group===model.prepared.group && c.index===model.prepared.index;});
+    if (!choice) {
+      var pool = choices.length > 1 ? choices.filter(function(c){return c.key !== model.lastTapChoice;}) : choices;
+      choice = pool[Math.floor(Math.random()*pool.length)];
+    }
+    if (prepare) return model.prepareTap(choice.group,prepare,choice.index);
+    if (model.startMotion(choice.group,choice.index,$.default.PRIORITY_NORMAL)) model.lastTapChoice = choice.key;
+    return true;
+  }
   var areas = (data.hit_areas || []).filter(function (area) { return model.hitTestSimple(area.id, x, y); });
   gesture = gesture || "click";
   if (data.trigger && data.trigger.length) {
     var trigger = data.trigger.find(function (rule) {
       return rule.actionType === gesture && areas.some(function(area){return area.id === rule.id;});
     });
-    if (!trigger) return false;
+    if (!trigger) {
+      var reserved = data.trigger.some(function(rule){return areas.some(function(area){return area.id === rule.id;});});
+      return !reserved && randomTap();
+    }
     if (click) click.live2dHandlesCaption = true;
     if (performance.now() >= (model.nextGesture || 0) && play(trigger.action[0], trigger.dialogue) && !prepare)
       model.nextGesture = performance.now() + Number(trigger.delay || 0);
@@ -149,12 +191,13 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
   if (!areas.length) {
     ["head","body"].forEach(function(name){if(model.hitTestCustom(name,x,y)) areas.push({name:name});});
   }
-  if (!areas.length && !(groups.tap && model.containsPoint(x, y))) return false;
+  if (!areas.length && !(groups.tap && model.containsPoint(x, y))) return randomTap();
   // An authored smaller region wins over a containing generic body region.
   areas.sort(function(a,b){return Number(a.name === "body") - Number(b.name === "body");});
   var names = areas.map(function(area){return "tap_" + area.name;});
   if (areas.some(function(area){return /^(head|face)$/i.test(area.name);})) {
     if (!names.some(function(name){return groups[name];}) && !groups.tap && model.expressionManager && Object.keys(model.expressions).length) {
+      if (randomTap()) return true;
       if (!prepare) model.setRandomExpression(); return true;
     }
     names.push("flick_head");
@@ -168,7 +211,7 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
     if (tap.file && tap.file === idle.file && tap.fade_in === idle.fade_in && tap.fade_out === idle.fade_out &&
         [tap, idle].every(function(entry) {
           return Object.keys(entry).every(function(key){return key === "file" || key === "fade_in" || key === "fade_out";});
-        })) return true;
+        })) { randomTap(); return true; }
   }
   if (group !== undefined) return play(group);
   if (data.web_tap_groups && areas.some(function(area){return area.name.toLowerCase() === "body";})) {
@@ -183,7 +226,7 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
     if (choice && click) click.live2dHandlesCaption = true;
     if (choice) return model.startMotion(choice[0], choice[1], $.default.PRIORITY_NORMAL);
   }
-  return false;
+  return randomTap();
 }
 },function(t,i,e){"use strict";function r(){}Object.defineProperty(i,"__esModule",{value:!0}),i.default=r;var o=e(2);var requestCache={};r.prototype.loadBytes=function(t,i,onError){if(requestCache[t]!==undefined){i(requestCache[t]);return;}var e=new XMLHttpRequest;e.open("GET",t,!0),e.responseType="arraybuffer",e.onload=function(){switch(e.status){case 200:requestCache[t]=e.response;i(e.response);break;default:console.error("Failed to load ("+e.status+") : "+t);if(onError)onError(new Error("HTTP "+e.status+" "+t))}},e.onerror=onError||null,e.send(null)},r.prototype.loadString=function(t){this.loadBytes(t,function(t){return t})},r.prototype.loadLive2DModel=function(t,i){var e=null;this.loadBytes(t,function(t){e=Live2DModelWebGL.loadModel(t),i(e)})},r.prototype.loadTexture=function(t,i,e,r){var n=new Image;n.crossOrigin="Anonymous",n.src=e;n.onload=function(){var e=(0,o.getContext)(),s=e.createTexture();if(!s)return console.error("Failed to generate gl texture name."),-1;0==t.isPremultipliedAlpha()&&e.pixelStorei(e.UNPACK_PREMULTIPLY_ALPHA_WEBGL,1),e.pixelStorei(e.UNPACK_FLIP_Y_WEBGL,1),e.activeTexture(e.TEXTURE0),e.bindTexture(e.TEXTURE_2D,s),e.texImage2D(e.TEXTURE_2D,0,e.RGBA,e.RGBA,e.UNSIGNED_BYTE,n),e.texParameteri(e.TEXTURE_2D,e.TEXTURE_MAG_FILTER,e.LINEAR),e.texParameteri(e.TEXTURE_2D,e.TEXTURE_MIN_FILTER,e.LINEAR_MIPMAP_NEAREST),e.generateMipmap(e.TEXTURE_2D),t.setTexture(i,s),s=null,"function"==typeof r&&r()},n.onerror=function(){console.error("Failed to load image : "+e)}},r.prototype.jsonParseFromBytes=function(t){var i,e=new Uint8Array(t,0,3);return i=239==e[0]&&187==e[1]&&191==e[2]?String.fromCharCode.apply(null,new Uint8Array(t,3)):String.fromCharCode.apply(null,new Uint8Array(t)),JSON.parse(i)},r.prototype.log=function(t){}},function(t,i,e){"use strict";function r(t){return t&&t.__esModule?t:{default:t}}var voiceContext;
 function fetchRecording(url, controller) {
@@ -200,6 +243,21 @@ o.prepareInteraction = function () {
   try { resumeAudio().catch(function(){}); return true; } catch (_) { return false; }
 };
 function o(){n.L2DBaseModel.prototype.constructor.call(this),this.eyeBlink=new n.L2DEyeBlink,this.motionRequest=0,this.modelHomeDir="",this.modelSetting=null,this.tmpMatrix=[]}Object.defineProperty(i,"__esModule",{value:!0}),i.default=o;var n=e(0),s=e(11),_=r(s),a=e(1),h=r(a),l=e(3),$=r(l);o.prototype=new n.L2DBaseModel,o.prototype.load=function(t,i,e){this.setUpdating(!0),this.setInitialized(!1),this.modelHomeDir=i.substring(0,i.lastIndexOf("/")+1),this.modelSetting=new _.default;var r=this;this.modelSetting.loadModelSetting(i,function(){
+  var settings = r.modelSetting.json;
+  var fixes = r.catalogFiles;
+  if (fixes) {
+    function resolved(path) { return Object.prototype.hasOwnProperty.call(fixes,path) ? fixes[path] : path; }
+    for (var group of Object.keys(settings.motions || {})) {
+      settings.motions[group] = settings.motions[group].filter(function(clip) {
+        if (clip.file && !(clip.file = resolved(clip.file))) return false;
+        if (clip.sound && !(clip.sound = resolved(clip.sound))) delete clip.sound;
+        return true;
+      });
+    }
+    if (settings.expressions) settings.expressions = settings.expressions.filter(function(entry){return entry.file = resolved(entry.file);});
+    for (var field of ["physics","pose"]) if (settings[field] && !(settings[field] = resolved(settings[field]))) delete settings[field];
+  }
+  if (r.bandIdle && !settings.motions?.idle?.length && settings.motions?.idle01?.length) settings.motions.idle = settings.motions.idle01;
   if (r.soundAliases) {
     var motions = r.modelSetting.json.motions || {};
     Object.keys(motions).forEach(function(group) {
@@ -208,7 +266,7 @@ function o(){n.L2DBaseModel.prototype.constructor.call(this),this.eyeBlink=new n
       });
     });
   }
-  var t=r.modelHomeDir+r.modelSetting.getModelFile();r.loadModelData(t,function(t){for(var i=0;i<r.modelSetting.getTextureNum();i++){if(/^https?:\/\/|^\/\//i.test(r.modelSetting.getTextureFile(i)))var o=r.modelSetting.getTextureFile(i);else var o=r.modelHomeDir+r.modelSetting.getTextureFile(i);r.loadTexture(i,o,function(){if(r.isTexLoaded&&!r.released){if(r.modelSetting.getExpressionNum()>0){r.expressions={};for(var t=0;t<r.modelSetting.getExpressionNum();t++){var i=r.modelSetting.getExpressionName(t),o=r.modelHomeDir+r.modelSetting.getExpressionFile(t);r.loadExpression(i,o)}}else r.expressionManager=null,r.expressions={};if(r.eyeBlink,null!=r.modelSetting.getPhysicsFile()?r.loadPhysics(r.modelHomeDir+r.modelSetting.getPhysicsFile()):r.physics=null,null!=r.modelSetting.getPoseFile()?r.loadPose(r.modelHomeDir+r.modelSetting.getPoseFile(),function(){r.pose.updateParam(r.live2DModel)}):r.pose=null,null!=r.modelSetting.getLayout()){var n=r.modelSetting.getLayout();null!=n.width&&r.modelMatrix.setWidth(n.width),null!=n.height&&r.modelMatrix.setHeight(n.height),null!=n.x&&r.modelMatrix.setX(n.x),null!=n.y&&r.modelMatrix.setY(n.y),null!=n.center_x&&r.modelMatrix.centerX(n.center_x),null!=n.center_y&&r.modelMatrix.centerY(n.center_y),null!=n.top&&r.modelMatrix.top(n.top),null!=n.bottom&&r.modelMatrix.bottom(n.bottom),null!=n.left&&r.modelMatrix.left(n.left),null!=n.right&&r.modelMatrix.right(n.right)}for(var t=0;t<r.modelSetting.getInitParamNum();t++)r.live2DModel.setParamFloat(r.modelSetting.getInitParamID(t),r.modelSetting.getInitParamValue(t));for(var t=0;t<r.modelSetting.getInitPartsVisibleNum();t++)r.live2DModel.setPartsOpacity(r.modelSetting.getInitPartsVisibleID(t),r.modelSetting.getInitPartsVisibleValue(t));r.live2DModel.saveParam(),r.mainMotionManager.stopAllMotions(),r.setUpdating(!1),r.setInitialized(!0),"function"==typeof e&&e()}})}})})},
+  var t=r.modelHomeDir+r.modelSetting.getModelFile();r.loadModelData(t,function(t){for(var i=0;i<r.modelSetting.getTextureNum();i++){if(/^https?:\/\/|^\/\//i.test(r.modelSetting.getTextureFile(i)))var o=r.modelSetting.getTextureFile(i);else var o=r.modelHomeDir+r.modelSetting.getTextureFile(i);r.loadTexture(i,o,function(){if(r.isTexLoaded&&!r.released){if(r.modelSetting.getExpressionNum()>0){r.expressions={};for(var t=0;t<r.modelSetting.getExpressionNum();t++){var i=r.modelSetting.getExpressionName(t),o=new URL(r.modelSetting.getExpressionFile(t),new URL(r.modelHomeDir,document.baseURI)).href;r.loadExpression(i,o)}}else r.expressionManager=null,r.expressions={};if(r.eyeBlink,null!=r.modelSetting.getPhysicsFile()?r.loadPhysics(r.modelHomeDir+r.modelSetting.getPhysicsFile()):r.physics=null,null!=r.modelSetting.getPoseFile()?r.loadPose(r.modelHomeDir+r.modelSetting.getPoseFile(),function(){r.pose.updateParam(r.live2DModel)}):r.pose=null,null!=r.modelSetting.getLayout()){var n=r.modelSetting.getLayout();null!=n.width&&r.modelMatrix.setWidth(n.width),null!=n.height&&r.modelMatrix.setHeight(n.height),null!=n.x&&r.modelMatrix.setX(n.x),null!=n.y&&r.modelMatrix.setY(n.y),null!=n.center_x&&r.modelMatrix.centerX(n.center_x),null!=n.center_y&&r.modelMatrix.centerY(n.center_y),null!=n.top&&r.modelMatrix.top(n.top),null!=n.bottom&&r.modelMatrix.bottom(n.bottom),null!=n.left&&r.modelMatrix.left(n.left),null!=n.right&&r.modelMatrix.right(n.right)}for(var t=0;t<r.modelSetting.getInitParamNum();t++)r.live2DModel.setParamFloat(r.modelSetting.getInitParamID(t),r.modelSetting.getInitParamValue(t));for(var t=0;t<r.modelSetting.getInitPartsVisibleNum();t++)r.live2DModel.setPartsOpacity(r.modelSetting.getInitPartsVisibleID(t),r.modelSetting.getInitPartsVisibleValue(t));r.live2DModel.saveParam(),r.mainMotionManager.stopAllMotions(),r.setUpdating(!1),r.setInitialized(!0),window.dispatchEvent(new CustomEvent("live2d:motions",{detail:Object.entries(r.modelSetting.json.motions||{}).flatMap(function(pair){return pair[1].map(function(entry,index){return {group:pair[0],index:index,voiced:!!entry.sound};});})})),"function"==typeof e&&e()}})}})})},
 o.prototype.release = function (gl) {
   this.released = true;
   this.endDialogue(true);
@@ -303,7 +361,7 @@ o.prototype.prepareTap = function (group, phase, index) {
     var owner = this;
     warm = this.prepared = {group: group, index: index, controller: new AbortController()};
     warm.motion = entry.file ? new Promise(function(resolve, reject) {
-      owner.loadMotion(null, owner.modelHomeDir + entry.file, resolve, reject);
+      owner.loadMotion(null, new URL(entry.file,new URL(owner.modelHomeDir,document.baseURI)).href, resolve, reject);
     }) : Promise.resolve(null);
     if (entry.sound) warm.bytes = fetchRecording(this.modelHomeDir + entry.sound, warm.controller);
     function discard() { if (owner.prepared === warm) owner.clearPrepared(); }
@@ -392,7 +450,7 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
   var warm = interactive && this.prepared;
   if (warm && (warm.group !== group || warm.index !== index)) { this.clearPrepared(); warm = null; }
   if (warm) this.prepared = null;
-  var motionURL = this.modelHomeDir + file;
+  var motionURL = file && new URL(file,new URL(this.modelHomeDir,document.baseURI)).href;
   if (!sound) {
     function ready(motion) { if (current()) { start(motion); costume(); } }
     if (warm) warm.motion.then(ready, failed);

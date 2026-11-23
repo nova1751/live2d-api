@@ -1,7 +1,7 @@
 /*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */
 
 // package.json
-var version = "2.4.8";
+var version = "2.5.0";
 
 // src/latest.mts
 var entry = new URL(import.meta.url);

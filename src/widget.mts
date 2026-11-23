@@ -18,6 +18,8 @@ export interface WidgetOptions {
   locale?: WidgetLocale;
   collection?: import('./library/catalog.js').Collection;
   catalogUrl?: string | URL;
+  /** Reuse the catalog already loaded by a gallery, including its collection and locale. */
+  catalog?: import('./library/catalog.js').LoadedModelCatalog;
   modelId?: string;
   mode?: WidgetMode;
   position?: WidgetPosition;
@@ -75,7 +77,7 @@ async function mount(base: string, options: WidgetOptions, mode: WidgetMode, pos
       await new Promise<void>(resolve => document.addEventListener('DOMContentLoaded', () => resolve(), { once: true }));
     }
     if (!document.getElementById('waifu-toggle')) {
-      initWidget({ cdnPath: base, collection, locale, catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
+      initWidget({ cdnPath: base, collection, locale, ...(options.catalog && { catalog: options.catalog }), catalogUrl: catalogUrl && new URL(catalogUrl, document.baseURI).href, modelId, modelBaseUrl: modelBaseUrl && new URL(modelBaseUrl, document.baseURI).href, waifuPath: base + (locale === 'en' ? 'waifu-tips.en.json' : 'waifu-tips.json'),
         modelUrl: modelUrl && new URL(modelUrl, document.baseURI).href,
         coreUrl: coreUrl && new URL(coreUrl, document.baseURI).href });
     }
@@ -92,7 +94,16 @@ export async function selectWidgetModel(id: string): Promise<void> {
   await select(id);
 }
 
-export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }: WidgetOptions = {}): Promise<void> {
+export async function loadWidget({ mode = 'sequential', position = 'left', baseUrl, modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }: WidgetOptions = {}): Promise<void> {
+  if (catalog) {
+    if (catalogUrl && new URL(catalogUrl, document.baseURI).href !== catalog.url ||
+        collection && collection !== catalog.collection || locale && locale !== catalog.locale) {
+      throw new TypeError('Widget options conflict with the supplied catalog');
+    }
+    catalogUrl = catalog.url;
+    collection = catalog.collection;
+    locale = catalog.locale;
+  }
   if (locale && locale !== 'en' && locale !== 'zh-CN') throw new TypeError('Unsupported widget locale');
   if (!['random', 'sequential'].includes(mode)) throw new TypeError('Invalid Live2D mode');
   if (!['left', 'right'].includes(position)) throw new TypeError('Invalid Live2D position');
@@ -107,9 +118,14 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   if (!base.pathname.endsWith('/')) base.pathname += '/';
   base.search = '';
   base.hash = '';
-  if (!catalogUrl && !modelUrl && !modelBaseUrl) catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+  if (!catalogUrl && !modelUrl && !modelBaseUrl) {
+    if (collection && collection !== 'girls-frontline') {
+      throw new TypeError('Provide the game catalogUrl from your gallery deployment');
+    }
+    catalogUrl = collection ? githubLibrary(base) : defaultLibraryUrl(base);
+  }
   if (modelId && !catalogUrl) throw new TypeError('modelId requires a catalog');
-  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, modelId, collection, locale }, mode, position).catch(error => {
+  page[mounting] = mount(base.href, { modelUrl, coreUrl, modelBaseUrl, catalogUrl, catalog, modelId, collection, locale }, mode, position).catch(error => {
     delete page[mounting];
     throw error;
   });
