@@ -43,7 +43,8 @@ export class CatalogModels {
     const revision = ++this.sequence;
     try {
       let collection = this.collection;
-      let library = await this.open(collection);
+      const freeze = this.options.collection && this.active ? this.transition.freeze() : undefined;
+      let [library] = await Promise.all([this.open(collection), freeze]);
       if (revision !== this.sequence) return;
       let id = selectId(library.ids, library.legacyIds, library.visibleId);
       if (id === undefined && this.options.collection === 'all' && collection) {
@@ -68,7 +69,10 @@ export class CatalogModels {
         window.dispatchEvent(new CustomEvent('live2d:model', { detail: id }));
       }
     } catch (error) {
-      if (revision === this.sequence) document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+      if (revision === this.sequence) {
+        this.transition.cancelFreeze();
+        document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+      }
       throw error;
     }
   }
@@ -82,7 +86,7 @@ export class CatalogModels {
     }, start);
   }
   choose(id: string) { return this.select(() => id, false); }
-  cancel() { this.sequence++; }
+  cancel() { this.sequence++; this.transition.cancelFreeze(); }
   reopen(start: boolean) { if (this.active) window.loadlive2d.show?.(start); else return this.load(undefined, undefined, undefined, start); }
   private character(id: string) { return id.split('/').slice(0, 2).join('/'); }
   nextModel(start = false) {

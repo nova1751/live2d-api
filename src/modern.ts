@@ -90,6 +90,14 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
     return {
       playMotion: interaction.playMotion,
+      onNextPaint(copy: (canvas: HTMLCanvasElement) => void) {
+        if (!graphics || !output || signal.aborted) return;
+        const unsubscribe = graphics.onFrame(() => {
+          unsubscribe();
+          queueMicrotask(() => { if (!signal.aborted) copy(output); });
+        });
+        return unsubscribe;
+      },
       pause: () => { interaction.stop(); instance.pause(); },
       resume: () => instance.resume(),
       capture() {

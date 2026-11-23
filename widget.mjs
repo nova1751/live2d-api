@@ -73,6 +73,7 @@ function createRenderer(base, legacy) {
   };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
   render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
+  render.onNextPaint = (copy) => hidden ? void 0 : controller ? stage?.onNextPaint(copy) : legacy?.onNextPaint?.(copy);
   render.capture = () => {
     if (controller) stage?.capture();
     return !!controller;
@@ -171,7 +172,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.1";
+var version = "2.9.2";
 
 // src/distribution.ts
 var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";

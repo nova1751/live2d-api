@@ -132,6 +132,20 @@ export async function checkNativeEvents(browser, base) {
     assert.equal(await active(), true, 'allow time to read after the recording');
     await page.waitForFunction(() => !document.querySelector('#waifu-tips').classList.contains('waifu-tips-active'));
 
+    // A manual action also owns the next turn when a same-priority recording is still playing.
+    await load('rfbchristmas/normal');
+    assert.equal(await page.evaluate(() => loadlive2d.playMotion('tap', 0)), true);
+    await page.waitForFunction(() => !!modelsUnderTest.getModel(0).voice?.source);
+    await page.evaluate(() => {
+      const model = modelsUnderTest.getModel(0);
+      window.previousVoice = model.voice;
+      window.previousLine = model.activeDialogue;
+    });
+    await page.mouse.click(...await point('head'));
+    await page.waitForFunction(() => previousVoice.controller.signal.aborted &&
+      modelsUnderTest.getModel(0).activeDialogue !== previousLine && !!modelsUnderTest.getModel(0).voice?.source);
+    assert.equal(await tips.textContent(), line);
+
     // Stop the voice early. The subtitle belongs to the motion until its last frame.
     await load('rfbchristmas/normal');
     await page.evaluate(() => modelsUnderTest.getModel(0).startMotion('tap', 4, 3));

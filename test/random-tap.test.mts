@@ -32,6 +32,31 @@ test('touch rules win and only visible, unmapped taps rotate through eligible mo
   await tap();assert.equal(played.length,9);
 });
 
+test('a second visible tap interrupts pending playback and an older pixel hit cannot replace it', async t => {
+  const compiled = await build({entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm'});
+  const { bindInteractions } = await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].contents).toString('base64'));
+  globalThis.document = new EventTarget();
+  globalThis.cancelAnimationFrame = () => {};
+  t.after(()=>{delete globalThis.document;delete globalThis.cancelAnimationFrame;});
+  const lifetime = new AbortController(), host = new EventTarget(), signals = [], hits = [];
+  const stage = {hitTest:()=>[], playMotion:(_group,_index,{sync})=>{
+    signals.push(sync.signal);
+    return new Promise(resolve=>sync.signal.addEventListener('abort',()=>resolve({status:'interrupted'})));
+  }};
+  const action = {group:'Smile',index:0,file:'Smile.motion3.json',area:'',weight:1,delay:0};
+  const controls = bindInteractions(host,stage,[action],lifetime.signal,new Set(),(_event,onHit)=>hits.push(onHit));
+  host.dispatchEvent(new Event('click')); hits.shift()();
+  host.dispatchEvent(new Event('click')); hits.shift()();
+  assert.equal(signals.length,2);
+  assert.ok(signals[0].aborted && !signals[1].aborted);
+  host.dispatchEvent(new Event('click'));
+  controls.playMotion('Smile',0);
+  hits.shift()();
+  assert.equal(signals.length,3);
+  assert.ok(signals[1].aborted && !signals[2].aborted);
+  lifetime.abort();
+});
+
 test('a native voice-only body event has a caption and no synthetic motion', async t => {
   const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
   const { readActions } = await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].contents).toString('base64'));

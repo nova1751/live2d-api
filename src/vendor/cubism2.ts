@@ -113,11 +113,17 @@ function L(canvas,url,options) {
   if (model) model.soundAliases = options && options.soundAliases;
   if (model) model.startPending = !!(options && options.start && !document.hidden);
 }
+L.onNextPaint = function(copy) {
+  var model = R.getModel(0);
+  if (!model || !model.initialized || model.hidden || model.framing || model.onPaint) return;
+  model.onPaint = copy;
+  return function() { if (model.onPaint === copy) model.onPaint = undefined; };
+};
 L.playMotion = function(group,index) {
   var model = R.getModel(0);
   if (!model || !model.initialized || model.hidden || !model.modelSetting.json.motions[group]?.[index]) return false;
   L.prepareInteraction();
-  return model.startMotion(group,index,w.default.PRIORITY_NORMAL);
+  return model.startMotion(group,index,w.default.PRIORITY_NORMAL,null,false,true);
 };
 L.prepareInteraction = function () { return e(10).default.prepareInteraction(); };
 L.show = function (start) {
@@ -139,7 +145,7 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
   function play(group, dialogue) {
     if (click) click.live2dHandlesCaption = true;
     if (prepare) return model.prepareTap(group, prepare);
-    return model.startRandomMotion(group, $.default.PRIORITY_NORMAL, dialogue);
+    return model.startRandomMotion(group, $.default.PRIORITY_NORMAL, dialogue, false, true);
   }
   function randomTap() {
     if (!model.randomTap || gesture !== "click" || prepare === "hover" || !model.containsPoint(x,y)) return false;
@@ -163,14 +169,13 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
     var choices = model.tapChoices;
     if (!choices.length) return false;
     if (click) click.live2dHandlesCaption = true;
-    if (model.activeDialogue) return true;
     var choice = model.prepared && choices.find(function(c){return c.group===model.prepared.group && c.index===model.prepared.index;});
     if (!choice) {
       var pool = choices.length > 1 ? choices.filter(function(c){return c.key !== model.lastTapChoice;}) : choices;
       choice = pool[Math.floor(Math.random()*pool.length)];
     }
     if (prepare) return model.prepareTap(choice.group,prepare,choice.index);
-    if (model.startMotion(choice.group,choice.index,$.default.PRIORITY_NORMAL)) model.lastTapChoice = choice.key;
+    if (model.startMotion(choice.group,choice.index,$.default.PRIORITY_NORMAL,null,false,true)) model.lastTapChoice = choice.key;
     return true;
   }
   var areas = (data.hit_areas || []).filter(function (area) { return model.hitTestSimple(area.id, x, y); });
@@ -226,7 +231,7 @@ o.prototype.tapEvent = function (x, y, gesture, prepare, click) {
     if (!choice) choice = choices[Math.floor(Math.random() * choices.length)];
     if (choice && prepare) return model.prepareTap(choice[0], prepare, choice[1]);
     if (choice && click) click.live2dHandlesCaption = true;
-    if (choice) return model.startMotion(choice[0], choice[1], $.default.PRIORITY_NORMAL);
+    if (choice) return model.startMotion(choice[0], choice[1], $.default.PRIORITY_NORMAL, null, false, true);
   }
   return randomTap();
 }
@@ -360,17 +365,17 @@ o.prototype.setRandomExpression=function(){var t=[];for(var i in this.expression
   }
   return -1;
 },
-o.prototype.startRandomMotion = function (group, priority, dialogue, ambient) {
+o.prototype.startRandomMotion = function (group, priority, dialogue, ambient, replace) {
   var warm = !ambient && this.prepared;
   var index = warm && warm.group === group ? warm.index : this.pickMotion(group, ambient);
-  return index >= 0 && this.startMotion(group, index, priority, dialogue, ambient);
+  return index >= 0 && this.startMotion(group, index, priority, dialogue, ambient, replace);
 },
 o.prototype.clearPrepared = function () {
   if (this.prepared) this.prepared.controller.abort();
   this.prepared = null;
 },
 o.prototype.prepareTap = function (group, phase, index) {
-  if (this.voice || this.mainMotionManager.getCurrentPriority() >= h.default.PRIORITY_NORMAL) return false;
+  if (phase === "hover" && (this.voice || this.mainMotionManager.getCurrentPriority() >= h.default.PRIORITY_NORMAL)) return false;
   var warm = this.prepared;
   if (!warm || warm.group !== group || (index !== undefined && warm.index !== index)) {
     this.clearPrepared();
@@ -417,7 +422,7 @@ o.prototype.stopVoice = function () {
     voice.source.disconnect();
   }
 },
-o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
+o.prototype.startMotion = function (group, index, priority, dialogue, ambient, replace) {
   var settings = this.modelSetting;
   var file = settings.getMotionFile(group, index);
   var manager = this.mainMotionManager;
@@ -426,9 +431,10 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient) {
   // Zero is the motion manager's unreserved state. Use the caller's idle or tap priority.
   if (Number(entry.priority) > 0) priority = Number(entry.priority);
   if (!file && !entry.sound && !entry.command) return false;
-  if (this.voice && (priority <= this.voice.priority && priority !== 9)) return false;
-  if (priority === 9) manager.setReservePriority(priority);
+  if (!replace && this.voice && priority <= this.voice.priority && priority !== 9) return false;
+  if (replace || priority === 9) manager.setReservePriority(priority);
   else if (!manager.reserveMotion(priority)) return false;
+  if (replace && !file && this.activeDialogue && this.activeDialogue.handle != null) manager.stopAllMotions();
   this.endDialogue(true);
   this.stopVoice();
   var owner = this;

@@ -92,7 +92,8 @@ export async function readActions(url: string, source: DialogueSource | undefine
 export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void) {
   let current: AbortController | undefined;
   let context: AudioContext | undefined;
-  function stop() { current?.abort(); current = undefined; }
+  let intent = 0;
+  function stop() { intent++; current?.abort(); current = undefined; }
   signal.addEventListener('abort', () => { stop(); void context?.close(); }, { once: true });
 
   async function prepareVoice(url: string, signal: AbortSignal) {
@@ -192,7 +193,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     !/(?:^|[/_])(?:idle|wait|standby|login|wedding)/i.test(action.file)) : [];
   let lastFile: string | undefined;
   function playFallback() {
-    if (signal.aborted || current || !fallback.length) return;
+    if (signal.aborted || !fallback.length) return;
     const other = fallback.filter(a => a.file !== lastFile);
     const pool = other.length ? other : fallback;
     const action = pool[Math.floor(Math.random()*pool.length)];
@@ -200,6 +201,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
   }
   host.addEventListener('click', event => {
+    const click = ++intent;
     if (current) event.live2dHandlesCaption = true;
     const hits = stage.hitTest(event.clientX, event.clientY);
     for (const area of hits) {
@@ -215,7 +217,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     if (fallback.length && hitVisible) {
       event.live2dHandlesCaption = true;
       if (hits.length) playFallback();
-      else hitVisible(event, playFallback);
+      else hitVisible(event, () => { if (click === intent) playFallback(); });
     } else if (hits.some(area => area.toLowerCase() === 'head') && stage.getModelInfo().expressions.length) {
       stage.expression().catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
     }

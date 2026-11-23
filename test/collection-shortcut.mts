@@ -23,7 +23,32 @@ export async function checkCollectionShortcut(browser, base) {
     for (const [i, game] of games.entries()) {
       await wait(game, 'a');
       assert.deepEqual(requested, games.slice(0,i+1));
-      await next();
+      if (i === 0) {
+        await page.waitForSelector('#waifu:not([data-model-loading]) canvas');
+        // Hold the next manifest to inspect exactly what the packaged renderer leaves on screen.
+        await page.evaluate(() => {
+          const frame = loadlive2d.onNextPaint;
+          loadlive2d.onNextPaint = copy => frame(canvas => {
+            const reference = document.createElement('canvas');
+            reference.width = canvas.width;
+            reference.height = canvas.height;
+            reference.getContext('2d').drawImage(canvas,0,0);
+            window.outgoingFrame = reference.toDataURL();
+            copy(canvas);
+          });
+        });
+        let release;
+        const gate = new Promise(resolve => { release = resolve; });
+        await page.route(base+'model/fairy/air_attack/index.json', async route => { await gate; await route.continue(); }, { times:1 });
+        try {
+          await next();
+          await page.waitForSelector('.waifu-model-still');
+          assert.ok(await page.evaluate(() => !!window.outgoingFrame &&
+            document.querySelector('.waifu-model-still').toDataURL() === window.outgoingFrame));
+        } finally { release(); }
+        await page.waitForSelector('#waifu:not([data-model-loading]) canvas');
+        assert.equal(await page.locator('.waifu-model-still').count(),0);
+      } else await next();
       await wait(game, 'b');
       await next();
     }

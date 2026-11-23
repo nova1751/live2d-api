@@ -56,6 +56,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
   render.show = start => { hidden = false; if (controller) stage?.resume(); else legacy?.show?.(start); };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
   render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
+  render.onNextPaint = copy => hidden ? undefined : controller ? stage?.onNextPaint(copy) : legacy?.onNextPaint?.(copy);
   render.capture = () => { if (controller) stage?.capture(); return !!controller; };
   return render;
 }
