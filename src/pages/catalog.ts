@@ -111,7 +111,10 @@ try {
   find('totals').textContent = groups.size + t(' 个图鉴条目　/　', ' entries / ') + models.length + t(' 个造型', ' forms');
   const requested = new URL(location.href).searchParams.get('model');
   const initial = byId.get(library.visibleId(requested ?? '')) ?? models[0];
-  let active = initial, groupCards = true, limit = 24, revision = 0;
+  const batchTarget = 24;
+  const gridColumns = () => getComputedStyle(cards).gridTemplateColumns.trim().split(/\s+/).length;
+  let columns = gridColumns(), limit = batchTarget;
+  let active = initial, groupCards = true, revision = 0;
   let ready = false;
   function highlight() {
     for (const button of Array.from(cards.querySelectorAll<HTMLButtonElement>('button[data-id]'))) {
@@ -119,7 +122,11 @@ try {
       button.setAttribute('aria-pressed', String(groupCards ? row.character === active.character : row.id === active.id));
     }
   }
-  function drawCards() {
+  function drawCards(reset = true) {
+    if (reset) {
+      limit = batchTarget;
+      cards.replaceChildren();
+    }
     const term = search.value.trim().toLowerCase();
     let items = models.filter(row => (!category.value || row.kind === category.value) && row.terms.includes(term));
     if (groupCards) {
@@ -130,8 +137,12 @@ try {
         return true;
       });
     }
+    const rowLimit = Math.ceil(limit / columns) * columns;
+    // Include a short final row rather than making it a separate page.
+    const count = items.length - rowLimit < columns ? items.length : rowLimit;
+    while (cards.childElementCount > count) cards.lastElementChild!.remove();
     const fragment = document.createDocumentFragment();
-    for (const row of items.slice(0, limit)) {
+    for (const row of items.slice(cards.childElementCount, count)) {
       const button = document.createElement('button');
       button.type = 'button';
       button.className = 'card';
@@ -157,10 +168,10 @@ try {
       button.append(art, caption);
       fragment.append(button);
     }
-    cards.replaceChildren(fragment);
+    cards.append(fragment);
     highlight();
-    find('matches').textContent = items.length ? t('显示 ', 'Showing ') + Math.min(limit, items.length) + ' / ' + items.length + t(' 项', ' results') : t('没有匹配的模型，请更换关键词或分类。', 'No matches. Try another name or category.');
-    more.hidden = limit >= items.length;
+    find('matches').textContent = items.length ? t('显示 ', 'Showing ') + count + ' / ' + items.length + t(' 项', ' results') : t('没有匹配的模型，请更换关键词或分类。', 'No matches. Try another name or category.');
+    more.hidden = count >= items.length;
   }
   function describe(row: Model) {
     active = row;
@@ -212,16 +223,15 @@ try {
       groupCards = grouped;
       find('by-character').setAttribute('aria-pressed', String(grouped));
       find('by-form').setAttribute('aria-pressed', String(!grouped));
-      limit = 24;
       drawCards();
     });
   }
-  search.addEventListener('input', () => { limit = 24; drawCards(); });
-  category.addEventListener('change', () => { limit = 24; drawCards(); });
+  search.addEventListener('input', () => drawCards());
+  category.addEventListener('change', () => drawCards());
   more.addEventListener('click', () => {
     const previous = cards.childElementCount;
-    limit += 24;
-    drawCards();
+    limit = previous + batchTarget;
+    drawCards(false);
     cards.querySelectorAll<HTMLButtonElement>('button')[previous]?.focus({ preventScroll: true });
   });
   find('share').addEventListener('click', async () => {
@@ -239,6 +249,12 @@ try {
     history.replaceState(null, '', url);
     updateLanguageLink();
   });
+  new ResizeObserver(() => {
+    const next = gridColumns();
+    if (next === columns) return;
+    columns = next;
+    drawCards(false);
+  }).observe(cards);
   describe(initial);
   const initialPortrait = portrait(initial.id);
   if (initialPortrait) { poster.src = initialPortrait; poster.hidden = false; }
