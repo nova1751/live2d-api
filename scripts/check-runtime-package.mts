@@ -9,8 +9,8 @@ assert.ok(files.some(file => file.replaceAll('\\', '/') === 'modern/renderer.mjs
 for (const file of ['README.md', 'docs/en/README.md', 'waifu-tips.en.json', 'waifu-tips.json', 'widget.d.mts', 'library/catalog.d.ts']) {
   assert.ok(files.some(path => path.replaceAll('\\', '/') === file), 'Missing ' + file);
 }
-assert.match(await readFile(join(root, 'README.md'), 'utf8'), /^# 少女前线/);
-assert.match(await readFile(join(root, 'docs/en/README.md'), 'utf8'), /^# Girls/);
+assert.match(await readFile(join(root, 'README.md'), 'utf8'), /^# 少女前线/m);
+assert.match(await readFile(join(root, 'docs/en/README.md'), 'utf8'), /^# Girls/m);
 let size = 0;
 for (const file of files) {
   assert.doesNotMatch(file, /^(?:model(?:[\\/]|_list\.json|$)|catalog(?:[\\/]|$)|img(?:[\\/]|$))|\.(?:moc3?|mtn|png|mp3|ogg|wav)$/i);

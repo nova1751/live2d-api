@@ -28,6 +28,12 @@ Place one module script before `</body>`. Choose the CDN closest to your audienc
 <script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/girls-frontline.mjs?lang=en"></script>
 ```
 
+To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.7/latest.mjs?lang=en"></script>
+```
+
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
 
 ## Install with npm or pnpm

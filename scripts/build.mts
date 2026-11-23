@@ -34,6 +34,7 @@ const entries = [
     minify: true, banner: { js: legacyEngine.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
   { entryPoints: ['src/girls-frontline.mts'], outfile: 'girls-frontline.mjs', format: 'esm' },
+  { entryPoints: ['src/latest.mts'], outfile: 'latest.mjs', format: 'esm', bundle: true, target: 'es2022' },
   { entryPoints: ['src/pages/catalog.ts'], outfile: 'catalog/browser.mjs', format: 'esm', target: 'es2022' },
   { entryPoints: ['src/widget.mts'], outfile: 'widget.mjs', format: 'esm', bundle: true },
   {
