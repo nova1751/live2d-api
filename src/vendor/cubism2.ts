@@ -85,7 +85,13 @@ function n(t){var i=C.width,e=C.height;var r=e/i,o=w.default.VIEW_LOGICAL_LEFT,n
   ready(C);
 }
 function frameModel(model) {
-  var frame = model.framing.measure(C);
+  var areas = model.modelSetting.json.hit_areas || [];
+  var frame = model.framing.measure(C, function (x, y) {
+    var viewX = B.invertTransformX(2 * x - 1);
+    var viewY = B.invertTransformY((1 - 2 * y) * C.height / C.width);
+    return areas.filter(function (area) { return model.hitTestSimple(area.id, viewX, viewY); })
+      .map(function (area) { return area.name; });
+  });
   if (!frame) return;
   B.scale(frame.scale, frame.scale);
   B.translate(2 * frame.x, -2 * C.height / C.width * frame.y);

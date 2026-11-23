@@ -8,7 +8,7 @@ const live2d_path = (() => {
       return new URL("../../", url).href;
     }
   }
-  return "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.1/";
+  return "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.3.2/";
 })();
 function loadExternalResource(url, type) {
   let tag;
