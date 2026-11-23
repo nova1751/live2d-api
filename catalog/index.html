@@ -1,27 +1,53 @@
 <!doctype html>
 <html lang="zh-CN">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>少女前线 Live2D 模型目录</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#faf8f4;color:#302e2b;font:16px/1.55 system-ui,sans-serif}
-main{max-width:64rem;margin:6vh auto;padding:1.5rem}section{max-width:29rem;margin-left:auto}
-h1{font:600 clamp(2.2rem,5vw,3.6rem)/1.1 Georgia,serif;margin:0 0 1.4rem}
-label{display:block;margin-top:.8rem}select,button{font:inherit}select{width:100%;padding:.5rem;background:white;border:1px solid #928c80;border-radius:4px}
-a{color:#265b64}#result{min-height:1.8rem}#preview{margin-top:1.2rem;padding:.45rem 1.2rem}
-@media(max-width:800px){main{margin:0;padding:1rem 1rem 27rem}section{margin:auto}#waifu #live2d{width:min(68vw,280px);height:min(68vw,280px)}}
-</style>
-<main><section>
-<h1>少女前线 Live2D 模型目录</h1>
-<form id="picker">
-<label>分类<select id="category"></select></label>
-<label>人物或对象<select id="character"></select></label>
-<label>版本<select id="version"></select></label>
-<label>形态<select id="form"></select></label>
-<button id="preview" disabled>预览所选模型</button>
-</form>
-<p id="result" role="status"></p>
-<a id="manifest" hidden>查看模型清单</a> · <a href="https://github.com/nova1751/live2d-api#模型目录与离线下载">下载模型集合</a>
-</section></main>
-<script type="module" src="./browser.mjs"></script>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173d39">
+  <title>少女前线模型图鉴 · Live2D</title>
+  <link rel="stylesheet" href="./gallery.css">
+</head>
+<body>
+  <header class="masthead"><div class="wrap mast">
+    <a class="brand" href="#top"><span class="mark" aria-hidden="true"></span>少女前线 <span>Live2D</span></a>
+    <nav aria-label="项目导航"><a href="#collection">图鉴</a><a href="#examples">示例</a><a href="https://github.com/nova1751/live2d-api#在网页中引入">网页接入 ↗</a></nav>
+  </div></header>
+  <main class="wrap" id="top">
+    <div class="intro"><h1>少女前线<span>模型图鉴</span></h1><p id="totals"></p></div>
+    <div class="layout">
+      <section class="preview-panel" aria-labelledby="model-name">
+        <div class="stage" id="stage">
+          <span class="stage-label">Live2D 预览</span>
+          <img id="poster" alt="" hidden>
+          <div class="model-host" id="model-host"></div>
+        </div>
+        <div class="profile">
+          <p class="kind" id="model-category"></p>
+          <h2 id="model-name">正在载入模型</h2>
+          <p id="result" role="status"></p>
+          <label for="variant">当前造型</label><select id="variant" disabled></select>
+          <div class="links"><button id="share" type="button">复制预览链接</button><a id="manifest" hidden>模型清单 ↗</a></div>
+          <p id="notice" role="status"></p>
+        </div>
+      </section>
+      <section id="collection" aria-labelledby="collection-title">
+        <div class="collection-head"><h2 id="collection-title">浏览图鉴</h2>
+          <div class="modes" aria-label="浏览方式"><button type="button" id="by-character" aria-pressed="true">按人物</button><button type="button" id="by-form" aria-pressed="false">按造型</button></div>
+        </div>
+        <div class="filters"><label class="search"><span aria-hidden="true"></span><input id="search" type="search" aria-label="搜索人物、造型或代号" placeholder="搜索人物、造型或代号"></label>
+          <select id="category" aria-label="按分类筛选"><option value="">全部分类</option></select>
+        </div>
+        <p id="matches" role="status"></p>
+        <div id="cards" class="cards" aria-label="模型列表"></div>
+        <div class="paging"><button id="more" type="button" hidden>显示更多</button></div>
+      </section>
+    </div>
+    <section id="examples" class="examples" aria-labelledby="examples-title">
+      <h2 id="examples-title">原版网页示例</h2>
+      <div><a href="../img/01.png"><img src="../img/01.png" alt="红裙看板娘、台词气泡和右侧工具栏" loading="lazy"></a>
+      <a href="../img/02.png"><img src="../img/02.png" alt="黑裙看板娘及互动提示" loading="lazy"></a></div>
+    </section>
+  </main>
+  <script type="module" src="./browser.mjs"></script>
+</body>
 </html>

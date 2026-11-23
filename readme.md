@@ -2,6 +2,11 @@
 
 用一行 HTML 在博客、文档站或静态网页的左下角添加少女前线看板娘。访客可以切换角色和造型，点击人物时，组件会按模型配置播放动作、语音并显示台词。[在线演示](https://live2d-nova.vercel.app/) · [挑选角色和造型](https://live2d-nova.vercel.app/catalog/)
 
+<p>
+  <img src="img/01.png" height="240" alt="原版看板娘示例，红裙角色及右侧工具栏">
+  <img src="img/02.png" height="240" alt="原版看板娘示例，黑裙角色及对话气泡">
+</p>
+
 ## 在网页中引入
 
 根据主要访客所在地区，复制下面其中一个 `<script>` 标签，放在页面的 `</body>` 前。要让全站显示看板娘，把它放进所有页面共用的布局模板即可。脚本会自动加载样式和模型，无需安装 npm 包。
@@ -51,7 +56,9 @@
 
 ## 模型目录与离线下载
 
-[打开模型浏览器](https://live2d-nova.vercel.app/catalog/)后可依次选择分类、人物、版本、普通或破损形态。复制当前 URL 即可分享这个形态。新集成使用[统一目录](catalog/library.json)里的稳定 ID，例如 `doll/56-1type/7706/normal`。每个形态保存可用来源、原生模型入口和可用的对话配置。同一形态的多个来源保留在同一条记录中。
+在图鉴中点击人物头像即可预览，再用“当前造型”切换装扮。切到“按造型”可直接点选标准或战损形态。支持按中文名称、代号和装扮搜索，也可复制当前预览链接。缩略图由各形态的实际模型渲染生成。[打开模型图鉴](https://live2d-nova.vercel.app/catalog/)
+
+新集成使用[统一目录](catalog/library.json)里的稳定 ID，例如 `doll/56-1type/7706/normal`。每个形态保存可用来源、原生模型入口和可用的对话配置。同一形态的多个来源保留在同一条记录中。
 
 | 已核对的公开收藏 | 覆盖情况 |
 | --- | --- |
@@ -59,7 +66,7 @@
 | [GFL-Live2D/dump](https://github.com/GFL-Live2D/dump/tree/527aac9245c06444d5d0259be843740915b715fd) | 203 个模型目录，401 个目录与形态组合，402 份新版入口，另有 6,394 个 OGG。其[展示器的 238 条记录](https://github.com/GFL-Live2D/viewer/blob/f3d994ff67815139b2d4797b4dd2cd6c89fc7121/src/lib/data/live2d.json)均能找到素材目录。 |
 | 合并去重后的目录 | 少女前线共 129 个对象、246 个版本、450 个形态。选择器将 7 个经模型二进制和贴图核对的旧档入口归到对应皮肤，展示 443 个形态。上述旧 ID 和其他作品的 7 个历史入口均可通过原协议访问。 |
 
-普通和破损分别计数；同一皮肤的格式或来源副本不重复计数。旧收藏中无法确认皮肤编号的记录保留 `archive`。游戏各区服、联动和下架装扮没有可供逐条核验的官方完整目录。上述统计只描述已核对的公开来源。
+普通和破损分别计数；同一皮肤的格式或来源副本不重复计数。旧收藏中无法确认皮肤编号的记录保留 `archive`。游戏各区服、联动和下架装扮没有可供逐条核验的官方完整目录。上述统计只描述已核对的公开来源。另用 GFL Archive 的人形索引按角色代号、皮肤编号和普通／战损形态交叉核对，394 个不同组合均在目录中。[对照索引](https://github.com/steve1316/gfl-archive/blob/6c4c26a8157b1e000ea2160ab0549ec17b85340e/src/data/live2d-index.json)
 
 对四份下载来源逐一检查后，457 个首选模型清单引用的文件均存在。在全部 1,317 个不同来源清单中，有 32 个备用入口引用了缺失文件（Eikanya 31 个、dump 1 个），另有 99 条 Eikanya 来源记录只有模型二进制。目录保留这些记录供溯源，默认选择可加载的入口。
 
@@ -91,7 +98,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory D:/Models/GFL
 | `src/legacy/`、`src/runtime/`、`src/vendor/` | 原协议、工具栏、旧引擎与小游戏 |
 | `src/styles/`、`scripts/`、`test/` | 样式源文件、TypeScript 构建维护工具与测试 |
 
-前端源码在 `src/`，开发工具和测试由 Node 直接执行 TypeScript。修改源码后提交构建产物，GitHub CDN 可直接读取 JS。`catalog/library.json` 保存所有来源及历史映射。更新时用 `node scripts/model-library.mts <Eikanya checkout> <jacksen168 checkout>` 按固定提交重建，再运行 `node scripts/localize-library.mts <已下载的完整素材目录>` 加入中文元数据和旧档映射。旧版详细分类的生成器是 `scripts/girls-frontline-catalog.mts`。
+前端源码在 `src/`，开发工具和测试由 Node 直接执行 TypeScript。修改源码后提交构建产物，GitHub CDN 可直接读取 JS。`catalog/library.json` 保存所有来源及历史映射。图鉴图片存放在 `catalog/portraits/`，更新离线集合后运行 `node scripts/catalog-portraits.mts <本地素材目录>` 补齐新图，也可在目录参数后指定需要重新生成的形态 ID。更新目录时用 `node scripts/model-library.mts <Eikanya checkout> <jacksen168 checkout>` 按固定提交重建，再运行 `node scripts/localize-library.mts <已下载的完整素材目录>` 加入中文元数据和旧档映射。旧版详细分类的生成器是 `scripts/girls-frontline-catalog.mts`。
 
 发布时更新 `package.json` 版本并合并到 `main`，推送同版本 `vX.Y.Z` 标签。Actions 验证构建、打包文件与兼容测试，再发布 `widget-X.Y.Z` 运行时和按内容标记的 `catalog-…` 目录快照。素材更新仍使用 `node scripts/cdn-snapshot.mts <提交> --publish`。发布固定标签后更新新站的入口版本。[发布工作流](.github/workflows/publish.yml)
 
