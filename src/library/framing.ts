@@ -159,3 +159,26 @@ export function createFraming(setAspect?: (ratio: number) => void, paintScale = 
   } };
 }
 export type Framing = ReturnType<typeof createFraming>;
+
+// Character bounds across a full idle loop on the 320px square reference view at scale 0.65.
+// 7706's baton and the damaged outfit's flying effects move independently of the figure.
+const subjectFrames: ReadonlyMap<string, readonly [number, number, number, number]> = new Map([
+  ['doll/56-1type/7706/normal', [108, 152, 199, 267]],
+  ['doll/56-1type/7706/destroy', [139, 103, 215, 189]],
+]);
+
+export function catalogFraming(id: string, setAspect?: (ratio: number) => void, paintScale = 1, croppedPortrait = false): Framing {
+  const bounds = subjectFrames.get(id);
+  if (!bounds) return createFraming(setAspect, paintScale, croppedPortrait);
+  const [left, top, right, bottom] = bounds;
+  const width = right - left, height = bottom - top;
+  const aspect = setAspect ? width / height : 1;
+  setAspect?.(aspect);
+  const zoom = Math.min(0.93 * 320 * Math.min(1, 1 / aspect) / height, 0.94 * 320 * Math.min(1, aspect) / width);
+  const camera = {
+    scale: 0.65 * zoom / paintScale,
+    x: (0.5 - (left + right) / 640) * zoom / paintScale,
+    y: (0.5 - 0.03 * Math.min(1, 1 / aspect) + (0.5 - bottom / 320) * zoom) / paintScale,
+  };
+  return { initial: camera, measure: () => camera };
+}

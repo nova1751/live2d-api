@@ -1,9 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createFraming, fitSilhouette } from '../src/library/framing.ts';
+import { catalogFraming, createFraming, fitSilhouette } from '../src/library/framing.ts';
 
 const initial = { scale: 0.65, x: 0, y: 0 };
 const size = 128;
+
+test('7706 keeps the same camera from first paint and fits both idle silhouettes despite offstage effects', () => {
+  for (const [form, center, top, bottom] of [['normal', 154, 155, 265], ['destroy', 177, 106, 186]] as const) {
+    let aspect = 0;
+    const bleed = 1.5;
+    const framing = catalogFraming('doll/56-1type/7706/' + form, ratio => { aspect = ratio; }, bleed);
+    const camera = framing.initial;
+    assert.deepEqual(framing.measure({} as HTMLCanvasElement), camera);
+    const project = (p: number, offset: number) => 0.5 + bleed * (offset + (p / 320 - 0.5) * camera.scale / 0.65);
+    assert.ok(aspect > 0.7 && aspect < 1);
+    assert.ok(Math.abs(project(center, camera.x) - 0.5) < 0.02);
+    assert.ok(project(top, camera.y) > 0 && project(bottom, camera.y) < 1);
+    assert.ok(project(bottom, camera.y) - project(top, camera.y) > 0.85);
+  }
+});
 function rectangle(mask, left, top, right, bottom) {
   for (let y = top; y < bottom; y++) mask.fill(255, y * size + left, y * size + right);
 }

@@ -1,5 +1,5 @@
 // Browser entry for the offline catalog artwork generator.
-import { createFraming } from '../library/framing';
+import { catalogFraming } from '../library/framing';
 import { loadModelCatalog } from '../library/catalog';
 import { createRenderer } from '../renderer';
 
@@ -8,7 +8,7 @@ const library = await loadModelCatalog('/viewer/catalog/library.json', 'girls-fr
 
 function portrait(id: string, coreUrl?: string) {
   const { modelUrl } = library.resolve(id);
-  const camera = createFraming();
+  const camera = catalogFraming(id);
   let settle: number | undefined;
   return new Promise<string>((resolve, reject) => {
     // Some skins fade in from a completely transparent first pose.
