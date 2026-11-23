@@ -7,14 +7,16 @@ import { parseModelCatalog, type Collection } from '../src/library/catalog.ts';
 const mainland = process.argv.includes('--mainland');
 async function checkAsset(url: string) {
   for (let attempt = 1; ; attempt++) {
+    const request = new AbortController();
+    const timeout = setTimeout(() => request.abort(new DOMException('Asset request timed out', 'TimeoutError')), 45000);
     try {
-      const response = await fetch(url, { signal: AbortSignal.timeout(45000) });
+      const response = await fetch(url, { signal: request.signal });
       assert.ok(response.ok && !response.headers.get('content-type')?.includes('text/html'), response.status + ' ' + url);
       assert.ok((await response.arrayBuffer()).byteLength, 'Empty asset ' + url);
       return;
     } catch (error) {
       if (attempt === 3 || !(error instanceof TypeError || error instanceof DOMException)) throw new Error('Checking ' + url, { cause: error });
-    }
+    } finally { clearTimeout(timeout); }
   }
 }
 for (const game of ['iron-saga', 'warship-girls', 'baoshi-yanwuyu']) {
