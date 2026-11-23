@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
+<a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
 
 # Live2D Web Widget
 
@@ -8,7 +8,7 @@ Embed an interactive Live2D model on your website. Load your own model manifest 
 
 <a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm version"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="Build and tests"></a> <a href="#api-and-compatibility"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#credits-and-licensing"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="Code license: ISC"></a>
 
-**[Open the gallery](https://live2d-nova.vercel.app/catalog/?lang=en)** · [Quick start](#quick-start) · [Module API](#api-and-compatibility) · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md)
+**[Open the gallery](https://nova1751.github.io/live2d-api/catalog/?lang=en)** · [Quick start](#quick-start) · [Module API](#api-and-compatibility) · [简体中文](https://github.com/nova1751/live2d-api/blob/main/README.md)
 
 </div>
 
@@ -16,11 +16,11 @@ Embed an interactive Live2D model on your website. Load your own model manifest 
 
 Select a character to open that outfit, try a motion or switch to full screen.
 
-| <a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 MOD"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=azur-lane&amp;model=ship/10117/lafei&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="Laffey"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="Kanon Matsubara"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=houkai2&amp;model=character/bronya/bronya&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="Bronya"></a> |
+| <a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 MOD"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&amp;model=ship/10117/lafei&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="Laffey"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="Kanon Matsubara"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&amp;model=character/bronya/bronya&amp;lang=en"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="Bronya"></a> |
 | :---: | :---: | :---: | :---: |
-| [AK-12 MOD](https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal&lang=en) | [Laffey](https://live2d-nova.vercel.app/catalog/?collection=azur-lane&model=ship/10117/lafei&lang=en) | [Kanon Matsubara](https://live2d-nova.vercel.app/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur&lang=en) | [Bronya](https://live2d-nova.vercel.app/catalog/?collection=houkai2&model=character/bronya/bronya&lang=en) |
+| [AK-12 MOD](https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal&lang=en) | [Laffey](https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&model=ship/10117/lafei&lang=en) | [Kanon Matsubara](https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur&lang=en) | [Bronya](https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&model=character/bronya/bronya&lang=en) |
 
-Two more playable examples · [Iron Saga · Slokai](https://live2d-nova.vercel.app/catalog/?collection=iron-saga&model=character/siluokayi/base&lang=en) · [Warship Girls R · Missouri](https://live2d-nova.vercel.app/catalog/?collection=warship-girls&model=ship/209/2&lang=en)
+Two more playable examples · [Iron Saga · Slokai](https://nova1751.github.io/live2d-api/catalog/?collection=iron-saga&model=character/siluokayi/base&lang=en) · [Warship Girls R · Missouri](https://nova1751.github.io/live2d-api/catalog/?collection=warship-girls&model=ship/209/2&lang=en)
 
 ## Quick start
 
@@ -91,7 +91,7 @@ The widget loads the renderer for each model format. The included galleries fit 
 | --- | --- | --- |
 | Shortcut URL | Omit the query or use `?lang=zh-CN` | `?lang=en` |
 | Module API | `locale: 'zh-CN'` | `locale: 'en'` |
-| Gallery | [中文图鉴](https://live2d-nova.vercel.app/catalog/) | [English gallery](https://live2d-nova.vercel.app/catalog/?lang=en) |
+| Gallery | [中文图鉴](https://nova1751.github.io/live2d-api/catalog/) | [English gallery](https://nova1751.github.io/live2d-api/catalog/?lang=en) |
 
 The locale controls widget buttons, accessibility labels, greetings and fallback messages. The gallery language switch preserves the selected outfit. For game dialogue, English uses the subtitle attached to the original motion and voice event. Chinese uses the character and voice key to find the translated line. Older models also use matched voice keys or translations of embedded text. An interaction without a line uses a localized widget hint. Captions stay visible until the action and audio finish. Both languages play the original recording. For modern models, the player waits for the motion and recording, then schedules the voice from the first motion frame using the configured delay. If a recording is missing or fails to load, the motion and its caption still play.
 

@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
+<a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
 
 # Live2D 网页看板娘
 
@@ -8,7 +8,7 @@
 
 <a href="https://www.npmjs.com/package/live2dapi-noa"><img src="https://img.shields.io/npm/v/live2dapi-noa?logo=npm&amp;logoColor=white&amp;color=17695e" alt="npm 稳定版"></a> <a href="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml"><img src="https://github.com/nova1751/live2d-api/actions/workflows/publish.yml/badge.svg?branch=main" alt="构建与测试"></a> <a href="#api-与兼容性"><img src="https://img.shields.io/badge/Cubism-2%E2%80%935-426578" alt="Cubism 2–5"></a> <a href="#素材与致谢"><img src="https://img.shields.io/badge/code-ISC-b89238" alt="代码许可 ISC"></a>
 
-**[打开在线图鉴](https://live2d-nova.vercel.app/catalog/)** · [快速接入](#快速接入) · [模块 API](#api-与兼容性) · [English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md)
+**[打开在线图鉴](https://nova1751.github.io/live2d-api/catalog/)** · [快速接入](#快速接入) · [模块 API](#api-与兼容性) · [English](https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md)
 
 </div>
 
@@ -16,11 +16,11 @@
 
 点击一位角色即可进入对应造型，试播动作或放大全屏。
 
-| <a href="https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 · 心智升级"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=azur-lane&amp;model=ship/10117/lafei"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="拉菲"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="松原花音"></a> | <a href="https://live2d-nova.vercel.app/catalog/?collection=houkai2&amp;model=character/bronya/bronya"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="布洛妮娅"></a> |
+| <a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 · 心智升级"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&amp;model=ship/10117/lafei"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="拉菲"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="松原花音"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&amp;model=character/bronya/bronya"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="布洛妮娅"></a> |
 | :---: | :---: | :---: | :---: |
-| [AK-12 · 心智升级](https://live2d-nova.vercel.app/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal) | [拉菲](https://live2d-nova.vercel.app/catalog/?collection=azur-lane&model=ship/10117/lafei) | [松原花音](https://live2d-nova.vercel.app/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur) | [布洛妮娅](https://live2d-nova.vercel.app/catalog/?collection=houkai2&model=character/bronya/bronya) |
+| [AK-12 · 心智升级](https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal) | [拉菲](https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&model=ship/10117/lafei) | [松原花音](https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur) | [布洛妮娅](https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&model=character/bronya/bronya) |
 
-另外两个可直接操作的示例 · [机动战队 · 斯洛卡伊](https://live2d-nova.vercel.app/catalog/?collection=iron-saga&model=character/siluokayi/base) · [战舰少女 R · 密苏里](https://live2d-nova.vercel.app/catalog/?collection=warship-girls&model=ship/209/2)
+另外两个可直接操作的示例 · [机动战队 · 斯洛卡伊](https://nova1751.github.io/live2d-api/catalog/?collection=iron-saga&model=character/siluokayi/base) · [战舰少女 R · 密苏里](https://nova1751.github.io/live2d-api/catalog/?collection=warship-girls&model=ship/209/2)
 
 ## 快速接入
 
@@ -91,7 +91,7 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 | --- | --- | --- |
 | 快捷入口 | 省略参数或添加 `?lang=zh-CN` | 添加 `?lang=en` |
 | 模块 API | `locale: 'zh-CN'` | `locale: 'en'` |
-| 在线图鉴 | [中文图鉴](https://live2d-nova.vercel.app/catalog/) | [英文图鉴](https://live2d-nova.vercel.app/catalog/?lang=en) |
+| 在线图鉴 | [中文图鉴](https://nova1751.github.io/live2d-api/catalog/) | [英文图鉴](https://nova1751.github.io/live2d-api/catalog/?lang=en) |
 
 语言设置适用于工具栏、无障碍标签、问候和预设提示。图鉴切换语言时会保留当前造型。游戏台词按动作和语音事件匹配：英文优先读取事件原有字幕，中文按角色和语音编号查找译文。旧模型也支持按语音编号或内嵌原句匹配译文。互动缺少台词时显示所选语言的预设提示。字幕保留到动作和语音结束，两种语言都播放模型原有录音。新版模型会等动作和录音就绪，从动作首帧按模型配置的延迟播放语音。录音缺失或加载失败时，仍会播放动作并显示对应台词。
 
