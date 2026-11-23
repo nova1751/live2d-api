@@ -80,6 +80,17 @@ test('a native voice-only body event has a caption and no synthetic motion', asy
 
 });
 
+test('a native text-only event retains its subtitle and leaves other motions available', async t => {
+  const compiled = await build({ entryPoints:['src/modern/interactions.ts'], bundle:true, write:false, format:'esm' });
+  const {readActions} = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputFiles[0].contents).toString('base64'));
+  const manifest = {FileReferences:{Motions:{Touch:[{File:'touch.motion3.json'}],Wave:[{File:'wave.motion3.json'}]}}};
+  const data = {variant:'normal',motionData:{120213:{motion_name:'touch.mtn',touch_area:'0',is_hurt:0,probability:1}},voiceData:{}};
+  t.mock.method(globalThis,'fetch',async url=>Response.json(url.endsWith('/data')?data:manifest));
+  const {actions} = await readActions('https://example.org/model', {url:'https://example.org/data',audio:new Map()},
+    new AbortController().signal,{120213:{caption:'稍稍休息一下怎么样？'}},true);
+  assert.deepEqual(actions.map(a=>[a.group,a.caption,a.sound]),[['Touch','稍稍休息一下怎么样？',undefined],['Wave',undefined,undefined]]);
+});
+
 test('the renderer preserves the CDN version delimiter and encodes reserved characters in filenames', async t => {
   const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
   const { readActions } = await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].contents).toString('base64'));

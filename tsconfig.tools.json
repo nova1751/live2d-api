@@ -15,6 +15,9 @@
     "allowImportingTsExtensions": true
   },
   "include": [
+    "scripts/archive-collections.mts",
+    "scripts/check-model-archive.mts",
+    "scripts/preview-model-archive.mts",
     "scripts/library-files.mts",
     "scripts/download-models.mts",
     "scripts/check-model-library.mts",

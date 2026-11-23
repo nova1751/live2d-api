@@ -203,6 +203,8 @@ await loadWidget({
 
 ## 少女前线示例与离线下载
 
+全部七个作品都支持独立归档。在仓库根目录运行 `node scripts/archive-collections.mts ../model-cache --bundle ../models.bundle`，可将播放器、各造型、贴图、动作、已收录的语音、字幕和修复文件保存在自有 Git 快照中。命令会输出本地引用。用 `node scripts/check-model-archive.mts <引用>` 检查文件，再用 `node scripts/preview-model-archive.mts <引用>` 打开图鉴。新版模型可加 `--core <已获授权的 Core 文件>` 断网预览。归档不会自动改变公共 CDN 的地址。恢复文件可使用 `git bundle list-heads ../models.bundle` 查看引用，再在播放器仓库运行 `git fetch ../models.bundle <引用>:<引用>`。
+
 少女前线分栏收录已核对的公开收藏中 129 个条目、443 个可选形态，包含妖精、人形、副官、小队和背景。标准与战损形态各有独立 ID，7 个旧档 ID 仍指向对应装扮。统计范围和上游缺件记录见核对说明。[模型目录](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [来源与核对记录](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)
 
 安装 Node.js 24 和 Git，在仓库根目录运行：

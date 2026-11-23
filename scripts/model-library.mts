@@ -123,6 +123,8 @@ const paths = new Set(
 );
 for (const manifest of paths) {
   if (!manifest.startsWith('models/') || !manifest.endsWith('.model3.json')) continue;
+  // The nested AK-12 MOD export only contains a duplicate texture and idle motion.
+  if (manifest === 'models/ak12mod/normal/model/model.model3.json' && !paths.has('models/ak12mod/normal/model/model.moc3')) continue;
   const [, folder, form] = manifest.split('/');
   const code = folder.toLowerCase().replaceAll(' ', '-');
   const skin = /^(.+)_(\d+)$/.exec(code);

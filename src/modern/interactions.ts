@@ -35,7 +35,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
   function voiceFor(id: string) {
     const line = data?.voiceData[id];
     const code = line?.char_code?.toUpperCase(), key = line?.voice_key?.toUpperCase();
-    return { caption: source?.captions?.[code + '|' + key] || line?.caption,
+    return { caption: cues?.[id]?.caption || source?.captions?.[code + '|' + key] || line?.caption,
       sound: code && key ? source?.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined };
   }
   for (const [group, files] of Object.entries(groups)) {
@@ -58,7 +58,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
         actions.push({ file: file.File, group, index, area: group.replace(/^tap_?/i, '').toLowerCase(), weight: 1, delay: 0,
           sound: file.Sound ? new URL(file.Sound, url).href : undefined });
       }
-      if (randomTap && !hasEvent && !cues && (data || !/^tap_?/i.test(group)) && !/^idle/i.test(group) && !idleFiles.has(file.File)) {
+      if (randomTap && !hasEvent && (data || (!cues && !/^tap_?/i.test(group))) && !/^idle/i.test(group) && !idleFiles.has(file.File)) {
         actions.push({file:file.File, group, index, area:'', weight:1, delay:0,
           sound:file.Sound ? new URL(file.Sound,url).href : undefined});
       }
