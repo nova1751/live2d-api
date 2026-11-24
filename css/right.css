@@ -81,9 +81,30 @@
   container-type: size;
   overflow: visible;
 }
-#waifu[data-initial-framing] {
-  visibility: hidden;
-  bottom: -1000px !important;
+body > #waifu[data-initial-framing] #waifu-status {
+  left: calc(var(--waifu-model-width) / 2);
+  top: 50%;
+  width: max-content;
+  max-width: calc(var(--waifu-model-width) - 24px);
+  height: auto;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  clip-path: none;
+  transform: translate(-50%, -50%);
+  border: 1px solid #dfbd94;
+  border-radius: 8px;
+  background-color: #fff8ee;
+  color: #4e382d;
+  font: 14px/1.4 system-ui, sans-serif;
+  text-align: center;
+}
+body > #waifu[data-initial-framing] #waifu-tool {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  body > #waifu[data-initial-framing] {
+    transition-duration: 0.3s;
+  }
 }
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
@@ -100,8 +121,8 @@
   inset: 0;
   cursor: grab;
 }
-#waifu:not([data-model-loading]) .waifu-hit,
-#waifu:not([data-model-loading]) .waifu-surface .waifu-model-stage::after {
+#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit,
+#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-surface .waifu-model-stage::after {
   pointer-events: auto;
 }
 .waifu-surface .waifu-model-stage::after {
@@ -209,8 +230,7 @@
   outline: none;
   box-shadow: none;
 }
-#waifu[data-model-loading] #live2d,
-#waifu[data-model-loading] .waifu-model-stage {
+#waifu:is([data-initial-framing], [data-model-loading]) :is(#live2d, .waifu-model-stage) {
   opacity: 0;
   pointer-events: none;
 }

@@ -6,30 +6,44 @@ export async function checkPaintOverflow(browser, base) {
   try {
     await page.route(base + 'overflow-test', route => route.fulfill({ contentType: 'text/html',
       body: '<!doctype html><meta name="viewport" content="width=device-width"><style>body{margin:0}#behind{position:fixed;z-index:4}</style><button id="behind">Page action</button>' }));
-    await page.route(base + 'overflow-catalog.json', route => route.fulfill({ json: {
-      schemaVersion: 1, sources: { local: { baseUrl: './model/' } },
-      models: { 'fairy/test/1/default': [{ source: 'local', manifest: 'fairy/air_attack/index.json' }] },
-    } }));
     for (const [width, position] of [[1100, 'left'], [390, 'left'], [390, 'right']]) {
       const animated = width === 1100;
       await page.emulateMedia({ reducedMotion: animated ? 'no-preference' : 'reduce' });
       await page.setViewportSize({ width, height: 820 });
       await page.goto(base + 'overflow-test');
-      await page.evaluate(async ({ base, position }) => {
-        const { loadWidget } = await import(base + 'widget.mjs');
-        await loadWidget({ collection: 'girls-frontline', catalogUrl: base + 'overflow-catalog.json', baseUrl: base, position });
-      }, { base, position });
-      await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit');
       const waitForSlide = (from, to) => page.waitForFunction(([from, to]) => {
         const widget = document.querySelector('#waifu');
         const bottom = parseFloat(getComputedStyle(widget).bottom);
         return widget.style.display !== 'none' && bottom > Math.min(from, to) && bottom < Math.max(from, to);
       }, [from, to]);
       const waitForArrival = () => page.waitForFunction(() => getComputedStyle(document.querySelector('#waifu')).bottom === '0px');
-      if (animated) {
-        await waitForSlide(-1000, 0);
+      let releaseCatalog;
+      const catalogGate = new Promise(resolve => { releaseCatalog = resolve; });
+      await page.route(base + 'overflow-catalog.json', async route => {
+        await catalogGate;
+        await route.fulfill({ json: {
+          schemaVersion: 1, sources: { local: { baseUrl: './model/' } },
+          models: { 'fairy/test/1/default': [{ source: 'local', manifest: 'fairy/air_attack/index.json' }] },
+        } });
+      }, { times: 1 });
+      try {
+        await page.evaluate(async ({ base, position }) => {
+          const { loadWidget } = await import(base + 'widget.mjs');
+          await loadWidget({ collection: 'girls-frontline', catalogUrl: base + 'overflow-catalog.json', baseUrl: base, position });
+        }, { base, position });
+        if (animated) await waitForSlide(-1000, 0);
         await waitForArrival();
+        const status = page.locator('#waifu[data-initial-framing] #waifu-status');
+        await status.waitFor();
+        assert.equal(await status.textContent(), '模型加载中…');
+        assert.equal(await page.locator('#waifu-tool').evaluate(el => getComputedStyle(el).opacity), '1');
+        assert.equal(await page.locator('#live2d').evaluate(el => getComputedStyle(el).opacity), '0');
+        assert.equal(await page.locator('.waifu-hit').evaluate(el => getComputedStyle(el).pointerEvents), 'none');
+      } finally {
+        releaseCatalog();
       }
+      await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit');
+      assert.equal(await page.locator('#waifu-status').textContent(), '');
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
       const hit = await page.locator('.waifu-hit').boundingBox();
       const paint = await page.locator('#live2d').boundingBox();

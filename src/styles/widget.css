@@ -82,8 +82,28 @@
   height: var(--waifu-model-height);
 }
 .waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; container-type: size; overflow: visible; }
-/* Measure the first pose at its real size before revealing its controls. */
-#waifu[data-initial-framing] { visibility: hidden; bottom: -1000px !important; }
+/* Show the controls while the first pose is measured behind the loading status. */
+body > #waifu[data-initial-framing] #waifu-status {
+  left: calc(var(--waifu-model-width) / 2);
+  top: 50%;
+  width: max-content;
+  max-width: calc(var(--waifu-model-width) - 24px);
+  height: auto;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  clip-path: none;
+  transform: translate(-50%, -50%);
+  border: 1px solid #dfbd94;
+  border-radius: 8px;
+  background-color: #fff8ee;
+  color: #4e382d;
+  font: 14px/1.4 system-ui, sans-serif;
+  text-align: center;
+}
+body > #waifu[data-initial-framing] #waifu-tool { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  body > #waifu[data-initial-framing] { transition-duration: 0.3s; }
+}
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
   --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1) / 2);
@@ -96,8 +116,8 @@
 }
 /* The renderer keeps the wider camera. Only the original viewport receives input. */
 .waifu-hit { position: absolute; inset: 0; cursor: grab; }
-#waifu:not([data-model-loading]) .waifu-hit,
-#waifu:not([data-model-loading]) .waifu-surface .waifu-model-stage::after { pointer-events: auto; }
+#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit,
+#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-surface .waifu-model-stage::after { pointer-events: auto; }
 .waifu-surface .waifu-model-stage::after {
   content: "";
   position: absolute;
@@ -196,7 +216,7 @@
   box-shadow: none;
 }
 
-#waifu[data-model-loading] #live2d, #waifu[data-model-loading] .waifu-model-stage {
+#waifu:is([data-initial-framing], [data-model-loading]) :is(#live2d, .waifu-model-stage) {
   opacity: 0;
   pointer-events: none;
 }

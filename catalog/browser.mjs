@@ -167,7 +167,9 @@ try {
     highlight();
   };
   var highlight2 = highlight, drawCards2 = drawCards, describe2 = describe;
+  notice.textContent = t("正在载入图鉴…", "Loading catalog…");
   const library = await loadModelCatalog(catalogUrl, game, locale, english ? void 0 : "mainland");
+  notice.textContent = "";
   const portrait = (id) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map((id) => {
     const [kind, code, version, state] = id.split("/");

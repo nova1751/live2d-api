@@ -80,7 +80,9 @@ const firstPaint = new MutationObserver(() => {
 firstPaint.observe(host, { attributes: true, childList: true, subtree: true });
 
 try {
+  notice.textContent = t('正在载入图鉴…', 'Loading catalog…');
   const library = await loadModelCatalog(catalogUrl, game, locale, english ? undefined : 'mainland');
+  notice.textContent = '';
   const portrait = (id: string) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map(id => {
     const [kind, code, version, state] = id.split('/');
