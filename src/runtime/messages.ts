@@ -1,3 +1,4 @@
+import { preferences, session } from './storage';
 import { translated } from './locale';
 
 type Text = string | string[];
@@ -24,20 +25,20 @@ let heldPlayback: object | undefined;
 
 function clearMessage() {
   clearTimeout(timer);
-  sessionStorage.removeItem('waifu-text');
+  session.removeItem('waifu-text');
   document.getElementById('waifu-tips')?.classList.remove('waifu-tips-active');
 }
 
 function display(message: string, priority: number) {
   clearTimeout(timer);
-  sessionStorage.setItem('waifu-text', String(priority));
+  session.setItem('waifu-text', String(priority));
   const box = document.getElementById('waifu-tips')!;
   box.innerHTML = message;
   box.classList.add('waifu-tips-active');
 }
 
 export function say(message: Text | undefined, duration: number, priority: number) {
-  if (!message || heldPlayback || Number(sessionStorage.getItem('waifu-text')) > priority) return;
+  if (!message || heldPlayback || Number(session.getItem('waifu-text')) > priority) return;
   display(pick(message), priority);
   timer = setTimeout(clearMessage, duration);
 }
@@ -105,7 +106,7 @@ export function bindMessages(tips: Tips) {
   function tick() {
     if (document.hidden) return;
     const remaining = idleDelay - (Date.now() - lastActivity);
-    if (remaining <= 0 && !localStorage.getItem('waifu-display')) say(idleMessages, 6000, 9);
+    if (remaining <= 0 && !preferences.getItem('waifu-display')) say(idleMessages, 6000, 9);
     idleTimer = setTimeout(tick, remaining > 0 ? remaining : idleDelay);
   }
   const markActive = () => { lastActivity = Date.now(); };
@@ -137,7 +138,7 @@ export function bindMessages(tips: Tips) {
     if (!document.hidden) {
       markActive();
       idleTimer = setTimeout(tick, idleDelay);
-      if (!localStorage.getItem('waifu-display')) say(tips.message.visibilitychange, 6000, 9);
+      if (!preferences.getItem('waifu-display')) say(tips.message.visibilitychange, 6000, 9);
     }
   });
 }

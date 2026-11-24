@@ -1,3 +1,5 @@
+import { appendResource, loadTimeout } from './runtime/request';
+
 type Render = Window['loadlive2d'];
 export type LegacyScript = HTMLScriptElement & { acceptCubism2?: (renderer: Render) => void };
 type ModernStage = Awaited<ReturnType<typeof import('./modern').mountModern>>;
@@ -8,22 +10,41 @@ export function isModern(url: URL) {
 
 export function createRenderer(base: string, legacy?: Render): Render {
   let pendingLegacy: Promise<Render> | undefined;
+  let modernModule: Promise<typeof import('./modern')> | undefined;
+  let importAttempt = 0;
+  let loading: AbortController | undefined;
   let controller: AbortController | undefined;
   let stage: ModernStage | undefined;
   let generation = 0;
   let hidden = false;
 
   function fetchLegacy() {
-    return pendingLegacy ??= new Promise<Render>((resolve, reject) => {
-      const script: LegacyScript = document.createElement('script');
-      script.src = base + 'live2d.min.js';
-      script.acceptCubism2 = renderer => { legacy = renderer; resolve(renderer); };
-      script.onerror = () => reject(new Error('Failed to load ' + script.src));
-      document.head.appendChild(script);
+    if (pendingLegacy) return pendingLegacy;
+    const script: LegacyScript = document.createElement('script');
+    script.src = base + 'live2d.min.js';
+    script.acceptCubism2 = renderer => { legacy = renderer; };
+    return pendingLegacy = appendResource(script, script.src).then(() => {
+      if (!legacy) throw new Error('Missing Cubism 2 renderer: ' + script.src);
+      return legacy;
     }).catch(error => { pendingLegacy = undefined; throw error; });
   }
 
-  const render: Render = (canvas, model, options) => {
+  function fetchModern(signal: AbortSignal) {
+    if (modernModule) return modernModule;
+    const url = new URL('modern/renderer.mjs', base);
+    if (importAttempt) url.searchParams.set('retry', String(importAttempt));
+    // The browser remembers failed imports by URL for the lifetime of the page.
+    const reset = () => {
+      if (modernModule === pending) { modernModule = undefined; importAttempt++; }
+    };
+    const pending: Promise<typeof import('./modern')> = import(/* webpackIgnore: true */ /* @vite-ignore */ url.href)
+      .catch(error => { reset(); throw error; })
+      .finally(() => signal.removeEventListener('abort', reset));
+    signal.addEventListener('abort', reset, { once: true });
+    return modernModule = pending;
+  }
+
+  const start: Render = (canvas, model, options) => {
     const revision = ++generation;
     controller?.abort();
     controller = undefined;
@@ -33,15 +54,17 @@ export function createRenderer(base: string, legacy?: Render): Render {
     if (!isModern(url)) {
       if (legacy) return legacy(canvas, model, options);
       return fetchLegacy().then(renderer => {
-        if (generation !== revision) return;
+        if (generation !== revision || options?.signal?.aborted) return;
         const ready = renderer(canvas, model, options);
         if (hidden) renderer.hide?.();
         return ready;
       });
     }
     legacy?.hide?.();
-    controller = new AbortController();
-    const { signal } = controller;
+    const lifecycle = controller = new AbortController();
+    const { signal } = lifecycle;
+    const stop = () => lifecycle.abort(options?.signal?.reason);
+    options?.signal?.addEventListener('abort', stop, { once: true });
     const present = options?.onPaint;
     let finishPaint: (() => void) | undefined;
     const abortPaint = () => finishPaint?.();
@@ -53,17 +76,46 @@ export function createRenderer(base: string, legacy?: Render): Render {
       present(output);
       finishPaint?.();
     });
-    return import(/* webpackIgnore: true */ /* @vite-ignore */ base + 'modern/renderer.mjs').then(async module => {
+    return fetchModern(signal).then(async module => {
       if (signal.aborted) return;
-      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const output = document.getElementById(canvas);
+      if (!(output instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
+      const result: ModernStage = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
       await painted;
     }).catch(error => {
-      if (!signal.aborted) { controller = undefined; throw error; }
-    }).finally(() => signal.removeEventListener('abort', abortPaint));
+      if (!signal.aborted) { controller = undefined; lifecycle.abort(); throw error; }
+    }).finally(() => {
+      signal.removeEventListener('abort', abortPaint);
+      options?.signal?.removeEventListener('abort', stop);
+    });
   };
+  const render: Render = (canvas, model, options) => {
+    render.cancelLoad?.();
+    if (!options?.onPaint) return start(canvas, model, options);
+    const attempt = loading = new AbortController();
+    const { signal } = attempt;
+    const deadline = setTimeout(() => attempt.abort(new Error('Timed out waiting for the first model frame')), loadTimeout);
+    let stop: () => void;
+    const aborted = new Promise<never>((_, reject) => {
+      stop = () => reject(signal.reason);
+      signal.addEventListener('abort', stop, { once: true });
+    });
+    const painted = Promise.resolve().then(() => {
+      if (!signal.aborted) return start(canvas, model, { ...options, signal });
+    });
+    return Promise.race([aborted, painted]).catch(error => {
+      attempt.abort(error);
+      throw error;
+    }).finally(() => {
+      clearTimeout(deadline);
+      signal.removeEventListener('abort', stop);
+      if (loading === attempt) loading = undefined;
+    });
+  };
+  render.cancelLoad = () => loading?.abort(new DOMException('Model load superseded', 'AbortError'));
   render.hide = () => { hidden = true; if (controller) stage?.pause(); else legacy?.hide?.(); };
   render.show = start => { hidden = false; if (controller) stage?.resume(); else legacy?.show?.(start); };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();

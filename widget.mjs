@@ -1,31 +1,83 @@
 /*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */
 
+// src/runtime/request.ts
+var loadTimeout = 15e3;
+function appendResource(element, url) {
+  return new Promise((resolve, reject) => {
+    const finish = (error) => {
+      clearTimeout(deadline);
+      element.onload = element.onerror = null;
+      if (error) {
+        element.remove();
+        reject(error);
+      } else resolve();
+    };
+    const deadline = setTimeout(() => finish(new Error("Timed out loading " + url)), loadTimeout);
+    element.onload = () => finish();
+    element.onerror = () => finish(new Error("Failed to load " + url));
+    document.head.appendChild(element);
+  });
+}
+async function withLoadTimeout(load) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(new Error("Live2D resource load timed out")), loadTimeout);
+  try {
+    return await load(controller.signal);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 // src/renderer.ts
 function isModern(url) {
   return url.pathname.toLowerCase().endsWith(".model3.json");
 }
 function createRenderer(base, legacy) {
   let pendingLegacy;
+  let modernModule;
+  let importAttempt = 0;
+  let loading;
   let controller;
   let stage;
   let generation = 0;
   let hidden = false;
   function fetchLegacy() {
-    return pendingLegacy ?? (pendingLegacy = new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = base + "live2d.min.js";
-      script.acceptCubism2 = (renderer) => {
-        legacy = renderer;
-        resolve(renderer);
-      };
-      script.onerror = () => reject(new Error("Failed to load " + script.src));
-      document.head.appendChild(script);
+    if (pendingLegacy) return pendingLegacy;
+    const script = document.createElement("script");
+    script.src = base + "live2d.min.js";
+    script.acceptCubism2 = (renderer) => {
+      legacy = renderer;
+    };
+    return pendingLegacy = appendResource(script, script.src).then(() => {
+      if (!legacy) throw new Error("Missing Cubism 2 renderer: " + script.src);
+      return legacy;
     }).catch((error) => {
       pendingLegacy = void 0;
       throw error;
-    }));
+    });
   }
-  const render = (canvas, model, options) => {
+  function fetchModern(signal) {
+    if (modernModule) return modernModule;
+    const url = new URL("modern/renderer.mjs", base);
+    if (importAttempt) url.searchParams.set("retry", String(importAttempt));
+    const reset = () => {
+      if (modernModule === pending) {
+        modernModule = void 0;
+        importAttempt++;
+      }
+    };
+    const pending = import(
+      /* webpackIgnore: true */
+      /* @vite-ignore */
+      url.href
+    ).catch((error) => {
+      reset();
+      throw error;
+    }).finally(() => signal.removeEventListener("abort", reset));
+    signal.addEventListener("abort", reset, { once: true });
+    return modernModule = pending;
+  }
+  const start = (canvas, model, options) => {
     const revision = ++generation;
     controller?.abort();
     controller = void 0;
@@ -35,15 +87,17 @@ function createRenderer(base, legacy) {
     if (!isModern(url)) {
       if (legacy) return legacy(canvas, model, options);
       return fetchLegacy().then((renderer) => {
-        if (generation !== revision) return;
+        if (generation !== revision || options?.signal?.aborted) return;
         const ready = renderer(canvas, model, options);
         if (hidden) renderer.hide?.();
         return ready;
       });
     }
     legacy?.hide?.();
-    controller = new AbortController();
-    const { signal } = controller;
+    const lifecycle = controller = new AbortController();
+    const { signal } = lifecycle;
+    const stop = () => lifecycle.abort(options?.signal?.reason);
+    options?.signal?.addEventListener("abort", stop, { once: true });
     const present = options?.onPaint;
     let finishPaint;
     const abortPaint = () => finishPaint?.();
@@ -55,13 +109,11 @@ function createRenderer(base, legacy) {
       present(output);
       finishPaint?.();
     });
-    return import(
-      /* webpackIgnore: true */
-      /* @vite-ignore */
-      base + "modern/renderer.mjs"
-    ).then(async (module) => {
+    return fetchModern(signal).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const output = document.getElementById(canvas);
+      if (!(output instanceof HTMLCanvasElement)) throw new Error("Missing Live2D canvas");
+      const result = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -69,19 +121,47 @@ function createRenderer(base, legacy) {
     }).catch((error) => {
       if (!signal.aborted) {
         controller = void 0;
+        lifecycle.abort();
         throw error;
       }
-    }).finally(() => signal.removeEventListener("abort", abortPaint));
+    }).finally(() => {
+      signal.removeEventListener("abort", abortPaint);
+      options?.signal?.removeEventListener("abort", stop);
+    });
   };
+  const render = (canvas, model, options) => {
+    render.cancelLoad?.();
+    if (!options?.onPaint) return start(canvas, model, options);
+    const attempt = loading = new AbortController();
+    const { signal } = attempt;
+    const deadline = setTimeout(() => attempt.abort(new Error("Timed out waiting for the first model frame")), loadTimeout);
+    let stop;
+    const aborted = new Promise((_, reject) => {
+      stop = () => reject(signal.reason);
+      signal.addEventListener("abort", stop, { once: true });
+    });
+    const painted = Promise.resolve().then(() => {
+      if (!signal.aborted) return start(canvas, model, { ...options, signal });
+    });
+    return Promise.race([aborted, painted]).catch((error) => {
+      attempt.abort(error);
+      throw error;
+    }).finally(() => {
+      clearTimeout(deadline);
+      signal.removeEventListener("abort", stop);
+      if (loading === attempt) loading = void 0;
+    });
+  };
+  render.cancelLoad = () => loading?.abort(new DOMException("Model load superseded", "AbortError"));
   render.hide = () => {
     hidden = true;
     if (controller) stage?.pause();
     else legacy?.hide?.();
   };
-  render.show = (start) => {
+  render.show = (start2) => {
     hidden = false;
     if (controller) stage?.resume();
-    else legacy?.show?.(start);
+    else legacy?.show?.(start2);
   };
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
   render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
@@ -117,10 +197,12 @@ function orderCollection(ids, outfits) {
 }
 async function loadModelCatalog(input, collection, locale = "zh-CN", assetCdn) {
   const url = new URL(input, document.baseURI);
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
-  const catalog = await response.json();
-  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
+  return withLoadTimeout(async (signal) => {
+    const response = await fetch(url, { signal });
+    if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
+    const catalog = await response.json();
+    return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
+  });
 }
 function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBase = url.href, assetCdn) {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
@@ -194,7 +276,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.11";
+var version = "2.9.12";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -203,12 +285,14 @@ var runtimeSnapshot = repository + "@widget-" + version + "/";
 var globalCdn = "https://cdn.jsdelivr.net";
 var widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 var packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
+var releaseRoots = ["", "@latest", "@" + version, "@v" + version].map((ref) => repository + ref);
 function useRuntimeSnapshot(base) {
-  if (base.pathname === repository + "@v" + version + "/") base.pathname = runtimeSnapshot;
+  if (releaseRoots.includes(base.pathname.replace(/\/$/, ""))) base.pathname = runtimeSnapshot;
   return base;
 }
 function scriptDirectory(src) {
   const url = new URL(src, document.baseURI);
+  if (releaseRoots.includes(url.pathname.replace(/\/$/, ""))) return useRuntimeSnapshot(url);
   if (!packageRoot.test(url.pathname)) return useRuntimeSnapshot(new URL(".", url));
   if (!url.pathname.endsWith("/")) url.pathname += "/";
   url.search = url.hash = "";
@@ -229,16 +313,6 @@ function defaultLibraryUrl(base) {
 // src/widget.mts
 var mounting = Symbol.for("live2dapi-noa.mounting");
 var scripts = /* @__PURE__ */ new Map();
-function appendResource(element, url) {
-  return new Promise((resolve, reject) => {
-    element.onload = () => resolve();
-    element.onerror = () => {
-      element.remove();
-      reject(new Error(`Failed to load ${url}`));
-    };
-    document.head.appendChild(element);
-  });
-}
 function loadScript(url, exportName, asteroidsUrl) {
   if (!scripts.has(url)) {
     const script = document.createElement("script");

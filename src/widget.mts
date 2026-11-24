@@ -1,6 +1,7 @@
 import { createRenderer, isModern } from './renderer';
 export { loadModelCatalog } from './library/catalog.js';
 import { runtimeDirectory, defaultLibraryUrl, githubLibrary, useRuntimeSnapshot } from './distribution';
+import { appendResource } from './runtime/request';
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
@@ -32,17 +33,6 @@ export interface WidgetOptions {
 }
 
 const scripts = new Map<string, Promise<unknown>>();
-
-function appendResource(element: HTMLScriptElement | HTMLLinkElement, url: string) {
-  return new Promise<void>((resolve, reject) => {
-    element.onload = () => resolve();
-    element.onerror = () => {
-      element.remove();
-      reject(new Error(`Failed to load ${url}`));
-    };
-    document.head.appendChild(element);
-  });
-}
 
 function loadScript<K extends 'initWidget' | 'loadlive2d'>(
   url: string, exportName: K, asteroidsUrl?: string,

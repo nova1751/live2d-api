@@ -1,12 +1,13 @@
+import { preferences } from '../runtime/storage';
 import { translated } from '../runtime/locale';
-import { getJson } from '../runtime/request';
+import { getJson, withLoadTimeout } from '../runtime/request';
 import { setModelLoading } from '../runtime/loading';
 import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
 const changed = () => translated('我的新衣服好看嘛？', 'How do you like my new outfit?');
-const storedId = (key: string) => Number(localStorage.getItem(key)) || 0;
+const storedId = (key: string) => Number(preferences.getItem(key)) || 0;
 
 export class LegacyModels {
   private base: string;
@@ -15,13 +16,14 @@ export class LegacyModels {
 
   private revision = 0;
   private loaded = false;
+  private lastUrl?: string;
 
   reopen(start: boolean) {
     if (this.loaded) window.loadlive2d.show?.(start);
     else return this.load(undefined, undefined, undefined, start);
   }
 
-  cancel() { this.revision++; setModelLoading(false); }
+  cancel() { this.revision++; window.loadlive2d.cancelLoad?.(); setModelLoading(false); }
 
   constructor(private readonly options: LegacyOptions) {
     this.useCDN = typeof options.cdnPath === 'string';
@@ -32,19 +34,24 @@ export class LegacyModels {
 
   private async fetchCatalog(): Promise<Catalog> {
     const url = this.base + 'model_list.json';
-    const response = await fetch(url);
-    // Full self-hosted deployments retain their local models. A copied runtime-only
-    // tarball can use the published library when its static host has no catalog.
-    if (response.status === 404 && !this.options.modelBaseUrl) {
-      const fallback = fallbackModelDirectory(this.base);
-      if (fallback !== this.base) {
-        const catalog = await getJson<Catalog>(fallback + 'model_list.json');
-        this.base = fallback;
-        return catalog;
+    return withLoadTimeout(async signal => {
+      const response = await fetch(url, { signal });
+      // SPA hosts may serve their HTML entry for a missing JSON file.
+      const missing = response.status === 404 || (response.ok && response.headers?.get('content-type')?.includes('text/html'));
+      if (missing && !this.options.modelBaseUrl) {
+        const fallback = fallbackModelDirectory(this.base);
+        if (fallback !== this.base) {
+          const catalog = await getJson<Catalog>(fallback + 'model_list.json');
+          this.base = fallback;
+          return catalog;
+        }
       }
-    }
-    if (!response.ok) throw new Error(`Failed to load ${url} (HTTP ${response.status})`);
-    return response.json();
+      if (!response.ok) throw new Error(`Failed to load model catalog ${url} (HTTP ${response.status})`);
+      if (missing) throw new Error('Expected JSON model catalog at ' + url);
+      const catalog: Catalog = await response.json();
+      if (!Array.isArray(catalog?.models) || !catalog.models.length) throw new Error('No models in catalog ' + url);
+      return catalog;
+    });
   }
 
   private list(): Promise<Catalog> {
@@ -56,6 +63,7 @@ export class LegacyModels {
 
   private async change(action: (revision: number) => Promise<void>) {
     const revision = ++this.revision;
+    window.loadlive2d.cancelLoad?.();
     setModelLoading(true);
     try {
       await action(revision);
@@ -88,14 +96,28 @@ export class LegacyModels {
     }
     if (revision !== this.revision) return;
     this.loaded = false;
-    await window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, onPaint: () => {} });
+    try { await this.paint(url, start); }
+    catch (error) {
+      if (revision === this.revision && this.lastUrl && this.lastUrl !== url) {
+        try {
+          await this.paint(this.lastUrl, false);
+          if (revision === this.revision) this.loaded = true;
+        } catch { /* the original load error is reported */ }
+      }
+      throw error;
+    }
     if (revision !== this.revision) return;
     if (!this.options.modelUrl) {
-      localStorage.setItem('modelId', String(id));
-      localStorage.setItem('modelTexturesId', String(texture));
+      preferences.setItem('modelId', String(id));
+      preferences.setItem('modelTexturesId', String(texture));
     }
     say(message, 4000, 10);
     this.loaded = true;
+    this.lastUrl = url;
+  }
+
+  private paint(url: string, start: boolean) {
+    return window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, onPaint: () => {} });
   }
 
   async costume(target: string) {

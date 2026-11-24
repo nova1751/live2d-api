@@ -110,9 +110,7 @@ test('Chinese presentation keeps archive links and speaker-specific captions', a
 
 test('collection navigation starts with fairies and follows CN releases, then standard/damaged', async t => {
   const catalog = await json('catalog/library.json');
-  const source = await readFile(new URL('../src/library/catalog.ts', import.meta.url), 'utf8');
-  const { code } = await transform(source, { loader: 'ts', format: 'esm' });
-  const { loadModelCatalog } = await import('data:text/javascript;base64,' + Buffer.from(code).toString('base64'));
+  const { loadModelCatalog } = await import('../src/library/catalog.ts');
   const previous = globalThis.document;
   globalThis.document = { baseURI: 'https://example.org/' };
   t.after(() => { if (previous) globalThis.document = previous; else delete globalThis.document; });
