@@ -37,7 +37,7 @@ export async function checkPaintOverflow(browser, base) {
       const widget = await page.locator('#waifu').boundingBox();
       const aspect = await page.locator('#waifu').evaluate(el => Number(getComputedStyle(el).getPropertyValue('--waifu-aspect')));
       const edge = Math.max(12, Math.min(width * 0.02, 24));
-      const fullWidth = Math.min(480, width - 2 * edge - 50, 410 * aspect);
+      const fullWidth = Math.min(480, width - (position === 'left' ? edge : 2 * edge) - 50, 410 * aspect);
       assert.ok(Math.abs(hit.width - fullWidth * 0.85) <= 1);
       assert.ok(Math.abs(hit.height - fullWidth * 0.85 / aspect) <= 1);
       const square = Math.max(hit.width, hit.height);

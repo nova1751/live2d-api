@@ -66,7 +66,8 @@
   --waifu-left-inset: max(var(--waifu-edge-gap), env(safe-area-inset-left, 0px));
   --waifu-right-inset: max(var(--waifu-edge-gap), env(safe-area-inset-right, 0px));
   --waifu-float-scale: 0.85;
-  --waifu-max-width: calc(min(480px, 100vw - var(--waifu-left-inset) - var(--waifu-right-inset) - var(--waifu-side-space)) * var(--waifu-float-scale));
+  --waifu-float-width: calc(100vw - var(--waifu-left-inset) - var(--waifu-right-inset) - var(--waifu-side-space));
+  --waifu-max-width: calc(min(480px, var(--waifu-float-width)) * var(--waifu-float-scale));
   --waifu-max-height: calc(min(410px, 60vh) * var(--waifu-float-scale));
   --waifu-model-width: min(var(--waifu-max-width), calc(var(--waifu-max-height) * var(--waifu-aspect, 1)));
   --waifu-model-height: calc(var(--waifu-model-width) / var(--waifu-aspect, 1));
