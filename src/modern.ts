@@ -56,7 +56,10 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     } } : undefined;
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
+    // The floating widget waits below the viewport until its first framed paint.
+    const waitForFirstPaint = canvas.closest('body > #waifu[data-initial-framing]');
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
+      pauseWhenOffscreen: !waitForFirstPaint,
       backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: error => console.error('[Live2D]', error) });
     signal.throwIfAborted();
     const instance = stage;

@@ -81,6 +81,22 @@ try {
   assert.equal(await page.locator('canvas').count(), 1);
   assert.equal(legacyRequests.length, 1);
   assert.deepEqual(errors, []);
+
+  const id = 'test/haru/base/default';
+  await page.route(base + 'modern-collection.json', route => route.fulfill({ json: {
+    schemaVersion: 1, sources: { samples: { baseUrl: samples } },
+    models: { [id]: [{ source: 'samples', manifest: 'Haru/Haru.model3.json' }] },
+  } }));
+  await page.route(base + 'floating-collection.html', route => route.fulfill({ contentType: 'text/html',
+    body: '<!doctype html><body></body>' }));
+  await page.goto(base + 'floating-collection.html');
+  await page.evaluate(async ({ base, id }) => {
+    const { loadWidget } = await import(base + 'widget.mjs');
+    await loadWidget({ baseUrl: base, catalogUrl: base + 'modern-collection.json', collection: 'girls-frontline', modelId: id });
+  }, { base, id });
+  await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-model-stage canvas[data-painted]', { timeout: 90000 });
+  assert.deepEqual(errors, []);
+  console.log('Floating modern catalog reveals its first framed paint');
 } finally {
   await browser?.close();
   await server.dispose();
