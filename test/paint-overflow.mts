@@ -53,7 +53,14 @@ export async function checkPaintOverflow(browser, base) {
       assert.deepEqual(await floatingEdges(), loadingEdges, 'first paint must not reposition the floating controls');
       assert.equal(await page.locator('#waifu-status').textContent(), '');
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
+      const checkCaption = async (subject) => {
+        const tip = await page.locator('#waifu-tips').evaluate(el => el.getBoundingClientRect().toJSON());
+        assert.ok(Math.abs(subject.y - tip.bottom - 12) < 1, JSON.stringify({ subject, tip }));
+        assert.ok(Math.abs(subject.x + subject.width / 2 - tip.x - tip.width / 2) < 1);
+        assert.ok(tip.y >= 0);
+      };
       const hit = await page.locator('.waifu-hit').boundingBox();
+      await checkCaption(hit);
       const paint = await page.locator('#live2d').boundingBox();
       const camera = await page.locator('.waifu-surface').boundingBox();
       const widget = await page.locator('#waifu').boundingBox();
@@ -132,6 +139,7 @@ export async function checkPaintOverflow(browser, base) {
       const expandedWidth = await assertFit();
       const expandedCanvas = await viewer.locator('#live2d').boundingBox();
       const subject = await viewer.locator('.waifu-hit').boundingBox();
+      await checkCaption(subject);
       const rail = await viewer.locator('#waifu-tool').boundingBox();
       assert.ok(Math.abs(rail.x - subject.x - subject.width - 6) < 2);
       if (width > 1000) {

@@ -7,7 +7,7 @@
 body > #waifu.waifu-adaptive {
   --waifu-rail-offset: clamp(8px, 3vw, 40px);
   --waifu-subject-space: calc(var(--waifu-max-width) + var(--waifu-gap) - var(--waifu-rail-offset));
-  --waifu-subject-gutter: max(12px, env(safe-area-inset-left, 0px));
+  --waifu-subject-gutter: max(var(--waifu-content-gap), env(safe-area-inset-left, 0px));
   --waifu-model-width: min(max(1px, calc(var(--waifu-subject-space) - 2 * var(--waifu-subject-gutter))), calc(var(--waifu-max-height) * var(--waifu-aspect, 1)));
   --waifu-viewport-left: calc((var(--waifu-subject-space) - var(--waifu-model-width)) / 2);
 }
