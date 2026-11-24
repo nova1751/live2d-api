@@ -194,21 +194,28 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.10";
+var version = "2.9.11";
 
 // src/distribution.ts
+var repository = "/gh/nova1751/live2d-api";
+var snapshot = repository + "@cdn-b3ac5ae545e2/";
+var runtimeSnapshot = repository + "@widget-" + version + "/";
 var globalCdn = "https://cdn.jsdelivr.net";
 var widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 var packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
+function useRuntimeSnapshot(base) {
+  if (base.pathname === repository + "@v" + version + "/") base.pathname = runtimeSnapshot;
+  return base;
+}
 function scriptDirectory(src) {
   const url = new URL(src, document.baseURI);
-  if (!packageRoot.test(url.pathname)) return new URL(".", url);
+  if (!packageRoot.test(url.pathname)) return useRuntimeSnapshot(new URL(".", url));
   if (!url.pathname.endsWith("/")) url.pathname += "/";
   url.search = url.hash = "";
   return url;
 }
 function runtimeDirectory(src) {
-  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + "/gh/nova1751/live2d-api@widget-" + version + "/");
+  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + runtimeSnapshot);
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
@@ -312,6 +319,7 @@ async function loadWidget({ mode = "sequential", position = "left", baseUrl, mod
   if (!base.pathname.endsWith("/")) base.pathname += "/";
   base.search = "";
   base.hash = "";
+  useRuntimeSnapshot(base);
   if (!catalogUrl && !modelUrl && !modelBaseUrl) {
     catalogUrl = collection ? collectionCatalogUrl(githubLibrary(base), collection) : defaultLibraryUrl(base);
   }

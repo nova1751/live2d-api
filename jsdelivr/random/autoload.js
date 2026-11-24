@@ -5,10 +5,13 @@ const live2d_path = (() => {
   if (script?.src) {
     const url = new URL(script.src);
     if (/\/(?:live2dapi-noa|gh\/nova1751\/live2d-api)(?:@[^/]+)?\/(?:npm|jsdelivr)\/(?:random|sequential)\/autoload(?:\.min)?\.js$/.test(url.pathname)) {
-      return new URL("../../", url).href;
+      const base = new URL("../../", url);
+      const runtimePath = new URL("https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.11/").pathname;
+      if (base.pathname === runtimePath.replace("@widget-", "@v")) base.pathname = runtimePath;
+      return base.href;
     }
   }
-  return "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.10/";
+  return "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.11/";
 })();
 function loadExternalResource(url, type) {
   let tag;
