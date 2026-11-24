@@ -53,7 +53,22 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       };
       return graphics;
     }, async loadModel(stage, url, options) {
-      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables });
+      modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables });
+      if (framing && host.closest('.waifu-surface')) {
+        const model = modelHandle.getIntrinsicSize();
+        const setTransform = modelHandle.setTransform.bind(modelHandle);
+        // live2d-web fits against both stage dimensions. Keep the transform
+        // from a height-sized square when the stage gains space on the sides.
+        modelHandle.setTransform = transform => {
+          const { width, height } = stage.getSize();
+          if (width <= height || !height) return setTransform(transform);
+          const base = Math.min(width / model.width, height / model.height);
+          setTransform({ ...transform,
+            scale: transform.scale * (height / Math.max(model.width, model.height)) / base,
+            x: width / 2 + (transform.x - width / 2) * height / width });
+        };
+      }
+      return modelHandle;
     } } : undefined;
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
@@ -72,7 +87,11 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
           const { width, height } = graphics!.getSize();
           const camera = framing.measure(output, (x, y) => modelHandle!.hitTest(x * width, y * height),
             wider => instance.setFit(fit(wider)));
-          if (camera) { framing = undefined; instance.setFit(fit(camera)); }
+          if (camera) {
+            framing = undefined;
+            instance.setFit(fit(camera));
+            if (host.closest('.waifu-surface')) host.classList.add('waifu-wide-paint');
+          }
           return;
         }
         unsubscribe();

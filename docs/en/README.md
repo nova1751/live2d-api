@@ -132,7 +132,7 @@ The locale controls widget buttons, accessibility labels, greetings and fallback
 
 Gallery characters can extend their arms, clothing and effects beyond the original interaction area. Clicks in this extra space reach the page underneath. The character and toolbar respond within their usual bounds. The floating widget uses a default z-index of 10. Set `:root { --waifu-z-index: 20; }` on the host page to change it.
 
-Choose **Expand model** in the toolbar. **100%** fits the entire animation canvas, including space reserved for motion, into the available area. Scene models keep their authored aspect ratio. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. Scroll to inspect details at higher zoom and choose **Fit to view** to return to 100%.
+Choose **Expand model** in the toolbar. **100%** fits the entire animation canvas, including space reserved for motion, into the available area. In landscape, spare width extends the canvas on either side of the character at the same scale. Scene models keep their authored aspect ratio. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. Scroll to inspect details at higher zoom and choose **Fit to view** to return to 100%.
 
 **Fullscreen** keeps the selected percentage and zoom controls. **Restore** returns the same canvas to the page with its current character and playback. An embedding iframe needs fullscreen permission from its host. To open at 150% each time, set `loadWidget({ modelUrl, expandedZoom: 150 })`.
 

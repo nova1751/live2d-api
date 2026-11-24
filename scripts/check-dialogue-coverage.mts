@@ -6,9 +6,9 @@ import { parseModelCatalog } from '../src/library/catalog.ts';
 import { readJson, type Library } from './library-files.mts';
 
 // Resolve the offline catalog with the same selection and subtitle rules as the Chinese gallery.
-const [directory, report] = process.argv.slice(2);
-if (!directory) throw Error('Pass the offline library directory and optionally an output JSON path');
-const index = join(directory, 'library.json');
+const [directory, report, catalogPath] = process.argv.slice(2);
+if (!directory) throw Error('Pass the offline library directory and optionally an output JSON path and catalog path');
+const index = catalogPath ?? join(directory, 'library.json');
 const catalog = readJson<Library>(index);
 const url = pathToFileURL(index);
 const gallery = parseModelCatalog(catalog, url, 'girls-frontline');
@@ -24,6 +24,7 @@ const counts = {
   touchEvents: 0,
   audioWithoutText: 0,
   textWithoutAudio: 0,
+  textWithoutVoiceKey: 0,
   missingNamedMotion: 0,
   unnamedMotion: 0,
   missingHitName: 0,
@@ -40,7 +41,8 @@ for (const id of gallery.ids) {
     motionData: Record<string, Event>;
     voiceData: Record<string, Voice>;
   }>(join(local, asset.dialogue));
-  const source = gallery.resolve(id).dialogue!;
+  const { dialogue: source, cues } = gallery.resolve(id);
+  if (!source) throw Error('Missing dialogue metadata for ' + id);
   const files = new Set(
     Object.values(manifest.FileReferences.Motions ?? {})
       .flat()
@@ -65,7 +67,7 @@ for (const id of gallery.ids) {
       key &&
       source.audio.has('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG')
     );
-    const hasText = !!(source.captions?.[code + '|' + key] || line?.caption)?.trim();
+    const hasText = !!(cues?.[eventId]?.caption || source.captions?.[code + '|' + key] || line?.caption)?.trim();
     const reasons = [];
     if (!event.motion_name) counts.unnamedMotion++;
     else if (!matchMotion(eventId, event.motion_name)) {
@@ -76,7 +78,8 @@ for (const id of gallery.ids) {
       counts.audioWithoutText++;
       reasons.push('audioWithoutText');
     }
-    if (hasText && !hasAudio) {
+    if (hasText && !key) counts.textWithoutVoiceKey++;
+    else if (hasText && !hasAudio) {
       counts.textWithoutAudio++;
       reasons.push('textWithoutAudio');
     }
