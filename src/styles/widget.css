@@ -20,11 +20,14 @@
   z-index: calc(var(--waifu-z-index, 10) + 1);
   writing-mode: vertical-rl;
   transform: translateX(-100%);
-  transition: transform 1s;
+  pointer-events: none;
+  transition: transform 1s, visibility 0s 1s;
 }
 
 #waifu-toggle.waifu-toggle-active {
   visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
   transform: translateX(calc(-100% + 10px));
 }
 
@@ -68,7 +71,7 @@
 }
 .waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; container-type: size; overflow: visible; }
 /* Measure the first pose at its real size before revealing its controls. */
-#waifu[data-initial-framing] { visibility: hidden; }
+#waifu[data-initial-framing] { visibility: hidden; bottom: -1000px !important; }
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
   --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1) / 2);
