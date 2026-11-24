@@ -37,14 +37,19 @@ function asteroids() {
   }
 }
 
+let visibilityRevision = 0;
+
 function show() {
+  visibilityRevision++;
   localStorage.removeItem('waifu-display');
   byId('waifu-toggle').setAttribute('tabindex', '-1');
   byId('waifu-toggle').setAttribute('aria-expanded', 'true');
-  byId('waifu').style.display = '';
   const widget = byId('waifu');
-  if (widget.hasAttribute('data-initial-framing')) widget.style.bottom = '0';
-  else setTimeout(() => { widget.style.bottom = '0'; }, 0);
+  widget.style.display = '';
+  widget.inert = false;
+  // Commit the offscreen position after mounting or restoring display.
+  void widget.offsetHeight;
+  widget.style.bottom = '0';
 }
 
 function prepareStart(event: Event) {
@@ -52,15 +57,29 @@ function prepareStart(event: Event) {
 }
 
 function hide() {
-  const restoreFocus = byId('waifu').contains(document.activeElement);
+  const widget = byId('waifu');
+  const restoreFocus = widget.contains(document.activeElement);
+  const revision = ++visibilityRevision;
   window.loadlive2d.hide?.();
   localStorage.setItem('waifu-display', String(Date.now()));
-  byId('waifu').style.display = 'none';
+  say(translated('愿你有一天能与重要的人重逢。', 'I hope you meet the people you miss again.'), 2000, 11);
+  widget.inert = true;
+  widget.style.bottom = '-500px';
   const toggle = byId('waifu-toggle');
-  toggle.removeAttribute('tabindex');
   toggle.setAttribute('aria-expanded', 'false');
-  toggle.classList.add('waifu-toggle-active');
-  if (restoreFocus) toggle.focus({ preventScroll: true });
+  const finish = () => {
+    if (revision !== visibilityRevision) return;
+    widget.style.display = 'none';
+    toggle.removeAttribute('tabindex');
+    toggle.classList.add('waifu-toggle-active');
+    if (restoreFocus && (document.activeElement === document.body || widget.contains(document.activeElement))) {
+      toggle.focus({ preventScroll: true });
+    }
+  };
+  const slide = widget.getAnimations().find(animation =>
+    'transitionProperty' in animation && animation.transitionProperty === 'bottom');
+  if (slide) slide.finished.then(finish, finish);
+  else finish();
 }
 
 function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, start = false) {
@@ -152,7 +171,8 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
   const hiddenSince = Number(localStorage.getItem('waifu-display'));
   if (hiddenSince && Date.now() - hiddenSince <= 86400000) {
     toggle.setAttribute('first-time', 'true');
-    setTimeout(() => toggle.classList.add('waifu-toggle-active'), 0);
+    void toggle.offsetWidth;
+    toggle.classList.add('waifu-toggle-active');
   } else {
     mount(options, models);
   }

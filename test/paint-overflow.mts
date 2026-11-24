@@ -11,6 +11,8 @@ export async function checkPaintOverflow(browser, base) {
       models: { 'fairy/test/1/default': [{ source: 'local', manifest: 'fairy/air_attack/index.json' }] },
     } }));
     for (const [width, position] of [[1100, 'left'], [390, 'left'], [390, 'right']]) {
+      const animated = width === 1100;
+      await page.emulateMedia({ reducedMotion: animated ? 'no-preference' : 'reduce' });
       await page.setViewportSize({ width, height: 820 });
       await page.goto(base + 'overflow-test');
       await page.evaluate(async ({ base, position }) => {
@@ -18,6 +20,16 @@ export async function checkPaintOverflow(browser, base) {
         await loadWidget({ collection: 'girls-frontline', catalogUrl: base + 'overflow-catalog.json', baseUrl: base, position });
       }, { base, position });
       await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit');
+      const waitForSlide = (from, to) => page.waitForFunction(([from, to]) => {
+        const widget = document.querySelector('#waifu');
+        const bottom = parseFloat(getComputedStyle(widget).bottom);
+        return widget.style.display !== 'none' && bottom > Math.min(from, to) && bottom < Math.max(from, to);
+      }, [from, to]);
+      const waitForArrival = () => page.waitForFunction(() => getComputedStyle(document.querySelector('#waifu')).bottom === '0px');
+      if (animated) {
+        await waitForSlide(-1000, 0);
+        await waitForArrival();
+      }
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
       const hit = await page.locator('.waifu-hit').boundingBox();
       const paint = await page.locator('#live2d').boundingBox();
@@ -70,10 +82,24 @@ export async function checkPaintOverflow(browser, base) {
         await button.hover();
         assert.deepEqual(await colors(), ['rgb(6, 132, 189)', 'none']);
       }
-      await page.emulateMedia({ reducedMotion: 'no-preference' });
-      await page.locator('#waifu-tool-quit').click();
-      assert.equal(await page.locator('#waifu').isVisible(), false);
       const tab = page.locator('#waifu-toggle');
+      await page.locator('#waifu-tool-quit').click();
+      if (animated) {
+        await waitForSlide(0, -500);
+        assert.equal(await tab.isVisible(), false);
+        await page.locator('#waifu').waitFor({ state: 'hidden' });
+        const waitForEdge = (min, max) => page.waitForFunction(([min, max]) => {
+          const edge = document.querySelector('#waifu-toggle').getBoundingClientRect().right;
+          return edge >= min && edge <= max;
+        }, [min, max]);
+        await waitForEdge(0.01, 9.99);
+        await waitForEdge(10, 10);
+        const bounds = await tab.boundingBox();
+        await page.mouse.move(5, bounds.y + bounds.height / 2);
+        await waitForEdge(10.01, 29.99);
+        await waitForEdge(30, 30);
+      }
+      assert.equal(await page.locator('#waifu').isVisible(), false);
       assert.equal(await tab.getAttribute('aria-expanded'), 'false');
       assert.deepEqual(await tab.evaluate(el => {
         const style = getComputedStyle(el);
@@ -84,7 +110,15 @@ export async function checkPaintOverflow(browser, base) {
       await tab.press('Enter');
       assert.equal(await page.locator('#waifu').isVisible(), true);
       assert.equal(await tab.getAttribute('aria-expanded'), 'true');
-      await page.emulateMedia({ reducedMotion: 'reduce' });
+      if (animated) {
+        await waitForSlide(-500, 0);
+        assert.equal(await tab.isVisible(), true, 'tab stays visible as it retracts');
+        await tab.waitFor({ state: 'hidden' });
+        await waitForArrival();
+      } else {
+        await waitForArrival();
+        assert.equal(await tab.isVisible(), false);
+      }
     }
   } finally {
     await page.close();
