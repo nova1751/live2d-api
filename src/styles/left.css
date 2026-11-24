@@ -1,7 +1,7 @@
 @import "./widget.css";
 #waifu { left: 0; }
 #waifu.waifu-adaptive {
-  --waifu-max-width: min(480px, calc(100vw - var(--waifu-right-inset) - var(--waifu-side-space)));
+  --waifu-float-width: calc(100vw - var(--waifu-right-inset) - var(--waifu-side-space));
 }
 /* The square camera can extend past the screen. Display just the visible part
    of its bitmap so the extra animation space never indents the character. */
