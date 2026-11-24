@@ -94,10 +94,22 @@ export async function checkPaintOverflow(browser, base) {
         }, [min, max]);
         await waitForEdge(0.01, 9.99);
         await waitForEdge(10, 10);
+        const label = tab.locator('span');
+        const opacity = () => label.evaluate(el => getComputedStyle(el).opacity);
+        assert.equal(await opacity(), '0');
         const bounds = await tab.boundingBox();
         await page.mouse.move(5, bounds.y + bounds.height / 2);
         await waitForEdge(10.01, 29.99);
         await waitForEdge(30, 30);
+        assert.equal(await opacity(), '1');
+        const button = await tab.boundingBox();
+        const text = await label.boundingBox();
+        const leftGap = text.x - button.x;
+        const rightGap = button.x + button.width - text.x - text.width;
+        assert.ok(leftGap > 0 && Math.abs(leftGap - rightGap) <= 1);
+        await page.mouse.move(width / 2, 0);
+        await waitForEdge(10, 10);
+        assert.equal(await opacity(), '0');
       }
       assert.equal(await page.locator('#waifu').isVisible(), false);
       assert.equal(await tab.getAttribute('aria-expanded'), 'false');

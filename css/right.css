@@ -19,7 +19,6 @@
   min-height: 46px;
   line-height: 1;
   z-index: calc(var(--waifu-z-index, 10) + 1);
-  writing-mode: vertical-rl;
   transform: translateX(-100%);
   pointer-events: none;
   transition: transform 1s, visibility 0s 1s;
@@ -32,6 +31,15 @@
 }
 #waifu-toggle.waifu-toggle-active:is(:hover, :focus-visible) {
   transform: translateX(0);
+}
+#waifu-toggle > span {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+#waifu-toggle.waifu-toggle-active:is(:hover, :focus-visible) > span {
+  opacity: 1;
 }
 @media (pointer: coarse) {
   #waifu-toggle.waifu-toggle-active::after {
@@ -422,6 +430,7 @@
 @media (prefers-reduced-motion: reduce) {
   #waifu,
   #waifu-toggle,
+  #waifu-toggle > span,
   #waifu-tool,
   #waifu-tips,
   #waifu-tips.waifu-tips-active {
