@@ -18,12 +18,12 @@
   "redirects": [
     {
       "source": "/model/:path*",
-      "destination": "https://raw.githubusercontent.com/nova1751/live2d-api/89053b85a3e850952b3b35fc873a2065a3fda8b9/model/:path*",
+      "destination": "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@89053b85a3e850952b3b35fc873a2065a3fda8b9/model/:path*",
       "permanent": false
     },
     {
       "source": "/model_list.json",
-      "destination": "https://raw.githubusercontent.com/nova1751/live2d-api/89053b85a3e850952b3b35fc873a2065a3fda8b9/model_list.json",
+      "destination": "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@89053b85a3e850952b3b35fc873a2065a3fda8b9/model_list.json",
       "permanent": false
     }
   ]

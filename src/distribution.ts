@@ -3,7 +3,6 @@ import { version } from '../package.json';
 // Assets have their own release cadence. Code-only releases reuse the same immutable shards.
 const snapshot = '/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/';
 const globalCdn = 'https://cdn.jsdelivr.net';
-export const globalModels = globalCdn + snapshot;
 const widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 const packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
 
@@ -28,8 +27,12 @@ export function githubLibrary(base: URL) {
 export function modelDirectory(base: string) {
   const url = new URL(base, document.baseURI);
   if ((!packageRoot.test(url.pathname) && !widgetSnapshot.test(url.pathname)) || /@1\.[^/]+\/?$/.test(url.pathname)) return base;
-  const cdn = url.hostname === 'cdn.jsdmirror.com' ? url.origin : globalCdn;
-  return cdn + snapshot;
+  return fallbackModelDirectory(base);
+}
+
+export function fallbackModelDirectory(base: string) {
+  const url = new URL(base, document.baseURI);
+  return (url.hostname === 'cdn.jsdmirror.com' ? url.origin : globalCdn) + snapshot;
 }
 
 export function defaultLibraryUrl(base: URL) {

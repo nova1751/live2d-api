@@ -22,10 +22,14 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
   const mirror = 'https://cdn.jsdmirror.com';
   for (const game of collections) {
     const path = game === 'girls-frontline' ? 'catalog/library.json' : 'catalog/games/' + game + '.json';
-    const catalog = parseModelCatalog(await json(path), new URL(path, mirror), game);
+    const input = await json(path);
+    const catalog = parseModelCatalog(input, new URL(path, mirror), game);
+    const galleryUrl = new URL(path, 'https://gallery.example/');
+    const gallery = parseModelCatalog(input, galleryUrl, game, 'zh-CN', undefined, 'mainland');
     const recordings = new Set();
     for (const id of catalog.ids) {
       const { modelUrl, dialogue, files, cues } = catalog.resolve(id);
+      assert.equal(gallery.resolve(id).modelUrl, modelUrl, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);
       if (dialogue) recordings.add(dialogue.audio);

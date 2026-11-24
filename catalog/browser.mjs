@@ -167,7 +167,7 @@ try {
     highlight();
   };
   var highlight2 = highlight, drawCards2 = drawCards, describe2 = describe;
-  const library = await loadModelCatalog(catalogUrl, game, locale);
+  const library = await loadModelCatalog(catalogUrl, game, locale, english ? void 0 : "mainland");
   const portrait = (id) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map((id) => {
     const [kind, code, version, state] = id.split("/");

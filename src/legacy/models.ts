@@ -1,6 +1,6 @@
 import { translated } from '../runtime/locale';
 import { getJson } from '../runtime/request';
-import { globalModels, modelDirectory } from '../distribution';
+import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
@@ -34,10 +34,13 @@ export class LegacyModels {
     const response = await fetch(url);
     // Full self-hosted deployments retain their local models. A copied runtime-only
     // tarball can use the published library when its static host has no catalog.
-    if (response.status === 404 && !this.options.modelBaseUrl && this.base !== globalModels) {
-      const catalog = await getJson<Catalog>(globalModels + 'model_list.json');
-      this.base = globalModels;
-      return catalog;
+    if (response.status === 404 && !this.options.modelBaseUrl) {
+      const fallback = fallbackModelDirectory(this.base);
+      if (fallback !== this.base) {
+        const catalog = await getJson<Catalog>(fallback + 'model_list.json');
+        this.base = fallback;
+        return catalog;
+      }
     }
     if (!response.ok) throw new Error(`Failed to load ${url} (HTTP ${response.status})`);
     return response.json();

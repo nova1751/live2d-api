@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
+<a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.9.9/docs/assets/readme/cover.webp" width="100%" alt="Live2D Web Widget · AK-12 MOD"></a>
 
 # Live2D 网页看板娘
 
@@ -16,7 +16,7 @@
 
 点击一位角色即可进入对应造型，试播动作或放大全屏。
 
-| <a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/ak12.webp" width="160" alt="AK-12 · 心智升级"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&amp;model=ship/10117/lafei"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/lafei.webp" width="160" alt="拉菲"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/kanon.webp" width="160" alt="松原花音"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&amp;model=character/bronya/bronya"><img src="https://raw.githubusercontent.com/nova1751/live2d-api/main/docs/assets/readme/bronya.webp" width="160" alt="布洛妮娅"></a> |
+| <a href="https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&amp;model=doll/ak12/mod/normal"><img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.9.9/docs/assets/readme/ak12.webp" width="160" alt="AK-12 · 心智升级"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&amp;model=ship/10117/lafei"><img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.9.9/docs/assets/readme/lafei.webp" width="160" alt="拉菲"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&amp;model=hhw/012/012_dream_festival_4_ur"><img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.9.9/docs/assets/readme/kanon.webp" width="160" alt="松原花音"></a> | <a href="https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&amp;model=character/bronya/bronya"><img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.9.9/docs/assets/readme/bronya.webp" width="160" alt="布洛妮娅"></a> |
 | :---: | :---: | :---: | :---: |
 | [AK-12 · 心智升级](https://nova1751.github.io/live2d-api/catalog/?collection=girls-frontline&model=doll/ak12/mod/normal) | [拉菲](https://nova1751.github.io/live2d-api/catalog/?collection=azur-lane&model=ship/10117/lafei) | [松原花音](https://nova1751.github.io/live2d-api/catalog/?collection=bang-dream&model=hhw/012/012_dream_festival_4_ur) | [布洛妮娅](https://nova1751.github.io/live2d-api/catalog/?collection=houkai2&model=character/bronya/bronya) |
 
@@ -56,17 +56,17 @@
 
 ```html
 <script type="module">
-  import { loadWidget } from "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/widget.mjs";
+  import { loadWidget } from "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/widget.mjs";
 
   await loadWidget({
-    modelUrl: "https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/madierda/index.json",
+    modelUrl: "https://cdn.jsdmirror.com/gh/nova1751/live2d-api@cdn-b3ac5ae545e2-assets-5/model/madierda/index.json",
     position: "right",
     locale: "zh-CN",
   });
 </script>
 ```
 
-换自己的角色时，把 `modelUrl` 指向 Cubism 2 的模型 JSON 或 Cubism 3–5 的 `.model3.json`，保留贴图和动作的相对路径。跨域部署需要素材服务器允许 CORS。面向中国大陆时，可以把示例中的两处 `cdn.jsdelivr.net` 都换成 `cdn.jsdmirror.com`。其他作品的素材域名由各自的图鉴目录决定。
+换自己的角色时，把 `modelUrl` 指向 Cubism 2 的模型 JSON 或 Cubism 3–5 的 `.model3.json`，保留贴图和动作的相对路径。跨域部署需要素材服务器允许 CORS。如需海外接入，可以把示例中的两处 `cdn.jsdmirror.com` 换成 `cdn.jsdelivr.net`。
 
 ## 通过 npm 或 pnpm 安装
 
@@ -90,7 +90,7 @@ await loadWidget({
 
 npm 包包含 JS 播放器、样式、TypeScript 声明和两套界面文案。模型、贴图、动作和录音托管在 GitHub。项目打包器移动入口文件后，组件会从 GitHub CDN 加载同版本的运行文件；可通过 `baseUrl` 指定国内运行时目录或自托管目录。直接通过 CDN 使用模块 API 时，从快捷入口同目录的 `widget.mjs` 导入相同函数即可。
 
-七个系列共用一套图鉴。部分素材存放在本仓库的标签快照中，其余素材引用上游仓库的固定提交。使用国内快捷入口时，内置目录中的模型、贴图、动作、录音和修复文件都通过 `cdn.jsdmirror.com` 请求。新版模型使用的 Cubism Core 可通过 `coreUrl` 单独指定。
+七个系列共用一套图鉴。部分素材存放在本仓库的标签快照中，其余素材引用上游仓库的固定提交。使用中文图鉴或国内快捷入口时，内置目录中的模型、贴图、动作、录音和修复文件都通过 `cdn.jsdmirror.com` 请求。新版模型使用的 Cubism Core 可通过 `coreUrl` 单独指定。
 
 ## 使用自己的模型目录
 
@@ -161,7 +161,7 @@ await loadWidget({
 });
 ```
 
-各作品使用同名 JSON 目录。模型、贴图与语音保留在固定素材来源；部分作品会访问 GitHub 的原始文件域名。[各图鉴来源与维护说明](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
+各作品使用同名 JSON 目录。国内入口使用固定提交或固定标签上的素材，通过 `cdn.jsdmirror.com` 加载。[各图鉴来源与维护说明](https://github.com/nova1751/live2d-api/blob/main/docs/game-catalogs.md)
 
 ## API 与兼容性
 
@@ -219,7 +219,7 @@ python -m http.server 8765 --bind 127.0.0.1 --directory ./models-offline
 
 ## 原版网页示例
 
-<img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://raw.githubusercontent.com/nova1751/live2d-api/v2.4.3/img/02.png" height="200" alt="黑裙看板娘与互动提示">
+<img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.4.3/img/01.png" height="200" alt="红裙看板娘与台词气泡"> <img src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@v2.4.3/img/02.png" height="200" alt="黑裙看板娘与互动提示">
 
 </details>
 

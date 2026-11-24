@@ -31,7 +31,8 @@ export class CatalogModels {
     let pending = this.libraries.get(collection);
     if (!pending) {
       const url = this.options.collection === 'all' ? collectionCatalogUrl(this.url, collection) : this.url;
-      pending = loadModelCatalog(url, collection, this.options.locale).catch(error => {
+      const cdn = this.options.cdnPath && new URL(this.options.cdnPath, document.baseURI).hostname === 'cdn.jsdmirror.com' ? 'mainland' : undefined;
+      pending = loadModelCatalog(url, collection, this.options.locale, cdn).catch(error => {
         this.libraries.delete(collection);
         throw error;
       });
