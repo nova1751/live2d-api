@@ -175,8 +175,12 @@ for (const [id, variants] of Object.entries(ordered)) {
   native.collectionDefault = true;
   directories.add(posix.dirname(posix.dirname(native.manifest)));
 }
-sources.dump.packs = [{ baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-ots14-' + dump.slice(0,12) + '/',
-  directories: [...directories, 'audio/OTS14'] }];
+sources.dump.packs = [
+  { baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-ots14-' + dump.slice(0,12) + '/',
+    directories: [...directories, 'audio/OTS14'] },
+  { baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-dsr50-' + dump.slice(0,12) + '/',
+    directories: ['models/dsr50_10501'] },
+];
 const catalogPath = join(repository, 'catalog/library.json');
 preserveSceneCurtains(catalogPath, { sources, models: ordered });
 writeFileSync(

@@ -11,8 +11,9 @@ test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewr
   const id = 'doll/dsr50/10501/normal';
   for (const base of ['https://cdn.jsdmirror.com/', 'https://archive.invalid/']) {
     const catalog = parseModelCatalog(source, new URL('catalog/library.json', base), 'girls-frontline');
-    const hidden = catalog.resolve(id, 'dump').hiddenDrawables;
-    for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hidden?.includes(name));
+    const { hiddenDrawables, modelUrl } = catalog.resolve(id, 'dump');
+    for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hiddenDrawables?.includes(name));
+    assert.match(modelUrl, /@cdn-dsr50-[\da-f]+\/models\/dsr50_10501\/normal\//);
     assert.equal(catalog.resolve('doll/6p62/8610/normal', 'dump').hiddenDrawables, undefined);
   }
 });
