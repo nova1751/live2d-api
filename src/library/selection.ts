@@ -45,17 +45,36 @@ export class CatalogModels {
     }
     return pending;
   }
-  private async select(selectId: (ids: string[], legacyIds: string[][] | undefined, visibleId: (id: string) => string) => string | undefined, start: boolean) {
+  private async select(selectId: (ids: string[], legacyIds: string[][] | undefined, visibleId: (id: string) => string) => string | undefined, start: boolean, target?: string) {
     const revision = ++this.sequence;
     window.loadlive2d.cancelLoad?.();
     setModelLoading(true);
     let replacing = false;
     try {
       let collection = this.collection;
+      const all = this.options.collection === 'all';
+      const namedCollection = all && collections.find(value => target?.startsWith(value + ':'));
+      if (target && namedCollection) {
+        collection = namedCollection;
+        target = target.slice(namedCollection.length + 1);
+      }
       const freeze = this.options.collection && this.active ? this.transition.freeze() : undefined;
       let [library] = await Promise.all([this.open(collection), freeze]);
       if (revision !== this.sequence) return;
-      let id = selectId(library.ids, library.legacyIds, library.visibleId);
+      if (target && !namedCollection && all && !library.hasModel(target)) {
+        const wanted = target;
+        const alternatives = await Promise.allSettled(collections.filter(game => game !== collection).map(game => this.open(game)));
+        if (revision !== this.sequence) return;
+        const match = alternatives.find(result => result.status === 'fulfilled' && result.value.hasModel(wanted));
+        if (match?.status === 'fulfilled') {
+          library = match.value;
+          collection = library.collection;
+        } else {
+          const unavailable = alternatives.find(result => result.status === 'rejected');
+          if (unavailable?.status === 'rejected') throw unavailable.reason;
+        }
+      }
+      let id = target ?? selectId(library.ids, library.legacyIds, library.visibleId);
       if (id === undefined && this.options.collection === 'all' && collection) {
         collection = collections[(collections.indexOf(collection) + 1) % collections.length];
         library = await this.open(collection);
@@ -112,12 +131,12 @@ export class CatalogModels {
     return this.select((ids, legacyIds, visibleId) => {
       const stored = preferences.getItem(this.key);
       const saved = this.options.collection === 'all' ? stored?.split(':')[1] : stored;
-      if (this.options.collection) return this.options.modelId ?? (saved && ids.includes(visibleId(saved)) ? saved : ids[0]);
+      if (this.options.collection) return saved && ids.includes(visibleId(saved)) ? saved : ids[0];
       const legacy = legacyIds?.[Number(preferences.getItem('modelId'))]?.[Number(preferences.getItem('modelTexturesId'))];
-      return this.options.modelId ?? (saved && ids.includes(visibleId(saved)) ? saved : legacy && ids.includes(legacy) ? legacy : ids[0]);
-    }, start);
+      return saved && ids.includes(visibleId(saved)) ? saved : legacy && ids.includes(legacy) ? legacy : ids[0];
+    }, start, this.options.modelId);
   }
-  choose(id: string) { return this.select(() => id, false); }
+  choose(id: string) { return this.select(() => id, false, id); }
   cancel() {
     this.sequence++;
     window.loadlive2d.cancelLoad?.();

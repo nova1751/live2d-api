@@ -98,7 +98,7 @@ test('frames the settled figure despite a wide setup pose and a faint detached p
 });
 
 test('fits tall and wide silhouettes within their bottom-centered viewports', () => {
-  for (const [left, top, right, bottom, expected] of [[50, 15, 75, 106, 0.7], [12, 45, 117, 80, 1.9]]) {
+  for (const [left, top, right, bottom, expected] of [[50, 15, 75, 106, 0.35], [12, 45, 117, 80, 3 * 0.93 / 0.94]]) {
     const mask = new Uint8Array(size * size);
     rectangle(mask, left, top, right, bottom);
     let aspect = 0;

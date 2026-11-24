@@ -173,6 +173,30 @@ function createRenderer(base, legacy) {
   return render;
 }
 
+// src/runtime/cdn.ts
+function mirrorRetryUrl(input) {
+  if (!input.startsWith("https://cdn.jsdmirror.com/gh/")) return;
+  const url = new URL(input);
+  if (url.searchParams.has("live2d-retry")) return;
+  url.searchParams.set("live2d-retry", "1");
+  return url.href;
+}
+async function fetchCdnAsset(url, signal) {
+  const retry = mirrorRetryUrl(url);
+  if (!retry) return fetch(url, { signal });
+  let response;
+  try {
+    response = await fetch(url, { signal });
+  } catch (error) {
+    if (signal?.aborted) throw error;
+    return fetch(retry, { signal });
+  }
+  if (response.ok || ![403, 421, 429].includes(response.status) && response.status < 500) return response;
+  void response.body?.cancel().catch(() => {
+  });
+  return fetch(retry, { signal });
+}
+
 // src/library/catalog.ts
 var collections = ["girls-frontline", "azur-lane", "bang-dream", "houkai2", "iron-saga", "warship-girls", "baoshi-yanwuyu"];
 function collectionCatalogUrl(libraryUrl, collection) {
@@ -198,8 +222,8 @@ function orderCollection(ids, outfits) {
 async function loadModelCatalog(input, collection, locale = "zh-CN", assetCdn) {
   const url = new URL(input, document.baseURI);
   return withLoadTimeout(async (signal) => {
-    const response = await fetch(url, { signal });
-    if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
+    const response = await fetchCdnAsset(url.href, signal);
+    if (!response.ok) throw new Error(`Cannot load catalog ${url.href} (HTTP ${response.status})`);
     const catalog = await response.json();
     return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
   });
@@ -217,7 +241,8 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
       mainlandPath + "$1/$2@$3/"
     ).replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
-  const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
+  const available = new Set(Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest)));
+  const hasModel = (id) => available.has(id);
   const presentation = collection ? catalog.presentation : void 0;
   const localized = locale === "en" ? presentation?.en : presentation;
   const captions = collection === "girls-frontline" && locale !== "en" ? {
@@ -233,11 +258,11 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
   } : localized?.captions;
   const visibleId = (id) => {
     const alias = presentation?.aliases[id];
-    return alias && available.includes(alias) ? alias : id;
+    return alias && hasModel(alias) ? alias : id;
   };
-  const ids = collection === "girls-frontline" ? orderCollection(available.filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
+  const ids = collection === "girls-frontline" ? orderCollection([...available].filter((id) => visibleId(id) === id), presentation?.outfitOrder ?? {}) : [...available];
   function resolve(id, source) {
-    if (collection && !available.includes(id)) throw new Error("Model outside the selected collection: " + id);
+    if (collection && !hasModel(id)) throw new Error("Model outside the selected collection: " + id);
     const variants = catalog.models[id] ?? [];
     const preferred = !source && collection && variants.find((item) => item.collectionDefault && item.manifest);
     const asset = preferred || variants.find((item) => item.manifest && (!source || item.source === source));
@@ -272,11 +297,11 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
-  return { url: url.href, collection, locale, ids, gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { url: url.href, collection, locale, ids, gallery, visibleId, hasModel, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.9.17";
+var version = "2.9.18";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -303,7 +328,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-9b7d10a1242fbed9/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-7f75cef58a7ee5af/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

@@ -96,8 +96,8 @@ function hide() {
 
 function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, start = false) {
   session.removeItem('waifu-text');
-  const adaptive = Boolean(options.collection);
-  const initialFraming = adaptive && models instanceof CatalogModels;
+  const adaptive = Boolean(options.collection || options.modelUrl);
+  const initialFraming = adaptive && (models instanceof CatalogModels || Boolean(options.modelUrl));
   const size = adaptive ? 1200 : 800;
   const canvas = `<canvas id="live2d" width="${size}" height="${size}"></canvas>`;
   const retry = translated('重试加载模型', 'Retry loading the model');
@@ -154,6 +154,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     if (tool === 'expand') button.setAttribute('aria-haspopup', 'dialog');
     button.addEventListener('click', actions[tool]);
   }
+  if (adaptive) byId('waifu').style.setProperty('--waifu-tool-count', String(byId('waifu-tool').childElementCount));
   void runModel(() => models.load(undefined, undefined, undefined, start));
   getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(error => console.warn('[Live2D]', error));
 }

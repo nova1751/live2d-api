@@ -68,6 +68,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
         [k: string]: GalleryEntry;
     } | undefined;
     visibleId: (id: string) => string;
+    hasModel: (id: string) => boolean;
     labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
         cues: {
@@ -98,6 +99,7 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
         [k: string]: GalleryEntry;
     } | undefined;
     visibleId: (id: string) => string;
+    hasModel: (id: string) => boolean;
     labels: Record<string, string>;
     resolve: (id: string, source?: string) => {
         cues: {

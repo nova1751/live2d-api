@@ -53,11 +53,17 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
     const gallery = parseModelCatalog(input, galleryUrl, game, 'zh-CN', undefined, 'mainland');
     const recordings = new Set();
     for (const id of catalog.ids) {
-      const { modelUrl, dialogue, files, cues } = catalog.resolve(id);
-      assert.equal(gallery.resolve(id).modelUrl, modelUrl, id);
+      const { dialogue, ...assets } = catalog.resolve(id);
+      const { dialogue: galleryDialogue, ...galleryAssets } = gallery.resolve(id);
+      const { modelUrl, files, cues } = assets;
+      assert.deepEqual(galleryAssets, assets, id);
+      assert.equal(galleryDialogue?.url, dialogue?.url, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);
-      if (dialogue) recordings.add(dialogue.audio);
+      if (dialogue && !recordings.has(dialogue.audio)) {
+        assert.deepEqual(galleryDialogue?.audio, dialogue.audio, id);
+        recordings.add(dialogue.audio);
+      }
       for (const url of [modelUrl, dialogue?.url, ...Object.values(files ?? {}), ...Object.values(cues ?? {}).map(cue => cue.sound)]) {
         if (url && /^https?:/.test(url)) assert.equal(new URL(url).origin, mirror, id + ' ' + url);
       }

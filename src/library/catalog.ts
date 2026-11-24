@@ -1,4 +1,5 @@
 import { withLoadTimeout } from '../runtime/request.ts';
+import { fetchCdnAsset } from '../runtime/cdn.ts';
 
 export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
@@ -51,8 +52,8 @@ export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
 export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', assetCdn?: 'mainland') {
   const url = new URL(input, document.baseURI);
   return withLoadTimeout(async signal => {
-    const response = await fetch(url, { signal });
-    if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
+    const response = await fetchCdnAsset(url.href, signal);
+    if (!response.ok) throw new Error(`Cannot load catalog ${url.href} (HTTP ${response.status})`);
     const catalog: ModelCatalog = await response.json();
     return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
   });
@@ -69,7 +70,8 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     return href.replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
       mainlandPath + '$1/$2@$3/').replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
-  const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
+  const available = new Set(Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest)));
+  const hasModel = (id: string) => available.has(id);
   const presentation = collection ? catalog.presentation : undefined;
   const localized = locale === 'en' ? presentation?.en : presentation;
   // Community transcriptions are keyed by exact recording. Prefer catalog-provided translations.
@@ -81,11 +83,11 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
   } : localized?.captions;
   const visibleId = (id: string) => {
     const alias = presentation?.aliases[id];
-    return alias && available.includes(alias) ? alias : id;
+    return alias && hasModel(alias) ? alias : id;
   };
-  const ids = collection === 'girls-frontline' ? orderCollection(available.filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : available;
+  const ids = collection === 'girls-frontline' ? orderCollection([...available].filter(id => visibleId(id) === id), presentation?.outfitOrder ?? {}) : [...available];
   function resolve(id: string, source?: string) {
-    if (collection && !available.includes(id)) throw new Error('Model outside the selected collection: ' + id);
+    if (collection && !hasModel(id)) throw new Error('Model outside the selected collection: ' + id);
     const variants = catalog.models[id] ?? [];
     const preferred = !source && collection && variants.find(item => item.collectionDefault && item.manifest);
     const asset = preferred || variants.find(item => item.manifest && (!source || item.source === source));
@@ -120,5 +122,5 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
     .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
-  return { url: url.href, collection, locale, ids, gallery, visibleId, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
+  return { url: url.href, collection, locale, ids, gallery, visibleId, hasModel, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }

@@ -117,6 +117,7 @@ const bandLibrary = library();
 const bandPacks = {
   '880be40fc1f06e0a317aa10e5830a0a2d5723749': '013_live_event_93_sr',
   '57da53a60df8f55de0245f7898c3dc0c9021dd55': '047_live_event_139_r',
+  'cdef09188bd51d13b6423f49665082cf2e37db6b': '019_casual',
 };
 for (const [band, [commit, sha]] of Object.entries(bands)) {
   const repo = 'U1s1-king/dsh-live2d-' + band;

@@ -4,6 +4,8 @@ import { getJson, isLoadCancelled, withLoadTimeout } from '../runtime/request';
 import { setModelLoading } from '../runtime/loading';
 import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
+import { createFraming } from '../library/framing';
+import { ModelTransition } from '../library/transition';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
 const changed = () => translated('我的新衣服好看嘛？', 'How do you like my new outfit?');
@@ -17,13 +19,22 @@ export class LegacyModels {
   private revision = 0;
   private loaded = false;
   private lastUrl?: string;
+  private transition = new ModelTransition();
 
   reopen(start: boolean) {
     if (this.loaded) window.loadlive2d.show?.(start);
     else return this.load(undefined, undefined, undefined, start);
   }
 
-  cancel() { this.revision++; window.loadlive2d.cancelLoad?.(); setModelLoading(false); }
+  cancel() {
+    this.revision++;
+    window.loadlive2d.cancelLoad?.();
+    if (this.options.modelUrl) {
+      this.transition.cancelFreeze();
+      document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+    }
+    setModelLoading(false);
+  }
 
   constructor(private readonly options: LegacyOptions) {
     this.useCDN = typeof options.cdnPath === 'string';
@@ -70,7 +81,11 @@ export class LegacyModels {
     } catch (error) {
       if (revision === this.revision) throw error;
     } finally {
-      if (revision === this.revision) setModelLoading(false);
+      if (revision === this.revision) {
+        if (this.options.modelUrl) this.transition.cancelFreeze();
+        document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+        setModelLoading(false);
+      }
     }
   }
 
@@ -117,7 +132,11 @@ export class LegacyModels {
   }
 
   private paint(url: string, start: boolean) {
-    return window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, onPaint: () => {} });
+    let aspect = 1;
+    const paintScale = 1.5;
+    const framing = this.options.modelUrl ? createFraming(value => { aspect = value; }, paintScale) : undefined;
+    const present = framing && this.transition.begin(() => aspect, paintScale);
+    return window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, framing, onPaint: () => present?.() });
   }
 
   async costume(target: string) {
