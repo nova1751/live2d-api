@@ -5,7 +5,10 @@ const live2d_path = (() => {
     const url = new URL(script.src);
     // A published package URL identifies a complete distribution. A copied loader may stand alone.
     if (/\/(?:live2dapi-noa|gh\/nova1751\/live2d-api)(?:@[^/]+)?\/(?:npm|jsdelivr)\/(?:random|sequential)\/autoload(?:\.min)?\.js$/.test(url.pathname)) {
-      return new URL('../../', url).href;
+      const base = new URL('../../', url);
+      const runtimePath = new URL(GLOBAL_RUNTIME).pathname;
+      if (base.pathname === runtimePath.replace('@widget-', '@v')) base.pathname = runtimePath;
+      return base.href;
     }
   }
   return GLOBAL_RUNTIME;

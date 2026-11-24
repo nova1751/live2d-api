@@ -73,5 +73,35 @@ export async function checkCollectionShortcut(browser, base) {
     await next();
     await wait(games[1], 'a');
     assert.deepEqual(requested, ['azur-lane', 'azur-lane']);
+
+    const { version } = await (await page.request.get(base + 'package.json')).json();
+    const entries = ['autoload.js', 'collections.mjs', 'girls-frontline.mjs'];
+    for (const host of ['cdn.jsdelivr.net', 'cdn.jsdmirror.com']) {
+      const cdn = `https://${host}/gh/nova1751/live2d-api@`;
+      const source = `${cdn}v${version}/`;
+      const runtime = `${cdn}widget-${version}/`;
+      const unexpected = [];
+      async function serveRuntime(route, directory) {
+        const file = new URL(route.request().url()).pathname.slice(new URL(directory).pathname.length);
+        const response = await page.request.get(base + file);
+        await route.fulfill({ response, headers: { ...response.headers(), 'access-control-allow-origin': '*' } });
+      }
+      await page.route(source + '**', route => {
+        if (entries.some(entry => route.request().url() === source + entry)) return serveRuntime(route, source);
+        unexpected.push(route.request().url());
+        return route.fulfill({ status: 403, body: 'Package size exceeded the configured limit of 50 MB.' });
+      });
+      await page.route(runtime + '**', route => serveRuntime(route, runtime));
+      await page.route(base + 'source-shortcut*', route => {
+        const entry = new URL(route.request().url()).searchParams.get('entry');
+        return route.fulfill({ contentType: 'text/html', body: '<!doctype html><script ' +
+          (entry.endsWith('.mjs') ? 'type="module" ' : '') + 'src="' + source + entry + '"></script>' });
+      });
+      for (const entry of entries) {
+        await page.goto(base + 'source-shortcut?entry=' + entry);
+        await wait(games[0], 'a');
+      }
+      assert.deepEqual(unexpected, []);
+    }
   } finally { await page.close(); }
 }

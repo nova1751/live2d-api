@@ -178,6 +178,20 @@ test('the script tag skips small screens and loads both assets and model relativ
   assert.ok(models[0].some(path => renders[0] === new URL('model/' + path + '/index.json', src).href));
 });
 
+test('the legacy loader uses the runtime snapshot when its script comes from a matching source tag', async () => {
+  const { context, document, requests, renders } = browser();
+  const cdn = 'https://cdn.jsdmirror.com';
+  const source = cdn + '/gh/nova1751/live2d-api@v' + version + '/';
+  const runtime = cdn + '/gh/nova1751/live2d-api@widget-' + version + '/';
+  const path = 'jsdelivr/sequential/autoload.min.js';
+  document.currentScript = { src: source + path };
+  vm.runInContext(read(path), context);
+  await settled();
+  assert.ok(requests.includes(runtime + 'jsdelivr/sequential/waifu-tips.js'));
+  assert.ok(requests.every(url => !url.startsWith(source)));
+  assert.equal(renders[0], cdn + modelSnapshot + 'model/' + models[0][0] + '/index.json');
+});
+
 test('single-model script resolves a page-relative manifest and preserves the built-in rotation preference', async () => {
   const { context, document, requests, renders, nodes } = browser();
   document.currentScript = { src: 'https://cdn.test/preview/autoload.js', dataset: { modelUrl: './Haru/index.json' } };

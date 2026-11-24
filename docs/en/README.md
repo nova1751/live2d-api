@@ -32,6 +32,8 @@ Place the script before `</body>`. By default, **Switch character** advances thr
 <script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
 ```
 
+For a classic `<script>` embed, use `@widget-latest/autoload.js`. Pin a CDN release with a runtime tag such as `@widget-2.9.11`. The `@v2.9.11` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit.
+
 For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
 
 ```html

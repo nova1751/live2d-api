@@ -33,11 +33,23 @@ try {
     const ref = 'refs/heads/widget-latest';
     const base = '../live2d-api@widget-' + version + '/';
     const shortcut = (name: string) => `const target = new URL('${base}${name}', import.meta.url);\ntarget.search = new URL(import.meta.url).search;\nawait import(target.href);\n`;
+    const classic = `(() => {
+  const source = document.currentScript;
+  if (!source?.src) return;
+  const target = new URL('${base}autoload.js', source.src);
+  target.search = new URL(source.src).search;
+  const script = document.createElement('script');
+  Object.assign(script.dataset, source.dataset);
+  script.nonce = source.nonce;
+  script.src = target.href;
+  source.after(script);
+})();\n`;
     git(['read-tree', '--empty']);
     for (const [name, content] of Object.entries({
       VERSION: version + '\n',
       'girls-frontline.mjs': shortcut('girls-frontline.mjs'),
       'collections.mjs': shortcut('collections.mjs'),
+      'autoload.js': classic,
       'widget.mjs': `export * from '${base}widget.mjs';\n`,
     })) {
       const blob = git(['hash-object', '-w', '--stdin'], content).toString().trim();

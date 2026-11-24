@@ -1,14 +1,22 @@
 import { version } from '../package.json';
 
 // Assets have their own release cadence. Code-only releases reuse the same immutable shards.
-const snapshot = '/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/';
+const repository = '/gh/nova1751/live2d-api';
+const snapshot = repository + '@cdn-b3ac5ae545e2/';
+const runtimeSnapshot = repository + '@widget-' + version + '/';
 const globalCdn = 'https://cdn.jsdelivr.net';
 const widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 const packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
 
+export function useRuntimeSnapshot(base: URL) {
+  // The source tag contains models and may exceed a GitHub CDN's size limit.
+  if (base.pathname === repository + '@v' + version + '/') base.pathname = runtimeSnapshot;
+  return base;
+}
+
 export function scriptDirectory(src: string) {
   const url = new URL(src, document.baseURI);
-  if (!packageRoot.test(url.pathname)) return new URL('.', url);
+  if (!packageRoot.test(url.pathname)) return useRuntimeSnapshot(new URL('.', url));
   if (!url.pathname.endsWith('/')) url.pathname += '/';
   url.search = url.hash = '';
   return url;
@@ -16,7 +24,7 @@ export function scriptDirectory(src: string) {
 
 export function runtimeDirectory(src: string) {
   // A bundler can move the ESM entry into the application's own JS chunk.
-  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + '/gh/nova1751/live2d-api@widget-' + version + '/');
+  return /^https?:\/\//.test(src) && /\/widget\.mjs(?:[?#]|$)/.test(src) ? scriptDirectory(src) : new URL(globalCdn + runtimeSnapshot);
 }
 
 export function githubLibrary(base: URL) {

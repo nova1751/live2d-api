@@ -32,6 +32,8 @@
 <script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
 ```
 
+经典 `<script>` 接入使用 `@widget-latest/autoload.js`。要固定 CDN 版本，请用 `@widget-2.9.11` 这类运行时标签。`@v2.9.11` 是包含素材的源码标签，整个快照可能超过 jsDelivr 的 50 MB 限制。
+
 只展示碧蓝航线时，给**脚本地址**加上 `?collection=azur-lane`。切到底会回到该作品的第一个造型。海外可将域名换为 `cdn.jsdelivr.net`。
 
 ```html

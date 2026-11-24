@@ -1,6 +1,6 @@
 import { createRenderer, isModern } from './renderer';
 export { loadModelCatalog } from './library/catalog.js';
-import { runtimeDirectory, defaultLibraryUrl, githubLibrary } from './distribution';
+import { runtimeDirectory, defaultLibraryUrl, githubLibrary, useRuntimeSnapshot } from './distribution';
 const mounting = Symbol.for('live2dapi-noa.mounting');
 type WidgetDocument = Document & { [mounting]?: Promise<void> };
 
@@ -124,6 +124,7 @@ export async function loadWidget({ mode = 'sequential', position = 'left', baseU
   if (!base.pathname.endsWith('/')) base.pathname += '/';
   base.search = '';
   base.hash = '';
+  useRuntimeSnapshot(base);
   if (!catalogUrl && !modelUrl && !modelBaseUrl) {
     catalogUrl = collection ? collectionCatalogUrl(githubLibrary(base), collection) : defaultLibraryUrl(base);
   }
