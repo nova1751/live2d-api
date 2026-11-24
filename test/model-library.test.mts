@@ -11,8 +11,9 @@ test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewr
   const id = 'doll/dsr50/10501/normal';
   for (const base of ['https://cdn.jsdmirror.com/', 'https://archive.invalid/']) {
     const catalog = parseModelCatalog(source, new URL('catalog/library.json', base), 'girls-frontline');
-    const hidden = catalog.resolve(id, 'dump').hiddenDrawables;
-    for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hidden?.includes(name));
+    const { hiddenDrawables, modelUrl } = catalog.resolve(id, 'dump');
+    for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hiddenDrawables?.includes(name));
+    assert.match(modelUrl, /@cdn-dsr50-[\da-f]+\/models\/dsr50_10501\/normal\//);
     assert.equal(catalog.resolve('doll/6p62/8610/normal', 'dump').hiddenDrawables, undefined);
   }
 });
@@ -22,10 +23,14 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
   const mirror = 'https://cdn.jsdmirror.com';
   for (const game of collections) {
     const path = game === 'girls-frontline' ? 'catalog/library.json' : 'catalog/games/' + game + '.json';
-    const catalog = parseModelCatalog(await json(path), new URL(path, mirror), game);
+    const input = await json(path);
+    const catalog = parseModelCatalog(input, new URL(path, mirror), game);
+    const galleryUrl = new URL(path, 'https://gallery.example/');
+    const gallery = parseModelCatalog(input, galleryUrl, game, 'zh-CN', undefined, 'mainland');
     const recordings = new Set();
     for (const id of catalog.ids) {
       const { modelUrl, dialogue, files, cues } = catalog.resolve(id);
+      assert.equal(gallery.resolve(id).modelUrl, modelUrl, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);
       if (dialogue) recordings.add(dialogue.audio);

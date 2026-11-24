@@ -1,5 +1,5 @@
 diff --git a/dist/contract-Jj-UVMwt.d.mts b/dist/contract-Jj-UVMwt.d.mts
-index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..b66321c958281873659796b9b6c216e3199e36c5 100644
+index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..b0ac825e74ff1b8309f26a98ac8e394682f16e0f 100644
 --- a/dist/contract-Jj-UVMwt.d.mts
 +++ b/dist/contract-Jj-UVMwt.d.mts
 @@ -126,6 +126,12 @@ interface ModelHandle {
@@ -19,13 +19,13 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..b66321c958281873659796b9b6c216e3
  }
  type IdleMotion = string | false | IdleMotionOptions;
  interface LoadModelOptions {
-+  /** Omit named meshes from the color pass while preserving their clipping masks. */
++  /** Draw named curtain meshes with destination-out alpha compositing. */
 +  hiddenDrawables?: readonly string[];
    /** Idle group, weighted group selection, or false to disable automatic idle playback. */
    idleMotion?: IdleMotion;
    /**
 diff --git a/dist/model-CkKs9EQ2.mjs b/dist/model-CkKs9EQ2.mjs
-index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365b80014d6 100644
+index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca5e0a4600 100644
 --- a/dist/model-CkKs9EQ2.mjs
 +++ b/dist/model-CkKs9EQ2.mjs
 @@ -9176,7 +9176,6 @@ var CubismClippingManager = class {
@@ -68,15 +68,22 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  	}
  	/**
  	* 既にマスクを作っているかを確認
-@@ -11939,6 +11945,7 @@ var CubismRenderer_WebGL = class extends CubismRenderer {
- 	* @param index 描画対象のメッシュのインデックス
- 	*/
- 	drawDrawable(drawableIndex, rootFbo) {
-+		if (this.hiddenDrawables?.has(drawableIndex)) return;
- 		if (!this.getModel().getDrawableDynamicFlagIsVisible(drawableIndex)) return;
- 		this.submitDrawToParentOffscreen(drawableIndex, 0);
- 		const clipContext = this._drawableClippingManager != null ? this._drawableClippingManager.getClippingContextListForDraw()[drawableIndex] : null;
-@@ -13892,7 +13899,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -10558,7 +10564,13 @@ var CubismShader_WebGL = class {
+ 		const offset = masked ? invertedMask ? 2 : 1 : 0;
+ 		let shaderSet;
+ 		let isUsingCompatible = true;
+-		if (model.isBlendModeEnabled()) {
++		if (renderer.curtainDrawables?.has(index)) {
++			// The ordinary shader supplies texture alpha, animated opacity and the clipping mask.
++			// Destination-out removes earlier pixels while leaving later layers free to draw.
++			shaderSet = this._shaderSets[1 + offset];
++			srcColor = srcAlpha = this.gl.ZERO;
++			dstColor = dstAlpha = this.gl.ONE_MINUS_SRC_ALPHA;
++		} else if (model.isBlendModeEnabled()) {
+ 			const colorBlendMode = model.getDrawableColorBlend(index);
+ 			const alphaBlendMode = model.getDrawableAlphaBlend(index);
+ 			if (colorBlendMode == -1 || alphaBlendMode == -1 || colorBlendMode == CubismColorBlend.ColorBlend_Normal && alphaBlendMode == 0) {
+@@ -13892,7 +13904,7 @@ var FrameworkModel = class extends CubismUserModel {
  			this.getModel().loadParameters();
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
@@ -85,7 +92,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  			this.getModel().saveParameters();
  			this.settleFinishedMotions();
  			this.scheduler.onLateUpdate(this.getModel(), deltaSeconds);
-@@ -13905,7 +13912,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13905,7 +13917,7 @@ var FrameworkModel = class extends CubismUserModel {
  			this.getModel().loadParameters();
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
@@ -94,7 +101,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  			this.getModel().saveParameters();
  		});
  		this.settleFinishedMotions();
-@@ -13979,7 +13986,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13979,7 +13991,7 @@ var FrameworkModel = class extends CubismUserModel {
  	settleFinishedMotions() {
  		this.motionStates.settleFinished((handle) => this._motionManager.isFinishedByHandle(handle));
  	}
@@ -103,7 +110,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  		if (this.disposed) return { status: "disposed" };
  		if (this.renderError) throw this.renderError;
  		const count = this.setting.getMotionCount(group);
-@@ -13991,8 +13998,18 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13991,8 +14003,18 @@ var FrameworkModel = class extends CubismUserModel {
  		const generation = ++this.motionGeneration;
  		let handle;
  		let playback;
@@ -123,7 +130,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  			if (this.disposed) return { status: "disposed" };
  			if (generation !== this.motionGeneration) return { status: "skipped" };
  			if (hasMotionFadeOverride(fade)) {
-@@ -14000,6 +14017,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14000,6 +14022,7 @@ var FrameworkModel = class extends CubismUserModel {
  				if (this.disposed) return { status: "disposed" };
  				if (generation !== this.motionGeneration) return { status: "skipped" };
  			}
@@ -131,7 +138,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  			playback = preparePlaybackMotion(asset, fade, (buffer) => this.parseMotion(buffer, `${group}:${selected}`, group, selected), (motion) => ACubismMotion.delete(motion));
  			handle = this._motionManager.startMotionPriority(playback.motion, playback.autoDelete, priority);
  			if (handle === -1) {
-@@ -14013,8 +14031,25 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14013,8 +14036,25 @@ var FrameworkModel = class extends CubismUserModel {
  			if (this.disposed) return { status: "disposed" };
  			if (generation === this.motionGeneration) this._motionManager.setReservePriority(0);
  			throw error;
@@ -158,7 +165,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  	}
  	hitTestStagePoint(x, y) {
  		if (this.disposed || !this.layoutMatrix) return [];
-@@ -14188,7 +14223,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14188,7 +14228,7 @@ var FrameworkModel = class extends CubismUserModel {
  			playMotion: (group, index, options) => {
  				validateMotionOptions(options);
  				const fade = resolveMotionFade(options);
@@ -167,14 +174,14 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0308b49fa04b11ea7d7b5ad89aee0365
  			},
  			onAfterMotionUpdate: (callback) => {
  				this.afterMotionCallbacks.add(callback);
-@@ -14273,6 +14308,11 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
+@@ -14273,6 +14313,11 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
  		const idleMotion = resolveIdleMotion(options.idleMotion, (group) => setting.getMotionCount(group));
  		model = new FrameworkModel(stage, modelUrl, setting, shaderBaseUrl, shaderSources, idleMotion, releaseFramework, model3Version, diagnostics, options.resolveAsset);
  		await model.initialize(options.signal);
 +		if (options.hiddenDrawables?.length) {
 +			const ids = CubismFramework.getIdManager();
 +			const indexes = options.hiddenDrawables.map(id => model.getModel().getDrawableIndex(ids.getId(id)));
-+			model.getRenderer().hiddenDrawables = new Set(indexes.filter(i => i >= 0));
++			model.getRenderer().curtainDrawables = new Set(indexes.filter(i => i >= 0));
 +		}
  		if (diagnostics) diagnostics.loadPhase("ready", performance.now() - readyStartedAt);
  		return model.toHandle();

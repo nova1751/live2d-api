@@ -59,7 +59,7 @@ export type Collection = typeof collections[number];
 export type CollectionScope = Collection | 'all';
 export declare function collectionCatalogUrl(libraryUrl: string, collection?: CollectionScope): string;
 export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
-export declare function loadModelCatalog(input: string | URL, collection?: Collection, locale?: WidgetLocale): Promise<{
+export declare function loadModelCatalog(input: string | URL, collection?: Collection, locale?: WidgetLocale, assetCdn?: 'mainland'): Promise<{
     url: string;
     collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;
@@ -89,7 +89,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
     };
     legacyIds: string[][] | undefined;
 }>;
-export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale?: WidgetLocale, sourceBase?: string): {
+export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale?: WidgetLocale, sourceBase?: string, assetCdn?: 'mainland'): {
     url: string;
     collection: "girls-frontline" | "azur-lane" | "bang-dream" | "houkai2" | "iron-saga" | "warship-girls" | "baoshi-yanwuyu" | undefined;
     locale: WidgetLocale;

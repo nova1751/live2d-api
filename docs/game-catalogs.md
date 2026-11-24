@@ -49,6 +49,8 @@
 
 ## 更新目录
 
+BanG Dream! 的 `hhw/013/013_live_event_93_sr` 和 `roselia/047/047_live_event_139_r` 由两个独立素材包提供。素材包保留上游固定提交的造型目录和相对引用，国内入口通过镜像加载。每个包的文件可与原 Git 树逐一校验。
+
 三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可按播放器的国内地址解析规则复核三个系列。
 
 在仓库根目录运行以下命令。导入工具需要 Node、Git 和网络。已提交的目录可直接用于常规构建；重导时才会读取上游 Git 树和清单。第一次导入会下载元数据并缓存到 `node_modules/.cache/game-sources`。语音归档采用 Git 部分克隆，仅枚举路径。

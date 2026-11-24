@@ -136,6 +136,26 @@ test('pinned legacy CDN loaders use their own version for scripts, models and th
   }
 });
 
+test('a mainland legacy embed keeps its model fallback on the mainland CDN', async () => {
+  const { context, requests, renders } = browser();
+  const cdn = 'https://cdn.jsdmirror.com';
+  const copied = cdn + '/test/runtime/';
+  const fetch = context.fetch;
+  context.fetch = async url => {
+    if (url === copied + 'model_list.json') {
+      requests.push(url);
+      return { ok: false, status: 404 };
+    }
+    return fetch(url);
+  };
+  context.loadlive2d = (_, model) => renders.push(model);
+  vm.runInContext(read('jsdelivr/sequential/waifu-tips.js'), context);
+  context.initWidget({ cdnPath: copied, waifuPath: copied + 'waifu-tips.json' });
+  await settled();
+  assert.ok(requests.includes(cdn + modelSnapshot + 'model_list.json'));
+  assert.deepEqual(renders, [cdn + modelSnapshot + 'model/' + models[0][0] + '/index.json']);
+});
+
 test('the script tag skips small screens and loads both assets and model relative to its URL', async () => {
   const { context, document, requests, renders } = browser();
   const src = base + 'autoload.js';

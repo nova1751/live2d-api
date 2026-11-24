@@ -114,6 +114,10 @@ const casual = {
   casual_winter: '冬季便服',
 };
 const bandLibrary = library();
+const bandPacks = {
+  '880be40fc1f06e0a317aa10e5830a0a2d5723749': '013_live_event_93_sr',
+  '57da53a60df8f55de0245f7898c3dc0c9021dd55': '047_live_event_139_r',
+};
 for (const [band, [commit, sha]] of Object.entries(bands)) {
   const repo = 'U1s1-king/dsh-live2d-' + band;
   const base = raw + repo + '/' + commit + '/assets/';
@@ -121,7 +125,14 @@ for (const [band, [commit, sha]] of Object.entries(bands)) {
   const folders = [...files.keys()]
     .filter((f) => f.endsWith('/index.json'))
     .map(posix.dirname);
-  bandLibrary.sources[band] = { baseUrl: base + 'model/' };
+  const packed = bandPacks[commit];
+  bandLibrary.sources[band] = {
+    baseUrl: base + 'model/',
+    ...(packed && { packs: [{
+      baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@cdn-bang-dream-' + band + '-' + commit.slice(0, 12) + '/assets/model/',
+      directories: [packed],
+    }] }),
+  };
   const manifests = new Map();
   await pool(folders, async (folder) =>
     manifests.set(folder, await json(base + 'model/' + folder + '/index.json')),

@@ -103,24 +103,25 @@ function orderCollection(ids, outfits) {
   rows.sort((a, b) => rank(categories, a.category) - rank(categories, b.category) || natural.compare(a.category, b.category) || natural.compare(a.character, b.character) || a.order - b.order || natural.compare(a.version, b.version) || rank(forms, a.form) - rank(forms, b.form) || natural.compare(a.form, b.form));
   return rows.map((row) => row.id);
 }
-async function loadModelCatalog(input, collection, locale = "zh-CN") {
+async function loadModelCatalog(input, collection, locale = "zh-CN", assetCdn) {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error("Cannot load catalog: HTTP " + response.status);
   const catalog = await response.json();
-  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href);
+  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
 }
-function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBase = url.href) {
+function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBase = url.href, assetCdn) {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error("Unsupported model catalog");
   const audioBySource = /* @__PURE__ */ new Map();
-  const mainland = url.hostname === "cdn.jsdmirror.com";
+  const mainland = assetCdn === "mainland" || url.hostname === "cdn.jsdmirror.com";
+  const mainlandPath = "https://cdn.jsdmirror.com/gh/";
   function regionalUrl(href) {
     if (href.startsWith("/gh/")) return new URL(href, sourceBase).href;
     if (!mainland) return href;
     return href.replace(
       /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
-      url.origin + "/gh/$1/$2@$3/"
-    ).replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, url.origin + "/gh/");
+      mainlandPath + "$1/$2@$3/"
+    ).replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
   const available = Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest));
   const presentation = collection ? catalog.presentation : void 0;
@@ -184,9 +185,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 var version = "2.9.9";
 
 // src/distribution.ts
-var snapshot = "/gh/nova1751/live2d-api@cdn-b3ac5ae545e2/";
 var globalCdn = "https://cdn.jsdelivr.net";
-var globalModels = globalCdn + snapshot;
 var widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 var packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
 function scriptDirectory(src) {
@@ -201,7 +200,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-7b4dd293e1ceabd5/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-9b7d10a1242fbed9/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

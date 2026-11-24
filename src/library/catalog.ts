@@ -46,23 +46,24 @@ function orderCollection(ids: string[], outfits: Record<string, number>) {
 
 export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
 
-export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN') {
+export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', assetCdn?: 'mainland') {
   const url = new URL(input, document.baseURI);
   const response = await fetch(url);
   if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
   const catalog: ModelCatalog = await response.json();
-  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href);
+  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
 }
 
-export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', sourceBase = url.href) {
+export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', sourceBase = url.href, assetCdn?: 'mainland') {
   if (catalog.schemaVersion !== 1 || !catalog.models || !catalog.sources) throw new Error('Unsupported model catalog');
   const audioBySource = new Map<string, Map<string, string>>();
-  const mainland = url.hostname === 'cdn.jsdmirror.com';
+  const mainland = assetCdn === 'mainland' || url.hostname === 'cdn.jsdmirror.com';
+  const mainlandPath = 'https://cdn.jsdmirror.com/gh/';
   function regionalUrl(href: string) {
     if (href.startsWith('/gh/')) return new URL(href, sourceBase).href;
     if (!mainland) return href;
     return href.replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
-      url.origin + '/gh/$1/$2@$3/').replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, url.origin + '/gh/');
+      mainlandPath + '$1/$2@$3/').replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
   const available = Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest));
   const presentation = collection ? catalog.presentation : undefined;
