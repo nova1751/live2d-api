@@ -57,6 +57,10 @@ export async function checkPaintOverflow(browser, base) {
       const paint = await page.locator('#live2d').boundingBox();
       const camera = await page.locator('.waifu-surface').boundingBox();
       const widget = await page.locator('#waifu').boundingBox();
+      if (position === 'left') {
+        const rail = await page.locator('#waifu-tool').boundingBox();
+        assert.ok(widget.x + widget.width - rail.x - rail.width >= Math.min(40, width * 0.03) - 1);
+      }
       const aspect = await page.locator('#waifu').evaluate(el => Number(getComputedStyle(el).getPropertyValue('--waifu-aspect')));
       const edge = Math.max(12, Math.min(width * 0.02, 24));
       const fullWidth = Math.min(480, width - (position === 'left' ? edge : 2 * edge) - 50, 410 * aspect);
@@ -121,7 +125,19 @@ export async function checkPaintOverflow(browser, base) {
           canvas.y + canvas.height <= view.y + view.height + 1, JSON.stringify({ view, canvas }));
         return canvas.width;
       };
-      await assertFit();
+      const expandedWidth = await assertFit();
+      const expandedCanvas = await viewer.locator('#live2d').boundingBox();
+      const subject = await viewer.locator('.waifu-hit').boundingBox();
+      const rail = await viewer.locator('#waifu-tool').boundingBox();
+      assert.ok(Math.abs(rail.x - subject.x - subject.width - 6) < 2);
+      if (width > 1000) {
+        assert.ok(expandedWidth > expandedCanvas.height * 1.3, 'landscape provides horizontal motion space');
+        assert.ok(Math.abs(expandedCanvas.x + expandedWidth / 2 - width / 2) < 2);
+      }
+      await page.waitForFunction(() => {
+        const canvas = document.querySelector('#live2d');
+        return Math.abs(canvas.width / canvas.height - canvas.clientWidth / canvas.clientHeight) < 0.01;
+      });
       await viewer.getByRole('button', { name: '全屏', exact: true }).click();
       await page.waitForFunction(() => !!document.fullscreenElement);
       const fitted = await assertFit();

@@ -3,6 +3,10 @@
 #waifu.waifu-adaptive {
   --waifu-float-width: calc(100vw - var(--waifu-right-inset) - var(--waifu-side-space));
 }
+/* Keep the floating rail stable while the first pose is measured. */
+body > #waifu.waifu-adaptive #waifu-tool {
+  right: clamp(8px, 3vw, 40px);
+}
 /* The square camera can extend past the screen. Display just the visible part
    of its bitmap so the extra animation space never indents the character. */
 body > #waifu.waifu-adaptive .waifu-surface canvas {

@@ -602,17 +602,41 @@ body > #waifu.waifu-adaptive #waifu-status { left: calc(var(--waifu-max-width) /
   --waifu-canvas-size: min(var(--waifu-max-width), var(--waifu-max-height));
   --waifu-framing-size: calc(var(--waifu-canvas-size) / var(--waifu-paint-scale, 1));
   --waifu-model-width: min(var(--waifu-framing-size), calc(var(--waifu-framing-size) * var(--waifu-aspect, 1)));
-  width: calc(var(--waifu-canvas-size) + var(--waifu-side-space));
+  --waifu-paint-width: max(var(--waifu-canvas-size), min(calc(1.6 * var(--waifu-canvas-size)), calc(var(--waifu-max-width) - var(--waifu-side-space) * var(--view-scale, 1))));
+  width: calc(var(--waifu-paint-width) + var(--waifu-side-space));
+  margin-left: clamp(0px, calc(var(--waifu-max-width) - var(--waifu-paint-width)), var(--waifu-side-space));
   height: var(--waifu-canvas-size);
 }
 #waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) .waifu-viewport {
   width: var(--waifu-model-width);
   height: var(--waifu-model-height);
-  left: calc((var(--waifu-canvas-size) - var(--waifu-model-width)) / 2);
+  left: calc((var(--waifu-paint-width) - var(--waifu-model-width)) / 2);
   top: auto;
   bottom: calc((var(--waifu-canvas-size) - var(--waifu-framing-size)) / 2);
 }
-#waifu-expanded #waifu-status { left: calc(var(--waifu-canvas-size, var(--waifu-model-width, 350px)) / 2); }
+#waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) #waifu-tool {
+  right: calc((var(--waifu-paint-width) - var(--waifu-model-width)) / 2);
+}
+/* Resolve the paint width at the shell. Nested surfaces have their own query container. */
+@property --waifu-paint-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+#waifu-expanded .waifu-surface > #live2d.waifu-wide-paint,
+#waifu-expanded .waifu-model-stage.waifu-wide-paint {
+  position: absolute;
+  left: 50% !important;
+  transform: translateX(-50%);
+  width: max(100%, var(--waifu-paint-width));
+  height: 100%;
+}
+#waifu-expanded .waifu-model-still {
+  left: 50%;
+  width: auto;
+  transform: translateX(-50%);
+}
+#waifu-expanded #waifu-status { left: calc((100% - var(--waifu-side-space, 0px)) / 2); }
 #waifu-expanded #waifu:not(.waifu-adaptive) #live2d {
   width: calc(min(100cqw - 68px, 100cqh - var(--view-headroom) - 20px) * var(--view-scale, 1));
   height: auto;

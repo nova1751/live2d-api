@@ -83,6 +83,7 @@ for (const collection of collections) {
   let checked = 0,
     withheld = 0,
     manifestsChecked = 0;
+  let voicedCues = 0, textOnlyCues = 0, voiceOnlyCues = 0;
   const check = (path: string) => {
     checked++;
     if (!files.has(path)) errors.add(collection + ' ' + path);
@@ -129,7 +130,27 @@ for (const collection of collections) {
       model = manifests.get(files.get(mp) ?? '');
     check(mp);
     if (!model) continue;
-    const url = host + mp.split('/').map(encodeURIComponent).join('/');
+    const url = new URL(mp.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), host).href;
+    if (v.cues && !v.dialogue) {
+      // Modern cues use the native motion group; classic cues use motion or sound paths.
+      const keys = new Set(Object.keys(model.FileReferences?.Motions ?? {}));
+      const directory = new URL('.', url).pathname;
+      for (const clip of Object.values(model.motions ?? {}).flat()) {
+        if (clip.sound) keys.add(clip.sound);
+        if (!clip.file) continue;
+        keys.add(clip.file);
+        const path = new URL(clip.file, url).pathname.replace(
+          /(\/gh\/nova1751\/live2d-api@cdn-[a-f0-9]+)-assets-\d+\//, '$1/',
+        );
+        if (path.startsWith(directory)) keys.add(decodeURIComponent(path.slice(directory.length)));
+      }
+      for (const [key, cue] of Object.entries(v.cues)) {
+        if (!keys.has(key)) errors.add(collection + ' unbound cue ' + mp + ' ' + key);
+        if (cue.sound && cue.caption) voicedCues++;
+        else if (cue.caption) textOnlyCues++;
+        else if (cue.sound) voiceOnlyCues++;
+      }
+    }
     for (const item of references(model)) {
       if (!item) continue;
       const fix =
@@ -161,7 +182,8 @@ for (const collection of collections) {
     checked,
     'references,',
     withheld,
-    'explicitly disabled references',
+    'explicitly disabled references;',
+    { voicedCues, textOnlyCues, voiceOnlyCues },
   );
 }
 if (process.argv[3]) writeFileSync(process.argv[3], JSON.stringify([...errors], null, 2) + '\n');
