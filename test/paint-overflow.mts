@@ -18,6 +18,12 @@ export async function checkPaintOverflow(browser, base) {
       }, [from, to]);
       const waitForArrival = () => page.waitForFunction(() => getComputedStyle(document.querySelector('#waifu')).bottom === '0px');
       let releaseCatalog;
+      const floatingEdges = () => page.evaluate(() => {
+        const shell = document.querySelector('#waifu').getBoundingClientRect();
+        const rail = document.querySelector('#waifu-tool').getBoundingClientRect();
+        return [shell.right, shell.height, rail.x, rail.y];
+      });
+      let loadingEdges;
       const catalogGate = new Promise(resolve => { releaseCatalog = resolve; });
       await page.route(base + 'overflow-catalog.json', async route => {
         await catalogGate;
@@ -33,6 +39,7 @@ export async function checkPaintOverflow(browser, base) {
         }, { base, position });
         if (animated) await waitForSlide(-1000, 0);
         await waitForArrival();
+        loadingEdges = await floatingEdges();
         const status = page.locator('#waifu[data-initial-framing] #waifu-status');
         await status.locator('.waifu-loading-icon').waitFor();
         assert.equal(await status.textContent(), '模型加载中…');
@@ -43,6 +50,7 @@ export async function checkPaintOverflow(browser, base) {
         releaseCatalog();
       }
       await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit');
+      assert.deepEqual(await floatingEdges(), loadingEdges, 'first paint must not reposition the floating controls');
       assert.equal(await page.locator('#waifu-status').textContent(), '');
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
       const hit = await page.locator('.waifu-hit').boundingBox();
@@ -65,7 +73,7 @@ export async function checkPaintOverflow(browser, base) {
         assert.ok(Math.abs(paint.width - camera.width) <= 1);
       }
       assert.ok(Math.abs(camera.width - square * 1.5) <= 1);
-      assert.ok(Math.abs(widget.width - hit.width - 50) <= 1);
+      assert.ok(widget.width >= hit.width + 50 - 1);
       assert.ok(Math.abs(camera.x + camera.width / 2 - hit.x - hit.width / 2) <= 1);
       assert.ok(Math.abs(paint.y + paint.height - square / 4 - hit.y - hit.height) <= 1);
       const point = { x: Math.floor(hit.x + hit.width / 2), y: Math.floor(hit.y - 14) };

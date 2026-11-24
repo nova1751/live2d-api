@@ -1,7 +1,7 @@
 import { preferences, session } from './storage';
 import { setLanguage, translated } from './locale';
 import { expandModel } from './expand';
-import { icons, loadingIcon } from './icons';
+import { icons, loadingIcon, retryIcon } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson, isLoadCancelled } from './request';
 import { setModelLoading } from './loading';
@@ -102,7 +102,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   const canvas = `<canvas id="live2d" width="${size}" height="${size}"></canvas>`;
   const retry = translated('重试加载模型', 'Retry loading the model');
   document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}${initialFraming ? ' data-initial-framing' : ''}>
-    <div id="waifu-status"><span class="waifu-loading-icon" aria-hidden="true">${loadingIcon}</span><button type="button" id="waifu-retry" aria-label="${retry}" title="${retry}">${loadingIcon}</button><span id="waifu-status-text" class="waifu-sr-only" role="status"></span></div>
+    <div id="waifu-status"><span class="waifu-loading-icon" aria-hidden="true">${loadingIcon}</span><button type="button" id="waifu-retry" aria-label="${retry}" title="${retry}">${retryIcon}</button><span id="waifu-status-text" class="waifu-sr-only" role="status"></span></div>
     <div id="waifu-tips"></div>
     ${adaptive ? `<div class="waifu-viewport"><div class="waifu-hit" aria-hidden="true"></div><div class="waifu-surface">${canvas}</div></div>` : canvas}
     <div id="waifu-tool"></div>

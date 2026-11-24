@@ -82,6 +82,23 @@
   height: var(--waifu-model-height);
 }
 .waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; container-type: size; overflow: visible; }
+/* The floating controls reserve their space before the first frame measures the model. */
+body > #waifu.waifu-adaptive {
+  width: calc(var(--waifu-max-width) + var(--waifu-side-space));
+  height: var(--waifu-max-height);
+  transform: none;
+}
+body > #waifu.waifu-adaptive .waifu-viewport {
+  inset: auto auto 0 var(--waifu-viewport-left, 0px);
+  width: var(--waifu-model-width);
+  height: var(--waifu-model-height);
+}
+body > #waifu.waifu-adaptive #waifu-tips {
+  left: var(--waifu-viewport-left, 0px);
+  right: calc(100% - var(--waifu-viewport-left, 0px) - var(--waifu-model-width));
+  bottom: calc(var(--waifu-model-height) + var(--waifu-gap));
+}
+body > #waifu.waifu-adaptive #waifu-status { left: calc(var(--waifu-max-width) / 2); }
 #waifu-status {
   position: absolute;
   left: calc(var(--waifu-model-width, 350px) / 2);
