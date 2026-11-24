@@ -2,6 +2,7 @@ import { nativeMotionLookup, nativeTouchArea } from './native-events';
 import { prepareMotion } from './motion';
 import type { Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
+import { fetchCdnAsset } from '../runtime/cdn';
 
 interface MotionFile { File: string; Sound?: string }
 interface Manifest { HitAreas?: { Name: string }[]; FileReferences: { Motions?: Record<string, MotionFile[]> } }
@@ -13,7 +14,7 @@ interface Metadata {
 interface Action { file: string; group: string; index: number; area: string; weight: number; delay: number; sound?: string; caption?: string }
 
 async function json<T>(url: string, signal: AbortSignal): Promise<T> {
-  const response = await fetch(url, { signal });
+  const response = await fetchCdnAsset(url, signal);
   if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + url);
   return response.json();
 }
@@ -43,7 +44,7 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
     if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
     // jsDelivr parses repo@version before decoding path segments.
     const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
-    const response = await fetch(asset, { signal: requestSignal ?? signal });
+    const response = await fetchCdnAsset(asset.href, requestSignal ?? signal);
     if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
     if (!asset.pathname.toLowerCase().endsWith('.motion3.json')) return response.blob();
     const raw = await response.json();
@@ -118,7 +119,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       context ??= new AudioContext();
       // Unlock on the click itself; a document without audio permission can still animate.
       if (context.state !== 'running') void context.resume().catch(() => {});
-      const response = await fetch(url, { signal });
+      const response = await fetchCdnAsset(url, signal);
       if (!response.ok) throw Error('HTTP ' + response.status);
       const buffer = await context.decodeAudioData(await response.arrayBuffer());
       if (!signal.aborted && context.state === 'running') {

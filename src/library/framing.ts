@@ -82,7 +82,7 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
   const width = right - left, height = bottom - top;
   // Both backends project onto a square. The visible viewport is its
   // bottom-centered subrectangle, so pointer and camera coordinates stay shared.
-  const aspect = setAspect ? Math.max(0.7, Math.min(1.9, width / height * 0.93 / 0.94)) : 1;
+  const aspect = setAspect ? Math.max(0.35, Math.min(3, width / height * 0.93 / 0.94)) : 1;
   setAspect?.(aspect);
   const viewWidth = Math.min(1, aspect), viewHeight = Math.min(1, 1 / aspect);
   const zoom = Math.min(0.93 * size * viewHeight / height, 0.94 * size * viewWidth / width, 5 / initial.scale);

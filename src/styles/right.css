@@ -2,6 +2,10 @@
 #waifu { right: 0; }
 #waifu.waifu-adaptive {
   right: var(--waifu-right-inset);
-  --waifu-viewport-left: calc(var(--waifu-max-width) - var(--waifu-model-width));
+}
+body > #waifu.waifu-adaptive { --waifu-viewport-left: calc(100% - var(--waifu-model-width)); }
+body > #waifu.waifu-adaptive #waifu-tool {
+  left: calc(var(--waifu-viewport-left) - var(--waifu-side-space));
+  right: auto;
 }
 #waifu-tool { left: 10px; }

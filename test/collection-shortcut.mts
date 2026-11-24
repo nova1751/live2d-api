@@ -86,6 +86,32 @@ export async function checkCollectionShortcut(browser, base) {
     await wait(games[1], 'a');
     assert.deepEqual(requested, ['azur-lane', 'azur-lane']);
 
+    requested.length = 0;
+    const mainlandCatalog = /^https:\/\/cdn\.jsdmirror\.com\/gh\/nova1751\/live2d-api@catalog-[a-f0-9]+\/catalog\/games\/azur-lane\.json(?:\?|$)/;
+    let denied = 0;
+    await page.route(mainlandCatalog, route => {
+      const url = new URL(route.request().url());
+      if (url.searchParams.has('live2d-retry')) return route.fallback();
+      denied++;
+      return route.fulfill({ status: 403, body: 'Forbidden', headers: { 'access-control-allow-origin': '*' } });
+    });
+    const { version } = await (await page.request.get(base + 'package.json')).json();
+    const domesticRuntime = `https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-${version}/`;
+    await page.route(domesticRuntime + '**', async route => {
+      const file = new URL(route.request().url()).pathname.slice(new URL(domesticRuntime).pathname.length);
+      const response = await page.request.get(base + file);
+      await route.fulfill({ response, headers: { ...response.headers(), 'access-control-allow-origin': '*' } });
+    });
+    await page.route(base + 'domestic-autoload', route => route.fulfill({ contentType: 'text/html',
+      body: `<script src="${domesticRuntime}autoload.js?collection=all&amp;lang=en" data-mode="random" data-model-id="azur-lane:test/azur-lane/b"></script>` }));
+    await page.goto(base + 'domestic-autoload');
+    await wait(games[1], 'b');
+    assert.equal(denied, 1);
+    assert.deepEqual(requested, ['azur-lane'], 'a qualified model ID opens only its own collection');
+    assert.equal(await page.locator('#waifu').getAttribute('lang'), 'en');
+    await page.unroute(mainlandCatalog);
+    await page.unroute(domesticRuntime + '**');
+
     await page.route(base + 'outfit-order-host', route => route.fulfill({ contentType: 'text/html',
       body: '<script type="module">import {loadWidget} from "./widget.mjs"; await loadWidget({collection:"all",switchBy:"outfit"});</script>' }));
     await page.goto(base + 'outfit-order-host');
@@ -95,7 +121,6 @@ export async function checkCollectionShortcut(browser, base) {
     await changeOutfit();
     await wait(games[0], 'a');
 
-    const { version } = await (await page.request.get(base + 'package.json')).json();
     const entries = ['autoload.js', 'collections.mjs', 'girls-frontline.mjs'];
     for (const host of ['cdn.jsdelivr.net', 'cdn.jsdmirror.com']) {
       const cdn = `https://${host}/gh/nova1751/live2d-api@`;

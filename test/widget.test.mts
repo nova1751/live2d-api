@@ -35,7 +35,9 @@ function browser(failOnce) {
         else attributes.delete(name);
         return force;
       },
-      dataset: {}, style: {}, classList: { add() {}, remove() {} },
+      dataset: {}, style: { setProperty() {} }, classList: { add() {}, remove() {} },
+      childElementCount: 0,
+      getContext() { return null; },
       remove() {},
       addEventListener(event, listener) { this[event] = () => listener({ isTrusted: false }); },
       insertAdjacentHTML(_, html) {

@@ -2,7 +2,7 @@ import { libraryTag } from './library-tag.mts';
 import { createRequire } from 'node:module';
 import { dirname, resolve } from 'node:path';
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
-import { build, context, transform } from 'esbuild';
+import { build, context } from 'esbuild';
 
 const { version } = JSON.parse(await readFile('package.json', 'utf8'));
 const dev = process.argv.includes('--dev');
@@ -25,13 +25,14 @@ for (const name of ['LICENSE', 'LICENSES.md', 'THIRD_PARTY_NOTICES.md', 'vendor/
 }
 const runtimeRequire = createRequire(import.meta.resolve('live2d-web'));
 await copyFile(resolve(dirname(runtimeRequire.resolve('wlipsync')), '../LICENSE'), 'modern/wlipsync-LICENSE');
-const { code: legacyEngine } = await transform(await readFile('src/vendor/cubism2.ts', 'utf8'), {
-  loader: 'ts', target: 'es2020', minifyWhitespace: true, legalComments: 'inline',
+const { outputFiles: [legacyEngine] } = await build({
+  entryPoints: ['src/vendor/cubism2.ts'], bundle: true, format: 'iife', write: false,
+  target: 'es2020', minifyWhitespace: true, legalComments: 'inline',
 });
 const entries = [
   { entryPoints: ['src/vendor/asteroids.ts'], outfile: 'asteroids.js' },
   { entryPoints: ['src/standalone.ts'], outfile: 'live2d.min.js', format: 'iife', bundle: true,
-    minify: true, banner: { js: legacyEngine.trimEnd() + ';' } },
+    minify: true, banner: { js: legacyEngine.text.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },
   { entryPoints: ['src/collections.mts'], outfile: 'collections.mjs', format: 'esm', bundle: true, target: 'es2022' },
   { entryPoints: ['src/girls-frontline.mts'], outfile: 'girls-frontline.mjs', format: 'esm', bundle: true, target: 'es2022' },

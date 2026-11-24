@@ -49,7 +49,7 @@
 
 ## 更新目录
 
-BanG Dream! 的 `hhw/013/013_live_event_93_sr` 和 `roselia/047/047_live_event_139_r` 由两个独立素材包提供。素材包保留上游固定提交的造型目录和相对引用，国内入口通过镜像加载。每个包的文件可与原 Git 树逐一校验。
+BanG Dream! 的 `hhw/013/013_live_event_93_sr`、`roselia/047/047_live_event_139_r` 和 `morfonica/019/019_casual` 由独立素材包提供。素材包保留上游固定提交的造型目录和相对引用，国内入口通过镜像加载。Morfonica 日常服曾在上游镜像地址遇到 403。项目素材包的 51 个文件与该造型的上游 Git 树一致。
 
 三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可按播放器的国内地址解析规则复核三个系列。
 

@@ -20,8 +20,7 @@ export async function checkPaintOverflow(browser, base) {
       let releaseCatalog;
       const floatingEdges = () => page.evaluate(() => {
         const shell = document.querySelector('#waifu').getBoundingClientRect();
-        const rail = document.querySelector('#waifu-tool').getBoundingClientRect();
-        return [shell.right, shell.height, rail.x, rail.y];
+        return [shell.right, shell.height];
       });
       let loadingEdges;
       const catalogGate = new Promise(resolve => { releaseCatalog = resolve; });
@@ -50,7 +49,7 @@ export async function checkPaintOverflow(browser, base) {
         releaseCatalog();
       }
       await page.waitForSelector('#waifu:not([data-initial-framing]):not([data-model-loading]) .waifu-hit');
-      assert.deepEqual(await floatingEdges(), loadingEdges, 'first paint must not reposition the floating controls');
+      assert.deepEqual(await floatingEdges(), loadingEdges, 'first paint keeps the shell footprint');
       assert.equal(await page.locator('#waifu-status').textContent(), '');
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
       const checkCaption = async (subject) => {
@@ -61,6 +60,8 @@ export async function checkPaintOverflow(browser, base) {
       };
       const hit = await page.locator('.waifu-hit').boundingBox();
       await checkCaption(hit);
+      const tools = await page.locator('#waifu-tool').boundingBox();
+      assert.ok(Math.abs(tools.y + tools.height / 2 - hit.y - hit.height / 2) <= 1);
       const paint = await page.locator('#live2d').boundingBox();
       const camera = await page.locator('.waifu-surface').boundingBox();
       const widget = await page.locator('#waifu').boundingBox();
@@ -79,7 +80,7 @@ export async function checkPaintOverflow(browser, base) {
       if (position === 'left') {
         assert.ok(Math.abs(paint.x) <= 1, JSON.stringify(paint));
         const rail = await page.locator('#waifu-tool').boundingBox();
-        assert.ok(Math.abs(widget.x) <= 1 && hit.x >= 11.9, JSON.stringify(hit));
+        assert.ok(Math.abs(widget.x) <= 1 && hit.x >= 11.9 && hit.x <= 48.1, JSON.stringify(hit));
         assert.ok(Math.abs(hit.x - (rail.x - hit.x - hit.width)) <= 1, JSON.stringify({rail, hit}));
         assert.ok(Math.abs(paint.width - camera.width - camera.x) <= 1);
         assert.ok(await page.locator('#waifu-tips').evaluate(el => el.getBoundingClientRect().left >= 12));
