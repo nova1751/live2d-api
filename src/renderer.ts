@@ -42,15 +42,27 @@ export function createRenderer(base: string, legacy?: Render): Render {
     legacy?.hide?.();
     controller = new AbortController();
     const { signal } = controller;
+    const present = options?.onPaint;
+    let finishPaint: (() => void) | undefined;
+    const abortPaint = () => finishPaint?.();
+    const painted = present && new Promise<void>(resolve => {
+      finishPaint = resolve;
+      signal.addEventListener('abort', abortPaint, { once: true });
+    });
+    const onPaint = present && ((output: HTMLCanvasElement) => {
+      present(output);
+      finishPaint?.();
+    });
     return import(/* webpackIgnore: true */ /* @vite-ignore */ base + 'modern/renderer.mjs').then(async module => {
       if (signal.aborted) return;
-      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const result: ModernStage = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
+      await painted;
     }).catch(error => {
       if (!signal.aborted) { controller = undefined; throw error; }
-    });
+    }).finally(() => signal.removeEventListener('abort', abortPaint));
   };
   render.hide = () => { hidden = true; if (controller) stage?.pause(); else legacy?.hide?.(); };
   render.show = start => { hidden = false; if (controller) stage?.resume(); else legacy?.show?.(start); };

@@ -15,7 +15,7 @@
   position: fixed;
   display: grid;
   place-items: center;
-  width: 30px;
+  width: 24px;
   min-height: 46px;
   line-height: 1;
   z-index: calc(var(--waifu-z-index, 10) + 1);
@@ -27,7 +27,7 @@
   visibility: visible;
   pointer-events: auto;
   transition-delay: 0s;
-  transform: translateX(calc(-100% + 10px));
+  transform: translateX(calc(-100% + 7px));
 }
 #waifu-toggle.waifu-toggle-active:is(:hover, :focus-visible) {
   transform: translateX(0);
@@ -45,7 +45,7 @@
   #waifu-toggle.waifu-toggle-active::after {
     content: "";
     position: absolute;
-    inset: 0 -34px 0 0;
+    inset: 0 -37px 0 0;
   }
 }
 #waifu {
@@ -81,28 +81,48 @@
   container-type: size;
   overflow: visible;
 }
-body > #waifu[data-initial-framing] #waifu-status {
-  left: calc(var(--waifu-model-width) / 2);
+#waifu-status {
+  position: absolute;
+  left: calc(var(--waifu-model-width, 350px) / 2);
   top: 50%;
-  width: max-content;
-  max-width: calc(var(--waifu-model-width) - 24px);
-  height: auto;
-  box-sizing: border-box;
-  padding: 8px 12px;
-  clip-path: none;
   transform: translate(-50%, -50%);
-  border: 1px solid #dfbd94;
-  border-radius: 8px;
-  background-color: #fff8ee;
-  color: #4e382d;
-  font: 14px/1.4 system-ui, sans-serif;
-  text-align: center;
+  z-index: 1;
+  pointer-events: none;
 }
-body > #waifu[data-initial-framing] #waifu-tool {
+.waifu-loading-icon {
+  display: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff8ee;
+  box-shadow: 0 1px 4px #4e382d35;
+}
+.waifu-loading-icon::before {
+  content: "";
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cfbba9;
+  border-top-color: #66452d;
+  border-radius: 50%;
+}
+#waifu[data-model-pending] .waifu-loading-icon {
+  display: grid;
+}
+#waifu[data-model-pending] #waifu-tool {
   opacity: 1;
 }
+@keyframes waifu-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
 @media (prefers-reduced-motion: no-preference) {
-  body > #waifu[data-initial-framing] {
+  .waifu-loading-icon::before {
+    animation: waifu-spin .8s linear infinite;
+  }
+  body > #waifu:is([data-initial-framing], [data-model-pending]) {
     transition-duration: 0.3s;
   }
 }

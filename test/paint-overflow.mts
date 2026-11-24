@@ -34,7 +34,7 @@ export async function checkPaintOverflow(browser, base) {
         if (animated) await waitForSlide(-1000, 0);
         await waitForArrival();
         const status = page.locator('#waifu[data-initial-framing] #waifu-status');
-        await status.waitFor();
+        await status.locator('.waifu-loading-icon').waitFor();
         assert.equal(await status.textContent(), '模型加载中…');
         assert.equal(await page.locator('#waifu-tool').evaluate(el => getComputedStyle(el).opacity), '1');
         assert.equal(await page.locator('#live2d').evaluate(el => getComputedStyle(el).opacity), '0');
@@ -111,15 +111,15 @@ export async function checkPaintOverflow(browser, base) {
           const edge = document.querySelector('#waifu-toggle').getBoundingClientRect().right;
           return edge >= min && edge <= max;
         }, [min, max]);
-        await waitForEdge(0.01, 9.99);
-        await waitForEdge(10, 10);
+        await waitForEdge(0.01, 6.99);
+        await waitForEdge(7, 7);
         const label = tab.locator('span');
         const opacity = () => label.evaluate(el => getComputedStyle(el).opacity);
         assert.equal(await opacity(), '0');
         const bounds = await tab.boundingBox();
         await page.mouse.move(5, bounds.y + bounds.height / 2);
-        await waitForEdge(10.01, 29.99);
-        await waitForEdge(30, 30);
+        await waitForEdge(7.01, 23.99);
+        await waitForEdge(24, 24);
         assert.equal(await opacity(), '1');
         const button = await tab.boundingBox();
         const text = await label.boundingBox();
@@ -127,7 +127,7 @@ export async function checkPaintOverflow(browser, base) {
         const rightGap = button.x + button.width - text.x - text.width;
         assert.ok(leftGap > 0 && Math.abs(leftGap - rightGap) <= 1);
         await page.mouse.move(width / 2, 0);
-        await waitForEdge(10, 10);
+        await waitForEdge(7, 7);
         assert.equal(await opacity(), '0');
       }
       assert.equal(await page.locator('#waifu').isVisible(), false);

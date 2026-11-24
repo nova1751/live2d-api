@@ -90,13 +90,6 @@ const attachWidget = () => {
   }
 };
 new MutationObserver(attachWidget).observe(document.body, { childList: true });
-const firstPaint = new MutationObserver(() => {
-  if (host.querySelector("#waifu:not([data-model-loading]) canvas") && result.dataset.model) {
-    poster.hidden = true;
-    firstPaint.disconnect();
-  }
-});
-firstPaint.observe(host, { attributes: true, childList: true, subtree: true });
 try {
   let highlight = function() {
     for (const button of Array.from(cards.querySelectorAll("button[data-id]"))) {
@@ -269,6 +262,7 @@ try {
     const row = byId.get(library.visibleId(id));
     if (!row) return;
     describe(row);
+    poster.hidden = true;
     result.dataset.model = id;
     const url = new URL(location.href);
     url.searchParams.set("model", id);

@@ -4,6 +4,7 @@ import type { Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
 
 interface MotionFile { File: string; Sound?: string }
+interface Manifest { HitAreas?: { Name: string }[]; FileReferences: { Motions?: Record<string, MotionFile[]> } }
 interface Metadata {
   variant: string;
   motionData: Record<string, { motion_name: string; touch_area: string; probability: number; delay: number; is_hurt: number }>;
@@ -17,19 +18,46 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   return response.json();
 }
 
-export async function readActions(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false) {
-  const [manifest, data] = await Promise.all([
-    json<{HitAreas?: { Name: string }[]; FileReferences: {Motions?: Record<string, MotionFile[]>}}>(url, signal),
+export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false) {
+  const model = json<Manifest>(url, signal).then(manifest => {
+    const groups = manifest.FileReferences.Motions ?? {};
+    const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([, clips]) => clips.map(clip => clip.File)));
+    return { manifest, groups, idleFiles };
+  });
+  const interactions = Promise.all([
+    model,
     source && json<Metadata>(source.url, signal).catch(error => {
       if (signal.aborted) throw error;
       console.warn('[Live2D] Dialogue data unavailable', error);
       return undefined;
     }),
-  ]);
+  ]).then(([{ manifest, groups, idleFiles }, data]) => {
+    const actions = readActions(url, manifest, groups, idleFiles, data, source, cues, randomTap);
+    const oneShot = new Set(source || randomTap ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
+    return { actions, idleFiles, oneShot };
+  });
+  // The renderer can finish or abort before the optional interaction data arrives.
+  void interactions.catch(() => {});
+  const src = decodeURIComponent(new URL(url).pathname.slice(1));
+  async function resolveAsset(path: string, requestSignal?: AbortSignal) {
+    if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
+    // jsDelivr parses repo@version before decoding path segments.
+    const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
+    const response = await fetch(asset, { signal: requestSignal ?? signal });
+    if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
+    if (!asset.pathname.toLowerCase().endsWith('.motion3.json')) return response.blob();
+    const raw = await response.json();
+    const { idleFiles } = await model;
+    const idle = Array.from(idleFiles).some(file => new URL(file, url).href === asset.href);
+    const clip = prepareMotion(raw, !idle && (await interactions).oneShot.has(asset.href));
+    return new Blob([JSON.stringify(clip)], { type: 'application/json' });
+  }
+  return { src, interactions, resolveAsset };
+}
+
+function readActions(url: string, manifest: Manifest, groups: Record<string, MotionFile[]>, idleFiles: ReadonlySet<string>, data: Metadata | undefined, source: DialogueSource | undefined, cues: Record<string, GameCue> | undefined, randomTap: boolean) {
   const actions: Action[] = [];
   const hitNames = new Set(manifest.HitAreas?.map(hit => hit.Name.toLowerCase()));
-  const groups = manifest.FileReferences.Motions ?? {};
-  const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([,clips]) => clips.map(c => c.File)));
   const paths = new Set(Object.values(groups).flat().map(motion => motion.File));
   const matchMotion = nativeMotionLookup(paths, source?.url);
   function voiceFor(id: string) {
@@ -64,7 +92,6 @@ export async function readActions(url: string, source: DialogueSource | undefine
       }
     });
   }
-  const filename = decodeURIComponent(new URL(url).pathname.slice(1));
   // Some native touch events have a recording and intentionally leave the motion empty.
   if (data && source) {
     let index = 0;
@@ -76,18 +103,7 @@ export async function readActions(url: string, source: DialogueSource | undefine
         weight: motion.probability, delay: Math.max(0, motion.delay || 0), ...voice });
     }
   }
-  const oneShot = new Set(source || randomTap ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
-  async function resolveAsset(path: string, requestSignal?: AbortSignal) {
-    if (path === filename) return new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-    // jsDelivr parses repo@version before decoding path segments.
-    const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
-    const response = await fetch(asset, { signal: requestSignal ?? signal });
-    if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
-    if (!asset.pathname.toLowerCase().endsWith('.motion3.json')) return response.blob();
-    const clip = prepareMotion(await response.json(), oneShot.has(asset.href));
-    return new Blob([JSON.stringify(clip)], { type: 'application/json' });
-  }
-  return { actions, idleFiles, src: filename, resolveAsset };
+  return actions;
 }
 
 export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void) {

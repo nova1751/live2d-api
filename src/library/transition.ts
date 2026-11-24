@@ -9,7 +9,7 @@ export class ModelTransition {
     if (this.pending) return this.pending;
     const container = document.getElementById('waifu');
     const surface = container?.querySelector<HTMLElement>('.waifu-surface');
-    if (!container || !surface || document.hidden || container.hasAttribute('data-model-loading')) return;
+    if (!container || !surface || this.still || document.hidden || container.hasAttribute('data-model-loading')) return;
     // WebGL can discard a presented frame. Copy once, inside the outgoing renderer's
     // next draw, while it still owns the visible canvas and its original framing.
     this.pending = new Promise<void>(resolve => {
@@ -52,14 +52,15 @@ export class ModelTransition {
   }
 
   cancelFreeze() {
+    this.revision++;
     this.cancelCapture?.();
     if (this.holding) {
       this.still?.remove();
       this.still = undefined;
       this.holding = false;
       window.loadlive2d.show?.(false);
-      document.getElementById('waifu')?.removeAttribute('data-model-loading');
     }
+    document.getElementById('waifu')?.removeAttribute('data-model-loading');
   }
 
   begin(getAspect: () => number, paintScale: number) {
@@ -77,8 +78,6 @@ export class ModelTransition {
       container.toggleAttribute('data-wide-model', aspect >= 1.35);
       container.removeAttribute('data-model-loading');
       if (container.hasAttribute('data-initial-framing')) {
-        const status = document.getElementById('waifu-status');
-        if (status) status.textContent = '';
         container.removeAttribute('data-initial-framing');
         if (document.activeElement?.matches('#waifu-toggle:focus-visible')) {
           container.querySelector<HTMLButtonElement>('#waifu-tool button')?.focus({ preventScroll: true });
