@@ -7,7 +7,9 @@ const live2d_path = (() => {
     if (/\/(?:live2dapi-noa|gh\/nova1751\/live2d-api)(?:@[^/]+)?\/(?:npm|jsdelivr)\/(?:random|sequential)\/autoload(?:\.min)?\.js$/.test(url.pathname)) {
       const base = new URL('../../', url);
       const runtimePath = new URL(GLOBAL_RUNTIME).pathname;
-      if (base.pathname === runtimePath.replace('@widget-', '@v')) base.pathname = runtimePath;
+      const [repository, release] = runtimePath.slice(0, -1).split('@widget-');
+      const sourcePaths = ['', '@latest', '@' + release, '@v' + release].map(ref => repository + ref + '/');
+      if (sourcePaths.includes(base.pathname)) base.pathname = runtimePath;
       return base.href;
     }
   }

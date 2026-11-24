@@ -1,3 +1,5 @@
+import { withLoadTimeout } from '../runtime/request.ts';
+
 export type WidgetLocale = 'zh-CN' | 'en';
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
@@ -48,10 +50,12 @@ export type LoadedModelCatalog = Awaited<ReturnType<typeof loadModelCatalog>>;
 
 export async function loadModelCatalog(input: string | URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', assetCdn?: 'mainland') {
   const url = new URL(input, document.baseURI);
-  const response = await fetch(url);
-  if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
-  const catalog: ModelCatalog = await response.json();
-  return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
+  return withLoadTimeout(async signal => {
+    const response = await fetch(url, { signal });
+    if (!response.ok) throw new Error('Cannot load catalog: HTTP ' + response.status);
+    const catalog: ModelCatalog = await response.json();
+    return parseModelCatalog(catalog, url, collection, locale, response.url || url.href, assetCdn);
+  });
 }
 
 export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: Collection, locale: WidgetLocale = 'zh-CN', sourceBase = url.href, assetCdn?: 'mainland') {

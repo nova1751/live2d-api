@@ -7,15 +7,17 @@ const runtimeSnapshot = repository + '@widget-' + version + '/';
 const globalCdn = 'https://cdn.jsdelivr.net';
 const widgetSnapshot = /\/gh\/nova1751\/live2d-api@widget-[^/]+\/?$/;
 const packageRoot = /\/live2dapi-noa(?:@[^/]+)?\/?$/;
+const releaseRoots = ['', '@latest', '@' + version, '@v' + version].map(ref => repository + ref);
 
 export function useRuntimeSnapshot(base: URL) {
   // The source tag contains models and may exceed a GitHub CDN's size limit.
-  if (base.pathname === repository + '@v' + version + '/') base.pathname = runtimeSnapshot;
+  if (releaseRoots.includes(base.pathname.replace(/\/$/, ''))) base.pathname = runtimeSnapshot;
   return base;
 }
 
 export function scriptDirectory(src: string) {
   const url = new URL(src, document.baseURI);
+  if (releaseRoots.includes(url.pathname.replace(/\/$/, ''))) return useRuntimeSnapshot(url);
   if (!packageRoot.test(url.pathname)) return useRuntimeSnapshot(new URL('.', url));
   if (!url.pathname.endsWith('/')) url.pathname += '/';
   url.search = url.hash = '';

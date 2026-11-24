@@ -54,8 +54,11 @@ export async function checkCollectionShortcut(browser, base) {
         } finally { release(); }
         await page.getByRole('status').filter({hasText:'加载失败'}).waitFor({state:'attached'});
         assert.equal(await page.locator('.waifu-loading-icon').isVisible(), false);
-        assert.equal(await page.locator('.waifu-model-still').count(),1);
-        await next();
+        assert.equal(await page.locator('.waifu-model-still').count(),0);
+        assert.equal(await page.evaluate(() => new Promise(resolve => {
+          if (!window.loadlive2d.onNextPaint(canvas => resolve(canvas.width > 0))) resolve(false);
+        })), true, 'the previous model animates again after a failed switch');
+        await page.getByRole('button', { name: '重试加载模型' }).evaluate(button => button.click());
         await wait(game, 'b');
         assert.equal(await page.locator('.waifu-model-still').count(),0);
       } else await next();
@@ -78,28 +81,32 @@ export async function checkCollectionShortcut(browser, base) {
     const entries = ['autoload.js', 'collections.mjs', 'girls-frontline.mjs'];
     for (const host of ['cdn.jsdelivr.net', 'cdn.jsdmirror.com']) {
       const cdn = `https://${host}/gh/nova1751/live2d-api@`;
-      const source = `${cdn}v${version}/`;
       const runtime = `${cdn}widget-${version}/`;
+      const sources = [`${cdn}v${version}/`, `${cdn}${version}/`, `${cdn}latest/`, cdn.slice(0, -1) + '/'];
       const unexpected = [];
       async function serveRuntime(route, directory) {
         const file = new URL(route.request().url()).pathname.slice(new URL(directory).pathname.length);
         const response = await page.request.get(base + file);
         await route.fulfill({ response, headers: { ...response.headers(), 'access-control-allow-origin': '*' } });
       }
-      await page.route(source + '**', route => {
-        if (entries.some(entry => route.request().url() === source + entry)) return serveRuntime(route, source);
-        unexpected.push(route.request().url());
-        return route.fulfill({ status: 403, body: 'Package size exceeded the configured limit of 50 MB.' });
-      });
+      for (const source of sources) await page.route(source + '**', route => {
+          if (entries.some(entry => route.request().url() === source + entry)) return serveRuntime(route, source);
+          unexpected.push(route.request().url());
+          return route.fulfill({ status: 403, body: 'Package size exceeded the configured limit of 50 MB.' });
+        });
       await page.route(runtime + '**', route => serveRuntime(route, runtime));
       await page.route(base + 'source-shortcut*', route => {
-        const entry = new URL(route.request().url()).searchParams.get('entry');
+        const params = new URL(route.request().url()).searchParams;
+        const entry = params.get('entry');
+        const source = sources[Number(params.get('source'))];
         return route.fulfill({ contentType: 'text/html', body: '<!doctype html><script ' +
           (entry.endsWith('.mjs') ? 'type="module" ' : '') + 'src="' + source + entry + '"></script>' });
       });
-      for (const entry of entries) {
-        await page.goto(base + 'source-shortcut?entry=' + entry);
-        await wait(games[0], 'a');
+      for (const index of sources.keys()) {
+        for (const entry of index === 0 ? entries : ['autoload.js']) {
+          await page.goto(base + 'source-shortcut?entry=' + entry + '&source=' + index);
+          await wait(games[0], 'a');
+        }
       }
       assert.deepEqual(unexpected, []);
     }

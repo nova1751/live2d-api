@@ -67,7 +67,7 @@ function browser(failOnce) {
     } },
   };
   const context = vm.createContext({
-    document, URL, CustomEvent, dispatchEvent() {}, screen: { width: 1024 }, location: new URL(base),
+    document, URL, AbortController, DOMException, CustomEvent, dispatchEvent() {}, screen: { width: 1024 }, location: new URL(base),
     localStorage: storage(), sessionStorage: storage(), console: { log() {}, error(error, detail) { throw detail ?? error; } },
     setTimeout() {}, setInterval() {}, clearTimeout() {}, addEventListener() {},
     async fetch(url) {

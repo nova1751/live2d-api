@@ -89,23 +89,18 @@
   z-index: 1;
   pointer-events: none;
 }
-.waifu-loading-icon {
+.waifu-loading-icon,
+#waifu-status #waifu-retry {
   display: none;
   place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #fff8ee;
-  box-shadow: 0 1px 4px #4e382d35;
+  width: 40px;
+  height: 40px;
 }
-.waifu-loading-icon::before {
-  content: "";
-  box-sizing: border-box;
-  width: 18px;
-  height: 18px;
-  border: 2px solid #cfbba9;
-  border-top-color: #66452d;
-  border-radius: 50%;
+#waifu-retry {
+  pointer-events: auto;
+}
+#waifu[data-model-error] #waifu-status #waifu-retry {
+  display: grid;
 }
 #waifu[data-model-pending] .waifu-loading-icon {
   display: grid;
@@ -119,7 +114,7 @@
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .waifu-loading-icon::before {
+  .waifu-loading-icon svg {
     animation: waifu-spin .8s linear infinite;
   }
   body > #waifu:is([data-initial-framing], [data-model-pending]) {
@@ -240,12 +235,14 @@
 }
 #waifu canvas,
 #waifu-tool button,
+#waifu-retry,
 #waifu-toggle {
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 #waifu canvas:focus:not(:focus-visible),
 #waifu-tool button:focus:not(:focus-visible),
+#waifu-retry:focus:not(:focus-visible),
 #waifu-toggle:focus:not(:focus-visible) {
   outline: none;
   box-shadow: none;
@@ -277,7 +274,7 @@
 #waifu:focus-within #waifu-tool {
   opacity: 1;
 }
-#waifu-tool button {
+:is(#waifu-tool button, #waifu-status button) {
   appearance: none;
   border: 0;
   background: transparent;
@@ -287,13 +284,12 @@
   height: 40px;
   text-align: center;
 }
-#waifu-tool svg {
+:is(#waifu-tool, #waifu-status) svg {
   fill: #7b8c9d;
-  cursor: pointer;
   height: 22px;
   transition: fill 0.3s;
 }
-#waifu-tool button:is(:hover, :focus-visible) svg {
+:is(#waifu-tool, #waifu-status) button:is(:hover, :focus-visible) svg {
   fill: #0684bd;
 }
 @keyframes shake {
@@ -456,6 +452,7 @@
   clip-path: inset(50%);
 }
 #waifu-tool button:focus-visible,
+#waifu-retry:focus-visible,
 #waifu-toggle:focus-visible {
   outline: 2px solid #126381;
   outline-offset: 2px;

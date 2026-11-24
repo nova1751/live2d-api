@@ -168,6 +168,7 @@ export async function checkNativeEvents(browser, base) {
     assert.equal(await page.evaluate(() => !!modelsUnderTest.getModel(0).activeDialogue), true);
     assert.equal(await active(), true);
     await load('ship/248_1');
+    assert.equal(await page.locator('#waifu[data-model-error]').count(), 0, 'superseded loads must leave the new model interactive');
     const [sx, sy] = await point('SUTOKA');
     const up = page.waitForRequest(req => req.url().toLowerCase().includes('skirt') && req.url().endsWith('.mtn'));
     await page.mouse.move(sx, sy); await page.mouse.down(); await page.mouse.move(sx, sy-30, { steps: 4 }); await page.mouse.up();

@@ -1,8 +1,9 @@
+import { preferences, session } from './storage';
 import { setLanguage, translated } from './locale';
 import { expandModel } from './expand';
-import { icons } from './icons';
+import { icons, loadingIcon } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
-import { getJson } from './request';
+import { getJson, isLoadCancelled } from './request';
 import { setModelLoading } from './loading';
 import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
@@ -14,8 +15,16 @@ function reportError(error: unknown) {
   console.error('[Live2D]', error);
   const status = document.getElementById('waifu-status-text');
   const message = translated('加载失败，请检查网络或切换模型后重试。', 'Could not load the model. Check your connection or try another character.');
-  if (status && !document.getElementById('waifu')?.hasAttribute('data-model-pending')) status.textContent = message;
+  if (status) status.textContent = message;
+  document.getElementById('waifu')?.setAttribute('data-model-error', '');
   say(message, 5000, 10);
+}
+
+let retryModel: (() => void | Promise<void>) | undefined;
+async function runModel(action: () => void | Promise<void>) {
+  retryModel = action;
+  try { await action(); }
+  catch (error) { if (retryModel === action && !isLoadCancelled(error)) reportError(error); }
 }
 
 async function hitokoto(locale?: LegacyOptions['locale']) {
@@ -44,7 +53,7 @@ let visibilityRevision = 0;
 
 function show() {
   visibilityRevision++;
-  localStorage.removeItem('waifu-display');
+  preferences.removeItem('waifu-display');
   byId('waifu-toggle').setAttribute('tabindex', '-1');
   byId('waifu-toggle').setAttribute('aria-expanded', 'true');
   const widget = byId('waifu');
@@ -64,7 +73,7 @@ function hide() {
   const restoreFocus = widget.contains(document.activeElement);
   const revision = ++visibilityRevision;
   window.loadlive2d.hide?.();
-  localStorage.setItem('waifu-display', String(Date.now()));
+  preferences.setItem('waifu-display', String(Date.now()));
   say(translated('愿你有一天能与重要的人重逢。', 'I hope you meet the people you miss again.'), 2000, 11);
   widget.inert = true;
   widget.style.bottom = '-500px';
@@ -86,17 +95,19 @@ function hide() {
 }
 
 function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, start = false) {
-  sessionStorage.removeItem('waifu-text');
+  session.removeItem('waifu-text');
   const adaptive = Boolean(options.collection);
   const initialFraming = adaptive && models instanceof CatalogModels;
   const size = adaptive ? 1200 : 800;
   const canvas = `<canvas id="live2d" width="${size}" height="${size}"></canvas>`;
+  const retry = translated('重试加载模型', 'Retry loading the model');
   document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}${initialFraming ? ' data-initial-framing' : ''}>
-    <div id="waifu-status" role="status"><span class="waifu-loading-icon" aria-hidden="true"></span><span id="waifu-status-text" class="waifu-sr-only"></span></div>
+    <div id="waifu-status"><span class="waifu-loading-icon" aria-hidden="true">${loadingIcon}</span><button type="button" id="waifu-retry" aria-label="${retry}" title="${retry}">${loadingIcon}</button><span id="waifu-status-text" class="waifu-sr-only" role="status"></span></div>
     <div id="waifu-tips"></div>
     ${adaptive ? `<div class="waifu-viewport"><div class="waifu-hit" aria-hidden="true"></div><div class="waifu-surface">${canvas}</div></div>` : canvas}
     <div id="waifu-tool"></div>
   </div>`);
+  byId('waifu-retry').addEventListener('click', () => { if (retryModel) void runModel(retryModel); });
   setModelLoading(true);
   show();
   window.addEventListener('live2d:dialogue', event => {
@@ -113,15 +124,15 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   });
   window.addEventListener('live2d:costume', event => {
     const url = (event as CustomEvent<unknown>).detail;
-    if (typeof url === 'string') models.costume(url).catch(reportError);
+    if (typeof url === 'string') void runModel(() => models.costume(url));
   });
   const labels = { hitokoto: translated('听一句话', 'Hear a quote'), asteroids: translated('启动小游戏', 'Play Asteroids'), 'switch-model': translated('切换人物', 'Next character'),
     'switch-texture': translated('切换造型', 'Next outfit'), expand: translated('放大查看', 'Expand model'), photo: translated('保存照片', 'Save a picture'), info: translated('项目信息', 'Project information'), quit: translated('收起看板娘', 'Hide companion') };
   const actions = {
-    hitokoto: () => hitokoto(options.locale).catch(reportError),
+    hitokoto: () => hitokoto(options.locale).catch(error => console.warn('[Live2D]', error)),
     asteroids,
-    'switch-model': (event: Event) => models.nextModel(prepareStart(event)).catch(reportError),
-    'switch-texture': (event: Event) => models.nextTexture(prepareStart(event)).catch(reportError),
+    'switch-model': (event: Event) => { const start = prepareStart(event); return runModel(() => models.nextModel(start)); },
+    'switch-texture': (event: Event) => { const start = prepareStart(event); return runModel(() => models.nextTexture(start)); },
     expand: () => expandModel(options.expandedZoom),
     photo: () => {
       say(translated('照好了嘛，是不是很可爱呢？', 'Did you get my good side?'), 6000, 9);
@@ -130,7 +141,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
       window.Live2D.captureFrame = true;
     },
     info: () => window.open('https://github.com/nova1751/live2d-api'),
-    quit: () => { models.cancel(); hide(); },
+    quit: () => { retryModel = undefined; models.cancel(); hide(); },
   };
   for (const name of Array.isArray(options.tools) ? options.tools : Object.keys(actions)) {
     if (options.modelUrl && (name === 'switch-model' || name === 'switch-texture')) continue;
@@ -142,7 +153,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     if (tool === 'expand') button.setAttribute('aria-haspopup', 'dialog');
     button.addEventListener('click', actions[tool]);
   }
-  models.load(undefined, undefined, undefined, start).catch(reportError);
+  void runModel(() => models.load(undefined, undefined, undefined, start));
   getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(error => console.warn('[Live2D]', error));
 }
 
@@ -157,7 +168,7 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
   if (models instanceof CatalogModels) {
     Object.defineProperty(window, Symbol.for('live2dapi-noa.selectModel'), { configurable: true,
       value: async (id: string) => {
-        if (toggle.getAttribute('aria-expanded') === 'false' || localStorage.getItem('waifu-display')) toggle.click();
+        if (toggle.getAttribute('aria-expanded') === 'false' || preferences.getItem('waifu-display')) toggle.click();
         return models.choose(id);
       } });
   }
@@ -169,11 +180,11 @@ window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
       toggle.removeAttribute('first-time');
     } else {
       show();
-      models.reopen(start)?.catch(reportError);
+      void runModel(() => models.reopen(start));
     }
     if (event.detail === 0) document.querySelector<HTMLElement>('#waifu-tool button')?.focus();
   });
-  const hiddenSince = Number(localStorage.getItem('waifu-display'));
+  const hiddenSince = Number(preferences.getItem('waifu-display'));
   if (hiddenSince && Date.now() - hiddenSince <= 86400000) {
     toggle.setAttribute('first-time', 'true');
     void toggle.offsetWidth;
