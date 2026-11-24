@@ -26,7 +26,7 @@ Two more playable examples · [Iron Saga · Slokai](https://nova1751.github.io/l
 
 ### Embed a collection
 
-Place the script before `</body>`. By default, **Switch character** advances through each outfit in catalog order, continues into the next game and wraps at the end. The widget loads each catalog when needed and restores the previous selection on reload.
+Place the script before `</body>`. **Next character** opens the next character’s first listed form. **Next outfit** cycles through the current character’s costumes, tiers or damaged forms. It is disabled for characters with one form. The full catalog advances to the next game after its last character. A single-game embed wraps within that game. Reloading restores the previous selection. To browse every catalog entry in order, pass `switchBy: 'outfit'` to `loadWidget`.
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>

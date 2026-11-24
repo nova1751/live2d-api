@@ -26,7 +26,7 @@
 
 ### 按作品引入
 
-把脚本放在网页的 `</body>` 前。不带参数时，“切换人物”按图鉴顺序逐个切换造型，一部作品结束后进入下一部，最后回到第一部。作品目录按需加载，刷新后恢复上次选择。
+把脚本放在网页的 `</body>` 前。“切换人物”跳到下一位人物的首个造型。“切换造型”只在当前人物的服装、阶级或战损等版本间轮换。只有一个造型时，换装按钮呈灰色。全量入口走完一部作品的人物后进入下一部，指定作品时在该作品内循环。刷新后恢复上次选择。需要逐条浏览时，可在模块 API 的 `loadWidget` 调用中指定 `switchBy: 'outfit'`。
 
 ```html
 <script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>

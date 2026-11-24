@@ -11,6 +11,7 @@ export async function checkCollectionShortcut(browser, base) {
       const game = file === 'library.json' ? games[0] : file.slice(0, -5);
       requested.push(game);
       const forms = ['a', 'b'].map(outfit => ['test/' + game + '/' + outfit, [{source:'test', manifest:outfit === 'a' ? 'index.json' : '02/index.json'}]]);
+      forms.push(['test/' + game + '-solo/a', [{ source: 'test', manifest: 'index.json' }]]);
       await route.fulfill({json:{schemaVersion:1, sources:{test:{baseUrl:base+'model/fairy/air_attack/'}}, models:Object.fromEntries(forms)}});
     });
     await page.route(base + 'shortcut-host*', route => {
@@ -19,6 +20,8 @@ export async function checkCollectionShortcut(browser, base) {
     });
     const wait = (game, outfit) => page.waitForFunction(id => document.body.dataset.model === id, 'test/'+game+'/'+outfit);
     const next = () => page.locator('#waifu-tool-switch-model').evaluate(button => button.click());
+    const outfit = page.locator('#waifu-tool-switch-texture');
+    const changeOutfit = () => outfit.evaluate(button => button.click());
     await page.goto(base+'shortcut-host');
     for (const [i, game] of games.entries()) {
       await wait(game, 'a');
@@ -46,7 +49,7 @@ export async function checkCollectionShortcut(browser, base) {
         await page.route(outfitUrl, async route => { await gate; await route.fulfill({status:503}); }, { times:1 });
         try {
           const requestedOutfit = page.waitForRequest(outfitUrl);
-          await next();
+          await changeOutfit();
           await requestedOutfit;
           await page.waitForFunction(() => typeof window.frameMatched === 'boolean');
           assert.equal(await page.evaluate(() => window.frameMatched), true);
@@ -61,21 +64,36 @@ export async function checkCollectionShortcut(browser, base) {
         await page.getByRole('button', { name: '重试加载模型' }).evaluate(button => button.click());
         await wait(game, 'b');
         assert.equal(await page.locator('.waifu-model-still').count(),0);
-      } else await next();
-      await wait(game, 'b');
+      }
+      await next();
+      await wait(game + '-solo', 'a');
+      assert.equal(await outfit.isDisabled(), true);
       await next();
     }
     await wait(games[0], 'a');
     requested.length = 0;
     await page.goto(base+'shortcut-host?collection=azur-lane');
     await wait(games[1], 'a');
-    await next();
+    await changeOutfit();
     await wait(games[1], 'b');
     await page.reload();
     await wait(games[1], 'b');
+    await changeOutfit();
+    await wait(games[1], 'a');
+    await next();
+    await wait(games[1] + '-solo', 'a');
     await next();
     await wait(games[1], 'a');
     assert.deepEqual(requested, ['azur-lane', 'azur-lane']);
+
+    await page.route(base + 'outfit-order-host', route => route.fulfill({ contentType: 'text/html',
+      body: '<script type="module">import {loadWidget} from "./widget.mjs"; await loadWidget({collection:"all",switchBy:"outfit"});</script>' }));
+    await page.goto(base + 'outfit-order-host');
+    await wait(games[0], 'a');
+    await page.getByRole('button', { name: '下一个模型条目' }).evaluate(button => button.click());
+    await wait(games[0], 'b');
+    await changeOutfit();
+    await wait(games[0], 'a');
 
     const { version } = await (await page.request.get(base + 'package.json')).json();
     const entries = ['autoload.js', 'collections.mjs', 'girls-frontline.mjs'];
