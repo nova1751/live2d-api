@@ -1,7 +1,7 @@
 /*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */
 
 // package.json
-var version = "2.9.13";
+var version = "2.9.14";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -31,7 +31,6 @@ if (window.innerWidth >= 768) {
   const { loadWidget } = await import(runtime.href);
   await loadWidget({
     collection,
-    switchBy: "outfit",
     locale: entry.searchParams.get("lang") === "en" ? "en" : "zh-CN",
     baseUrl
   });

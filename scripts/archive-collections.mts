@@ -275,7 +275,7 @@ try {
       "const entry = new URL(import.meta.url), baseUrl = new URL('.', entry);",
       "const collection = entry.searchParams.get('collection') || 'all';",
       "const file = collection === 'all' || collection === 'girls-frontline' ? 'library.json' : 'games/' + encodeURIComponent(collection) + '.json';",
-      "if (innerWidth >= 768) await loadWidget({ collection, baseUrl, switchBy: 'outfit', catalogUrl: new URL('catalog/' + file, baseUrl), locale: entry.searchParams.get('lang') === 'en' ? 'en' : 'zh-CN' });",
+      "if (innerWidth >= 768) await loadWidget({ collection, baseUrl, catalogUrl: new URL('catalog/' + file, baseUrl), locale: entry.searchParams.get('lang') === 'en' ? 'en' : 'zh-CN' });",
     ].join('\n'),
   );
   blob(

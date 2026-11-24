@@ -9,7 +9,6 @@ if (window.innerWidth >= 768) {
   const { loadWidget }: typeof import('./widget.mjs') = await import(runtime.href);
   await loadWidget({
     collection: collection as WidgetOptions['collection'],
-    switchBy: 'outfit',
     locale: entry.searchParams.get('lang') === 'en' ? 'en' : 'zh-CN',
     baseUrl,
   });

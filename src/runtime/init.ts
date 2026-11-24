@@ -126,7 +126,8 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     const url = (event as CustomEvent<unknown>).detail;
     if (typeof url === 'string') void runModel(() => models.costume(url));
   });
-  const labels = { hitokoto: translated('听一句话', 'Hear a quote'), asteroids: translated('启动小游戏', 'Play Asteroids'), 'switch-model': translated('切换人物', 'Next character'),
+  const entryOrder = models instanceof CatalogModels && options.switchBy === 'outfit';
+  const labels = { hitokoto: translated('听一句话', 'Hear a quote'), asteroids: translated('启动小游戏', 'Play Asteroids'), 'switch-model': entryOrder ? translated('下一个模型条目', 'Next catalog entry') : translated('切换人物', 'Next character'),
     'switch-texture': translated('切换造型', 'Next outfit'), expand: translated('放大查看', 'Expand model'), photo: translated('保存照片', 'Save a picture'), info: translated('项目信息', 'Project information'), quit: translated('收起看板娘', 'Hide companion') };
   const actions = {
     hitokoto: () => hitokoto(options.locale).catch(error => console.warn('[Live2D]', error)),

@@ -1,6 +1,7 @@
 import { preferences } from '../runtime/storage';
 import { ModelTransition } from './transition';
 import { catalogFraming } from './framing';
+import { indexCharacters } from './navigation';
 import { setModelLoading } from '../runtime/loading';
 import { isLoadCancelled } from '../runtime/request';
 import { collections, collectionCatalogUrl, loadModelCatalog, type Collection, type LoadedModelCatalog } from './catalog';
@@ -11,7 +12,7 @@ export class CatalogModels {
   private sequence = 0;
   private transition = new ModelTransition();
   private active?: string;
-  private lastModel?: { library: LoadedModelCatalog; id: string };
+  private lastModel?: { library: LoadedModelCatalog; id: string; navigation: ReturnType<typeof indexCharacters> };
   private readonly key: string;
 
   constructor(private readonly url: string, private readonly options: LegacyOptions) {
@@ -68,7 +69,13 @@ export class CatalogModels {
       if (revision === this.sequence) {
         this.active = library.visibleId(id);
         this.collection = collection;
-        this.lastModel = { library, id };
+        const navigation = this.lastModel?.library === library ? this.lastModel.navigation : indexCharacters(library.ids);
+        this.lastModel = { library, id, navigation };
+        const outfitButton = document.getElementById('waifu-tool-switch-texture') as HTMLButtonElement | null;
+        if (outfitButton) outfitButton.disabled = navigation.outfitsFor(this.active).length < 2;
+        const characterButton = document.getElementById('waifu-tool-switch-model') as HTMLButtonElement | null;
+        if (characterButton) characterButton.disabled = this.options.collection !== 'all' &&
+          (this.options.switchBy === 'outfit' ? library.ids.length : navigation.count) < 2;
         preferences.setItem(this.key, this.options.collection === 'all' ? collection + ':' + id : id);
         window.dispatchEvent(new CustomEvent('live2d:model', { detail: id }));
       }
@@ -124,21 +131,19 @@ export class CatalogModels {
     else if (this.lastModel) return this.select(() => this.lastModel!.id, start);
     else return this.load(undefined, undefined, undefined, start);
   }
-  private character(id: string) { return id.split('/').slice(0, 2).join('/'); }
   nextModel(start = false) {
     return this.select(ids => {
-      if (this.options.collection === 'all' || this.options.switchBy === 'outfit') {
+      if (this.options.switchBy === 'outfit') {
         const next = ids.indexOf(this.active ?? '') + 1;
         return this.options.collection === 'all' ? ids[next] : ids[next % ids.length];
       }
-      const groups = [...new Set(ids.map(id => this.character(id)))];
-      const group = groups[(groups.indexOf(this.character(this.active ?? '')) + 1) % groups.length];
-      return ids.find(id => this.character(id) === group)!;
+      if (!this.active || !this.lastModel) return ids[0];
+      return this.lastModel.navigation.nextCharacter(this.active, this.options.collection !== 'all');
     }, start);
   }
   nextTexture(start = false) {
     return this.select(ids => {
-      const forms = ids.filter(id => this.character(id) === this.character(this.active ?? ids[0]));
+      const forms = (this.lastModel?.navigation ?? indexCharacters(ids)).outfitsFor(this.active ?? ids[0]);
       if (MODE === 'random') {
         const others = forms.filter(id => id !== this.active);
         return others.length ? others[Math.floor(Math.random() * others.length)] : forms[0];

@@ -286,6 +286,8 @@ body > #waifu.waifu-adaptive #waifu-status { left: calc(var(--waifu-max-width) /
 :is(#waifu-tool, #waifu-status) button:is(:hover, :focus-visible) svg {
   fill: #0684bd;
 }
+#waifu-tool button:disabled { opacity: 0.4; cursor: default; }
+#waifu-tool button:disabled svg { fill: #7b8c9d; }
 
 @keyframes shake {
   2% {

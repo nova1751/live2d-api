@@ -5,6 +5,30 @@ import { transform } from 'esbuild';
 
 const json = async path => JSON.parse(await readFile(new URL('../' + path, import.meta.url)));
 
+test('character and outfit navigation together reach every visible form in every game', async () => {
+  const { collections, parseModelCatalog } = await import('../src/library/catalog.ts');
+  const { indexCharacters } = await import('../src/library/navigation.ts');
+  for (const game of collections) {
+    const path = game === 'girls-frontline' ? 'catalog/library.json' : 'catalog/games/' + game + '.json';
+    const { ids } = parseModelCatalog(await json(path), new URL(path, 'https://example.org/'), game);
+    const navigation = indexCharacters(ids);
+    const visited = new Set<string>();
+    for (let first = ids[0]; first; ) {
+      const next = navigation.nextCharacter(first, false);
+      const forms = navigation.outfitsFor(first);
+      assert.equal(forms[0], first);
+      for (const form of forms) {
+        assert.ok(!visited.has(form), form);
+        visited.add(form);
+        assert.equal(navigation.nextCharacter(form, true), next ?? ids[0]);
+      }
+      if (!next) break;
+      first = next;
+    }
+    assert.deepEqual(visited, new Set(ids));
+  }
+});
+
 test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewriting', async () => {
   const { parseModelCatalog } = await import('../src/library/catalog.ts');
   const source = await json('catalog/library.json');
