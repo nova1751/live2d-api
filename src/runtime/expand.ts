@@ -1,4 +1,5 @@
 import { translated } from './locale';
+import { icons, retryIcon } from './icons';
 
 /** Enlarge the mounted canvas so the current model and its playback stay alive. */
 export function expandModel(initialZoom = 100) {
@@ -21,6 +22,7 @@ export function expandModel(initialZoom = 100) {
   viewport.tabIndex = 0;
   viewport.setAttribute('role', 'region');
   viewport.setAttribute('aria-label', translated('模型预览区', 'Model preview'));
+  viewport.title = translated('放大后可滚动、拖动空白处或用方向键移动画面', 'Scroll, drag the background, or use arrow keys to move the zoomed view');
   const content = document.createElement('div');
   content.className = 'waifu-view-content';
   viewport.append(content);
@@ -28,6 +30,7 @@ export function expandModel(initialZoom = 100) {
   const zoom = document.createElement('div');
   zoom.className = 'waifu-view-zoom';
   const label = document.createElement('label');
+  label.className = 'waifu-sr-only';
   label.textContent = translated('缩放', 'Zoom');
   const slider = document.createElement('input');
   slider.type = 'range';
@@ -42,9 +45,18 @@ export function expandModel(initialZoom = 100) {
     input.max = '300';
     input.step = '1';
   }
-  const fit = document.createElement('button');
-  fit.type = 'button';
-  fit.textContent = translated('适应窗口', 'Fit to view');
+  const percentage = document.createElement('div');
+  percentage.className = 'waifu-view-percent';
+  percentage.append(number, '%');
+  function control(name: string, icon: string) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-label', name);
+    button.title = name;
+    button.innerHTML = icon;
+    return button;
+  }
+  const fit = control(translated('适应窗口', 'Fit to view'), retryIcon);
   let percent = 100;
   function setZoom(value: number) {
     const before = widget!.getBoundingClientRect();
@@ -54,6 +66,7 @@ export function expandModel(initialZoom = 100) {
     percent = Math.max(50, Math.min(300, Math.round(Number.isFinite(value) ? value : percent)));
     slider.value = number.value = String(percent);
     slider.setAttribute('aria-valuetext', percent + '%');
+    viewport.toggleAttribute('data-pannable', percent > 100);
     content.style.setProperty('--view-scale', String(percent / 100));
     const after = widget!.getBoundingClientRect();
     if (before.width && before.height) {
@@ -68,19 +81,18 @@ export function expandModel(initialZoom = 100) {
     if (event.key === 'Enter') { event.preventDefault(); setZoom(number.valueAsNumber); }
   });
   fit.addEventListener('click', () => setZoom(100));
-  zoom.append(label, slider, number, '%', fit);
+  zoom.append(label, slider, percentage, fit);
   controls.append(zoom);
-  const close = document.createElement('button');
-  close.type = 'button';
-  close.textContent = translated('还原', 'Restore');
+  const close = control(translated('还原', 'Restore'), icons.quit);
   close.autofocus = true;
   close.addEventListener('click', () => dialog.close());
   if (document.fullscreenEnabled && typeof stage.requestFullscreen === 'function') {
-    const toggle = document.createElement('button');
-    toggle.type = 'button';
+    const toggle = control(translated('全屏', 'Fullscreen'), icons.expand);
     const update = () => {
       const active = document.fullscreenElement === stage;
-      toggle.textContent = active ? translated('退出全屏', 'Exit fullscreen') : translated('全屏', 'Fullscreen');
+      const name = active ? translated('退出全屏', 'Exit fullscreen') : translated('全屏', 'Fullscreen');
+      toggle.setAttribute('aria-label', name);
+      toggle.title = name;
     };
     stage.addEventListener('fullscreenchange', update);
     update();
@@ -93,9 +105,27 @@ export function expandModel(initialZoom = 100) {
         close.focus();
       }
     });
-    controls.append(toggle);
+    zoom.append(toggle);
   }
-  controls.append(close);
+  zoom.append(close);
+  let drag: { id: number; x: number; y: number; left: number; top: number } | undefined;
+  viewport.addEventListener('pointerdown', event => {
+    if (percent <= 100 || event.pointerType !== 'mouse' || drag) return;
+    const background = event.target === viewport || event.target === content;
+    if (event.button !== 1 && (event.button !== 0 || !(event.altKey || background))) return;
+    event.preventDefault();
+    event.stopPropagation();
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop };
+    viewport.setPointerCapture(event.pointerId);
+    viewport.setAttribute('data-panning', '');
+  }, true);
+  viewport.addEventListener('pointermove', event => {
+    if (drag?.id === event.pointerId) viewport.scrollTo(drag.left + drag.x - event.clientX, drag.top + drag.y - event.clientY);
+  });
+  viewport.addEventListener('lostpointercapture', () => {
+    drag = undefined;
+    viewport.removeAttribute('data-panning');
+  });
   stage.append(controls, viewport);
   dialog.append(stage);
   document.body.append(dialog);

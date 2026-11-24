@@ -52,9 +52,9 @@ export async function checkPaintOverflow(browser, base) {
       assert.deepEqual(await floatingEdges(), loadingEdges, 'first paint keeps the shell footprint');
       assert.equal(await page.locator('#waifu-status').textContent(), '');
       await page.addStyleTag({ content: '#waifu-tips { visibility:hidden } #waifu-tool svg { transition:none }' });
-      const checkCaption = async (subject) => {
+      const checkCaption = async (subject, gap = 12) => {
         const tip = await page.locator('#waifu-tips').evaluate(el => el.getBoundingClientRect().toJSON());
-        assert.ok(Math.abs(subject.y - tip.bottom - 12) < 1, JSON.stringify({ subject, tip }));
+        assert.ok(Math.abs(subject.y - tip.bottom - gap) < 1, JSON.stringify({ subject, tip }));
         assert.ok(Math.abs(subject.x + subject.width / 2 - tip.x - tip.width / 2) < 1);
         assert.ok(tip.y >= 0);
       };
@@ -129,20 +129,36 @@ export async function checkPaintOverflow(browser, base) {
       const originalCanvas = await page.locator('#live2d').elementHandle();
       await page.locator('#waifu-tool-expand').click({ force: true });
       const viewer = page.locator('#waifu-expanded');
+      const view = viewer.locator('.waifu-view-viewport');
+      const caption = viewer.locator('#waifu-tips');
+      await caption.evaluate(el => { el.textContent = '指挥官，今天也一起加油吧。'; });
       const assertFit = async () => {
-        const view = await viewer.locator('.waifu-view-viewport').boundingBox();
+        const frame = await view.boundingBox();
         const canvas = await viewer.locator('#live2d').boundingBox();
-        assert.ok(canvas.x >= view.x - 1 && canvas.y >= view.y - 1 &&
-          canvas.x + canvas.width <= view.x + view.width + 1 &&
-          canvas.y + canvas.height <= view.y + view.height + 1, JSON.stringify({ view, canvas }));
+        const subject = await viewer.locator('.waifu-hit').boundingBox();
+        const tip = await caption.boundingBox();
+        assert.ok(subject.x >= frame.x - 1 && tip.y >= frame.y &&
+          subject.x + subject.width <= frame.x + frame.width + 1 &&
+          subject.y + subject.height <= frame.y + frame.height + 1, JSON.stringify({ frame, subject, tip }));
+        assert.ok(Math.abs(subject.x + subject.width / 2 - frame.x - frame.width / 2) <= 1);
+        if (width > 1000) {
+          const coverage = (subject.y + subject.height - tip.y) / frame.height;
+          assert.ok(coverage >= 0.80 && coverage <= 0.90, String(coverage));
+        }
+        assert.deepEqual(await view.evaluate(el => [el.scrollWidth - el.clientWidth, el.scrollHeight - el.clientHeight]), [0, 0]);
         return canvas.width;
       };
       const expandedWidth = await assertFit();
       const expandedCanvas = await viewer.locator('#live2d').boundingBox();
       const subject = await viewer.locator('.waifu-hit').boundingBox();
-      await checkCaption(subject);
+      await checkCaption(subject, 820 * 0.012);
       const rail = await viewer.locator('#waifu-tool').boundingBox();
-      assert.ok(Math.abs(rail.x - subject.x - subject.width - 6) < 2);
+      if (width > 540) {
+        assert.ok(Math.abs(rail.x - subject.x - subject.width - 6) < 2);
+        assert.ok(Math.abs(rail.y + rail.height / 2 - subject.y - subject.height / 2) < 2);
+      } else {
+        assert.ok(Math.abs(rail.y - subject.y - subject.height - 4) < 2);
+      }
       assert.ok(Math.abs(expandedWidth - expandedCanvas.height) <= 1, 'the character canvas keeps its aspect on a wide screen');
       if (width > 1000) {
         assert.ok(Math.abs(expandedCanvas.x + expandedWidth / 2 - width / 2) < 2);
@@ -157,6 +173,13 @@ export async function checkPaintOverflow(browser, base) {
       await viewer.getByRole('spinbutton').fill('200');
       await viewer.getByRole('spinbutton').press('Enter');
       assert.ok(Math.abs((await viewer.locator('#live2d').boundingBox()).width - 2 * fitted) <= 2);
+      assert.equal(await view.evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
+      if (width > 1000) {
+        await view.focus();
+        const scroll = await view.evaluate(el => el.scrollTop);
+        await view.press('ArrowUp');
+        await page.waitForFunction(top => document.querySelector('.waifu-view-viewport').scrollTop < top, scroll);
+      }
       await viewer.getByRole('button', { name: '适应窗口' }).click();
       await assertFit();
       await viewer.getByRole('button', { name: '退出全屏' }).click();
