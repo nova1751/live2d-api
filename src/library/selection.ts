@@ -2,6 +2,7 @@ import { preferences } from '../runtime/storage';
 import { ModelTransition } from './transition';
 import { catalogFraming } from './framing';
 import { setModelLoading } from '../runtime/loading';
+import { isLoadCancelled } from '../runtime/request';
 import { collections, collectionCatalogUrl, loadModelCatalog, type Collection, type LoadedModelCatalog } from './catalog';
 
 export class CatalogModels {
@@ -73,7 +74,7 @@ export class CatalogModels {
       }
     } catch (error) {
       if (revision !== this.sequence) return;
-      if (replacing && this.lastModel) {
+      if (replacing && this.lastModel && !isLoadCancelled(error)) {
         const { library, id } = this.lastModel;
         try { await this.render(id, this.collection, library.resolve(id), false, revision); }
         catch { if (revision === this.sequence) this.active = undefined; }

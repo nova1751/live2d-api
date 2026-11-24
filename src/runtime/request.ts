@@ -1,5 +1,9 @@
 export const loadTimeout = 15000;
 
+export function isLoadCancelled(error: unknown) {
+  return error instanceof DOMException && error.name === 'AbortError';
+}
+
 export function appendResource(element: HTMLScriptElement | HTMLLinkElement, url: string) {
   return new Promise<void>((resolve, reject) => {
     const finish = (error?: Error) => {

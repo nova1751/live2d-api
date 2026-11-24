@@ -3,7 +3,7 @@ import { setLanguage, translated } from './locale';
 import { expandModel } from './expand';
 import { icons, loadingIcon } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
-import { getJson } from './request';
+import { getJson, isLoadCancelled } from './request';
 import { setModelLoading } from './loading';
 import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
@@ -24,7 +24,7 @@ let retryModel: (() => void | Promise<void>) | undefined;
 async function runModel(action: () => void | Promise<void>) {
   retryModel = action;
   try { await action(); }
-  catch (error) { if (retryModel === action) reportError(error); }
+  catch (error) { if (retryModel === action && !isLoadCancelled(error)) reportError(error); }
 }
 
 async function hitokoto(locale?: LegacyOptions['locale']) {

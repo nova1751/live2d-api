@@ -1,6 +1,6 @@
 import { preferences } from '../runtime/storage';
 import { translated } from '../runtime/locale';
-import { getJson, withLoadTimeout } from '../runtime/request';
+import { getJson, isLoadCancelled, withLoadTimeout } from '../runtime/request';
 import { setModelLoading } from '../runtime/loading';
 import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
@@ -98,7 +98,7 @@ export class LegacyModels {
     this.loaded = false;
     try { await this.paint(url, start); }
     catch (error) {
-      if (revision === this.revision && this.lastUrl && this.lastUrl !== url) {
+      if (revision === this.revision && this.lastUrl && this.lastUrl !== url && !isLoadCancelled(error)) {
         try {
           await this.paint(this.lastUrl, false);
           if (revision === this.revision) this.loaded = true;
