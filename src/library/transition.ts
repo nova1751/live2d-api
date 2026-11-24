@@ -77,6 +77,8 @@ export class ModelTransition {
       container.toggleAttribute('data-wide-model', aspect >= 1.35);
       container.removeAttribute('data-model-loading');
       if (container.hasAttribute('data-initial-framing')) {
+        const status = document.getElementById('waifu-status');
+        if (status) status.textContent = '';
         container.removeAttribute('data-initial-framing');
         if (document.activeElement?.matches('#waifu-toggle:focus-visible')) {
           container.querySelector<HTMLButtonElement>('#waifu-tool button')?.focus({ preventScroll: true });
