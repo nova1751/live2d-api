@@ -110,6 +110,29 @@ export async function checkPaintOverflow(browser, base) {
         assert.deepEqual(await colors(), ['rgb(6, 132, 189)', 'none']);
       }
       const tab = page.locator('#waifu-toggle');
+      const originalCanvas = await page.locator('#live2d').elementHandle();
+      await page.locator('#waifu-tool-expand').click({ force: true });
+      const viewer = page.locator('#waifu-expanded');
+      const assertFit = async () => {
+        const view = await viewer.locator('.waifu-view-viewport').boundingBox();
+        const canvas = await viewer.locator('#live2d').boundingBox();
+        assert.ok(canvas.x >= view.x - 1 && canvas.y >= view.y - 1 &&
+          canvas.x + canvas.width <= view.x + view.width + 1 &&
+          canvas.y + canvas.height <= view.y + view.height + 1, JSON.stringify({ view, canvas }));
+        return canvas.width;
+      };
+      await assertFit();
+      await viewer.getByRole('button', { name: '全屏', exact: true }).click();
+      await page.waitForFunction(() => !!document.fullscreenElement);
+      const fitted = await assertFit();
+      await viewer.getByRole('spinbutton').fill('200');
+      await viewer.getByRole('spinbutton').press('Enter');
+      assert.ok(Math.abs((await viewer.locator('#live2d').boundingBox()).width - 2 * fitted) <= 2);
+      await viewer.getByRole('button', { name: '适应窗口' }).click();
+      await assertFit();
+      await viewer.getByRole('button', { name: '退出全屏' }).click();
+      await viewer.getByRole('button', { name: '还原' }).click();
+      assert.ok(await originalCanvas.evaluate(canvas => canvas === document.querySelector('body > #waifu #live2d')));
       await page.locator('#waifu-tool-quit').click();
       if (animated) {
         await waitForSlide(0, -500);

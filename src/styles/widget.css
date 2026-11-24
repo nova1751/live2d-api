@@ -596,6 +596,23 @@ body > #waifu.waifu-adaptive #waifu-status { left: calc(var(--waifu-max-width) /
   --waifu-max-width: calc((100cqw - var(--waifu-side-space) - 28px) * var(--view-scale, 1));
   --waifu-max-height: calc((100cqh - var(--view-headroom) - 20px) * var(--view-scale, 1));
 }
+/* Fit the whole square paint surface, including its motion margin. Scene rigs
+   already render to a rectangular canvas with the authored aspect ratio. */
+#waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) {
+  --waifu-canvas-size: min(var(--waifu-max-width), var(--waifu-max-height));
+  --waifu-framing-size: calc(var(--waifu-canvas-size) / var(--waifu-paint-scale, 1));
+  --waifu-model-width: min(var(--waifu-framing-size), calc(var(--waifu-framing-size) * var(--waifu-aspect, 1)));
+  width: calc(var(--waifu-canvas-size) + var(--waifu-side-space));
+  height: var(--waifu-canvas-size);
+}
+#waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) .waifu-viewport {
+  width: var(--waifu-model-width);
+  height: var(--waifu-model-height);
+  left: calc((var(--waifu-canvas-size) - var(--waifu-model-width)) / 2);
+  top: auto;
+  bottom: calc((var(--waifu-canvas-size) - var(--waifu-framing-size)) / 2);
+}
+#waifu-expanded #waifu-status { left: calc(var(--waifu-canvas-size, var(--waifu-model-width, 350px)) / 2); }
 #waifu-expanded #waifu:not(.waifu-adaptive) #live2d {
   width: calc(min(100cqw - 68px, 100cqh - var(--view-headroom) - 20px) * var(--view-scale, 1));
   height: auto;

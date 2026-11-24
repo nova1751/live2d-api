@@ -18,6 +18,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   // Scene rigs park scenery outside their Cubism artboard to animate it into view.
   // Fit into a viewport of the authored aspect so the GPU clips that scenery naturally.
   if (sceneAspect && sceneAspect > 0 && Number.isFinite(sceneAspect)) {
+    host.classList.add('waifu-scene-artboard');
     Object.assign(host.style, {
       inset: 'auto auto 0 50%', transform: 'translateX(-50%)',
       width: Math.min(1, sceneAspect) * 100 + '%',
