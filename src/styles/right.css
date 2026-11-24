@@ -1,4 +1,7 @@
 @import "./widget.css";
 #waifu { right: 0; }
-#waifu.waifu-adaptive { right: var(--waifu-right-inset); }
+#waifu.waifu-adaptive {
+  right: var(--waifu-right-inset);
+  --waifu-viewport-left: calc(var(--waifu-max-width) - var(--waifu-model-width));
+}
 #waifu-tool { left: 10px; }
