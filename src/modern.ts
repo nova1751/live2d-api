@@ -3,7 +3,7 @@ import { createLive2D, OFFICIAL_CUBISM_CORE_URL, type Live2DInstance } from 'liv
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
 import type { Camera, Framing } from './library/framing';
-import { readActions, bindInteractions } from './modern/interactions';
+import { loadModernAssets, bindInteractions } from './modern/interactions';
 import type { DialogueSource, GameCue } from './library/catalog';
 
 export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, hiddenDrawables?: readonly string[]) {
@@ -39,7 +39,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   }
   signal.addEventListener('abort', cleanup, { once: true });
   try {
-    const { actions, idleFiles, src: model, resolveAsset } = await readActions(src, dialogue, signal, cues, randomTap);
+    const { interactions, src: model, resolveAsset } = loadModernAssets(src, dialogue, signal, cues, randomTap);
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
@@ -95,10 +95,14 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         if (sample.getImageData(0,0,1,1).data[3] > 16) onHit();
       }));
     } : undefined;
-    const interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible);
-    window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
+    let interaction: ReturnType<typeof bindInteractions> | undefined;
+    void interactions.then(({ actions, idleFiles }) => {
+      if (signal.aborted || !wrapper.contains(canvas)) return;
+      interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible);
+      window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
+    }).catch(error => { if (!signal.aborted) console.warn('[Live2D] Interactions unavailable', error); });
     return {
-      playMotion: interaction.playMotion,
+      playMotion: (group: string, index: number) => interaction?.playMotion(group, index) ?? false,
       onNextPaint(copy: (canvas: HTMLCanvasElement) => void) {
         if (!graphics || !output || signal.aborted) return;
         const unsubscribe = graphics.onFrame(() => {
@@ -107,7 +111,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         });
         return unsubscribe;
       },
-      pause: () => { interaction.stop(); instance.pause(); },
+      pause: () => { interaction?.stop(); instance.pause(); },
       resume: () => instance.resume(),
       capture() {
         requestAnimationFrame(() => {

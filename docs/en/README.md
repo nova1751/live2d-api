@@ -198,6 +198,8 @@ The shortcut displays the widget on viewports at least 768 CSS pixels wide. A fi
 
 ## Girls’ Frontline examples and offline use
 
+The public catalogs pin their model sources and serve large asset collections in smaller CDN packs. The mainland entry routes assets through `cdn.jsdmirror.com`, and the overseas entry prefers jsDelivr. An npm update ships the player. For independent control over caching and storage capacity, deploy the archived assets and catalogs to your own object storage and CDN, then point `catalogUrl` at the deployed catalog.
+
 To archive all seven collections, run `node scripts/archive-collections.mts ../model-cache --bundle ../models.bundle` in this repository. The printed Git ref includes the player, model files, textures, motions, cataloged recordings, subtitles and repairs. Run `node scripts/check-model-archive.mts <ref>` to verify the files and `node scripts/preview-model-archive.mts <ref>` to browse them. Pass `--core <licensed Core file>` to the preview command for offline Cubism 3–5 rendering. Public CDN URLs keep their existing configuration. To restore, inspect the bundle with `git bundle list-heads ../models.bundle`, then run `git fetch ../models.bundle <ref>:<ref>` in the player repository.
 
 The Girls’ Frontline gallery lists 443 selectable forms across 129 entries from the audited public collections. It includes fairies, dolls, adjutants, squads and backgrounds. Standard and damaged variants have distinct IDs. Seven older IDs resolve to matching outfits. These counts describe the indexed sources. [Model catalog](https://github.com/nova1751/live2d-api/blob/main/catalog/library.json) · [Source audit](https://github.com/nova1751/live2d-api/blob/main/docs/model-library.zh-CN.md)

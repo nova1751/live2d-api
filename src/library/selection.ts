@@ -1,5 +1,6 @@
 import { ModelTransition } from './transition';
 import { catalogFraming } from './framing';
+import { setModelLoading } from '../runtime/loading';
 import { collections, collectionCatalogUrl, loadModelCatalog, type Collection } from './catalog';
 
 export class CatalogModels {
@@ -42,6 +43,7 @@ export class CatalogModels {
   }
   private async select(selectId: (ids: string[], legacyIds: string[][] | undefined, visibleId: (id: string) => string) => string | undefined, start: boolean) {
     const revision = ++this.sequence;
+    setModelLoading(true);
     try {
       let collection = this.collection;
       const freeze = this.options.collection && this.active ? this.transition.freeze() : undefined;
@@ -60,7 +62,12 @@ export class CatalogModels {
       const fitCharacter = this.options.collection && !sceneAspect && !id.startsWith('background/');
       const paintScale = fitCharacter ? 1.5 : 1;
       const framing = fitCharacter ? catalogFraming(id, value => { aspect = value; }, paintScale, collection === 'bang-dream') : undefined;
-      const onPaint = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
+      const present = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
+      const onPaint = () => {
+        if (revision !== this.sequence) return;
+        present?.();
+        setModelLoading(false);
+      };
       await window.loadlive2d('live2d', modelUrl, { start, locale: this.options.locale, captions, sceneAspect, hiddenDrawables, framing, onPaint, coreUrl: this.options.coreUrl, dialogue, soundAliases, cues, files,
         randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: collection === 'bang-dream' });
       if (revision === this.sequence) {
@@ -70,10 +77,10 @@ export class CatalogModels {
         window.dispatchEvent(new CustomEvent('live2d:model', { detail: id }));
       }
     } catch (error) {
-      if (revision === this.sequence) {
-        this.transition.cancelFreeze();
-        document.getElementById('waifu')?.removeAttribute('data-initial-framing');
-      }
+      if (revision !== this.sequence) return;
+      this.transition.cancelFreeze();
+      setModelLoading(false);
+      document.getElementById('waifu')?.removeAttribute('data-initial-framing');
       throw error;
     }
   }
@@ -87,7 +94,13 @@ export class CatalogModels {
     }, start);
   }
   choose(id: string) { return this.select(() => id, false); }
-  cancel() { this.sequence++; this.transition.cancelFreeze(); }
+  cancel() {
+    this.sequence++;
+    if (document.getElementById('waifu')?.hasAttribute('data-model-pending')) this.active = undefined;
+    this.transition.cancelFreeze();
+    document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+    setModelLoading(false);
+  }
   reopen(start: boolean) { if (this.active) window.loadlive2d.show?.(start); else return this.load(undefined, undefined, undefined, start); }
   private character(id: string) { return id.split('/').slice(0, 2).join('/'); }
   nextModel(start = false) {

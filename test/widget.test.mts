@@ -30,6 +30,11 @@ function browser(failOnce) {
       hasAttribute: name => attributes.has(name),
       setAttribute: (name, value) => attributes.set(name, value),
       removeAttribute: name => attributes.delete(name),
+      toggleAttribute(name, force = !attributes.has(name)) {
+        if (force) attributes.set(name, '');
+        else attributes.delete(name);
+        return force;
+      },
       dataset: {}, style: {}, classList: { add() {}, remove() {} },
       remove() {},
       addEventListener(event, listener) { this[event] = () => listener({ isTrusted: false }); },
@@ -50,7 +55,7 @@ function browser(failOnce) {
           return tag.onerror();
         }
         if (url.endsWith('live2d.min.js')) {
-          const draw = (_, model) => { renders.push(model); };
+          const draw = (_, model, options) => { renders.push(model); options?.onPaint?.(); };
           if (tag.acceptCubism2) tag.acceptCubism2(draw); else context.loadlive2d = draw;
         } else if (url.endsWith('waifu-tips.js')) {
           document.currentScript = tag;

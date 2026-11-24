@@ -44,22 +44,34 @@ function createRenderer(base, legacy) {
     legacy?.hide?.();
     controller = new AbortController();
     const { signal } = controller;
+    const present = options?.onPaint;
+    let finishPaint;
+    const abortPaint = () => finishPaint?.();
+    const painted = present && new Promise((resolve) => {
+      finishPaint = resolve;
+      signal.addEventListener("abort", abortPaint, { once: true });
+    });
+    const onPaint = present && ((output) => {
+      present(output);
+      finishPaint?.();
+    });
     return import(
       /* webpackIgnore: true */
       /* @vite-ignore */
       base + "modern/renderer.mjs"
     ).then(async (module) => {
       if (signal.aborted) return;
-      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, options?.onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const result = await module.mountModern(document.getElementById(canvas), url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
+      await painted;
     }).catch((error) => {
       if (!signal.aborted) {
         controller = void 0;
         throw error;
       }
-    });
+    }).finally(() => signal.removeEventListener("abort", abortPaint));
   };
   render.hide = () => {
     hidden = true;
@@ -182,7 +194,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.9";
+var version = "2.9.10";
 
 // src/distribution.ts
 var globalCdn = "https://cdn.jsdelivr.net";

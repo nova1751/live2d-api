@@ -10,7 +10,7 @@ export async function checkCollectionShortcut(browser, base) {
       const file = new URL(route.request().url()).pathname.split('/').pop();
       const game = file === 'library.json' ? games[0] : file.slice(0, -5);
       requested.push(game);
-      const forms = ['a', 'b'].map(outfit => ['test/' + game + '/' + outfit, [{source:'test', manifest:'index.json'}]]);
+      const forms = ['a', 'b'].map(outfit => ['test/' + game + '/' + outfit, [{source:'test', manifest:outfit === 'a' ? 'index.json' : '02/index.json'}]]);
       await route.fulfill({json:{schemaVersion:1, sources:{test:{baseUrl:base+'model/fairy/air_attack/'}}, models:Object.fromEntries(forms)}});
     });
     await page.route(base + 'shortcut-host*', route => {
@@ -42,13 +42,21 @@ export async function checkCollectionShortcut(browser, base) {
         });
         let release;
         const gate = new Promise(resolve => { release = resolve; });
-        await page.route(base+'model/fairy/air_attack/index.json', async route => { await gate; await route.continue(); }, { times:1 });
+        const outfitUrl = base + 'model/fairy/air_attack/02/index.json';
+        await page.route(outfitUrl, async route => { await gate; await route.fulfill({status:503}); }, { times:1 });
         try {
+          const requestedOutfit = page.waitForRequest(outfitUrl);
           await next();
+          await requestedOutfit;
           await page.waitForFunction(() => typeof window.frameMatched === 'boolean');
           assert.equal(await page.evaluate(() => window.frameMatched), true);
+          await page.locator('#waifu[data-model-pending] .waifu-loading-icon').waitFor();
         } finally { release(); }
-        await page.waitForSelector('#waifu:not([data-model-loading]) canvas');
+        await page.getByRole('status').filter({hasText:'加载失败'}).waitFor({state:'attached'});
+        assert.equal(await page.locator('.waifu-loading-icon').isVisible(), false);
+        assert.equal(await page.locator('.waifu-model-still').count(),1);
+        await next();
+        await wait(game, 'b');
         assert.equal(await page.locator('.waifu-model-still').count(),0);
       } else await next();
       await wait(game, 'b');

@@ -90,6 +90,7 @@ try {
     response.url().endsWith('/model/fairy/air_attack/02/index.json') && response.ok());
   await page.locator('#waifu-tool-switch-texture').dispatchEvent('click');
   await nextModel;
+  await page.locator('#waifu[data-model-pending]').waitFor({ state: 'detached' });
   assert.equal(await page.evaluate(() => localStorage.getItem('modelTexturesId')), '1');
   assert.ok(motionFiles.length && motionFiles.every(path => path.includes('/motions/daiji_idle')), JSON.stringify(motionFiles));
   assert.deepEqual(voices, []);

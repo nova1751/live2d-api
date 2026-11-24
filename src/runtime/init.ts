@@ -3,6 +3,7 @@ import { expandModel } from './expand';
 import { icons } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson } from './request';
+import { setModelLoading } from './loading';
 import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
 
@@ -11,8 +12,10 @@ const asteroidsUrl = script?.dataset.asteroidsUrl ?? GLOBAL_RUNTIME + 'asteroids
 const byId = (id: string) => document.getElementById(id)!;
 function reportError(error: unknown) {
   console.error('[Live2D]', error);
-  const status = document.getElementById('waifu-status');
-  if (status) { status.textContent = translated('加载失败，请检查网络或切换模型后重试。', 'Could not load the model. Check your connection or try another character.'); say(status.textContent, 5000, 10); }
+  const status = document.getElementById('waifu-status-text');
+  const message = translated('加载失败，请检查网络或切换模型后重试。', 'Could not load the model. Check your connection or try another character.');
+  if (status && !document.getElementById('waifu')?.hasAttribute('data-model-pending')) status.textContent = message;
+  say(message, 5000, 10);
 }
 
 async function hitokoto(locale?: LegacyOptions['locale']) {
@@ -89,11 +92,12 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
   const size = adaptive ? 1200 : 800;
   const canvas = `<canvas id="live2d" width="${size}" height="${size}"></canvas>`;
   document.body.insertAdjacentHTML('beforeend', `<div id="waifu" lang="${options.locale === 'en' ? 'en' : 'zh-CN'}"${adaptive ? ' class="waifu-adaptive"' : ''}${initialFraming ? ' data-initial-framing' : ''}>
-    <div id="waifu-status" role="status" class="waifu-sr-only">${initialFraming ? translated('模型加载中…', 'Loading model…') : ''}</div>
+    <div id="waifu-status" role="status"><span class="waifu-loading-icon" aria-hidden="true"></span><span id="waifu-status-text" class="waifu-sr-only"></span></div>
     <div id="waifu-tips"></div>
     ${adaptive ? `<div class="waifu-viewport"><div class="waifu-hit" aria-hidden="true"></div><div class="waifu-surface">${canvas}</div></div>` : canvas}
     <div id="waifu-tool"></div>
   </div>`);
+  setModelLoading(true);
   show();
   window.addEventListener('live2d:dialogue', event => {
     const { detail, playback } = event as CustomEvent<unknown> & { playback?: object };
@@ -139,7 +143,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     button.addEventListener('click', actions[tool]);
   }
   models.load(undefined, undefined, undefined, start).catch(reportError);
-  getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(reportError);
+  getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(error => console.warn('[Live2D]', error));
 }
 
 window.initWidget = (input: LegacyOptions | string, apiPath?: string) => {
