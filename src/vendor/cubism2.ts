@@ -32,26 +32,7 @@ function onDeviceMotion(event) {
     lastShake = now; shakePeak = null; model.startRandomMotion("shake", w.default.PRIORITY_NORMAL);
   } else shakePeak = { axis: axis, time: now };
 }
-var inputTarget, paintObserver;
-// The camera and pointer math stay in the original square. A wider framebuffer
-// extends its horizontal projection while retaining the same units per pixel.
-function resizePaint() {
-  if (!C || !F || !C.classList.contains("waifu-wide-paint")) return;
-  var wide = C.closest("#waifu-expanded") && C.clientHeight;
-  var width = wide ? Math.round(C.height * C.clientWidth / C.clientHeight) : C.height;
-  if (width <= 0 || C.width === width) return;
-  C.width = width;
-  F.viewport(0, 0, width, C.height);
-  U.scale(C.height / width, 1);
-}
-function resetPaint(canvas) {
-  if (paintObserver) paintObserver.disconnect();
-  if (canvas.classList.contains("waifu-wide-paint")) {
-    canvas.classList.remove("waifu-wide-paint");
-    canvas.width = canvas.height;
-    if (F && C === canvas) F.viewport(0, 0, canvas.width, canvas.height);
-  }
-}
+var inputTarget;
 function o(id) {
   var canvas = document.getElementById(id);
   if (C === canvas) return;
@@ -79,7 +60,7 @@ function viewPoint(event) {
   var rect = (C.closest(".waifu-surface") || C).getBoundingClientRect();
   if (!rect.width || !rect.height) return;
   var x = 2 * (event.clientX - rect.left) / rect.width - 1;
-  var y = (1 - 2 * (event.clientY - rect.top) / rect.height) * (C.classList.contains("waifu-wide-paint") ? 1 : C.height / C.width);
+  var y = (1 - 2 * (event.clientY - rect.top) / rect.height) * C.height / C.width;
   return { x: B.invertTransformX(x), y: B.invertTransformY(y) };
 }
 function onModelClick(event) {
@@ -122,12 +103,6 @@ function frameModel(model) {
   if (!frame) return;
   apply(frame);
   model.framing = undefined;
-  if (C.closest(".waifu-surface") && typeof ResizeObserver !== "undefined") {
-    C.classList.add("waifu-wide-paint");
-    resizePaint();
-    paintObserver = new ResizeObserver(resizePaint);
-    paintObserver.observe(C);
-  }
 }
 function L(canvas,url,options) {
   function configure(model) {
@@ -146,7 +121,6 @@ function L(canvas,url,options) {
     }
     model.startPending = !!(options && options.start && !document.hidden);
   }
-  resetPaint(document.getElementById(canvas));
   o(canvas);
   if (!options || !options.onPaint) { n(url, configure); return; }
   return new Promise(function(resolve, reject) {

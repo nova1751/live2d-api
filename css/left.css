@@ -621,21 +621,21 @@ body > #waifu.waifu-adaptive #waifu-tool {
 #waifu-expanded #waifu.waifu-adaptive {
   --waifu-max-width: calc((100cqw - var(--waifu-side-space) - 28px) * var(--view-scale, 1));
   --waifu-max-height: calc((100cqh - var(--view-headroom) - 20px) * var(--view-scale, 1));
+  margin-left: clamp(0px, calc(var(--waifu-max-width) - var(--waifu-model-width)), var(--waifu-side-space));
 }
 #waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) {
   --waifu-canvas-size: min(var(--waifu-max-width), var(--waifu-max-height));
   --waifu-framing-size: calc(var(--waifu-canvas-size) / var(--waifu-paint-scale, 1));
   --waifu-model-width: min(var(--waifu-framing-size), calc(var(--waifu-framing-size) * var(--waifu-aspect, 1)));
   --waifu-subject-bottom: calc((var(--waifu-canvas-size) - var(--waifu-framing-size)) / 2);
-  --waifu-paint-width: max(var(--waifu-canvas-size), min(calc(1.6 * var(--waifu-canvas-size)), calc(var(--waifu-max-width) - var(--waifu-side-space) * var(--view-scale, 1))));
-  width: calc(var(--waifu-paint-width) + var(--waifu-side-space));
-  margin-left: clamp(0px, calc(var(--waifu-max-width) - var(--waifu-paint-width)), var(--waifu-side-space));
+  width: calc(var(--waifu-canvas-size) + var(--waifu-side-space));
+  margin-left: clamp(0px, calc(var(--waifu-max-width) - var(--waifu-canvas-size)), var(--waifu-side-space));
   height: var(--waifu-canvas-size);
 }
 #waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) .waifu-viewport {
   width: var(--waifu-model-width);
   height: var(--waifu-model-height);
-  left: calc((var(--waifu-paint-width) - var(--waifu-model-width)) / 2);
+  left: calc((var(--waifu-canvas-size) - var(--waifu-model-width)) / 2);
   top: auto;
   bottom: var(--waifu-subject-bottom);
 }
@@ -643,24 +643,10 @@ body > #waifu.waifu-adaptive #waifu-tool {
   bottom: calc(var(--waifu-subject-bottom) + var(--waifu-model-height) + var(--waifu-content-gap));
 }
 #waifu-expanded #waifu.waifu-adaptive:not(:has(.waifu-scene-artboard)) #waifu-tool {
-  right: calc((var(--waifu-paint-width) - var(--waifu-model-width)) / 2);
+  right: calc((var(--waifu-canvas-size) - var(--waifu-model-width)) / 2);
   top: calc(100% - var(--waifu-subject-bottom) - var(--waifu-model-height));
   bottom: var(--waifu-subject-bottom);
   max-height: var(--waifu-model-height);
-}
-@property --waifu-paint-width { syntax: "<length>"; inherits: true; initial-value: 0px; }
-#waifu-expanded .waifu-surface > #live2d.waifu-wide-paint,
-#waifu-expanded .waifu-model-stage.waifu-wide-paint {
-  position: absolute;
-  left: 50% !important;
-  transform: translateX(-50%);
-  width: max(100%, var(--waifu-paint-width));
-  height: 100%;
-}
-#waifu-expanded .waifu-model-still {
-  left: 50%;
-  width: auto;
-  transform: translateX(-50%);
 }
 #waifu-expanded #waifu-status {
   left: calc((100% - var(--waifu-side-space, 0px)) / 2);

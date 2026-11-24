@@ -143,8 +143,8 @@ export async function checkPaintOverflow(browser, base) {
       await checkCaption(subject);
       const rail = await viewer.locator('#waifu-tool').boundingBox();
       assert.ok(Math.abs(rail.x - subject.x - subject.width - 6) < 2);
+      assert.ok(Math.abs(expandedWidth - expandedCanvas.height) <= 1, 'the character canvas keeps its aspect on a wide screen');
       if (width > 1000) {
-        assert.ok(expandedWidth > expandedCanvas.height * 1.3, 'landscape provides horizontal motion space');
         assert.ok(Math.abs(expandedCanvas.x + expandedWidth / 2 - width / 2) < 2);
       }
       await page.waitForFunction(() => {
