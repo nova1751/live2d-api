@@ -1,4 +1,5 @@
-export const loadingIcon = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M17.64 6.36A8 8 0 1 0 19.93 13h-2.02A6 6 0 1 1 16.22 7.78L13 11h7V4l-2.36 2.36Z"/></svg>';
+export const loadingIcon = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 1a11 11 0 1 0 11 11h-3a8 8 0 1 1-8-8Z"/></svg>';
+export const retryIcon = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M17.64 6.36A8 8 0 1 0 19.93 13h-2.02A6 6 0 1 1 16.22 7.78L13 11h7V4l-2.36 2.36Z"/></svg>';
 
 export const icons = {
   expand: '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">\x3c!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. --\x3e<path d="M32 32C14.3 32 0 46.3 0 64v96c0 17.7 14.3 32 32 32s32-14.3 32-32V96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7 14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H64V352zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32h64v64c0 17.7 14.3 32 32 32s32-14.3 32-32V64c0-17.7-14.3-32-32-32H320zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32v64H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32V352z"/></svg>',
