@@ -191,6 +191,7 @@ body > #waifu.waifu-adaptive #waifu-tool {
   height: 100%;
 }
 #waifu.waifu-adaptive #waifu-tips {
+  animation: none;
   box-sizing: border-box;
   z-index: 1;
   top: auto;

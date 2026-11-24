@@ -6,7 +6,7 @@ export async function checkCollectionShortcut(browser, base) {
   const games = ['girls-frontline', 'azur-lane', 'bang-dream', 'houkai2', 'iron-saga', 'warship-girls', 'baoshi-yanwuyu'];
   try {
     await page.addInitScript(() => addEventListener('live2d:model', event => { document.body.dataset.model = event.detail; }));
-    await page.route(/\/live2d-api@catalog-[a-f0-9]+\/catalog\/(?:games\/)?[^/]+\.json$/, async route => {
+    await page.route(/\/live2d-api@catalog-[a-f0-9]+\/catalog\/(?:games\/)?[^/]+\.json(?:\?|$)/, async route => {
       const file = new URL(route.request().url()).pathname.split('/').pop();
       const game = file === 'library.json' ? games[0] : file.slice(0, -5);
       requested.push(game);
@@ -111,6 +111,7 @@ export async function checkCollectionShortcut(browser, base) {
     assert.equal(await page.locator('#waifu').getAttribute('lang'), 'en');
     await page.unroute(mainlandCatalog);
     await page.unroute(domesticRuntime + '**');
+    await page.evaluate(() => localStorage.clear());
 
     await page.route(base + 'outfit-order-host', route => route.fulfill({ contentType: 'text/html',
       body: '<script type="module">import {loadWidget} from "./widget.mjs"; await loadWidget({collection:"all",switchBy:"outfit"});</script>' }));

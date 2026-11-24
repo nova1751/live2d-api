@@ -164,6 +164,7 @@ body > #waifu.waifu-adaptive #waifu-tool {
 .waifu-surface .waifu-model-stage canvas { pointer-events: none; }
 .waifu-surface > div, .waifu-surface #live2d { display: block; width: 100%; height: 100%; }
 #waifu.waifu-adaptive #waifu-tips {
+  animation: none;
   box-sizing: border-box;
   z-index: 1;
   top: auto;

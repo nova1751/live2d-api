@@ -191,7 +191,7 @@ async function fetchCdnAsset(url, signal) {
     if (signal?.aborted) throw error;
     return fetch(retry, { signal });
   }
-  if (![403, 421, 429].includes(response.status) && response.status < 500) return response;
+  if (response.ok || ![403, 421, 429].includes(response.status) && response.status < 500) return response;
   void response.body?.cancel().catch(() => {
   });
   return fetch(retry, { signal });

@@ -26,7 +26,15 @@ export class LegacyModels {
     else return this.load(undefined, undefined, undefined, start);
   }
 
-  cancel() { this.revision++; window.loadlive2d.cancelLoad?.(); setModelLoading(false); }
+  cancel() {
+    this.revision++;
+    window.loadlive2d.cancelLoad?.();
+    if (this.options.modelUrl) {
+      this.transition.cancelFreeze();
+      document.getElementById('waifu')?.removeAttribute('data-initial-framing');
+    }
+    setModelLoading(false);
+  }
 
   constructor(private readonly options: LegacyOptions) {
     this.useCDN = typeof options.cdnPath === 'string';
