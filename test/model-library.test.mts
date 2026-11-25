@@ -42,6 +42,17 @@ test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewr
   }
 });
 
+test('OTs-14 5602 uses transparent fixed borders for both reviewed normal exports', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const input = await json('catalog/library.json');
+  const catalog = parseModelCatalog(input, new URL('https://cdn.jsdmirror.com/catalog/library.json'), 'girls-frontline');
+  for (const source of ['dump', 'eikanya']) {
+    assert.deepEqual(catalog.resolve('doll/ots14/5602/normal', source).hiddenDrawables,
+      ['black', 'black2', 'black3', 'black4']);
+    assert.deepEqual(catalog.resolve('doll/ots14/5602/destroy', source).hiddenDrawables, ['black']);
+  }
+});
+
 test('all seven mainland catalogs resolve pinned models, recordings and absolute repairs through the mirror', async () => {
   const { collections, parseModelCatalog } = await import('../src/library/catalog.ts');
   const mirror = 'https://cdn.jsdmirror.com';
