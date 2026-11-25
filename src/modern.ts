@@ -7,7 +7,7 @@ import type { Camera, Framing } from './library/framing';
 import { loadModernAssets, bindInteractions } from './modern/interactions';
 import type { DialogueSource, GameCue } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, hiddenDrawables?: readonly string[]) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, hiddenDrawables?: readonly string[], files?: Record<string, string | null>) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -43,7 +43,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   }
   signal.addEventListener('abort', cleanup, { once: true });
   try {
-    const { interactions, src: model, resolveAsset } = loadModernAssets(src, dialogue, signal, cues, randomTap);
+    const { interactions, src: model, resolveAsset } = loadModernAssets(src, dialogue, signal, cues, randomTap, files);
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;

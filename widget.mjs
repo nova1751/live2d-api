@@ -154,7 +154,7 @@ function createRenderer(base, legacy) {
       if (signal.aborted) return;
       const output = document.getElementById(canvas);
       if (!(output instanceof HTMLCanvasElement)) throw new Error("Missing Live2D canvas");
-      const result = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const result = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables, options?.files);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -395,7 +395,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.23";
+var version = "2.9.24";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -422,7 +422,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-c2e0a19b2e63a22d/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-296d2417f27f802b/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

@@ -1,8 +1,8 @@
-import { nativeMotionLookup, nativeTouchArea } from './native-events';
-import { prepareMotion } from './motion';
+import { nativeMotionLookup, nativeTouchArea } from './native-events.ts';
+import { prepareMotion } from './motion.ts';
 import { createVolumeLipSync, type Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
-import { fetchCdnAsset } from '../runtime/cdn';
+import { fetchCdnAsset } from '../runtime/cdn.ts';
 
 interface MotionFile { File: string; Sound?: string }
 interface Manifest {
@@ -43,7 +43,7 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   return response.json();
 }
 
-export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false) {
+export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false, files?: Record<string, string | null>) {
   const model = json<Manifest>(url, signal).then(manifest => {
     const groups = manifest.FileReferences.Motions ?? {};
     const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([, clips]) => clips.map(clip => clip.File)));
@@ -77,17 +77,24 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
   // The renderer can finish or abort before the optional interaction data arrives.
   void interactions.catch(() => {});
   const src = decodeURIComponent(new URL(url).pathname.slice(1));
+  const directory = new URL('.', url).pathname;
   async function resolveAsset(path: string, requestSignal?: AbortSignal) {
     if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
     // jsDelivr parses repo@version before decoding path segments.
     const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
+    const relative = asset.pathname.startsWith(directory) ? decodeURIComponent(asset.pathname.slice(directory.length)) : undefined;
+    const replacement = files && relative !== undefined && Object.prototype.hasOwnProperty.call(files, relative)
+      ? files[relative]
+      : undefined;
     const standIn = (await model).optional.get(asset.href);
     const idle = standIn === stillMotion;
     const active = requestSignal ?? signal;
+    const target = replacement ? new URL(replacement, url) : asset;
     let raw;
     try {
-      const response = await fetchCdnAsset(asset.href, active, signal);
-      if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
+      if (replacement === null) throw new Error('Asset is unavailable: ' + asset);
+      const response = await fetchCdnAsset(target.href, active, signal);
+      if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + target);
       if (!standIn) return await response.blob();
       raw = await response.json();
     } catch (error) {
