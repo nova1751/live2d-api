@@ -1,0 +1,282 @@
+:root {
+  scrollbar-gutter: stable;
+  font-family: 'Source Sans 3', 'Microsoft YaHei', sans-serif;
+  color: #21382f;
+  background: #f6f5ef;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+[hidden] {
+  display: none !important;
+}
+body {
+  margin: 0;
+}
+.shell {
+  width: min(1180px, 94%);
+  margin: auto;
+}
+header {
+  border-bottom: 1px solid #ccd4c9;
+}
+header .shell,
+.heading,
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+h1,
+h2,
+strong {
+  font-family: 'Noto Serif SC', 'Songti SC', SimSun, serif;
+}
+h1 {
+  font-size: 26px;
+  letter-spacing: 3px;
+  margin: 22px 0;
+}
+h2 {
+  font-size: 30px;
+  margin: 3px 0;
+}
+nav {
+  gap: 4px;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button {
+  cursor: pointer;
+}
+nav button,
+.item {
+  border: 0;
+  background: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+button[aria-pressed='true'],
+.item.current {
+  background: #204c40;
+  color: white;
+}
+main {
+  padding: 28px 0;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 27%) minmax(0, 1fr);
+  gap: 28px;
+}
+aside {
+  border-right: 1px solid #ccd4c9;
+  padding-right: 22px;
+}
+aside h2 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  padding: 9px 12px;
+  background: #fffefa;
+  border: 1px solid #b9c5bd;
+  border-radius: 7px;
+}
+input {
+  margin-bottom: 12px;
+}
+.scroll {
+  max-height: 68vh;
+  overflow: auto;
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.item span {
+  font: 12px monospace;
+  opacity: 0.8;
+}
+.item:hover:not(.current),
+nav button:hover:not([aria-pressed='true']) {
+  background: #e4e9e1;
+}
+small,
+label {
+  font-size: 13px;
+  color: #586c62;
+}
+small {
+  font-family: Georgia, serif;
+  font-size: 16px;
+}
+.heading {
+  margin-bottom: 14px;
+}
+#library .heading > div {
+  min-width: 0;
+}
+#work,
+#name {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#work {
+  line-height: 21px;
+  min-height: 21px;
+}
+.heading a,
+a {
+  color: #286452;
+  text-underline-offset: 3px;
+}
+.heading a {
+  white-space: nowrap;
+  font-size: 13px;
+}
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.controls label {
+  flex: 1;
+  min-width: 0;
+}
+select {
+  display: block;
+  margin: 5px 0;
+}
+#screen {
+  height: clamp(360px, 59vh, 650px);
+  overflow: hidden;
+  border: 1px solid #cbd7cf;
+  border-radius: 15px;
+  background: radial-gradient(ellipse at 50% 40%, #fcfcf8 5%, #dce9de 100%);
+}
+iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+#facts,
+figcaption,
+.entry p {
+  color: #4d6358;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.split {
+  display: grid;
+  grid-template-columns: 1fr minmax(220px, 33%);
+  gap: 26px;
+}
+.entry,
+figure,
+details {
+  padding: 16px 20px;
+  border: 1px solid #cbd4ca;
+  border-radius: 10px;
+  background: #fffefa;
+  margin: 12px 0;
+}
+.entry h3 {
+  margin: 0;
+  font-size: 18px;
+}
+.entry p {
+  margin: 8px 0;
+}
+.entry a {
+  font-size: 14px;
+}
+figure {
+  align-self: start;
+  text-align: center;
+}
+figure img {
+  display: block;
+  width: auto;
+  height: 250px;
+  max-width: 100%;
+  object-fit: contain;
+  margin: 0 auto 15px;
+}
+figcaption strong {
+  display: block;
+  color: #234b3a;
+  font-size: 20px;
+}
+summary {
+  cursor: pointer;
+}
+li {
+  overflow-wrap: anywhere;
+}
+.item:focus-visible,
+button:focus-visible {
+  outline: 2px solid #ae7440;
+  outline-offset: -2px;
+}
+@media (max-width: 720px) {
+  header .shell {
+    align-items: start;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 9px;
+  }
+  h1 {
+    margin: 12px 0;
+    font-size: 23px;
+  }
+  main {
+    padding-top: 15px;
+  }
+  .layout,
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+  aside {
+    border-right: none;
+    padding: 0;
+  }
+  .scroll {
+    display: flex;
+    height: 96px;
+    gap: 4px;
+  }
+  .item {
+    width: auto;
+    flex: none;
+    max-width: 190px;
+  }
+  .controls {
+    gap: 6px;
+  }
+  #screen {
+    height: 54vh;
+  }
+  .heading h2 {
+    font-size: 24px;
+  }
+}

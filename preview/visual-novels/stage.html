@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          14px 'Microsoft YaHei',
+          sans-serif;
+        color: #254638;
+      }
+      #host {
+        position: absolute;
+        inset: 2% 0 48px;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      #host > canvas#live2d {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+      }
+      #bar {
+        position: absolute;
+        inset: auto 12px 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+      button,
+      select {
+        font: inherit;
+        color: inherit;
+        border: 1px solid #b6c8b8;
+        border-radius: 6px;
+        background: #fffffff2;
+        padding: 6px 10px;
+        max-width: 57%;
+      }
+      button {
+        cursor: pointer;
+      }
+      #status {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        max-width: 90%;
+        background: #fffefaee;
+        border-radius: 6px;
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+      #status:empty {
+        display: none;
+      }
+      select:empty {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="host"></div>
+    <div id="bar">
+      <select aria-label="动作或表情" id="clip"></select
+      ><button id="play" hidden>播放</button>
+    </div>
+    <div id="status" role="status">正在加载模型…</div>
+    <script type="module" src="stage.js"></script>
+  </body>
+</html>

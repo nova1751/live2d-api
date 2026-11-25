@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>视觉小说 · 角色放映室</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="shell">
+        <h1>角色放映室</h1>
+        <nav aria-label="分区">
+          <button data-tab="library" aria-pressed="true">模型图鉴</button
+          ><button data-tab="amakano" aria-pressed="false">甜蜜女友</button
+          ><button data-tab="links" aria-pressed="false">作品索引</button>
+        </nav>
+      </div>
+    </header>
+    <main class="shell">
+      <section id="library" class="layout">
+        <aside>
+          <h2>作品目录</h2>
+          <input
+            id="search"
+            aria-label="搜索作品、角色或模型"
+            placeholder="搜索作品、角色或模型"
+          />
+          <div class="scroll" id="works"></div>
+        </aside>
+        <article>
+          <div class="heading">
+            <div>
+              <small id="work"></small>
+              <h2 id="name">载入图鉴…</h2>
+            </div>
+            <a id="source" target="_blank" rel="noreferrer">查看来源 ↗</a>
+          </div>
+          <div class="controls">
+            <label>角色<select id="person"></select></label
+            ><label>造型<select id="variant"></select></label>
+          </div>
+          <div id="screen"></div>
+          <p id="facts"></p>
+        </article>
+      </section>
+      <section id="amakano" hidden>
+        <div class="heading">
+          <div>
+            <small>Amakano</small>
+            <h2>甜蜜女友</h2>
+          </div>
+          <a
+            href="https://github.com/Fiesty-Abyss/AmakanoPet"
+            target="_blank"
+            rel="noreferrer"
+            >资料来源 ↗</a
+          >
+        </div>
+        <div class="split">
+          <div>
+            <label>作品<select id="am-title"></select></label>
+            <div id="profiles"></div>
+          </div>
+          <figure>
+            <img src="shion.png" alt="AmakanoPet 中的柳木诗梦同人模型展示" />
+            <figcaption>
+              <strong>柳木诗梦</strong>静态展示图 · 同人 Cubism 5 模型<br />作者
+              Jim_Milton。当前收藏只有展示图，原模型需通过作者获取。<br /><a
+                href="https://space.bilibili.com/456952660"
+                target="_blank"
+                rel="noreferrer"
+                >作者主页 ↗</a
+              >
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+      <section id="links" hidden>
+        <div class="heading">
+          <div>
+            <small>Visual novels</small>
+            <h2>作品索引</h2>
+          </div>
+        </div>
+        <div id="references"></div>
+        <details>
+          <summary id="issue-title">上游缺件记录</summary>
+          <ul id="issues"></ul>
+        </details>
+      </section>
+    </main>
+    <script type="module" src="gallery.js"></script>
+  </body>
+</html>

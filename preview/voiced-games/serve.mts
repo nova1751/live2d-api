@@ -1,0 +1,13 @@
+import {legacyPreview} from './legacy.mts';
+import { context } from 'esbuild';
+import { copyFile, mkdir, writeFile } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const base=dirname(fileURLToPath(import.meta.url)),site=join(base,'.local/site');
+await mkdir(site,{recursive:true});
+for(const name of ['index.html','stage.html','style.css'])await copyFile(join(base,name),join(site,name));
+await writeFile(join(site,'legacy.js'),await legacyPreview());
+const ctx=await context({entryPoints:[join(base,'gallery.ts'),join(base,'stage.ts')],bundle:true,format:'esm',target:'es2022',outdir:site,charset:'utf8'});
+await ctx.rebuild();
+const {port}=await ctx.serve({host:'127.0.0.1',port:8798,servedir:site});
+console.log('http://127.0.0.1:'+port+'/');
