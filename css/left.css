@@ -688,7 +688,9 @@ html:has(#waifu-expanded[open]) {
   height: max-content;
   min-width: 100%;
   min-height: 100%;
-  padding: calc(var(--view-header) + var(--view-caption-space)) var(--view-side) var(--view-footer);
+  --view-slack-x: max(0px, 50cqw * (var(--view-scale, 1) - 1));
+  --view-slack-y: max(0px, 50cqh * (var(--view-scale, 1) - 1));
+  padding: calc(var(--view-header) + var(--view-caption-space) + var(--view-slack-y)) calc(var(--view-side) + var(--view-slack-x)) calc(var(--view-footer) + var(--view-slack-y));
 }
 #waifu-expanded #waifu {
   position: relative;

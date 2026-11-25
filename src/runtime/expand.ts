@@ -22,8 +22,8 @@ export function expandModel(initialZoom = 100) {
   viewport.tabIndex = 0;
   viewport.setAttribute('role', 'region');
   viewport.setAttribute('aria-label', translated('模型预览区', 'Model preview'));
-  viewport.title = translated('Ctrl/⌘ + 滚轮、双指捏合或 +/− 键缩放，双击空白处切换放大；放大后可滚动、拖动空白处或用方向键移动画面',
-    'Zoom with Ctrl/⌘ + wheel, a pinch, or the +/− keys; double-click the background to toggle zoom. When zoomed, scroll, drag the background, or use arrow keys to move the view');
+  viewport.title = translated('Ctrl/⌘ + 滚轮、双指捏合或 +/− 键缩放，双击空白处切换放大；放大后按住任意位置拖动画面，单击人物仍可互动',
+    'Zoom with Ctrl/⌘ + wheel, a pinch, or the +/− keys; double-click the background to toggle zoom. When zoomed, drag anywhere to move the view; a click on the character still interacts');
   const content = document.createElement('div');
   content.className = 'waifu-view-content';
   viewport.append(content);
@@ -78,7 +78,27 @@ export function expandModel(initialZoom = 100) {
       viewport.scrollLeft += after.left + (centerX - before.left) * after.width / before.width - centerX;
       viewport.scrollTop += after.top + (centerY - before.top) * after.height / before.height - centerY;
     }
+    sharpen();
   }
+
+  // The Cubism 2 canvas has a fixed drawing buffer sized for the small widget. Enlarged, it would be
+  // stretched and blurry, so match it to the displayed size and pixel ratio while the view is open.
+  // Cubism 3+ sizes its own canvas. Resizing reallocates GPU buffers, so wait until zooming settles.
+  const legacyCanvas = widget.querySelector<HTMLCanvasElement>('#live2d');
+  const legacySize = legacyCanvas?.width ?? 0;
+  const maxBuffer = matchMedia('(pointer: coarse)').matches ? 1536 : 2560;
+  let sharpenTimer = 0;
+  function sharpen() {
+    clearTimeout(sharpenTimer);
+    sharpenTimer = window.setTimeout(() => {
+      const canvas = legacyCanvas;
+      // Hidden while a Cubism 3+ model owns the stage.
+      if (!canvas || !canvas.isConnected || canvas.style.visibility === 'hidden' || canvas.width !== canvas.height) return;
+      const target = Math.round(Math.min(maxBuffer, Math.max(legacySize, canvas.getBoundingClientRect().width * devicePixelRatio)));
+      if (Math.abs(target - canvas.width) > 16) canvas.width = canvas.height = target;
+    }, 160);
+  }
+  const resized = new ResizeObserver(sharpen);
   slider.addEventListener('input', () => setZoom(slider.valueAsNumber));
   number.addEventListener('change', () => setZoom(number.valueAsNumber));
   number.addEventListener('blur', () => { number.value = String(percent); });
@@ -113,24 +133,56 @@ export function expandModel(initialZoom = 100) {
     zoom.append(toggle);
   }
   zoom.append(close);
-  let drag: { id: number; x: number; y: number; left: number; top: number } | undefined;
-  viewport.addEventListener('pointerdown', event => {
-    if (percent <= 100 || event.pointerType !== 'mouse' || drag) return;
-    const background = event.target === viewport || event.target === content;
-    if (event.button !== 1 && (event.button !== 0 || !(event.altKey || background))) return;
-    event.preventDefault();
-    event.stopPropagation();
-    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop };
+  // When zoomed in, dragging anywhere pans the view, the character included. A press that stays
+  // within a few pixels is still a click, so tapping the character keeps triggering its reactions.
+  const panSlop = 6;
+  let drag: { id: number; x: number; y: number; left: number; top: number; active: boolean } | undefined;
+  let swallowClick = false;
+  function startPan(event: PointerEvent) {
+    drag!.active = true;
+    swallowClick = true;
     viewport.setPointerCapture(event.pointerId);
     viewport.setAttribute('data-panning', '');
-  }, true);
-  viewport.addEventListener('pointermove', event => {
-    if (drag?.id === event.pointerId) viewport.scrollTo(drag.left + drag.x - event.clientX, drag.top + drag.y - event.clientY);
-  });
-  viewport.addEventListener('lostpointercapture', () => {
+    getSelection()?.removeAllRanges();
+  }
+  function endPan() {
     drag = undefined;
     viewport.removeAttribute('data-panning');
-  });
+  }
+  viewport.addEventListener('pointerdown', event => {
+    swallowClick = false;
+    if (percent <= 100 || drag || touches.size > 0 || !event.isPrimary) return;
+    if (event.pointerType === 'mouse' && event.button !== 0 && event.button !== 1) return;
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, left: viewport.scrollLeft, top: viewport.scrollTop, active: false };
+    // The background has nothing to click, and the middle button never clicks: pan right away.
+    if (event.button === 1 || event.target === viewport || event.target === content) {
+      event.preventDefault();
+      startPan(event);
+    }
+  }, true);
+  viewport.addEventListener('pointermove', event => {
+    if (drag?.id !== event.pointerId) return;
+    // A second finger turns the gesture into a pinch.
+    if (touches.size > 1) { endPan(); return; }
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    if (!drag.active) {
+      if (Math.hypot(dx, dy) < panSlop) return;
+      startPan(event);
+    }
+    // Keep the character from treating the drag as a stroke or a gaze target.
+    event.stopPropagation();
+    viewport.scrollTo(drag.left - dx, drag.top - dy);
+  }, true);
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture'] as const) {
+    viewport.addEventListener(type, event => { if (drag?.id === event.pointerId) endPan(); });
+  }
+  // The click that ends a drag must not reach the character.
+  viewport.addEventListener('click', event => {
+    if (!swallowClick) return;
+    swallowClick = false;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
 
   // Ctrl/⌘ + wheel. Trackpad pinches arrive as ctrl + wheel too. A plain wheel keeps scrolling.
   viewport.addEventListener('wheel', event => {
@@ -190,6 +242,10 @@ export function expandModel(initialZoom = 100) {
   dialog.append(stage);
   document.body.append(dialog);
   dialog.addEventListener('close', () => {
+    resized.disconnect();
+    clearTimeout(sharpenTimer);
+    // Back in the small widget: return the GPU memory.
+    if (legacyCanvas && legacySize && legacyCanvas.width !== legacySize) legacyCanvas.width = legacyCanvas.height = legacySize;
     marker.replaceWith(widget);
     dialog.remove();
     trigger?.focus({ preventScroll: true });
@@ -197,5 +253,6 @@ export function expandModel(initialZoom = 100) {
   dialog.showModal();
   content.append(widget);
   setZoom(initialZoom);
+  resized.observe(viewport);
   close.focus({ preventScroll: true });
 }
