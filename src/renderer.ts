@@ -80,7 +80,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
       if (signal.aborted) return;
       const output = document.getElementById(canvas);
       if (!(output instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
-      const result: ModernStage = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables);
+      const result: ModernStage = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables, options?.files);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();

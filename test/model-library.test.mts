@@ -38,7 +38,7 @@ test('DSR-50 scene curtains belong to the reviewed manifest and survive URL rewr
     const { hiddenDrawables, modelUrl } = catalog.resolve(id, 'dump');
     for (const name of ['ArtMesh308', 'ArtMesh334', 'ArtMesh390']) assert.ok(hiddenDrawables?.includes(name));
     assert.match(modelUrl, /@cdn-dsr50-[\da-f]+\/models\/dsr50_10501\/normal\//);
-    assert.equal(catalog.resolve('doll/6p62/8610/normal', 'dump').hiddenDrawables, undefined);
+    assert.equal(catalog.resolve('doll/6p62/8610/destroy', 'dump').hiddenDrawables, undefined);
   }
 });
 
@@ -51,6 +51,40 @@ test('OTs-14 5602 uses transparent fixed borders for both reviewed normal export
       ['black', 'black2', 'black3', 'black4']);
     assert.deepEqual(catalog.resolve('doll/ots14/5602/destroy', source).hiddenDrawables, ['black']);
   }
+});
+
+test('scene cuts use the mesh IDs from each reviewed Cubism export', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const base = 'https://cdn.jsdmirror.com/';
+  const input = await json('catalog/library.json');
+  const id = 'doll/88type/5308/normal';
+  const library = parseModelCatalog(input, new URL('catalog/library.json', base), 'girls-frontline');
+  assert.deepEqual(library.resolve(id, 'dump').hiddenDrawables, ['D_PSD1_04', 'D_PSD1_09']);
+  const legacy = input.models[id].find(variant => variant.source === 'eikanya' && variant.manifest.endsWith('/model.json'));
+  assert.deepEqual(legacy.hiddenDrawables, ['D_PSD1.04', 'D_PSD1.09']);
+
+  const ships = parseModelCatalog(await json('catalog/games/azur-lane.json'), new URL('catalog/games/azur-lane.json', base), 'azur-lane');
+  assert.deepEqual(ships.resolve('ship/10144/kubo_2').hiddenDrawables, ['ArtMesh277', 'ArtMesh278', 'ArtMesh279', 'ArtMesh280']);
+  assert.equal(ships.resolve('ship/30514/junhe_5').hiddenDrawables, undefined);
+});
+
+test('modern asset loader uses the pinned replacement for the broken CbJMS texture', async t => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const { loadModernAssets } = await import('../src/modern/interactions.ts');
+  const catalog = parseModelCatalog(await json('catalog/library.json'), new URL('https://cdn.jsdmirror.com/catalog/library.json'), 'girls-frontline');
+  const asset = catalog.resolve('doll/cbjms/2205/destroy', 'jacksen168');
+  const texture = 'textures/texture_00.png';
+  const replacement = asset.files?.[texture];
+  assert.match(replacement, /^https:\/\/cdn\.jsdmirror\.com\/gh\/Eikanya\/Live2d-model@[a-f0-9]{40}\//);
+  const original = new URL(texture, asset.modelUrl);
+  const mocked = t.mock.method(globalThis, 'fetch', url => url === asset.modelUrl
+    ? Promise.resolve(Response.json({ FileReferences: {} }))
+    : Promise.resolve(new Response(String(url))));
+
+  const { resolveAsset } = loadModernAssets(asset.modelUrl, undefined, new AbortController().signal, undefined, false, asset.files);
+  const response = await resolveAsset(decodeURIComponent(original.pathname.slice(1)));
+  assert.equal(await response.text(), replacement);
+  assert.deepEqual(mocked.mock.calls.map(call => call.arguments[0]), [asset.modelUrl, replacement]);
 });
 
 test('all seven mainland catalogs resolve pinned models, recordings and absolute repairs through the mirror', async () => {
