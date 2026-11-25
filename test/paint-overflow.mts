@@ -125,6 +125,23 @@ export async function checkPaintOverflow(browser, base) {
         await button.hover();
         assert.deepEqual(await colors(), ['rgb(6, 132, 189)', 'none']);
       }
+      for (const [height, columns] of [[480, 1], [240, 2], [820, 1]]) {
+        await page.setViewportSize({ width, height });
+        await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+        const layout = await page.locator('#waifu-tool').evaluate(rail => {
+          const buttons = Array.from(rail.children, button => button.getBoundingClientRect());
+          const viewport = document.querySelector('.waifu-viewport').getBoundingClientRect();
+          const bounds = rail.getBoundingClientRect();
+          return {
+            columns: new Set(buttons.map(button => button.x)).size,
+            overflow: [rail.scrollWidth - rail.clientWidth, rail.scrollHeight - rail.clientHeight],
+            centered: Math.abs((bounds.top + bounds.bottom - viewport.top - viewport.bottom) / 2) <= 1,
+            reachable: buttons.every(button => button.top >= 0 && button.bottom <= innerHeight &&
+              button.left >= 0 && button.right <= innerWidth && button.height >= 40),
+          };
+        });
+        assert.deepEqual(layout, { columns, overflow: [0, 0], centered: true, reachable: true }, `${position} at ${width}×${height}`);
+      }
       const tab = page.locator('#waifu-toggle');
       const originalCanvas = await page.locator('#live2d').elementHandle();
       await page.locator('#waifu-tool-expand').click({ force: true });
