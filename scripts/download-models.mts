@@ -101,7 +101,7 @@ if (existsSync(viewer) && !existsSync(marker))
 mkdirSync(join(viewer, 'catalog'), { recursive: true });
 writeFileSync(marker, '');
 const files = readJson<{ files: string[] }>(join(repository, 'package.json')).files;
-for (const file of [...files, 'img/', 'catalog/browser.mjs', 'catalog/gallery.css', 'catalog/portraits/']) {
+for (const file of [...files, 'catalog/browser.mjs', 'catalog/gallery.css', 'catalog/portraits/']) {
   const target = join(viewer, file);
   mkdirSync(dirname(target), { recursive: true });
   cpSync(join(repository, file), target, { recursive: true });

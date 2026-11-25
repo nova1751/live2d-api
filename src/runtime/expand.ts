@@ -22,7 +22,8 @@ export function expandModel(initialZoom = 100) {
   viewport.tabIndex = 0;
   viewport.setAttribute('role', 'region');
   viewport.setAttribute('aria-label', translated('模型预览区', 'Model preview'));
-  viewport.title = translated('放大后可滚动、拖动空白处或用方向键移动画面', 'Scroll, drag the background, or use arrow keys to move the zoomed view');
+  viewport.title = translated('Ctrl/⌘ + 滚轮、双指捏合或 +/− 键缩放，双击空白处切换放大；放大后可滚动、拖动空白处或用方向键移动画面',
+    'Zoom with Ctrl/⌘ + wheel, a pinch, or the +/− keys; double-click the background to toggle zoom. When zoomed, scroll, drag the background, or use arrow keys to move the view');
   const content = document.createElement('div');
   content.className = 'waifu-view-content';
   viewport.append(content);
@@ -58,12 +59,16 @@ export function expandModel(initialZoom = 100) {
   }
   const fit = control(translated('适应窗口', 'Fit to view'), retryIcon);
   let percent = 100;
-  function setZoom(value: number) {
+  let exact = percent;
+  /** Zoom to `value` percent, keeping the point under `anchor` (client coordinates) in place. */
+  function setZoom(value: number, anchor?: { x: number; y: number }) {
     const before = widget!.getBoundingClientRect();
     const view = viewport.getBoundingClientRect();
-    const centerX = view.left + viewport.clientWidth / 2;
-    const centerY = view.top + viewport.clientHeight / 2;
-    percent = Math.max(50, Math.min(300, Math.round(Number.isFinite(value) ? value : percent)));
+    const centerX = anchor?.x ?? view.left + viewport.clientWidth / 2;
+    const centerY = anchor?.y ?? view.top + viewport.clientHeight / 2;
+    // Keep the unrounded value so many tiny trackpad steps still add up.
+    exact = Math.max(50, Math.min(300, Number.isFinite(value) ? value : exact));
+    percent = Math.round(exact);
     slider.value = number.value = String(percent);
     slider.setAttribute('aria-valuetext', percent + '%');
     viewport.toggleAttribute('data-pannable', percent > 100);
@@ -125,6 +130,61 @@ export function expandModel(initialZoom = 100) {
   viewport.addEventListener('lostpointercapture', () => {
     drag = undefined;
     viewport.removeAttribute('data-panning');
+  });
+
+  // Ctrl/⌘ + wheel. Trackpad pinches arrive as ctrl + wheel too. A plain wheel keeps scrolling.
+  viewport.addEventListener('wheel', event => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    const delta = event.deltaMode === WheelEvent.DOM_DELTA_LINE ? event.deltaY * 16 : event.deltaY;
+    setZoom(exact * Math.exp(-delta * 0.0025), { x: event.clientX, y: event.clientY });
+  }, { passive: false });
+
+  // Two-finger pinch on touch screens, anchored between the fingers. The viewport keeps native
+  // one-finger panning (touch-action: pan-x pan-y in widget.css) but leaves pinching to us.
+  const touches = new Map<number, { x: number; y: number }>();
+  let pinch: { distance: number; percent: number } | undefined;
+  const spread = () => {
+    const [a, b] = Array.from(touches.values());
+    return { distance: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  };
+  viewport.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch') return;
+    touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (touches.size === 2) {
+      pinch = { distance: spread().distance, percent };
+      // The second finger starts a zoom gesture, not a tap on the character.
+      event.stopPropagation();
+    }
+  }, true);
+  viewport.addEventListener('pointermove', event => {
+    if (!touches.has(event.pointerId)) return;
+    touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (!pinch || touches.size !== 2) return;
+    const { distance, x, y } = spread();
+    if (pinch.distance > 0) setZoom(pinch.percent * distance / pinch.distance, { x, y });
+  });
+  const lift = (event: PointerEvent) => {
+    touches.delete(event.pointerId);
+    if (touches.size < 2) pinch = undefined;
+  };
+  viewport.addEventListener('pointerup', lift);
+  viewport.addEventListener('pointercancel', lift);
+
+  // Double-click the background toggles between the fitted view and 2x at that point.
+  viewport.addEventListener('dblclick', event => {
+    if (event.target !== viewport && event.target !== content) return;
+    setZoom(percent > 100 ? 100 : 200, { x: event.clientX, y: event.clientY });
+  });
+
+  // + / − / 0 like image viewers, unless the user is typing in the zoom inputs.
+  dialog.addEventListener('keydown', event => {
+    if (event.ctrlKey || event.metaKey || event.altKey || event.target instanceof HTMLInputElement) return;
+    if (event.key === '+' || event.key === '=') setZoom(percent * 1.25);
+    else if (event.key === '-' || event.key === '_') setZoom(percent / 1.25);
+    else if (event.key === '0') setZoom(100);
+    else return;
+    event.preventDefault();
   });
   stage.append(controls, viewport);
   dialog.append(stage);

@@ -520,6 +520,11 @@ body > #waifu.waifu-adaptive #waifu-tool {
 }
 
 html:has(#waifu-expanded[open]) { overflow: hidden; }
+/* Opacity only: a transform would shift layout measurements while the view opens. */
+@media (prefers-reduced-motion: no-preference) {
+  #waifu-expanded[open] { animation: waifu-view-in 0.2s ease-out; }
+}
+@keyframes waifu-view-in { from { opacity: 0; } }
 #waifu-expanded {
   color-scheme: light dark;
   --view-background: #f4f6f9;
@@ -633,6 +638,8 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   scrollbar-width: none;
   overscroll-behavior: contain;
   overflow-anchor: none;
+  /* One finger pans natively; pinches are handled as zoom in expand.ts. */
+  touch-action: pan-x pan-y;
 }
 .waifu-view-viewport::-webkit-scrollbar { display: none; }
 .waifu-view-viewport[data-pannable] { cursor: grab; }

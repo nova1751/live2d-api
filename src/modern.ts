@@ -59,9 +59,24 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       offsetY: camera.y - 0.5, units: 'stage' as const });
     // The floating widget waits below the viewport until its first framed paint.
     const waitForFirstPaint = canvas.closest('body > #waifu[data-initial-framing]');
+    // live2d-web treats every container under 768px as a phone. The widget always is one, so a
+    // high-DPI desktop would be capped at 1.5x. Keep the phone limits for touch-first devices only.
+    const quality = matchMedia('(pointer: coarse)').matches ? 'auto' as const
+      : { mobileMaxResolution: 2, mobilePixelBudget: 4e6 };
+    // Runtime errors (lost WebGL context, a failing frame) stop the render loop. Recreate the
+    // canvas a couple of times before giving up, instead of leaving a frozen or blank model.
+    let recoveries = 0;
+    const recover = (error: unknown) => {
+      console.error('[Live2D]', error);
+      if (signal.aborted || recoveries >= 2) return;
+      const attempt = ++recoveries;
+      setTimeout(() => {
+        if (!signal.aborted) stage?.retry().catch(failure => console.error('[Live2D] Recovery failed', failure));
+      }, 400 * attempt);
+    };
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
-      pauseWhenOffscreen: !waitForFirstPaint,
-      backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: error => console.error('[Live2D]', error) });
+      pauseWhenOffscreen: !waitForFirstPaint, quality, maxFps: 60,
+      backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: recover });
     signal.throwIfAborted();
     const instance = stage;
     const output = host.querySelector('canvas');

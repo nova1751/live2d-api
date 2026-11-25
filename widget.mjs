@@ -174,27 +174,71 @@ function createRenderer(base, legacy) {
 }
 
 // src/runtime/cdn.ts
+var MIRROR = "https://cdn.jsdmirror.com/gh/";
+var JSDELIVR = "https://cdn.jsdelivr.net/gh/";
+var RAW = "https://raw.githubusercontent.com/";
+var COMMIT = /^[a-f\d]{40}$/i;
 function mirrorRetryUrl(input) {
-  if (!input.startsWith("https://cdn.jsdmirror.com/gh/")) return;
+  if (!input.startsWith(MIRROR)) return;
   const url = new URL(input);
   if (url.searchParams.has("live2d-retry")) return;
   url.searchParams.set("live2d-retry", "1");
   return url.href;
 }
-async function fetchCdnAsset(url, signal) {
-  const retry = mirrorRetryUrl(url);
-  if (!retry) return fetch(url, { signal });
-  let response;
+function githubFile(input) {
+  let match;
+  if (input.startsWith(MIRROR) || input.startsWith(JSDELIVR)) {
+    match = /^https:\/\/[^/]+\/gh\/([^/]+)\/([^/@]+)@([^/]+)\/([^?#]*)/.exec(input);
+  } else if (input.startsWith(RAW)) {
+    match = /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/([^?#]*)/.exec(input);
+  } else return;
+  if (!match) return;
+  const [, owner, repo, ref, path] = match;
+  return { owner, repo, ref, path };
+}
+var demoted = /* @__PURE__ */ new Map();
+var DEMOTE_MS = 12e4;
+var hostOf = (href) => {
   try {
-    response = await fetch(url, { signal });
-  } catch (error) {
-    if (signal?.aborted) throw error;
-    return fetch(retry, { signal });
+    return new URL(href, document.baseURI).host;
+  } catch {
+    return "";
   }
-  if (response.ok || ![403, 421, 429].includes(response.status) && response.status < 500) return response;
-  void response.body?.cancel().catch(() => {
-  });
-  return fetch(retry, { signal });
+};
+var isDemoted = (href) => (demoted.get(hostOf(href)) ?? 0) > Date.now();
+function cdnAlternates(input) {
+  const file = githubFile(input);
+  const retry = mirrorRetryUrl(input);
+  if (!file) return retry ? [retry] : [];
+  const { owner, repo, ref, path } = file;
+  const mirror = `${MIRROR}${owner}/${repo}@${ref}/${path}`;
+  const jsdelivr = `${JSDELIVR}${owner}/${repo}@${ref}/${path}`;
+  const raw = `${RAW}${owner}/${repo}/${ref}/${path}`;
+  const others = input.startsWith(MIRROR) ? [retry, jsdelivr, ...COMMIT.test(ref) ? [raw] : []] : input.startsWith(JSDELIVR) ? [...COMMIT.test(ref) ? [raw] : [], mirror] : [jsdelivr, mirror];
+  const unique = others.filter((href, index) => href && href !== input && others.indexOf(href) === index);
+  return [...unique.filter((href) => !isDemoted(href)), ...unique.filter(isDemoted)];
+}
+var transient = (status) => status === 403 || status === 421 || status === 429 || status >= 500;
+async function fetchCdnAsset(url, signal) {
+  const candidates = isDemoted(url) ? [...cdnAlternates(url), url] : [url, ...cdnAlternates(url)];
+  let last;
+  let failure;
+  for (const candidate of candidates) {
+    signal?.throwIfAborted();
+    try {
+      const response = await fetch(candidate, { signal });
+      if (response.ok || !transient(response.status)) return response;
+      void response.body?.cancel().catch(() => {
+      });
+      last = response;
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      failure = error;
+    }
+    if (candidates.length > 1) demoted.set(hostOf(candidate), Date.now() + DEMOTE_MS);
+  }
+  if (last) return last;
+  throw failure;
 }
 
 // src/library/catalog.ts
@@ -301,7 +345,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.19";
+var version = "2.9.20";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";

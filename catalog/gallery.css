@@ -1,109 +1,354 @@
+/* Live2D gallery · light and dark themes.
+   Theme order: system preference, then html[data-theme] set by the page. */
 * { box-sizing: border-box }
 :root {
   color-scheme: light;
-  --ink: #182c29;
-  --muted: #526760;
-  --line: #d7ded7;
-  --teal: #185750;
-  font: 16px/1.5 "DM Sans", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --sans: system-ui, -apple-system, "Segoe UI", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --header-h: 60px;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 20px;
+
+  --bg: #f4f6f2;
+  --bg-glow: #e3ede6;
+  --surface: #ffffff;
+  --surface-2: #eef2ed;
+  --surface-3: #e3e9e3;
+  --ink: #14231f;
+  --muted: #5a6b65;
+  --line: #dde4de;
+  --line-strong: #c3cfc8;
+  --brand: #1a5b52;
+  --brand-hover: #13463f;
+  --brand-ink: #ffffff;
+  --brand-soft: #e0ede8;
+  --accent: #e3a043;
+  --focus: #d0741a;
+  --header-bg: rgba(244, 246, 242, .82);
+  --shadow-sm: 0 1px 2px rgba(20, 40, 34, .06), 0 1px 1px rgba(20, 40, 34, .04);
+  --shadow-md: 0 6px 20px -6px rgba(20, 48, 40, .18), 0 2px 6px rgba(20, 40, 34, .06);
+  --shimmer: rgba(255, 255, 255, .7);
+  --code-bg: #13221f;
+  --code-ink: #d6ece3;
+  --stage-1: #66907f; --stage-2: #335f55; --stage-3: #16352f;
+  --stage-grid: #b9d3c4; --stage-ring: rgba(211, 231, 212, .2);
+  --tool-bg: rgba(241, 247, 242, .94);
+  --t0a: #e8f0e7; --t0b: #d1e1d5;
+  --t1a: #f6ede1; --t1b: #e8dac6;
+  --t2a: #e5edf2; --t2b: #cddae4;
+  --t3a: #f5e7e9; --t3b: #e7d0d5;
+  --t4a: #ece8f4; --t4b: #d8d1e8;
+  --t5a: #f3f0da; --t5b: #e4ddba;
+
+  font: 16px/1.55 var(--sans);
   color: var(--ink);
-  background: #f7f8f3;
+  background: var(--bg);
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-text-size-adjust: 100%;
 }
-body { margin: 0 }
-button, input, select { font: inherit; color: inherit }
-button, select { cursor: pointer }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0d1412; --bg-glow: #13211d;
+    --surface: #141d1b; --surface-2: #1a2523; --surface-3: #22302d;
+    --ink: #e5eeea; --muted: #97a9a2;
+    --line: #24312e; --line-strong: #34443f;
+    --brand: #62bba8; --brand-hover: #82cfbe; --brand-ink: #08130f; --brand-soft: #193430;
+    --accent: #f0b764; --focus: #f0b764;
+    --header-bg: rgba(13, 20, 18, .78);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, .6), 0 2px 6px rgba(0, 0, 0, .3);
+    --shimmer: rgba(255, 255, 255, .06);
+    --code-bg: #0a110f; --code-ink: #cfe6dc;
+    --stage-1: #2f4f46; --stage-2: #1a332d; --stage-3: #0a1714;
+    --stage-grid: #6f9888; --stage-ring: rgba(160, 200, 180, .13);
+    --tool-bg: rgba(30, 44, 40, .92);
+    --t0a: #1c2b26; --t0b: #263a33;
+    --t1a: #2b251d; --t1b: #3a3126;
+    --t2a: #1c2830; --t2b: #27353f;
+    --t3a: #2d2225; --t3b: #3c2c31;
+    --t4a: #262336; --t4b: #322d45;
+    --t5a: #2a281b; --t5b: #373524;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1412; --bg-glow: #13211d;
+  --surface: #141d1b; --surface-2: #1a2523; --surface-3: #22302d;
+  --ink: #e5eeea; --muted: #97a9a2;
+  --line: #24312e; --line-strong: #34443f;
+  --brand: #62bba8; --brand-hover: #82cfbe; --brand-ink: #08130f; --brand-soft: #193430;
+  --accent: #f0b764; --focus: #f0b764;
+  --header-bg: rgba(13, 20, 18, .78);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, .6), 0 2px 6px rgba(0, 0, 0, .3);
+  --shimmer: rgba(255, 255, 255, .06);
+  --code-bg: #0a110f; --code-ink: #cfe6dc;
+  --stage-1: #2f4f46; --stage-2: #1a332d; --stage-3: #0a1714;
+  --stage-grid: #6f9888; --stage-ring: rgba(160, 200, 180, .13);
+  --tool-bg: rgba(30, 44, 40, .92);
+  --t0a: #1c2b26; --t0b: #263a33;
+  --t1a: #2b251d; --t1b: #3a3126;
+  --t2a: #1c2830; --t2b: #27353f;
+  --t3a: #2d2225; --t3b: #3c2c31;
+  --t4a: #262336; --t4b: #322d45;
+  --t5a: #2a281b; --t5b: #373524;
+}
+
+/* Collection tabs are separate documents: cross-fade between them and keep the chrome still. */
+@view-transition { navigation: auto }
+.masthead { view-transition-name: masthead }
+.games { view-transition-name: games }
+.preview-panel { view-transition-name: preview }
+.toolbar { view-transition-name: toolbar }
+::view-transition-group(*) { animation-duration: .24s; animation-timing-function: cubic-bezier(.2, .8, .2, 1) }
+
+/* Base */
+html { scrollbar-gutter: stable }
+body { margin: 0; min-height: 100vh; background: radial-gradient(1200px 420px at 15% -80px, var(--bg-glow), transparent 70%) no-repeat, var(--bg) }
+h1, h2, p { margin: 0 }
+button, input, select, summary { font: inherit; color: inherit }
+button, select, summary { cursor: pointer }
 a { color: inherit; text-decoration: none }
-a:hover { text-decoration: underline }
-button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #ce781c; outline-offset: 3px }
+a:hover { text-decoration: underline; text-underline-offset: 3px }
+:where(a, button, select, summary, input):focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 6px }
 [hidden] { display: none !important }
-.wrap { width: min(1380px, 93vw); margin-inline: auto }
-.masthead { background: #153b37; color: #fff }
-.mast, .mast nav, .brand, .intro, .collection-head, .filters, .links, .modes { display: flex; align-items: center }
-.mast { min-height: 62px; justify-content: space-between }
-.brand { gap: 10px; font-weight: 750; letter-spacing: .035em }
-.brand span:last-child { font: 600 .82rem/1 "IBM Plex Mono", monospace; color: #cee2d5; padding-left: 10px; border-left: 1px solid #759189 }
-.mark { width: 20px; height: 21px; background: #f2bd65; clip-path: polygon(50% 0,100% 25%,100% 48%,50% 23%,22% 38%,22% 62%,50% 77%,78% 63%,61% 55%,61% 37%,100% 56%,100% 76%,50% 100%,0 75%,0 25%) }
-.mast nav { gap: 26px; font-size: .88rem }
-.intro { gap: 16px; justify-content: space-between; align-items: end; padding: 32px 0 24px }
-h1,h2,p { margin: 0 }
-h1 { font-size: clamp(1.8rem,3.4vw,3rem); line-height: 1.16; letter-spacing: -.055em }
-h1 span { margin-left: .25em; color: var(--teal) }
-#totals, #matches, .kind, #result, #notice { color: var(--muted) }
-#totals { font-size: .9rem; font-variant-numeric: tabular-nums }
-.layout { display: grid; grid-template-columns: minmax(285px,1fr) minmax(0,1.5fr); align-items: start; gap: clamp(22px,3vw,48px); padding-bottom: 48px }
-.preview-panel { position: sticky; top: 14px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff }
-.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; --gallery-model-height: clamp(275px,32vw,425px); --gallery-headroom: 124px; padding: var(--gallery-headroom) 6px 6px;
-  background: radial-gradient(ellipse at 47% 56%, #64877a 0, #386258 49%, #193f3b 100%) }
+.wrap { width: min(1380px, 92vw); margin-inline: auto }
+
+/* Header */
+.masthead { position: sticky; top: 0; z-index: 40; background: var(--header-bg); border-bottom: 1px solid var(--line); -webkit-backdrop-filter: saturate(1.5) blur(14px); backdrop-filter: saturate(1.5) blur(14px) }
+.mast, .mast nav, .brand, .collection-head, .filters, .links, .modes, .motion { display: flex; align-items: center }
+.mast { height: var(--header-h); justify-content: space-between; gap: 16px }
+.brand { gap: 10px; font-weight: 800; letter-spacing: .02em; white-space: nowrap }
+.brand:hover { text-decoration: none }
+.brand span:last-child { font: 600 .8rem/1 var(--mono); color: var(--muted); padding-left: 10px; border-left: 1px solid var(--line-strong) }
+.mark { width: 20px; height: 21px; background: var(--accent); clip-path: polygon(50% 0,100% 25%,100% 48%,50% 23%,22% 38%,22% 62%,50% 77%,78% 63%,61% 55%,61% 37%,100% 56%,100% 76%,50% 100%,0 75%,0 25%) }
+.mast nav { gap: 4px; font-size: .88rem; min-width: 0 }
+.mast nav a { padding: 6px 10px; border-radius: 8px; color: var(--muted); white-space: nowrap }
+.mast nav a:hover { color: var(--ink); background: var(--surface-2); text-decoration: none }
+.icon-btn { display: grid; place-items: center; width: 34px; height: 34px; margin-left: 4px; padding: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink) }
+.icon-btn:hover { border-color: var(--line-strong) }
+/* Sun when dark (switch to light), moon when light (switch to dark). */
+#theme span { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset -5px -3px 0 0 currentColor; transform: rotate(-20deg) }
+:root[data-theme-effective="dark"] #theme span { box-shadow: none; background: currentColor; transform: scale(.62); outline: 3px dotted currentColor; outline-offset: 3px }
+
+/* Collection tabs */
+.games { display: flex; gap: 4px; width: max-content; max-width: 100%; margin: 24px 0 0; padding: 4px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px }
+.games::-webkit-scrollbar { display: none }
+.games a { flex: none; padding: 7px 15px; border-radius: 999px; color: var(--muted); font-size: .88rem; font-weight: 600; white-space: nowrap; scroll-snap-align: start; transition: background-color .15s, color .15s }
+.games a:hover { color: var(--ink); background: var(--surface); text-decoration: none }
+.games a[aria-current="page"] { background: var(--brand); color: var(--brand-ink); box-shadow: var(--shadow-sm) }
+
+/* Intro */
+.intro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 14px 28px; padding: 22px 0 20px }
+h1 { font-size: clamp(1.8rem, 3.2vw, 2.7rem); line-height: 1.12; letter-spacing: -.02em; font-weight: 800 }
+h1 span { margin-left: .3em; color: var(--brand); font-weight: 700 }
+.lede { margin-top: 6px; max-width: 62ch; color: var(--muted); font-size: .95rem; text-wrap: pretty }
+#totals { display: flex; gap: 8px; min-height: 44px }
+.stat { display: inline-flex; align-items: baseline; gap: 6px; height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-sm) }
+.stat b { font-size: 1.3rem; line-height: 1.2; font-variant-numeric: tabular-nums }
+.stat span { font-size: .8rem; color: var(--muted) }
+
+/* Layout */
+.layout { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(0, 1.55fr); align-items: start; gap: clamp(20px, 2.6vw, 40px); padding-bottom: 56px }
+.preview-panel { position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: thin; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md) }
+
+/* Stage: contract with the widget (see #stage #waifu rules below). */
+/* The model shrinks on short screens so the name and outfit picker stay above the fold. */
+.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; --gallery-model-height: clamp(250px, min(32vw, 100vh - 540px), 425px); --gallery-headroom: 124px; padding: var(--gallery-headroom) 6px 6px;
+  background: radial-gradient(120% 95% at 50% 62%, var(--stage-1) 0, var(--stage-2) 50%, var(--stage-3) 100%) }
 .stage::before, .stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1 }
-.stage::before { opacity: .19; background-image: linear-gradient(#b5cfc0 1px,transparent 1px),linear-gradient(90deg,#b5cfc0 1px,transparent 1px); background-size: 34px 34px; mask-image: linear-gradient(to top, #000, transparent 93%) }
-.stage::after { inset: 11% 8%; background: repeating-radial-gradient(circle at center,transparent 0,transparent 23%,#d3e7d433 23.2%,transparent 23.7%); }
-.stage-label { position: absolute; top: 14px; left: 16px; color: #f4faf4; font-size: .76rem; font-weight: 600; letter-spacing: .04em; z-index: 1; pointer-events: none }
-.stage-label::before { content: ""; display:inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: #f9bf69 }
+.stage::before { opacity: .2; background-image: linear-gradient(var(--stage-grid) 1px, transparent 1px), linear-gradient(90deg, var(--stage-grid) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: linear-gradient(to top, #000, transparent 92%); mask-image: linear-gradient(to top, #000, transparent 92%) }
+.stage::after { inset: 11% 8%; background: repeating-radial-gradient(circle at center, transparent 0, transparent 23%, var(--stage-ring) 23.2%, transparent 23.7%) }
+.stage-label { position: absolute; top: 14px; left: 14px; z-index: 1; display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px 4px 8px; border-radius: 999px; background: rgba(4, 16, 13, .32); color: #eef7f1; font-size: .74rem; font-weight: 600; letter-spacing: .04em; pointer-events: none; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
+/* Status dot: steady green when ready, pulsing amber while a model loads, red after a failure. */
+.stage-label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #5fd3a5; box-shadow: 0 0 6px rgba(95, 211, 165, .7); transition: background-color .2s }
+.stage:has(#waifu:is([data-model-pending], [data-model-loading], [data-initial-framing])) .stage-label::before { background: var(--accent); animation: live 1.2s ease-out infinite }
+.stage:has(#waifu[data-model-error]) .stage-label::before { background: #f07167; box-shadow: 0 0 6px rgba(240, 113, 103, .7); animation: none }
+@keyframes live { 0% { box-shadow: 0 0 0 0 rgba(240, 183, 100, .7) } 70%, 100% { box-shadow: 0 0 0 7px rgba(240, 183, 100, 0) } }
 #poster, .model-host { position: absolute; bottom: 3%; width: min(92%, 360px); aspect-ratio: 1; max-height: 94%; object-fit: contain }
+#poster { transition: opacity .35s ease-out; animation: fade-in .3s ease-out }
+#poster.leaving { opacity: 0 }
+@keyframes fade-in { from { opacity: 0 } }
+/* The widget hides the canvas while loading; fade it in on arrival (hiding stays instant). */
+#stage #waifu:not([data-initial-framing], [data-model-loading]) :is(#live2d, .waifu-model-stage) { transition: opacity .3s ease-out }
 .model-host { position: relative; bottom: auto; display: grid; place-items: center; container-type: inline-size; width: 100%; aspect-ratio: auto; max-height: none }
-.model-host:not(:has(.waifu-adaptive)), .model-host:has(.waifu-toggle-active) { min-height: var(--gallery-model-height) }
+/* Fixed height: models of different proportions must not resize the stage and push the profile. */
+.model-host { min-height: var(--gallery-model-height) }
 #stage #waifu.waifu-adaptive { --waifu-max-width: calc(100cqw - var(--waifu-side-space)); --waifu-max-height: calc(var(--gallery-model-height) - 12px) }
+/* Every model has its own proportions. With the tool rail glued to the model's right side it jumped
+   sideways on each switch, so pin it to the stage edge and centre the model in the space left over.
+   Wide models keep the widget's own layout (tools above them on narrow panels). */
+#stage #waifu.waifu-adaptive:not([data-wide-model]) {
+  --gallery-rail-inset: 10px;
+  --waifu-side-space: 0px;
+  --waifu-max-width: calc(100cqw - 2 * (var(--waifu-rail) + var(--waifu-gap) + var(--gallery-rail-inset)));
+}
+#stage #waifu.waifu-adaptive:not([data-wide-model]) #waifu-tool { left: calc(50% + 50cqw - var(--waifu-rail) - var(--gallery-rail-inset)); right: auto }
+/* Width-limited models are shorter and sit lower in the stage; hold the caption at one height anyway. */
+#stage #waifu.waifu-adaptive:not([data-wide-model]) #waifu-tips {
+  bottom: calc(100% + var(--waifu-content-gap) + (var(--gallery-model-height) - var(--waifu-model-height)) / 2);
+}
 #stage #waifu { position: relative; inset: auto !important; margin: 0; transform: none; transition: none; line-height: 0 }
 #stage #live2d { display: block; width: 100%; height: auto; aspect-ratio: 1 }
 #stage #waifu > div:has(> #live2d) { width: 100% }
-#stage #waifu.waifu-adaptive #waifu-tips { max-height: calc(var(--gallery-headroom) - 34px - var(--waifu-top-tools)); border-radius: 8px; background: #fff9e9f5; color: #352d24; font-size: 13px; line-height: 1.5 }
-#stage #waifu-tool { padding: 1px; background: #eff7f0ee; border-radius: 7px }
-#stage #waifu-tool button { height: clamp(24px,3.5vh,36px); min-height: 0; min-width: 30px }
+#stage #waifu.waifu-adaptive #waifu-tips { max-height: calc(var(--gallery-headroom) - 34px - var(--waifu-top-tools)); border: 0; border-radius: 10px; background: rgba(255, 250, 236, .96); color: #352d24; box-shadow: 0 6px 18px -6px rgba(0, 0, 0, .45); font-size: 13px; line-height: 1.5 }
+/* Size captions by the stage, not the model, so tall slim models keep a readable bubble.
+   Still centred on the model viewport; adaptive tips have no shake animation to fight the transform. */
+#stage #waifu.waifu-adaptive #waifu-tips { left: calc((100% - var(--waifu-side-space)) / 2); right: auto; width: min(320px, 100cqw - var(--waifu-side-space) - 32px); margin: 0; transform: translateX(-50%) }
+#stage #waifu-tool { padding: 2px; background: var(--tool-bg); border-radius: 10px; box-shadow: 0 4px 14px -4px rgba(0, 0, 0, .35) }
+#stage #waifu-tool button { height: clamp(24px, 3.5vh, 36px); min-height: 0; min-width: 30px }
 #stage #waifu-toggle { position: absolute; bottom: 25%; left: 0 }
-.profile { padding: 19px 22px }
-.kind { font-size: .78rem; font-weight: 650 }
-.profile h2 { margin-top: 3px; font-size: clamp(1.45rem,2.4vw,2.1rem); line-height: 1.25 }
-#result { font: .78rem/1.4 "IBM Plex Mono", monospace; overflow-wrap: anywhere; margin: 4px 0 12px }
-.profile label { display: block; font-size: .8rem; font-weight: 650; margin-bottom: 4px }
-select, .search { background: #fff; border: 1px solid #becbc4; border-radius: 7px }
-select { padding: 8px; max-width: 100% }
-#variant { width: 100% }
-.links { margin-top: 13px; gap: 18px; font-size: .84rem }
-.links button, .motion button, #more { border: 1px solid #b4c5bb; background: #f2f6f1; border-radius: 7px; padding: 6px 12px }
-.links a { color: var(--teal) }
-#notice:not(:empty) { margin-top: 8px; font-size: .82rem }
-.collection-head { justify-content: space-between; gap: 12px; margin-bottom: 14px }
-.collection-head h2 { font-size: 1.35rem; letter-spacing: -.03em }
-.modes { background: #e6ebe4; padding: 3px; border-radius: 8px }
-.modes button { border: 0; background: none; font-size: .84rem; padding: 5px 13px; border-radius: 6px }
-.modes button[aria-pressed="true"] { background: var(--teal); color: white }
-.filters { gap: 9px }
-.filters select { flex: 0 0 auto; font-size: .88rem; min-height: 40px }
-.search { display: flex; align-items: center; min-width: 0; flex: 1; gap: 10px; padding: 0 12px }
-.search span { width: 13px; height: 13px; border: 1.6px solid #61726b; border-radius: 50%; position: relative }
-.search span::after { content: ""; position: absolute; right: -4px; bottom: -2px; width: 6px; height: 1.6px; background: #61726b; transform: rotate(45deg) }
-.search input { min-width: 0; width: 100%; height: 39px; border: 0; background: transparent; font-size: .9rem }
-#matches { margin: 12px 0 10px; font-size: .8rem }
-.cards { display: grid; grid-template-columns: repeat(auto-fill,minmax(127px,1fr)); gap: 12px }
-.card { display: flex; flex-direction: column; min-width: 0; position: relative; overflow: hidden; background: white; border: 1px solid var(--line); border-radius: 9px; padding: 0; text-align: left }
-.card[aria-pressed="true"] { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal) }
-.card[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 5px; right: 5px; border-radius: 50%; background: var(--teal); color: white; width: 18px; line-height: 18px; text-align: center; font-size: 12px }
-.art { width: 100%; aspect-ratio: 1.34; overflow: hidden; display: grid; place-items: start center; background: linear-gradient(135deg,#e8eee2,#d2dfd6) }
-.card:nth-child(3n+2) .art { background: linear-gradient(135deg,#f4ece0,#e7dcce) }
-.card:nth-child(3n) .art { background: linear-gradient(135deg,#e5ecee,#ced9df) }
-.art img { width: 100%; height: auto; transform: scale(1.16); transform-origin: 50% 14% }
-.art.wide img { width: 80%; transform: none; align-self: center }
-.caption { padding: 8px 10px 9px; display: grid; gap: 1px; width: 100% }
-.caption strong { overflow-wrap: anywhere; line-height: 1.3; font-size: .94rem }
-.caption small { font-size: .75rem; line-height: 1.45; color: var(--muted); overflow-wrap: anywhere }
-@media (hover:hover) { .card:hover { border-color: #628b79; box-shadow: 0 3px 9px #27463816 } }
-.paging { text-align: center; margin-top: 16px }
-@media (max-width:900px) { .layout { gap: 18px; grid-template-columns: minmax(240px,.8fr) minmax(0,1.2fr) } .cards { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)) } }
-@media (max-width:680px) {
-  .wrap { width: calc(100% - 28px) }
-  .mast { min-height: 50px; flex-wrap: wrap; gap: 6px 16px; padding-block: 8px }.mast nav { flex-wrap: wrap; gap: 8px 14px; font-size: .79rem }
-  .intro { display: block; padding: 20px 0 14px }.intro p { margin-top: 5px }
-  .layout { display: flex; flex-direction: column; gap: 24px }.layout > * { width: 100% }
-  .preview-panel { position: static }.stage { --gallery-model-height: 260px }#poster { width: min(88%,235px) }
-  .profile { padding: 13px 16px }.cards { grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap: 8px }
-}
-@media (max-height:750px) and (min-width:681px) { .preview-panel { position: static } }
 
-.examples { border-top: 1px solid var(--line); padding: 24px 0 40px }
-.examples h2 { font-size: 1.25rem; margin-bottom: 12px }
-.examples > div { display: flex; gap: 12px }
-.examples a { padding: 8px; max-width: 45%; border: 1px solid var(--line); border-radius: 9px; background: white }
-.examples img { display: block; width: auto; max-width: 100%; height: auto; max-height: 180px }
+/* Profile */
+.profile { padding: 18px 22px 20px }
+.kind { width: fit-content; padding: 2px 10px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .74rem; font-weight: 700; letter-spacing: .02em }
+/* Dynamic text keeps its line box while empty, so filling it in does not push the layout. */
+.kind:empty { visibility: hidden }
+:is(.kind, #result, #matches):empty::before { content: "\200b" }
+.profile h2 { margin-top: 8px; font-size: clamp(1.4rem, 2.2vw, 1.95rem); line-height: 1.22; font-weight: 800; letter-spacing: -.01em }
+#result { margin: 4px 0 14px; color: var(--muted); font: .76rem/1.45 var(--mono); overflow-wrap: anywhere }
+.profile label { display: block; margin-bottom: 5px; color: var(--muted); font-size: .78rem; font-weight: 650 }
+#audition { margin-top: 12px }
+.motion { gap: 8px }
+.motion select { flex: 1; min-width: 0 }
+.links { flex-wrap: wrap; gap: 10px 16px; margin-top: 14px; font-size: .86rem }
+.links a { color: var(--brand); font-weight: 600 }
+#notice { min-height: calc(.82rem * 1.55); margin-top: 10px; color: var(--muted); font-size: .82rem; line-height: 1.55 }
+
+/* Controls */
+select { -webkit-appearance: none; appearance: none; min-height: 40px; max-width: 100%; padding: 8px 34px 8px 11px; border: 1px solid var(--line-strong); border-radius: 10px; font-size: .9rem;
+  background: linear-gradient(45deg, transparent 50%, var(--muted) 50%) right 17px center / 5px 5px no-repeat, linear-gradient(-45deg, transparent 50%, var(--muted) 50%) right 12px center / 5px 5px no-repeat, var(--surface) }
+select:hover { border-color: var(--brand) }
+select:disabled { cursor: progress; opacity: .7 }
+#variant { width: 100% }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 6px 14px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface-2); color: var(--ink); font-size: .86rem; font-weight: 600; white-space: nowrap; transition: border-color .15s, background-color .15s, color .15s }
+.btn:hover { border-color: var(--brand); color: var(--brand) }
+.btn.primary { min-height: 40px; border-color: transparent; background: var(--brand); color: var(--brand-ink) }
+.btn.primary:hover { background: var(--brand-hover); color: var(--brand-ink) }
+
+/* Embed snippet */
+.embed { margin-top: 16px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2) }
+.embed summary { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; list-style: none; font-size: .86rem; font-weight: 650 }
+.embed summary::-webkit-details-marker { display: none }
+.embed summary::after { content: ""; width: 7px; height: 7px; margin-right: 3px; border: solid var(--muted); border-width: 0 1.6px 1.6px 0; transform: translateY(-2px) rotate(45deg); transition: transform .15s }
+.embed[open] summary::after { transform: translateY(2px) rotate(-135deg) }
+.embed pre { margin: 0 12px; padding: 11px 13px; overflow-x: auto; border-radius: 9px; background: var(--code-bg); color: var(--code-ink); font: .74rem/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere }
+.embed-foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 12px 12px 14px; color: var(--muted); font-size: .78rem }
+
+/* Collection: the toolbar stays under the header while the grid scrolls. */
+.toolbar { position: sticky; top: var(--header-h); z-index: 20; margin: -10px -12px 0; padding: 10px 12px 0; border-radius: 0 0 var(--r-md) var(--r-md); background: var(--header-bg); -webkit-backdrop-filter: saturate(1.5) blur(14px); backdrop-filter: saturate(1.5) blur(14px) }
+.collection-head { justify-content: space-between; gap: 12px; margin-bottom: 12px }
+.collection-head h2 { font-size: 1.35rem; letter-spacing: -.01em; font-weight: 800 }
+.modes { padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2) }
+.modes button { padding: 5px 13px; border: 0; border-radius: 7px; background: none; color: var(--muted); font-size: .84rem; font-weight: 600 }
+.modes button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-sm) }
+.filters { gap: 9px }
+.filters select { flex: 0 0 auto }
+.search { display: flex; flex: 1; align-items: center; gap: 10px; min-width: 0; padding: 0 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--surface); transition: border-color .15s, box-shadow .15s }
+.search:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px var(--brand-soft) }
+.search span { position: relative; flex: none; width: 13px; height: 13px; border: 1.6px solid var(--muted); border-radius: 50% }
+.search span::after { content: ""; position: absolute; right: -4px; bottom: -2px; width: 6px; height: 1.6px; background: var(--muted); transform: rotate(45deg) }
+.search input { width: 100%; min-width: 0; height: 38px; border: 0; outline: 0; background: transparent; font-size: .9rem }
+.search input::placeholder { color: var(--muted); opacity: .8 }
+#matches { margin: 0; padding: 10px 0; color: var(--muted); font-size: .8rem }
+
+/* Cards (#cards must stay a grid: its column count drives paging). */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 14px }
+.card { --ta: var(--t0a); --tb: var(--t0b); position: relative; display: flex; flex-direction: column; min-width: 0; padding: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); text-align: left; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease }
+.card[data-tone="1"] { --ta: var(--t1a); --tb: var(--t1b) }
+.card[data-tone="2"] { --ta: var(--t2a); --tb: var(--t2b) }
+.card[data-tone="3"] { --ta: var(--t3a); --tb: var(--t3b) }
+.card[data-tone="4"] { --ta: var(--t4a); --tb: var(--t4b) }
+.card[data-tone="5"] { --ta: var(--t5a); --tb: var(--t5b) }
+.card:disabled { cursor: progress }
+.card[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand), var(--shadow-md) }
+.card[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 6px; right: 6px; width: 20px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); font-size: 12px; font-weight: 700; line-height: 20px; text-align: center; box-shadow: var(--shadow-sm) }
+.art { display: grid; place-items: start center; width: 100%; aspect-ratio: 1.34; overflow: hidden; background: linear-gradient(150deg, var(--ta), var(--tb)); color: var(--muted); font-weight: 800 }
+.art:not(:has(img)) { place-items: center; font-size: 1.5rem }
+.art img { width: 100%; height: auto; opacity: 0; transform: scale(1.16); transform-origin: 50% 14%; transition: transform .3s ease, opacity .25s ease-out }
+.art img.loaded { opacity: 1 }
+.art.wide img { width: 80%; transform: none; align-self: center }
+.caption { display: grid; gap: 1px; width: 100%; padding: 8px 10px 10px }
+.caption strong { font-size: .93rem; line-height: 1.3; overflow-wrap: anywhere }
+.caption small { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; color: var(--muted); font-size: .74rem; line-height: 1.45; overflow-wrap: anywhere }
+@media (hover: hover) {
+  .card:not(:disabled):hover { transform: translateY(-2px); border-color: var(--line-strong); box-shadow: var(--shadow-md) }
+  .card[aria-pressed="true"]:hover { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand), var(--shadow-md) }
+  .card:not(:disabled):hover .art:not(.wide) img { transform: scale(1.22) }
+}
+.card.skeleton { pointer-events: none }
+.card.skeleton .art { background: var(--surface-2) }
+.card.skeleton :is(strong, small)::before { content: "\200b" }
+.card.skeleton :is(strong, small) { background: linear-gradient(var(--surface-3), var(--surface-3)) left center / 72% 10px no-repeat; border-radius: 5px }
+.card.skeleton small { background-size: 45% 9px }
+.card.skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, var(--shimmer) 50%, transparent 70%) 0 0 / 250% 100%; animation: shimmer 1.4s linear infinite }
+@keyframes shimmer { from { background-position: 125% 0 } to { background-position: -125% 0 } }
+.paging { margin-top: 18px; text-align: center }
+#more { min-width: 180px }
+
+/* Footer */
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; padding: 18px 0 28px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8rem }
+.foot a { color: var(--ink) }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: minmax(250px, .85fr) minmax(0, 1.15fr); gap: 18px }
+  .cards { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px }
+}
+@media (max-width: 680px) {
+  :root { --header-h: 54px }
+  .wrap { width: calc(100% - 28px) }
+  .mast { gap: 10px }
+  .mast nav { font-size: .82rem }
+  .mast nav a { padding: 6px 7px }
+  .nav-anchor { display: none }
+  .games { width: auto; margin: 16px -14px 0; padding: 4px 14px; border-width: 1px 0; border-radius: 0; background: transparent }
+  .intro { display: block; padding: 18px 0 16px }
+  #totals { margin-top: 12px }
+  .layout { display: flex; flex-direction: column; gap: 24px }
+  .layout > * { width: 100% }
+  .preview-panel { position: static; max-height: none; overflow: hidden; border-radius: 16px }
+  .stage { --gallery-model-height: 260px }
+  .toolbar { margin-inline: -14px; padding-inline: 14px; border-radius: 0 }
+  #poster { width: min(88%, 235px) }
+  .profile { padding: 14px 16px 16px }
+  .collection-head { flex-wrap: wrap }
+  .cards { grid-template-columns: repeat(auto-fill, minmax(102px, 1fr)); gap: 8px }
+  .caption { padding: 7px 8px 8px }
+}
+@media (max-height: 700px) and (min-width: 681px) { .preview-panel { position: static; max-height: none } }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important }
+  .card, .art img, .btn, .games a, .search, .embed summary::after { transition: none }
+  .card:not(:disabled):hover { transform: none }
+  .stage-label::before, .card.skeleton::after, #poster { animation: none }
+  #poster, .art img, #stage #waifu :is(#live2d, .waifu-model-stage) { transition: none !important }
+}
+
+/* Full-screen view (widget dialog): follow the gallery theme toggle and brand instead of the widget's
+   own system-only palette. The widget stylesheet loads after this one, hence the :root prefix. */
+:root #waifu-expanded {
+  color-scheme: inherit;
+  --view-background: var(--bg);
+  --view-foreground: var(--ink);
+  --view-panel: var(--surface);
+  --view-outline: var(--line);
+  --view-accent: var(--brand);
+  --view-hover: var(--surface-2);
+}
+:root .waifu-expanded-stage { isolation: isolate; background: radial-gradient(85% 75% at 50% 58%, var(--bg-glow), var(--bg) 72%) }
+:root .waifu-expanded-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .35;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(70% 65% at 50% 60%, #000, transparent); mask-image: radial-gradient(70% 65% at 50% 60%, #000, transparent) }
+:root .waifu-view-zoom { border-radius: 14px; box-shadow: var(--shadow-md); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px) }
+:root #waifu-expanded #waifu #waifu-tips { border-radius: 12px; box-shadow: var(--shadow-md) }
+/* Give the floating icons the same panel as the zoom controls. */
+:root #waifu-expanded #waifu #waifu-tool { padding: 4px 0; border: 1px solid var(--view-outline); border-radius: 14px; background: var(--view-panel); box-shadow: var(--shadow-md) }
+:root #waifu-expanded #waifu-tool button { border-radius: 9px }
+:root #waifu-expanded #waifu-tool button:is(:hover, :focus-visible) { background: var(--view-hover) }
+@container (max-width: 540px) or (max-height: 360px) {
+  :root #waifu-expanded #waifu #waifu-tool { padding: 0 4px }
+}
 
 /* Keep the full width for groups on compact preview panels. */
 @container (max-width: 520px) {
@@ -122,12 +367,3 @@ select { padding: 8px; max-width: 100% }
   }
   #stage #waifu[data-wide-model] #waifu-tool button { flex: 0 0 auto; width: auto; }
 }
-
-.games { display:flex; flex-wrap:wrap; gap:.4rem; margin:1.5rem 0 0; }
-.games a { padding:.5rem 1rem; border:1px solid #bbc9c5; border-radius:2rem; color:#27433f; text-decoration:none; }
-.games a[aria-current="page"] { background:#173d39; border-color:#173d39; color:white; }
-.games a:hover { border-color:#173d39; }
-#audition { margin-top:.75rem; }
-.motion { display:flex; align-items:center; gap:.5rem; }
-.motion select { flex:1; min-width:0; }
-.motion button { padding:.5rem .85rem; }

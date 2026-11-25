@@ -13,29 +13,33 @@ const find = <T extends HTMLElement = HTMLElement>(id: string) => document.getEl
 const locale = new URL(location.href).searchParams.get('lang') === 'en' ? 'en' : 'zh-CN';
 const english = locale === 'en';
 const t = (zh: string, en: string) => english ? en : zh;
+// The inline script at the end of index.html already applied the language, the active
+// collection tab and the heading before first paint.
 const language = find<HTMLAnchorElement>('language');
-if (english) {
-  document.documentElement.lang = locale;
-  for (const el of Array.from(document.querySelectorAll<HTMLElement>('[data-en]'))) el.textContent = el.dataset.en!;
-  for (const name of ['aria-label', 'placeholder', 'alt']) {
-    for (const el of Array.from(document.querySelectorAll('[data-en-' + name + ']'))) el.setAttribute(name, el.getAttribute('data-en-' + name)!);
-  }
-  const guide = find<HTMLAnchorElement>('embed-guide');
-  guide.href = 'https://github.com/nova1751/live2d-api/blob/main/docs/en/README.md#quick-start';
-  language.textContent = '简体中文';
-  language.lang = language.hreflang = 'zh-CN';
-}
 function updateLanguageLink() {
   const target = new URL(location.href);
   target.searchParams.set('lang', english ? 'zh-CN' : 'en');
   language.href = target.href;
 }
 updateLanguageLink();
-document.querySelector('.intro h1 b')!.textContent = gameNames[game][english ? 1 : 0];
-document.title = gameNames[game][english ? 1 : 0] + t('模型图鉴 · Live2D', ' model gallery · Live2D');
+// Collection tabs cross-fade between documents. A scrolled page looks nothing like the next page,
+// which always opens at the top: blending the two only shows a double image, so switch instantly.
+addEventListener('pageswap', event => {
+  if (scrollY > 0) (event as Event & { viewTransition?: { skipTransition(): void } | null }).viewTransition?.skipTransition();
+});
+// Warm the next collection's catalog while the pointer rests on its tab.
 for (const link of Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-game]'))) {
-  if (link.dataset.game === game) link.setAttribute('aria-current','page');
-  if (english) link.search += '&lang=en';
+  const warm = () => {
+    const name = link.dataset.game as keyof typeof gameNames;
+    if (name === game) return;
+    const hint = document.createElement('link');
+    hint.rel = 'prefetch';
+    hint.href = new URL(name === 'girls-frontline' ? './library.json' : './games/' + name + '.json', import.meta.url).href;
+    document.head.append(hint);
+  };
+  link.addEventListener('pointerenter', warm, { once: true });
+  link.addEventListener('focus', warm, { once: true });
+  link.addEventListener('touchstart', warm, { once: true, passive: true });
 }
 const search = find<HTMLInputElement>('search');
 const category = find<HTMLSelectElement>('category');
@@ -63,6 +67,56 @@ const tiers: Record<string,string> = english
 const states: Record<string, string> = english ? { normal: 'Standard', destroy: 'Damaged' } : { normal: '标准', destroy: '战损' };
 Object.assign(categories, {ship:t('舰船','Ships'),character:t('角色','Characters'),hhw:'Hello, Happy World!',afterglow:'Afterglow',avemujica:'Ave Mujica',morfonica:'Morfonica',mygo:'MyGO!!!!!',pastelpalettes:'Pastel＊Palettes',poppinparty:'Poppin’Party',ras:'RAISE A SUILEN',roselia:'Roselia'});
 const gflPortrait = (id: string) => './portraits/' + encodeURIComponent(id.split('/').join('--')) + '.webp';
+// Portraits load through <img>, outside the widget's CDN fallback: retry a refused mirror on jsDelivr once.
+const mirror = 'https://cdn.jsdmirror.com/gh/';
+function portraitFallback(image: HTMLImageElement) {
+  image.addEventListener('error', () => {
+    if (image.src.startsWith(mirror)) image.src = 'https://cdn.jsdelivr.net/gh/' + image.src.slice(mirror.length);
+  });
+}
+portraitFallback(find<HTMLImageElement>('poster'));
+
+async function copyText(text: string, done: string) {
+  try { await navigator.clipboard.writeText(text); notice.textContent = done; }
+  catch { notice.textContent = text; }
+}
+
+// The inline head script applies a stored theme before first paint; this keeps the toggle in sync.
+const themeKey = 'live2d-gallery-theme';
+const prefersDark = matchMedia('(prefers-color-scheme: dark)');
+const themeButton = find<HTMLButtonElement>('theme');
+const themeColors = { light: '#f4f6f2', dark: '#0d1412' };
+function applyTheme() {
+  const root = document.documentElement;
+  const chosen = root.dataset.theme;
+  const effective = chosen === 'light' || chosen === 'dark' ? chosen : prefersDark.matches ? 'dark' : 'light';
+  root.dataset.themeEffective = effective;
+  themeButton.setAttribute('aria-label', effective === 'dark' ? t('切换到浅色模式', 'Switch to light mode') : t('切换到深色模式', 'Switch to dark mode'));
+  for (const meta of Array.from(document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'))) {
+    meta.content = chosen ? themeColors[effective] : themeColors[meta.media.includes('dark') ? 'dark' : 'light'];
+  }
+}
+themeButton.addEventListener('click', () => {
+  const next = document.documentElement.dataset.themeEffective === 'dark' ? 'light' : 'dark';
+  // Choosing the system theme again goes back to following the system.
+  const follow = next === (prefersDark.matches ? 'dark' : 'light');
+  try { if (follow) localStorage.removeItem(themeKey); else localStorage.setItem(themeKey, next); } catch {}
+  if (follow) delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = next;
+  applyTheme();
+});
+prefersDark.addEventListener('change', applyTheme);
+applyTheme();
+
+// Route assets by where the visitor probably is, not by the page language. A wrong guess only costs
+// a fallback: fetchCdnAsset moves between JSDMirror, jsDelivr and raw GitHub on its own.
+const cdnChoice = new URL(location.href).searchParams.get('cdn');
+const mainland = cdnChoice === 'mainland' || cdnChoice !== 'global' &&
+  /^Asia\/(Shanghai|Urumqi|Chongqing|Chungking|Harbin|Kashgar)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone);
+const cdnHost = mainland ? 'https://cdn.jsdmirror.com' : 'https://cdn.jsdelivr.net';
+const embedCode = '<script type="module" src="' + cdnHost + '/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=' + game + (english ? '&lang=en' : '') + '"></script>';
+find('embed-code').textContent = embedCode;
+find('copy-embed').addEventListener('click', () => void copyText(embedCode, t('接入代码已复制', 'Embed code copied.')));
 
 // Host the standard widget in the preview panel, including a later reopen after it was hidden.
 const attachWidget = () => {
@@ -74,7 +128,7 @@ new MutationObserver(attachWidget).observe(document.body, { childList: true });
 
 try {
   notice.textContent = t('正在载入图鉴…', 'Loading catalog…');
-  const library = await loadModelCatalog(catalogUrl, game, locale, english ? undefined : 'mainland');
+  const library = await loadModelCatalog(catalogUrl, game, locale, mainland ? 'mainland' : undefined);
   notice.textContent = '';
   const portrait = (id: string) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map(id => {
@@ -102,15 +156,28 @@ try {
     groups.get(model.character)!.push(model);
   }
   if (!models.length) throw new Error(t('目录中没有可预览的模型', 'The catalog has no models to preview.'));
-  for (const kind of new Set(models.map(model => model.kind))) category.add(new Option(categories[kind] ?? kind, kind));
-  find('totals').textContent = groups.size + t(' 个图鉴条目　/　', ' entries / ') + models.length + t(' 个造型', ' forms');
+  const kinds = [...new Set(models.map(model => model.kind))];
+  for (const kind of kinds) category.add(new Option(categories[kind] ?? kind, kind));
+  // Tint card art by category so colours stay put while filtering.
+  const tones = new Map(kinds.map((kind, index) => [kind, String(index % 6)]));
+  const stat = (value: number, label: string) => {
+    const chip = document.createElement('span');
+    chip.className = 'stat';
+    const number = document.createElement('b');
+    number.textContent = value.toLocaleString(locale);
+    const text = document.createElement('span');
+    text.textContent = label;
+    chip.append(number, text);
+    return chip;
+  };
+  find('totals').replaceChildren(stat(groups.size, t('个图鉴条目', groups.size === 1 ? 'entry' : 'entries')), stat(models.length, t('个造型', models.length === 1 ? 'form' : 'forms')));
   const requested = new URL(location.href).searchParams.get('model');
   const initial = byId.get(library.visibleId(requested ?? '')) ?? models[0];
   const batchTarget = 24;
   const gridColumns = () => getComputedStyle(cards).gridTemplateColumns.trim().split(/\s+/).length;
   let columns = gridColumns(), limit = batchTarget;
   let active = initial, groupCards = true, revision = 0;
-  let ready = false;
+  let ready = false, modelShown = false;
   function highlight() {
     for (const button of Array.from(cards.querySelectorAll<HTMLButtonElement>('button[data-id]'))) {
       const row = byId.get(button.dataset.id!)!;
@@ -142,6 +209,7 @@ try {
       button.type = 'button';
       button.className = 'card';
       button.dataset.id = row.id;
+      button.dataset.tone = tones.get(row.kind)!;
       button.disabled = !ready;
       const art = document.createElement('span');
       art.className = 'art' + (['background', 'squad'].includes(row.kind) ? ' wide' : '');
@@ -150,8 +218,14 @@ try {
       image.width = image.height = 240;
       image.loading = 'lazy';
       image.decoding = 'async';
+      portraitFallback(image);
       const thumbnail = portrait(row.id);
-      if (thumbnail) { image.src = thumbnail; art.append(image); }
+      if (thumbnail) {
+        // Fade portraits in once loaded instead of letting them paint top to bottom.
+        image.addEventListener('load', () => image.classList.add('loaded'));
+        image.src = thumbnail;
+        art.append(image);
+      }
       else art.textContent = row.name.slice(0,2);
       const caption = document.createElement('span');
       caption.className = 'caption';
@@ -164,6 +238,7 @@ try {
       fragment.append(button);
     }
     cards.append(fragment);
+    cards.removeAttribute('aria-busy');
     highlight();
     find('matches').textContent = items.length ? t('显示 ', 'Showing ') + count + ' / ' + items.length + t(' 项', ' results') : t('没有匹配的模型，请更换关键词或分类。', 'No matches. Try another name or category.');
     more.hidden = count >= items.length;
@@ -229,16 +304,18 @@ try {
     drawCards(false);
     cards.querySelectorAll<HTMLButtonElement>('button')[previous]?.focus({ preventScroll: true });
   });
-  find('share').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(location.href); notice.textContent = t('预览链接已复制', 'Preview link copied.'); }
-    catch { notice.textContent = location.href; }
-  });
+  find('share').addEventListener('click', () => void copyText(location.href, t('预览链接已复制', 'Preview link copied.')));
   window.addEventListener('live2d:model', event => {
     const id = (event as CustomEvent<string>).detail;
     const row = byId.get(library.visibleId(id));
     if (!row) return;
     describe(row);
-    poster.hidden = true;
+    if (!modelShown) {
+      modelShown = true;
+      // Cross-fade the placeholder out under the model instead of swapping it instantly.
+      poster.classList.add('leaving');
+      setTimeout(() => { poster.hidden = true; }, 400);
+    }
     result.dataset.model = id;
     const url = new URL(location.href);
     url.searchParams.set('model', id);
@@ -253,13 +330,18 @@ try {
   }).observe(cards);
   describe(initial);
   const initialPortrait = portrait(initial.id);
-  if (initialPortrait) { poster.src = initialPortrait; poster.hidden = false; }
+  if (initialPortrait) {
+    poster.src = initialPortrait;
+    // Show the placeholder only once fully decoded, so it never paints in strips.
+    poster.decode().catch(() => {}).then(() => { if (!modelShown) poster.hidden = false; });
+  }
   drawCards();
   await loadWidget({ catalog: library, modelId: initial.id, coreUrl: document.documentElement.dataset.coreUrl });
   attachWidget();
   ready = true;
   variant.disabled = false;
-  drawCards();
+  // Enable the existing cards in place; redrawing them would reload and flash every portrait.
+  for (const button of Array.from(cards.querySelectorAll<HTMLButtonElement>('button[data-id]'))) button.disabled = false;
 } catch (error) {
   notice.textContent = t('图鉴载入失败。', 'Could not load the gallery. ') + (error instanceof Error ? error.message : String(error));
 }

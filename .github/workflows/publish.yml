@@ -68,6 +68,17 @@ jobs:
         run: |
           node scripts/publish-library.mts --publish
           node scripts/publish-widget.mts --publish
+      # jsDelivr serves branch aliases such as @widget-latest from cache for up to 7 days.
+      # Entry files resolve their runtime from the pinned @widget-<version> snapshot, so purging
+      # just the entries makes a release visible right away. A failed purge must not fail the release.
+      - name: Purge jsDelivr cache for the widget-latest entries
+        continue-on-error: true
+        run: |
+          for file in collections.mjs girls-frontline.mjs latest.mjs widget.mjs autoload.js; do
+            curl --fail --silent --show-error --max-time 30 --retry 2 \
+              "https://purge.jsdelivr.net/gh/${GITHUB_REPOSITORY}@widget-latest/${file}" > /dev/null \
+              && echo "purged ${file}" || echo "::warning::could not purge ${file}"
+          done
 
   publish-npm:
     if: startsWith(github.ref, 'refs/tags/')

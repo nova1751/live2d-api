@@ -522,6 +522,16 @@ body > #waifu.waifu-adaptive #waifu-tool {
 html:has(#waifu-expanded[open]) {
   overflow: hidden;
 }
+@media (prefers-reduced-motion: no-preference) {
+  #waifu-expanded[open] {
+    animation: waifu-view-in 0.2s ease-out;
+  }
+}
+@keyframes waifu-view-in {
+  from {
+    opacity: 0;
+  }
+}
 #waifu-expanded {
   color-scheme: light dark;
   --view-background: #f4f6f9;
@@ -649,6 +659,7 @@ html:has(#waifu-expanded[open]) {
   scrollbar-width: none;
   overscroll-behavior: contain;
   overflow-anchor: none;
+  touch-action: pan-x pan-y;
 }
 .waifu-view-viewport::-webkit-scrollbar {
   display: none;

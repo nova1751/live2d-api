@@ -1,6 +1,6 @@
 import { nativeMotionLookup, nativeTouchArea } from './native-events';
 import { prepareMotion } from './motion';
-import type { Live2DInstance } from 'live2d-web';
+import { createVolumeLipSync, type Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
 import { fetchCdnAsset } from '../runtime/cdn';
 
@@ -12,6 +12,10 @@ interface Metadata {
   voiceData: Record<string, { char_code: string; voice_key: string; caption: string }>;
 }
 interface Action { file: string; group: string; index: number; area: string; weight: number; delay: number; sound?: string; caption?: string }
+
+/** A one-second looping motion with no curves: the model keeps breathing and physics but holds its pose. */
+const stillMotion = { Version: 3, Meta: { Duration: 1, Fps: 30, Loop: true, AreBeziersRestricted: true, CurveCount: 0,
+  TotalSegmentCount: 0, TotalPointCount: 0, UserDataCount: 0, TotalUserDataSize: 0 }, Curves: [] };
 
 async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   const response = await fetchCdnAsset(url, signal);
@@ -44,12 +48,23 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
     if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
     // jsDelivr parses repo@version before decoding path segments.
     const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
-    const response = await fetchCdnAsset(asset.href, requestSignal ?? signal);
-    if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
-    if (!asset.pathname.toLowerCase().endsWith('.motion3.json')) return response.blob();
+    const isMotion = asset.pathname.toLowerCase().endsWith('.motion3.json');
+    const idle = isMotion && Array.from((await model).idleFiles).some(file => new URL(file, url).href === asset.href);
+    const active = requestSignal ?? signal;
+    const response = await fetchCdnAsset(asset.href, active).catch(error => {
+      if (!idle || active.aborted) throw error;
+    });
+    if (!response?.ok) {
+      // live2d-web stops rendering when an idle clip fails, which freezes the model for good.
+      // A missing idle clip is cosmetic: hold the pose instead.
+      if (idle && !active.aborted) {
+        console.warn('[Live2D] Idle motion unavailable, holding pose', asset.href, response?.status);
+        return new Blob([JSON.stringify(stillMotion)], { type: 'application/json' });
+      }
+      throw new Error('HTTP ' + response?.status + ' loading ' + asset);
+    }
+    if (!isMotion) return response.blob();
     const raw = await response.json();
-    const { idleFiles } = await model;
-    const idle = Array.from(idleFiles).some(file => new URL(file, url).href === asset.href);
     const clip = prepareMotion(raw, !idle && (await interactions).oneShot.has(asset.href));
     return new Blob([JSON.stringify(clip)], { type: 'application/json' });
   }
@@ -112,7 +127,32 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
   let context: AudioContext | undefined;
   let intent = 0;
   function stop() { intent++; current?.abort(); current = undefined; }
-  signal.addEventListener('abort', () => { stop(); void context?.close(); }, { once: true });
+  // Move the mouth with the voice volume. Motions without mouth curves would otherwise stay silent-faced.
+  const mouth = createVolumeLipSync();
+  let analyser: AnalyserNode | undefined;
+  let removeLipSync: (() => void) | undefined;
+  try { removeLipSync = stage.addLipSync({ driver: mouth, onError: () => removeLipSync?.() }); }
+  catch (error) { console.warn('[Live2D] Lip sync unavailable', error); }
+  function followVoice(voice: AudioBufferSourceNode, playback: AbortSignal) {
+    if (!removeLipSync) return;
+    analyser ??= voice.context.createAnalyser();
+    analyser.fftSize = 1024;
+    voice.connect(analyser);
+    const samples = new Float32Array(analyser.fftSize);
+    let last = performance.now();
+    let frame = requestAnimationFrame(function sample(now) {
+      analyser!.getFloatTimeDomainData(samples);
+      let sum = 0;
+      for (const value of samples) sum += value * value;
+      mouth.sample(Math.sqrt(sum / samples.length), now - last);
+      last = now;
+      frame = requestAnimationFrame(sample);
+    });
+    const finish = () => { cancelAnimationFrame(frame); mouth.sample(0, 16); };
+    voice.addEventListener('ended', finish, { once: true });
+    playback.addEventListener('abort', finish, { once: true });
+  }
+  signal.addEventListener('abort', () => { stop(); removeLipSync?.(); void context?.close(); }, { once: true });
 
   async function prepareVoice(url: string, signal: AbortSignal) {
     try {
@@ -182,6 +222,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
         cue = currentTime + action.delay / 1000;
         if (voice) {
           voice.connect(voice.context.destination);
+          followVoice(voice, signal);
           voice.onended = finishLine;
           voice.start(cue);
         }
