@@ -611,6 +611,7 @@ o.prototype.startMotion = function (group, index, priority, dialogue, ambient, r
     if (interactive && (file || sound || caption)) {
       var event = typeof caption === "string" && caption.trim()
         ? new CustomEvent("live2d:dialogue", {detail: caption}) : new CustomEvent("live2d:preset");
+      event.voiced = !!sound;
       event.playback = owner.activeDialogue = {handle: handle};
       window.dispatchEvent(event);
     }

@@ -340,6 +340,14 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     "RFB|APPRECIATE": "好厉害！",
     "SAT8|MOOD2": "诶，等、等一下！",
     "VECTOR|MOOD2": "啊！",
+    // Parenthesized sound descriptions are distinct from spoken dialogue.
+    "98K|MOOD1": "（笑）",
+    "GENERALLIU|MOOD1": "（笑）",
+    "HK416|MOOD1": "（笑）",
+    "LTLX7000|MOOD1": "（笑）",
+    "SPAS15|MOOD1": "（笑）",
+    "ZB26|MOOD1": "（笑）",
+    "G41|MOOD2": "（吃惊）",
     ...localized?.captions
   } : localized?.captions;
   const visibleId = (id) => {
@@ -414,7 +422,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-7f75cef58a7ee5af/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-c2e0a19b2e63a22d/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

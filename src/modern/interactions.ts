@@ -139,11 +139,11 @@ function readActions(url: string, manifest: Manifest, groups: Record<string, Mot
       }
     });
   }
-  // Some native touch events have a recording and intentionally leave the motion empty.
+  // The original voice and subtitle can play even if this export lacks the named motion.
   if (data && source) {
     let index = 0;
     for (const [id, motion] of Object.entries(data.motionData)) {
-      if (motion.motion_name || !motion.touch_area || motion.touch_area === '0' ||
+      if (matchMotion(id, motion.motion_name) || !motion.touch_area || motion.touch_area === '0' ||
           Boolean(motion.is_hurt) !== (data.variant === 'destroy') || !(motion.probability > 0)) continue;
       const voice = voiceFor(id);
       if (voice.sound || voice.caption?.trim()) actions.push({ file: '', group: 'voice', index: index++, area: nativeTouchArea(motion.touch_area.toLowerCase(), hitNames),
@@ -242,7 +242,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       const event = caption ? new CustomEvent('live2d:dialogue', { detail: caption }) : new CustomEvent('live2d:preset');
       // With no motion or audio clock, use the widget's normal reading time after the native delay.
       if (!action.file && !voice && caption) window.dispatchEvent(event);
-      else window.dispatchEvent(Object.assign(event, { playback }));
+      else window.dispatchEvent(Object.assign(event, { playback, voiced: !!action.sound }));
       if (!voice) finishLine();
     }
     // The backend calls update only once this specific motion owns the queue.

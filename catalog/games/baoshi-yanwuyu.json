@@ -78,6 +78,15 @@
         "manifest": "宝石研物语2/elizabeth_7/model.json"
       }
     ],
+    "character/elizabeth/8": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语2/elizabeth_8/model.json",
+        "files": {
+          "motions/guide.mtn": null
+        }
+      }
+    ],
     "character/elizabeth/9": [
       {
         "source": "archive",
@@ -175,6 +184,13 @@
       "outfit": "造型 7",
       "outfitEn": "Form 7",
       "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_7.webp"
+    },
+    "character/elizabeth/8": {
+      "name": "伊丽莎白",
+      "en": "Elizabeth",
+      "outfit": "造型 8",
+      "outfitEn": "Form 8",
+      "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_8.webp"
     },
     "character/elizabeth/9": {
       "name": "伊丽莎白",

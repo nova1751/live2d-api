@@ -79,6 +79,9 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     'G11_0|LOADING':'唔，再让我睡会儿～','G11_0|TIP':'这个……了解一下哦。',
     'G41|MOOD1':'啊哈哈哈。','LEWIS|AGREE':'好，好。','RFB|AGREE':'好！',
     'RFB|APPRECIATE':'好厉害！','SAT8|MOOD2':'诶，等、等一下！','VECTOR|MOOD2':'啊！',
+    // Parenthesized sound descriptions are distinct from spoken dialogue.
+    '98K|MOOD1':'（笑）','GENERALLIU|MOOD1':'（笑）','HK416|MOOD1':'（笑）',
+    'LTLX7000|MOOD1':'（笑）','SPAS15|MOOD1':'（笑）','ZB26|MOOD1':'（笑）','G41|MOOD2':'（吃惊）',
     ...localized?.captions
   } : localized?.captions;
   const visibleId = (id: string) => {

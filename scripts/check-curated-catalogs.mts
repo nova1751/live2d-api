@@ -26,7 +26,8 @@ for (const game of ['iron-saga', 'warship-girls', 'baoshi-yanwuyu']) {
   const origin = mainland ? 'https://cdn.jsdmirror.com' : 'https://cdn.jsdelivr.net';
   const library = parseModelCatalog(catalog, new URL('/catalog/games/' + game + '.json', origin), game as Collection);
   for (const id of library.ids) {
-    const url = new URL(library.resolve(id).modelUrl);
+    const { modelUrl, files } = library.resolve(id);
+    const url = new URL(modelUrl);
     const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
     assert.ok(response.ok, id + ' manifest ' + response.status + ' ' + url);
     const parsed = parseConfigFileTextToJson(url.pathname, await response.text());
@@ -38,7 +39,7 @@ for (const game of ['iron-saga', 'warship-girls', 'baoshi-yanwuyu']) {
     for (const path of [model.model, ...model.textures, model.pose, model.physics,
       ...(model.expressions ?? []).map((e: { file: string }) => e.file),
       ...clips.flatMap(clip => [clip.file, clip.sound])].filter(Boolean)) {
-      dependencies.add(new URL(path, url).href);
+      if (files?.[path] !== null) dependencies.add(new URL(files?.[path] ?? path, url).href);
     }
   }
   const pending = [...dependencies];

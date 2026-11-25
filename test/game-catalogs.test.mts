@@ -101,7 +101,7 @@ test('curated Cubism 2 galleries resolve their published IDs and have real portr
   Object.defineProperty(globalThis, 'document', { configurable: true, value: { baseURI: 'https://example.org/' } });
   t.after(() => { if (document) Object.defineProperty(globalThis, 'document', document); else delete globalThis.document; });
 
-  for (const [game, count] of [['iron-saga', 4], ['warship-girls', 3], ['baoshi-yanwuyu', 14]]) {
+  for (const [game, count] of [['iron-saga', 4], ['warship-girls', 3], ['baoshi-yanwuyu', 15]]) {
     const url = new URL('/catalog/games/' + game + '.json', 'https://example.org');
     const gallery = await loadModelCatalog(url, game, 'en');
     assert.equal(gallery.ids.length, count);

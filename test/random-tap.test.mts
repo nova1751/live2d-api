@@ -70,10 +70,11 @@ test('a native voice-only body event has a caption and no synthetic motion', asy
   const source = {url:'https://example.org/data.json',audio:new Map([['AUDIO/OTS14/OTS14_DIALOGUE1_JP.OGG','voice.ogg']]),
     captions:{'OTS14|DIALOGUE1':'今天有什么计划，说来听听吧。'}};
   const { actions } = await loadModernAssets('https://example.org/model.model3.json',source,new AbortController().signal).interactions;
-  assert.deepEqual(actions,[{file:'',group:'voice',index:0,area:'body',weight:1,delay:0,sound:'voice.ogg',caption:source.captions['OTS14|DIALOGUE1']}]);
+  const expected = {file:'',group:'voice',index:0,area:'body',weight:1,delay:0,sound:'voice.ogg',caption:source.captions['OTS14|DIALOGUE1']};
+  assert.deepEqual(actions,[expected,{...expected,index:1}]);
   source.audio.clear();
   const silent = await loadModernAssets('https://example.org/model.model3.json',source,new AbortController().signal).interactions;
-  assert.equal(silent.actions.length,1);
+  assert.equal(silent.actions.length,2);
   assert.equal(silent.actions[0].sound,undefined);
   assert.equal(silent.actions[0].caption,source.captions['OTS14|DIALOGUE1']);
   assert.equal(silent.actions[0].file,'');

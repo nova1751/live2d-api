@@ -125,7 +125,7 @@ The widget loads the renderer for each model format. The included galleries fit 
 | Module API | `locale: 'zh-CN'` | `locale: 'en'` |
 | Gallery | [中文图鉴](https://nova1751.github.io/live2d-api/catalog/) | [English gallery](https://nova1751.github.io/live2d-api/catalog/?lang=en) |
 
-The locale controls widget buttons, accessibility labels, greetings and fallback messages. The gallery language switch preserves the selected outfit. For game dialogue, English uses the subtitle attached to the original motion and voice event. Chinese uses the character and voice key to find the translated line. Older models also use matched voice keys or translations of embedded text. An interaction without a line uses a localized widget hint. Captions stay visible until the action and audio finish. Both languages play the original recording. For modern models, the player waits for the motion and recording, then schedules the voice from the first motion frame using the configured delay. If a recording is missing or fails to load, the motion and its caption still play.
+The locale controls widget buttons, accessibility labels, greetings and fallback messages. The gallery language switch preserves the selected outfit. For game dialogue, English uses the subtitle attached to the original motion and voice event. Chinese uses the character and voice key to find the translated line. Older models also use matched voice keys or translations of embedded text. Recordings without a matching subtitle play with the caption bubble hidden. Silent clicks without a line can still show a localized hint. Captions stay visible until the action and audio finish. Both languages play the original recording. For modern models, the player waits for the motion and recording, then schedules the voice from the first motion frame using the configured delay. If a recording is missing or fails to load, the motion and its caption still play.
 
 ## Expanded view
 
@@ -169,7 +169,7 @@ Each additional collection uses a JSON catalog with the same name. Models, textu
 | Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
 | Iron Saga | 4 | Matilda and Slokai use their voiced manifests. The other pilots retain their original motions. |
 | Warship Girls R | 3 | Individual outfits and motions for Missouri, Ōyodo and Lexington (CV-16). |
-| Baoshi Yanwuyu | 14 | Characters and forms from the first two games, with original motion and audio references. |
+| Baoshi Yanwuyu | 15 | Characters and forms from the first two games, with original motion and audio references. |
 
 <details>
 <summary>Collection shortcuts, offline previews and original screenshots</summary>

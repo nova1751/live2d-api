@@ -115,8 +115,8 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     if (typeof detail === 'string') showDialogue(detail, playback);
   });
   window.addEventListener('live2d:preset', event => {
-    const { playback } = event as Event & { playback?: object };
-    if (playback) showModelPreset(playback);
+    const { playback, voiced } = event as Event & { playback?: object; voiced?: boolean };
+    if (playback) showModelPreset(playback, !!voiced);
   });
   window.addEventListener('live2d:dialogue-end', event => {
     const detail = (event as CustomEvent).detail;

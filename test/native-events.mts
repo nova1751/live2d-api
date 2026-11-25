@@ -95,7 +95,7 @@ export async function checkNativeEvents(browser, base) {
     await page.mouse.click(bx, by);
     await standalone;
     await page.waitForFunction(() => !!modelsUnderTest.getModel(0).voice?.source);
-    assert.equal(await page.locator('#waifu-tips').textContent(), preset, 'sound-only action uses the configured preset');
+    assert.equal(await page.locator('#waifu-tips.waifu-tips-active').count(), 0, 'an untranslated recording must not display an unrelated line');
     assert.ok(await page.evaluate(() => !!modelsUnderTest.getModel(0).activeDialogue));
     await load('rfbchristmas/normal');
     const hand = await point('hand');

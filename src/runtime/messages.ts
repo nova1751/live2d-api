@@ -49,7 +49,12 @@ export function showDialogue(text: string, playback?: object) {
   display(escapeText(text), 11);
 }
 
-export function showModelPreset(playback: object) {
+export function showModelPreset(playback: object, voiced: boolean) {
+  if (voiced) {
+    clearMessage();
+    heldPlayback = playback;
+    return;
+  }
   const canvas = document.getElementById('live2d');
   if (!canvas) return;
   const rule = clickRules?.find(({ selector }) => canvas.closest(selector));
