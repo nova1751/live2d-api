@@ -267,7 +267,8 @@ try {
     if (motion.value) { const [group,index]=JSON.parse(motion.value); window.loadlive2d.playMotion?.(group,index); }
   });
   async function select(id: string) {
-    find('audition').hidden = true;
+    const audition = find('audition');
+    audition.hidden = true;
     const ticket = ++revision;
     notice.textContent = t('正在载入…', 'Loading…');
     try {
@@ -275,6 +276,7 @@ try {
       if (ticket === revision) notice.textContent = '';
     } catch (error) {
       if (ticket === revision) {
+        audition.hidden = !motion.options.length || !!document.querySelector('#waifu[data-model-error]');
         variant.value = active.id;
         notice.textContent = t('模型载入失败，可重新选择。', 'Could not load this model. Try selecting it again. ') + (error instanceof Error ? error.message : '');
       }

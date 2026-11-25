@@ -141,7 +141,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px }
 /* Intro */
 .intro { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 14px 28px; padding: 22px 0 20px }
 h1 { font-size: clamp(1.8rem, 3.2vw, 2.7rem); line-height: 1.12; letter-spacing: -.02em; font-weight: 800 }
-h1 span { margin-left: .3em; color: var(--brand); font-weight: 700 }
+h1 span { color: var(--brand); font-weight: 700 }
 .lede { margin-top: 6px; max-width: 62ch; color: var(--muted); font-size: .95rem; text-wrap: pretty }
 #totals { display: flex; gap: 8px; min-height: 44px }
 .stat { display: inline-flex; align-items: baseline; gap: 6px; height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-sm) }
@@ -154,7 +154,7 @@ h1 span { margin-left: .3em; color: var(--brand); font-weight: 700 }
 
 /* Stage: contract with the widget (see #stage #waifu rules below). */
 /* The model shrinks on short screens so the name and outfit picker stay above the fold. */
-.stage { position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; --gallery-model-height: clamp(250px, min(32vw, 100vh - 540px), 425px); --gallery-headroom: 124px; padding: var(--gallery-headroom) 6px 6px;
+.stage { --waifu-focus: var(--focus); position: relative; isolation: isolate; display: grid; place-items: center; overflow: hidden; --gallery-model-height: clamp(250px, min(32vw, 100vh - 540px), 425px); --gallery-headroom: 124px; padding: var(--gallery-headroom) 6px 6px;
   background: radial-gradient(120% 95% at 50% 62%, var(--stage-1) 0, var(--stage-2) 50%, var(--stage-3) 100%) }
 .stage::before, .stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1 }
 .stage::before { opacity: .2; background-image: linear-gradient(var(--stage-grid) 1px, transparent 1px), linear-gradient(90deg, var(--stage-grid) 1px, transparent 1px); background-size: 32px 32px; -webkit-mask-image: linear-gradient(to top, #000, transparent 92%); mask-image: linear-gradient(to top, #000, transparent 92%) }
@@ -190,7 +190,7 @@ h1 span { margin-left: .3em; color: var(--brand); font-weight: 700 }
 }
 #stage #waifu { position: relative; inset: auto !important; margin: 0; transform: none; transition: none; line-height: 0 }
 #stage #live2d { display: block; width: 100%; height: auto; aspect-ratio: 1 }
-#stage #waifu > div:has(> #live2d) { width: 100% }
+#stage #waifu-tips span { color: #1a5b52 }
 #stage #waifu.waifu-adaptive #waifu-tips { max-height: calc(var(--gallery-headroom) - 34px - var(--waifu-top-tools)); border: 0; border-radius: 10px; background: rgba(255, 250, 236, .96); color: #352d24; box-shadow: 0 6px 18px -6px rgba(0, 0, 0, .45); font-size: 13px; line-height: 1.5 }
 /* Size captions by the stage, not the model, so tall slim models keep a readable bubble.
    Still centred on the model viewport; adaptive tips have no shake animation to fight the transform. */
@@ -262,7 +262,7 @@ select:disabled { cursor: progress; opacity: .7 }
 .card[data-tone="5"] { --ta: var(--t5a); --tb: var(--t5b) }
 .card:disabled { cursor: progress }
 .card[aria-pressed="true"] { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand), var(--shadow-md) }
-.card[aria-pressed="true"]::after { content: "✓"; position: absolute; top: 6px; right: 6px; width: 20px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); font-size: 12px; font-weight: 700; line-height: 20px; text-align: center; box-shadow: var(--shadow-sm) }
+.card[aria-pressed="true"]::after { content: "✓" / ""; position: absolute; top: 6px; right: 6px; width: 20px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); font-size: 12px; font-weight: 700; line-height: 20px; text-align: center; box-shadow: var(--shadow-sm) }
 .art { display: grid; place-items: start center; width: 100%; aspect-ratio: 1.34; overflow: hidden; background: linear-gradient(150deg, var(--ta), var(--tb)); color: var(--muted); font-weight: 800 }
 .art:not(:has(img)) { place-items: center; font-size: 1.5rem }
 .art img { width: 100%; height: auto; opacity: 0; transform: scale(1.16); transform-origin: 50% 14%; transition: transform .3s ease, opacity .25s ease-out }
@@ -302,14 +302,16 @@ select:disabled { cursor: progress; opacity: .7 }
   .mast nav { font-size: .82rem }
   .mast nav a { padding: 6px 7px }
   .nav-anchor { display: none }
-  .games { width: auto; margin: 16px -14px 0; padding: 4px 14px; border-width: 1px 0; border-radius: 0; background: transparent }
+  .games { width: auto; max-width: none; margin: 16px -14px 0; padding: 4px 14px; border-width: 1px 0; border-radius: 0; background: transparent }
   .intro { display: block; padding: 18px 0 16px }
   #totals { margin-top: 12px }
   .layout { display: flex; flex-direction: column; gap: 24px }
   .layout > * { width: 100% }
   .preview-panel { position: static; max-height: none; overflow: hidden; border-radius: 16px }
   .stage { --gallery-model-height: 260px }
-  .toolbar { margin-inline: -14px; padding-inline: 14px; border-radius: 0 }
+  .toolbar { display: contents }
+  .filters { position: sticky; top: var(--header-h); z-index: 20; margin-inline: -14px; padding: 6px 14px; background: var(--surface) }
+  .filters select { flex: 0 1 auto; min-width: 0; max-width: 42% }
   #poster { width: min(88%, 235px) }
   .profile { padding: 14px 16px 16px }
   .collection-head { flex-wrap: wrap }
@@ -321,7 +323,7 @@ select:disabled { cursor: progress; opacity: .7 }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important }
   .card, .art img, .btn, .games a, .search, .embed summary::after { transition: none }
   .card:not(:disabled):hover { transform: none }
-  .stage-label::before, .card.skeleton::after, #poster { animation: none }
+  .stage-label::before, .card.skeleton::after, #poster { animation: none !important }
   #poster, .art img, #stage #waifu :is(#live2d, .waifu-model-stage) { transition: none !important }
 }
 
@@ -329,6 +331,7 @@ select:disabled { cursor: progress; opacity: .7 }
    own system-only palette. The widget stylesheet loads after this one, hence the :root prefix. */
 :root #waifu-expanded {
   color-scheme: inherit;
+  --waifu-focus: var(--focus);
   --view-background: var(--bg);
   --view-foreground: var(--ink);
   --view-panel: var(--surface);

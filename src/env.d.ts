@@ -35,6 +35,8 @@ interface Window {
     prepareInteraction?(): boolean;
     show?(start: boolean): void;
     hide?(): void;
+    /** Release the current model and its GPU textures. */
+    unload?(): void;
   };
   Live2D: { captureName: string; captureFrame: boolean };
   Asteroids?: new () => object;

@@ -5,7 +5,16 @@ import type { DialogueSource, GameCue } from '../library/catalog';
 import { fetchCdnAsset } from '../runtime/cdn';
 
 interface MotionFile { File: string; Sound?: string }
-interface Manifest { HitAreas?: { Name: string }[]; FileReferences: { Motions?: Record<string, MotionFile[]> } }
+interface Manifest {
+  HitAreas?: { Name: string }[];
+  FileReferences: {
+    Motions?: Record<string, MotionFile[]>;
+    Physics?: string;
+    Pose?: string;
+    UserData?: string;
+    Expressions?: { File: string }[];
+  };
+}
 interface Metadata {
   variant: string;
   motionData: Record<string, { motion_name: string; touch_area: string; probability: number; delay: number; is_hurt: number }>;
@@ -17,6 +26,17 @@ interface Action { file: string; group: string; index: number; area: string; wei
 const stillMotion = { Version: 3, Meta: { Duration: 1, Fps: 30, Loop: true, AreBeziersRestricted: true, CurveCount: 0,
   TotalSegmentCount: 0, TotalPointCount: 0, UserDataCount: 0, TotalUserDataSize: 0 }, Curves: [] };
 
+/**
+ * Empty stand-ins for files a model can live without. live2d-web fails the whole model when
+ * physics, pose or user data cannot load; Cubism 2 just carries on without them, so match that.
+ */
+const emptyPhysics = { Version: 3, Meta: { PhysicsSettingCount: 0, TotalInputCount: 0, TotalOutputCount: 0, VertexCount: 0,
+  EffectiveForces: { Gravity: { X: 0, Y: -1 }, Wind: { X: 0, Y: 0 } }, PhysicsDictionary: [] }, PhysicsSettings: [] };
+const emptyPose = { Type: 'Live2D Pose', FadeInTime: 0.5, Groups: [] };
+const emptyUserData = { Version: 3, Meta: { UserDataCount: 0, TotalUserDataSize: 0 }, UserData: [] };
+const emptyExpression = { Type: 'Live2D Expression', FadeInTime: 0.5, FadeOutTime: 0.5, Parameters: [] };
+const emptyMotion = { ...stillMotion, Meta: { ...stillMotion.Meta, Loop: false } };
+
 async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   const response = await fetchCdnAsset(url, signal);
   if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + url);
@@ -27,7 +47,20 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
   const model = json<Manifest>(url, signal).then(manifest => {
     const groups = manifest.FileReferences.Motions ?? {};
     const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([, clips]) => clips.map(clip => clip.File)));
-    return { manifest, groups, idleFiles };
+    // FileReferences defines the asset type even when an exporter uses a custom filename.
+    const optional = new Map<string, object>();
+    const register = (file: string | undefined, fallback: object) => {
+      if (file) optional.set(new URL(file, url).href, fallback);
+    };
+    const refs = manifest.FileReferences;
+    register(refs.Physics, emptyPhysics);
+    register(refs.Pose, emptyPose);
+    register(refs.UserData, emptyUserData);
+    for (const expression of refs.Expressions ?? []) register(expression.File, emptyExpression);
+    for (const clips of Object.values(groups)) {
+      for (const clip of clips) register(clip.File, idleFiles.has(clip.File) ? stillMotion : emptyMotion);
+    }
+    return { manifest, groups, idleFiles, optional };
   });
   const interactions = Promise.all([
     model,
@@ -48,23 +81,21 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
     if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
     // jsDelivr parses repo@version before decoding path segments.
     const asset = new URL('/' + path.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), url);
-    const isMotion = asset.pathname.toLowerCase().endsWith('.motion3.json');
-    const idle = isMotion && Array.from((await model).idleFiles).some(file => new URL(file, url).href === asset.href);
+    const standIn = (await model).optional.get(asset.href);
+    const idle = standIn === stillMotion;
     const active = requestSignal ?? signal;
-    const response = await fetchCdnAsset(asset.href, active).catch(error => {
-      if (!idle || active.aborted) throw error;
-    });
-    if (!response?.ok) {
-      // live2d-web stops rendering when an idle clip fails, which freezes the model for good.
-      // A missing idle clip is cosmetic: hold the pose instead.
-      if (idle && !active.aborted) {
-        console.warn('[Live2D] Idle motion unavailable, holding pose', asset.href, response?.status);
-        return new Blob([JSON.stringify(stillMotion)], { type: 'application/json' });
-      }
-      throw new Error('HTTP ' + response?.status + ' loading ' + asset);
+    let raw;
+    try {
+      const response = await fetchCdnAsset(asset.href, active, signal);
+      if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + asset);
+      if (!standIn) return await response.blob();
+      raw = await response.json();
+    } catch (error) {
+      if (!standIn || active.aborted || signal.aborted) throw error;
+      console.warn('[Live2D] Optional model file unavailable', asset.href, error);
+      return new Blob([JSON.stringify(standIn)], { type: 'application/json' });
     }
-    if (!isMotion) return response.blob();
-    const raw = await response.json();
+    if (!idle && standIn !== emptyMotion) return new Blob([JSON.stringify(raw)], { type: 'application/json' });
     const clip = prepareMotion(raw, !idle && (await interactions).oneShot.has(asset.href));
     return new Blob([JSON.stringify(clip)], { type: 'application/json' });
   }

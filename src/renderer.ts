@@ -1,4 +1,4 @@
-import { appendResource, loadTimeout } from './runtime/request';
+import { appendResource, loadDeadline, shareLoadClock } from './runtime/request';
 
 type Render = Window['loadlive2d'];
 export type LegacyScript = HTMLScriptElement & { acceptCubism2?: (renderer: Render) => void };
@@ -60,9 +60,11 @@ export function createRenderer(base: string, legacy?: Render): Render {
         return ready;
       });
     }
-    legacy?.hide?.();
+    // A Cubism 3+ model takes the stage: free the Cubism 2 model's textures instead of only hiding it.
+    if (legacy?.unload) legacy.unload(); else legacy?.hide?.();
     const lifecycle = controller = new AbortController();
     const { signal } = lifecycle;
+    shareLoadClock(signal, options?.signal);
     const stop = () => lifecycle.abort(options?.signal?.reason);
     options?.signal?.addEventListener('abort', stop, { once: true });
     const present = options?.onPaint;
@@ -88,6 +90,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
     }).catch(error => {
       if (!signal.aborted) { controller = undefined; lifecycle.abort(); throw error; }
     }).finally(() => {
+      shareLoadClock(signal, undefined);
       signal.removeEventListener('abort', abortPaint);
       options?.signal?.removeEventListener('abort', stop);
     });
@@ -97,7 +100,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
     if (!options?.onPaint) return start(canvas, model, options);
     const attempt = loading = new AbortController();
     const { signal } = attempt;
-    const deadline = setTimeout(() => attempt.abort(new Error('Timed out waiting for the first model frame')), loadTimeout);
+    const cancelDeadline = loadDeadline(signal, () => attempt.abort(new Error('Timed out waiting for the first model frame')));
     let stop: () => void;
     const aborted = new Promise<never>((_, reject) => {
       stop = () => reject(signal.reason);
@@ -110,7 +113,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
       attempt.abort(error);
       throw error;
     }).finally(() => {
-      clearTimeout(deadline);
+      cancelDeadline();
       signal.removeEventListener('abort', stop);
       if (loading === attempt) loading = undefined;
     });

@@ -1,4 +1,5 @@
-import { createLive2D, OFFICIAL_CUBISM_CORE_URL, type Live2DInstance } from 'live2d-web';
+import { createLive2D, isMobileViewport, OFFICIAL_CUBISM_CORE_URL, resolveAutoQualityPolicy, selectInitialResolution,
+  type Live2DInstance } from 'live2d-web';
 
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
@@ -30,7 +31,9 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   wrapper.append(canvas, host);
   canvas.style.visibility = 'hidden';
   let stage: Live2DInstance | undefined;
+  let stopSizing: (() => void) | undefined;
   function cleanup() {
+    stopSizing?.();
     stage?.dispose();
     if (wrapper.contains(canvas)) {
       wrapper.replaceWith(canvas);
@@ -44,25 +47,94 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
-    const backend: Live2DBackend | undefined = (framing || onPaint || hiddenDrawables?.length) ? { ...cubismWebGL, createStage(element, options) {
-      graphics = cubismWebGL.createStage(element, options);
+    // live2d-web's automatic quality only ever lowers the resolution. Opening the full-screen view
+    // caps it to the pixel budget, and back in the small widget the model would stay blurry for
+    // good. Size the drawing buffer here instead, in both directions.
+    // live2d-web also treats every container under 768px as a phone, and the widget always is
+    // one, so a high-DPI desktop would be capped at 1.5x. Keep phone limits for touch devices.
+    const policy = resolveAutoQualityPolicy(matchMedia('(pointer: coarse)').matches ? undefined
+      : { mobileMaxResolution: 2, mobilePixelBudget: 4e6 });
+    // Lowered when frames run long. A pixel count, so a smaller view can still render sharper.
+    let pixelCap = Infinity;
+    const targetResolution = (cap = pixelCap) => {
+      const rect = host.getBoundingClientRect();
+      const width = Math.max(1, rect.width), height = Math.max(1, rect.height);
+      const wanted = selectInitialResolution({ devicePixelRatio, width, height, mobile: isMobileViewport(width, height) }, policy);
+      return Math.max(policy.minResolution, Math.min(wanted, Math.sqrt(cap / (width * height))));
+    };
+    let sizing = 0;
+    const resizeBuffer = () => {
+      if (sizing || signal.aborted) return;
+      sizing = requestAnimationFrame(() => {
+        sizing = 0;
+        const next = targetResolution();
+        if (graphics && !signal.aborted && Math.abs(next - graphics.getResolution()) > 0.01) graphics.setResolution(next);
+      });
+    };
+    const resized = new ResizeObserver(resizeBuffer);
+    resized.observe(host);
+    // The pixel ratio changes when the window moves to another screen or the page is zoomed.
+    let ratio: MediaQueryList | undefined;
+    const watchRatio = () => {
+      ratio?.removeEventListener('change', onRatio);
+      ratio = matchMedia(`(resolution: ${devicePixelRatio}dppx)`);
+      ratio.addEventListener('change', onRatio);
+    };
+    function onRatio() { watchRatio(); resizeBuffer(); }
+    watchRatio();
+    stopSizing = () => {
+      resized.disconnect();
+      ratio?.removeEventListener('change', onRatio);
+      cancelAnimationFrame(sizing);
+    };
+    function watchFrames(stage: StageHandle) {
+      let elapsed = 0, frames = 0, slow = 0, stableWindows = 0;
+      stage.onFrame(delta => {
+        // A gap this long is a pause or a hidden tab, not a slow frame.
+        if (!(delta > 0 && delta < 250)) return;
+        elapsed += delta;
+        frames++;
+        if (delta > policy.longFrameMs) slow++;
+        if (elapsed < policy.sampleWindowMs) return;
+        const current = stage.getResolution();
+        const overloaded = slow / frames > policy.longFrameRatioThreshold;
+        stableWindows = slow === 0 ? stableWindows + 1 : 0;
+        if (overloaded && current > policy.minResolution) {
+          const next = Math.max(policy.minResolution, Math.round((current - policy.resolutionStep) * 100) / 100);
+          const { width, height } = stage.getSize();
+          pixelCap = width * height * next * next;
+          stage.setResolution(next);
+        } else if (stableWindows >= 4 && Number.isFinite(pixelCap)) {
+          // Probe one step after sustained smooth rendering at the same viewport size.
+          const wanted = targetResolution(Infinity);
+          const next = Math.min(wanted, current + policy.resolutionStep);
+          const { width, height } = stage.getSize();
+          pixelCap = next >= wanted ? Infinity : width * height * next * next;
+          if (next > current) stage.setResolution(next);
+          stableWindows = 0;
+        }
+        elapsed = frames = slow = 0;
+      });
+    }
+    const custom = !!(framing || onPaint || hiddenDrawables?.length);
+    const backend: Live2DBackend = { ...cubismWebGL, createStage(element, options) {
+      const created = graphics = cubismWebGL.createStage(element, options);
       // Input uses the full camera, including any paint margin cropped at the screen edge.
-      graphics.toWorld = (x, y) => {
+      if (custom) created.toWorld = (x, y) => {
         const rect = element.getBoundingClientRect();
         return { x: x - rect.left, y: y - rect.top };
       };
-      return graphics;
+      watchFrames(created);
+      // A recovered stage starts from the initial resolution; bring it back to the current one.
+      resizeBuffer();
+      return created;
     }, async loadModel(stage, url, options) {
-      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables });
-    } } : undefined;
+      return modelHandle = await cubismWebGL.loadModel(stage, url, hiddenDrawables ? { ...options, hiddenDrawables } : options);
+    } };
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
     // The floating widget waits below the viewport until its first framed paint.
     const waitForFirstPaint = canvas.closest('body > #waifu[data-initial-framing]');
-    // live2d-web treats every container under 768px as a phone. The widget always is one, so a
-    // high-DPI desktop would be capped at 1.5x. Keep the phone limits for touch-first devices only.
-    const quality = matchMedia('(pointer: coarse)').matches ? 'auto' as const
-      : { mobileMaxResolution: 2, mobilePixelBudget: 4e6 };
     // Runtime errors (lost WebGL context, a failing frame) stop the render loop. Recreate the
     // canvas a couple of times before giving up, instead of leaving a frozen or blank model.
     let recoveries = 0;
@@ -75,7 +147,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       }, 400 * attempt);
     };
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
-      pauseWhenOffscreen: !waitForFirstPaint, quality, maxFps: 60,
+      pauseWhenOffscreen: !waitForFirstPaint, resolution: targetResolution(), maxFps: 60,
       backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: recover });
     signal.throwIfAborted();
     const instance = stage;

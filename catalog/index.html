@@ -55,7 +55,7 @@
       <a href="?collection=baoshi-yanwuyu" data-game="baoshi-yanwuyu" data-en="Baoshi Yanwuyu">宝石研物语</a>
     </nav>
     <div class="intro">
-      <div><h1><b data-en="Girls’ Frontline">少女前线</b><span data-en="Model gallery">模型图鉴</span></h1>
+      <div><h1><b data-en="Girls’ Frontline">少女前线</b> <span data-en="Model gallery">模型图鉴</span></h1>
       <p class="lede" data-en="Pick a character to preview it live, try its actions, then embed the collection with one line of code.">点选角色即可实时预览、试播动作，再用一行代码把整部作品嵌入你的网站。</p></div>
       <p id="totals"></p>
     </div>
@@ -86,14 +86,14 @@
       <section id="collection" aria-labelledby="collection-title">
         <div class="toolbar">
           <div class="collection-head"><h2 id="collection-title" data-en="Explore the collection">浏览图鉴</h2>
-            <div class="modes" aria-label="浏览方式" data-en-aria-label="Browse by"><button type="button" id="by-character" aria-pressed="true" data-en="Characters">按人物</button><button type="button" id="by-form" aria-pressed="false" data-en="Outfits">按造型</button></div>
+            <div class="modes" role="group" aria-label="浏览方式" data-en-aria-label="Browse by"><button type="button" id="by-character" aria-pressed="true" data-en="Characters">按人物</button><button type="button" id="by-form" aria-pressed="false" data-en="Outfits">按造型</button></div>
           </div>
           <div class="filters"><label class="search"><span aria-hidden="true"></span><input id="search" type="search" aria-label="搜索人物、造型或代号" data-en-aria-label="Search characters, outfits or IDs" placeholder="搜索人物、造型或代号" data-en-placeholder="Search characters, outfits or IDs"></label>
             <select id="category" aria-label="按分类筛选" data-en-aria-label="Filter by category"><option value="" data-en="All categories">全部分类</option></select>
           </div>
           <p id="matches" role="status"></p>
         </div>
-        <div id="cards" class="cards" aria-label="模型列表" data-en-aria-label="Model list" aria-busy="true">
+        <div id="cards" class="cards" role="group" aria-label="模型列表" data-en-aria-label="Model list" aria-busy="true">
           <span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span><span class="card skeleton" aria-hidden="true"><span class="art"></span><span class="caption"><strong></strong><small></small></span></span>
         </div>
         <div class="paging"><button id="more" class="btn" type="button" hidden data-en="Show more">显示更多</button></div>
@@ -129,6 +129,11 @@
         if (english) link.search += '&lang=en';
       });
       active.setAttribute('aria-current', 'page');
+      var strip = active.parentElement;
+      if (strip.scrollWidth > strip.clientWidth) {
+        strip.scrollLeft += active.getBoundingClientRect().left - strip.getBoundingClientRect().left
+          - (strip.clientWidth - active.offsetWidth) / 2;
+      }
       document.querySelector('.intro h1 b').textContent = active.textContent;
       document.title = active.textContent + (english ? ' model gallery · Live2D' : '模型图鉴 · Live2D');
     })();

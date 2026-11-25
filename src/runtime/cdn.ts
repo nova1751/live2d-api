@@ -1,3 +1,5 @@
+import { trackResponse } from './request.ts';
+
 const MIRROR = 'https://cdn.jsdmirror.com/gh/';
 const JSDELIVR = 'https://cdn.jsdelivr.net/gh/';
 const RAW = 'https://raw.githubusercontent.com/';
@@ -59,7 +61,7 @@ const transient = (status: number) => status === 403 || status === 421 || status
  * Fetch a CDN asset, falling back across the GitHub CDNs on network errors and transient
  * statuses. A 404 is final: the file is genuinely missing at that commit.
  */
-export async function fetchCdnAsset(url: string, signal?: AbortSignal): Promise<Response> {
+export async function fetchCdnAsset(url: string, signal?: AbortSignal, progressSignal = signal): Promise<Response> {
   const candidates = isDemoted(url) ? [...cdnAlternates(url), url] : [url, ...cdnAlternates(url)];
   let last: Response | undefined;
   let failure: unknown;
@@ -67,7 +69,7 @@ export async function fetchCdnAsset(url: string, signal?: AbortSignal): Promise<
     signal?.throwIfAborted();
     try {
       const response = await fetch(candidate, { signal });
-      if (response.ok || !transient(response.status)) return response;
+      if (response.ok || !transient(response.status)) return trackResponse(response, progressSignal);
       void response.body?.cancel().catch(() => {});
       last = response;
     } catch (error) {

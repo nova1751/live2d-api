@@ -103,7 +103,12 @@ export class CatalogModels {
       if (replacing && this.lastModel && !isLoadCancelled(error)) {
         const { library, id } = this.lastModel;
         try { await this.render(id, this.collection, library.resolve(id), false, revision); }
-        catch { if (revision === this.sequence) this.active = undefined; }
+        catch {
+          if (revision === this.sequence) {
+            this.active = undefined;
+            window.dispatchEvent(new CustomEvent('live2d:motions', { detail: [] }));
+          }
+        }
       }
       if (revision !== this.sequence) return;
       this.transition.cancelFreeze();

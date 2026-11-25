@@ -2,6 +2,45 @@
 
 // src/runtime/request.ts
 var loadTimeout = 15e3;
+var loadLimit = 18e4;
+var clockKey = Symbol.for("live2d.loadClock");
+function loadClock(signal) {
+  return signal?.[clockKey];
+}
+function shareLoadClock(child, parent) {
+  const clock = loadClock(parent);
+  if (clock) child[clockKey] = clock;
+  else delete child[clockKey];
+}
+function loadDeadline(signal, expire) {
+  const started = Date.now();
+  const clock = signal[clockKey] = { last: started };
+  let timer = setTimeout(check, loadTimeout);
+  function check() {
+    const left = Math.min(clock.last + loadTimeout, started + loadLimit) - Date.now();
+    if (left <= 0) expire();
+    else timer = setTimeout(check, left);
+  }
+  return () => {
+    delete signal[clockKey];
+    clearTimeout(timer);
+  };
+}
+function trackResponse(response, signal) {
+  const clock = loadClock(signal);
+  if (!clock || !response.ok) return response;
+  clock.last = Date.now();
+  if (!response.body || typeof TransformStream === "undefined") return response;
+  const body = response.body.pipeThrough(new TransformStream({
+    transform(chunk, output) {
+      clock.last = Date.now();
+      output.enqueue(chunk);
+    }
+  }));
+  const copy = new Response(body, { status: response.status, statusText: response.statusText, headers: response.headers });
+  Object.defineProperty(copy, "url", { value: response.url });
+  return copy;
+}
 function appendResource(element, url) {
   return new Promise((resolve, reject) => {
     const finish = (error) => {
@@ -20,11 +59,11 @@ function appendResource(element, url) {
 }
 async function withLoadTimeout(load) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(new Error("Live2D resource load timed out")), loadTimeout);
+  const cancel = loadDeadline(controller.signal, () => controller.abort(new Error("Live2D resource load timed out")));
   try {
     return await load(controller.signal);
   } finally {
-    clearTimeout(timeout);
+    cancel();
   }
 }
 
@@ -93,9 +132,11 @@ function createRenderer(base, legacy) {
         return ready;
       });
     }
-    legacy?.hide?.();
+    if (legacy?.unload) legacy.unload();
+    else legacy?.hide?.();
     const lifecycle = controller = new AbortController();
     const { signal } = lifecycle;
+    shareLoadClock(signal, options?.signal);
     const stop = () => lifecycle.abort(options?.signal?.reason);
     options?.signal?.addEventListener("abort", stop, { once: true });
     const present = options?.onPaint;
@@ -125,6 +166,7 @@ function createRenderer(base, legacy) {
         throw error;
       }
     }).finally(() => {
+      shareLoadClock(signal, void 0);
       signal.removeEventListener("abort", abortPaint);
       options?.signal?.removeEventListener("abort", stop);
     });
@@ -134,7 +176,7 @@ function createRenderer(base, legacy) {
     if (!options?.onPaint) return start(canvas, model, options);
     const attempt = loading = new AbortController();
     const { signal } = attempt;
-    const deadline = setTimeout(() => attempt.abort(new Error("Timed out waiting for the first model frame")), loadTimeout);
+    const cancelDeadline = loadDeadline(signal, () => attempt.abort(new Error("Timed out waiting for the first model frame")));
     let stop;
     const aborted = new Promise((_, reject) => {
       stop = () => reject(signal.reason);
@@ -147,7 +189,7 @@ function createRenderer(base, legacy) {
       attempt.abort(error);
       throw error;
     }).finally(() => {
-      clearTimeout(deadline);
+      cancelDeadline();
       signal.removeEventListener("abort", stop);
       if (loading === attempt) loading = void 0;
     });
@@ -219,7 +261,7 @@ function cdnAlternates(input) {
   return [...unique.filter((href) => !isDemoted(href)), ...unique.filter(isDemoted)];
 }
 var transient = (status) => status === 403 || status === 421 || status === 429 || status >= 500;
-async function fetchCdnAsset(url, signal) {
+async function fetchCdnAsset(url, signal, progressSignal = signal) {
   const candidates = isDemoted(url) ? [...cdnAlternates(url), url] : [url, ...cdnAlternates(url)];
   let last;
   let failure;
@@ -227,7 +269,7 @@ async function fetchCdnAsset(url, signal) {
     signal?.throwIfAborted();
     try {
       const response = await fetch(candidate, { signal });
-      if (response.ok || !transient(response.status)) return response;
+      if (response.ok || !transient(response.status)) return trackResponse(response, progressSignal);
       void response.body?.cancel().catch(() => {
       });
       last = response;
@@ -345,7 +387,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.21";
+var version = "2.9.22";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";

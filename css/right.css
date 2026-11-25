@@ -493,7 +493,7 @@ body > #waifu.waifu-adaptive #waifu-tool {
 #waifu-tool button:focus-visible,
 #waifu-retry:focus-visible,
 #waifu-toggle:focus-visible {
-  outline: 2px solid #126381;
+  outline: 2px solid var(--waifu-focus, #126381);
   outline-offset: 2px;
 }
 @media (hover: none) {
@@ -539,6 +539,7 @@ html:has(#waifu-expanded[open]) {
   --view-panel: #fff;
   --view-outline: #dbe2eb;
   --view-accent: #466c98;
+  --waifu-focus: var(--view-accent);
   --view-hover: #eaf0f8;
   position: fixed;
   inset: 0;
@@ -762,6 +763,9 @@ html:has(#waifu-expanded[open]) {
 #waifu-expanded #waifu-tool svg {
   height: 20px;
   fill: var(--view-accent);
+}
+#waifu-expanded #waifu-tool button:disabled svg {
+  fill: var(--view-foreground);
 }
 #waifu-expanded #waifu-tool button:is(:hover, :focus-visible) svg {
   fill: var(--view-foreground);

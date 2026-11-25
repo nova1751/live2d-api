@@ -72,15 +72,37 @@ try {
     console.log(decodeURI(url.split('/').slice(-3).join('/')) + ': rendered');
   }
   assert.equal(legacyRequests.length, 0, 'A modern-only page should never download Cubism 2');
+  const legacyModel = (process.env.LIVE2D_TEST_MODELS || base) + 'model/AK12/ak12_0/normal/index.json';
   await page.evaluate(url => {
     window.loadlive2d.hide();
     window.loadlive2d.show(false);
     window.loadlive2d('live2d', url);
-  }, (process.env.LIVE2D_TEST_MODELS || base) + 'model/AK12/ak12_0/normal/index.json');
+  }, legacyModel);
   await page.waitForSelector('#live2d[data-painted]', { timeout: 60000 });
   assert.equal(await page.locator('canvas').count(), 1);
   assert.equal(legacyRequests.length, 1);
   assert.deepEqual(errors, []);
+
+  // Switch away from a known Cubism 2 manifest, then require a new, nontransparent
+  // draw on the original canvas. Both formats have skins with similar catalog names.
+  await page.evaluate(() => {
+    const canvas = document.getElementById('live2d');
+    const gl = canvas.getContext('webgl');
+    const remove = gl.deleteTexture.bind(gl);
+    window.freed = 0;
+    gl.deleteTexture = texture => { if (texture) window.freed++; remove(texture); };
+  });
+  await page.route('**/Haru.physics3.json', route => route.fulfill({ status: 404 }));
+  await page.evaluate(url => window.loadlive2d('live2d', url), samples + 'Haru/Haru.model3.json');
+  await page.waitForSelector('.waifu-model-stage canvas[data-painted]');
+  assert.ok(await page.evaluate(() => window.freed > 0), 'released the previous model textures');
+  await page.evaluate(url => {
+    delete document.getElementById('live2d').dataset.painted;
+    return window.loadlive2d('live2d', url);
+  }, legacyModel);
+  await page.waitForSelector('#live2d[data-painted]', { timeout: 60000 });
+  assert.equal(await page.locator('.waifu-model-stage').count(), 0);
+  console.log('Cubism 2 textures released, modern model rendered without physics, return frame painted');
 
   const id = 'test/haru/base/default';
   await page.route(base + 'modern-collection.json', route => route.fulfill({ json: {

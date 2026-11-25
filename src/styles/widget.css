@@ -509,7 +509,7 @@ body > #waifu.waifu-adaptive #waifu-tool {
 }
 
 .waifu-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-#waifu-tool button:focus-visible, #waifu-retry:focus-visible, #waifu-toggle:focus-visible { outline: 2px solid #126381; outline-offset: 2px; }
+#waifu-tool button:focus-visible, #waifu-retry:focus-visible, #waifu-toggle:focus-visible { outline: 2px solid var(--waifu-focus, #126381); outline-offset: 2px; }
 @media (hover: none) {
   #waifu.waifu-adaptive { --waifu-tool-size: 44px; }
   #waifu-tool { opacity: 1; }
@@ -532,6 +532,7 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   --view-panel: #fff;
   --view-outline: #dbe2eb;
   --view-accent: #466c98;
+  --waifu-focus: var(--view-accent);
   --view-hover: #eaf0f8;
   position: fixed;
   inset: 0;
@@ -724,6 +725,7 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
 }
 #waifu-expanded #waifu-tool button { width: 40px; height: 36px; }
 #waifu-expanded #waifu-tool svg { height: 20px; fill: var(--view-accent); }
+#waifu-expanded #waifu-tool button:disabled svg { fill: var(--view-foreground); }
 #waifu-expanded #waifu-tool button:is(:hover, :focus-visible) svg { fill: var(--view-foreground); }
 #waifu-expanded #waifu-tool #waifu-tool-expand,
 #waifu-expanded #waifu-tool #waifu-tool-quit { display: none; }

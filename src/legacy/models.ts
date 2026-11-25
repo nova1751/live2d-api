@@ -1,6 +1,6 @@
 import { preferences } from '../runtime/storage';
 import { translated } from '../runtime/locale';
-import { getJson, isLoadCancelled, withLoadTimeout } from '../runtime/request';
+import { getJson, isLoadCancelled, trackResponse, withLoadTimeout } from '../runtime/request';
 import { setModelLoading } from '../runtime/loading';
 import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
@@ -59,7 +59,7 @@ export class LegacyModels {
       }
       if (!response.ok) throw new Error(`Failed to load model catalog ${url} (HTTP ${response.status})`);
       if (missing) throw new Error('Expected JSON model catalog at ' + url);
-      const catalog: Catalog = await response.json();
+      const catalog: Catalog = await trackResponse(response, signal).json();
       if (!Array.isArray(catalog?.models) || !catalog.models.length) throw new Error('No models in catalog ' + url);
       return catalog;
     });
