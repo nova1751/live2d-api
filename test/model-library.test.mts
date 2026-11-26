@@ -60,12 +60,24 @@ test('scene cuts use the mesh IDs from each reviewed Cubism export', async () =>
   const id = 'doll/88type/5308/normal';
   const library = parseModelCatalog(input, new URL('catalog/library.json', base), 'girls-frontline');
   for (const name of ['D_PSD1_04', 'D_PSD1_09']) assert.ok(library.resolve(id, 'dump').hiddenDrawables?.includes(name));
+  for (const source of ['dump', 'jacksen168', 'eikanya']) {
+    const meshes = library.resolve(id, source).hiddenDrawables;
+    for (const name of ['D_PSD1_137', 'D_PSD1_138', 'D_PSD1_139', 'D_PSD1_140', 'D_PSD1_48']) {
+      assert.ok(meshes?.includes(name), `${source}: ${name}`);
+    }
+  }
   const legacy = input.models[id].find(variant => variant.source === 'eikanya' && variant.manifest.endsWith('/model.json'));
-  assert.deepEqual(legacy.hiddenDrawables, ['D_PSD1.04', 'D_PSD1.09']);
+  assert.deepEqual(legacy.hiddenDrawables, [
+    'D_PSD1.04', 'D_PSD1.09', 'D_PSD1.137', 'D_PSD1.138', 'D_PSD1.139', 'D_PSD1.140', 'D_PSD1.48',
+  ]);
 
   const ships = parseModelCatalog(await json('catalog/games/azur-lane.json'), new URL('catalog/games/azur-lane.json', base), 'azur-lane');
   for (const name of ['ArtMesh277', 'ArtMesh278', 'ArtMesh279', 'ArtMesh280']) assert.ok(ships.resolve('ship/10144/kubo_2').hiddenDrawables?.includes(name));
-  assert.ok(ships.resolve('ship/30514/junhe_5').hiddenDrawables?.includes('ArtMesh403'));
+  const suruga = ships.resolve('ship/30514/junhe_5').hiddenDrawables;
+  for (const name of ['ArtMesh399', 'ArtMesh400', 'ArtMesh401', 'ArtMesh402', 'ArtMesh403']) assert.ok(suruga?.includes(name));
+  for (const id of ['ship/21304/abeikelongbi_3', 'ship/21304/abeikelongbi_3_hx']) {
+    assert.ok(ships.resolve(id).hiddenDrawables?.includes('MB_blackbgjuxing2'));
+  }
 });
 
 test('modern asset loader uses the pinned replacement for the broken CbJMS texture', async t => {

@@ -43,7 +43,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0e2072ceb0746bb5b280f2d8ba9ba13e
  			if (parameterIndex == -1) continue;
  			value = evaluateCurve(this._motionData, c, time, isCorrection, duration);
  			model.setParameterValueByIndex(parameterIndex, value);
-+			if (!model._hasPose && motionQueueEntry.getFadeOutStartTime() < 0) {
++			if (!model._hasPose && !motionQueueEntry.isTriggeredFadeOut()) {
 +				model.setPartOpacityById(curves[c].id, value);
 +				if (model._captureIdleParts) model._idlePartOpacities.set(curves[c].id, value);
 +			}
