@@ -174,6 +174,14 @@ export async function checkPaintOverflow(browser, base) {
         assert.deepEqual(await view.evaluate(el => [el.scrollWidth - el.clientWidth, el.scrollHeight - el.clientHeight]), [0, 0]);
         return canvas.width;
       };
+      // Expanded, the paint surface reaches every edge of the view, so zooming motions are cut only by
+      // the screen, while the character keeps its fitted size (library/paint.ts).
+      await page.waitForFunction(() => {
+        const surface = document.querySelector('#waifu-expanded .waifu-surface').getBoundingClientRect();
+        const view = document.querySelector('.waifu-view-viewport').getBoundingClientRect();
+        return surface.left <= view.left + 1 && surface.top <= view.top + 1 &&
+          surface.right >= view.right - 1 && surface.bottom >= view.bottom - 1;
+      });
       const expandedWidth = await assertFit();
       const expandedCanvas = await viewer.locator('#live2d').boundingBox();
       const subject = await viewer.locator('.waifu-hit').boundingBox();
@@ -195,10 +203,12 @@ export async function checkPaintOverflow(browser, base) {
       });
       await viewer.getByRole('button', { name: '全屏', exact: true }).click();
       await page.waitForFunction(() => !!document.fullscreenElement);
-      const fitted = await assertFit();
+      await assertFit();
+      // The canvas also carries the expanded paint margin, sized for each zoom; the character doubles.
+      const fitted = (await viewer.locator('.waifu-hit').boundingBox()).width;
       await viewer.getByRole('spinbutton').fill('200');
       await viewer.getByRole('spinbutton').press('Enter');
-      assert.ok(Math.abs((await viewer.locator('#live2d').boundingBox()).width - 2 * fitted) <= 2);
+      assert.ok(Math.abs((await viewer.locator('.waifu-hit').boundingBox()).width - 2 * fitted) <= 2);
       assert.equal(await view.evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
       if (width > 1000) {
         await view.focus();
@@ -210,7 +220,16 @@ export async function checkPaintOverflow(browser, base) {
       await assertFit();
       await viewer.getByRole('button', { name: '退出全屏' }).click();
       await viewer.getByRole('button', { name: '还原' }).click();
+      // A dialog's close event is dispatched asynchronously; the widget moves back in its handler.
+      await page.waitForSelector('#waifu-expanded', { state: 'detached' });
       assert.ok(await originalCanvas.evaluate(canvas => canvas === document.querySelector('body > #waifu #live2d')));
+      // Back in the floating widget, the compact 1.5x margin returns.
+      const [restoredSurface, restoredSquare] = await page.evaluate(() => {
+        const surface = document.querySelector('body > #waifu .waifu-surface').getBoundingClientRect();
+        const hit = document.querySelector('body > #waifu .waifu-hit').getBoundingClientRect();
+        return [surface.width, Math.max(hit.width, hit.height)];
+      });
+      assert.ok(Math.abs(restoredSurface - restoredSquare * 1.5) <= 1, JSON.stringify([restoredSurface, restoredSquare]));
       await page.locator('#waifu-tool-quit').click();
       if (animated) {
         await waitForSlide(0, -500);

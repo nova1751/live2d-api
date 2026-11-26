@@ -1,5 +1,6 @@
 import { translated } from './locale';
 import { icons, retryIcon } from './icons';
+import { overridePaintSurface } from '../library/paint';
 
 /** Enlarge the mounted canvas so the current model and its playback stay alive. */
 export function expandModel(initialZoom = 100) {
@@ -78,27 +79,32 @@ export function expandModel(initialZoom = 100) {
       viewport.scrollLeft += after.left + (centerX - before.left) * after.width / before.width - centerX;
       viewport.scrollTop += after.top + (centerY - before.top) * after.height / before.height - centerY;
     }
-    sharpen();
+    cover();
   }
 
-  // The Cubism 2 canvas has a fixed drawing buffer sized for the small widget. Enlarged, it would be
-  // stretched and blurry, so match it to the displayed size and pixel ratio while the view is open.
-  // Cubism 3+ sizes its own canvas. Resizing reallocates GPU buffers, so wait until zooming settles.
-  const legacyCanvas = widget.querySelector<HTMLCanvasElement>('#live2d');
-  const legacySize = legacyCanvas?.width ?? 0;
-  const maxBuffer = matchMedia('(pointer: coarse)').matches ? 1536 : 2560;
-  let sharpenTimer = 0;
-  function sharpen() {
-    clearTimeout(sharpenTimer);
-    sharpenTimer = window.setTimeout(() => {
-      const canvas = legacyCanvas;
-      // Hidden while a Cubism 3+ model owns the stage.
-      if (!canvas || !canvas.isConnected || canvas.style.visibility === 'hidden' || canvas.width !== canvas.height) return;
-      const target = Math.round(Math.min(maxBuffer, Math.max(legacySize, canvas.getBoundingClientRect().width * devicePixelRatio)));
-      if (Math.abs(target - canvas.width) > 16) canvas.width = canvas.height = target;
-    }, 160);
+  // The expanded view owns the screen: draw a framed character on a surface reaching every edge of
+  // the scrollable view, so motions that zoom in are cut only by the screen. The floating widget
+  // keeps its compact margin. The character keeps its size and place either way. The surface
+  // is centered on the reference square; resizing it reallocates GPU buffers, so wait until zooming
+  // settles. The Cubism 2 drawing buffer follows the canvas on its own (runtime/legacy-canvas.ts).
+  const maxBuffer = matchMedia('(pointer: coarse)').matches ? 2048 : 4096;
+  let coverTimer = 0;
+  function cover(now = false) {
+    clearTimeout(coverTimer);
+    const measure = () => {
+      const box = widget!.querySelector('.waifu-viewport')?.getBoundingClientRect();
+      if (!box?.width || !box.height || !dialog.open) return;
+      const view = content.getBoundingClientRect();
+      const square = Math.max(box.width, box.height);
+      const x = box.left + box.width / 2, y = box.bottom - square / 2;
+      const reach = Math.max(x - view.left, view.right - x, y - view.top, view.bottom - y);
+      const limit = Math.max(1.5, maxBuffer / (square * devicePixelRatio));
+      overridePaintSurface({ scale: Math.min(limit, Math.max(1.5, 2 * reach / square)), below: 0.5 });
+    };
+    if (now) measure();
+    else coverTimer = window.setTimeout(measure, 160);
   }
-  const resized = new ResizeObserver(sharpen);
+  const resized = new ResizeObserver(() => cover());
   slider.addEventListener('input', () => setZoom(slider.valueAsNumber));
   number.addEventListener('change', () => setZoom(number.valueAsNumber));
   number.addEventListener('blur', () => { number.value = String(percent); });
@@ -243,16 +249,20 @@ export function expandModel(initialZoom = 100) {
   document.body.append(dialog);
   dialog.addEventListener('close', () => {
     resized.disconnect();
-    clearTimeout(sharpenTimer);
-    // Back in the small widget: return the GPU memory.
-    if (legacyCanvas && legacySize && legacyCanvas.width !== legacySize) legacyCanvas.width = legacyCanvas.height = legacySize;
+    clearTimeout(coverTimer);
     marker.replaceWith(widget);
+    // Back in the small widget, with its own margin.
+    overridePaintSurface(undefined);
     dialog.remove();
     trigger?.focus({ preventScroll: true });
   }, { once: true });
   dialog.showModal();
   content.append(widget);
   setZoom(initialZoom);
+  // Size the surface before the first expanded frame instead of reallocating it a moment later.
+  cover(true);
   resized.observe(viewport);
+  const box = widget.querySelector('.waifu-viewport');
+  if (box) resized.observe(box);
   close.focus({ preventScroll: true });
 }

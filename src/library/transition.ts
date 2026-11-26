@@ -1,3 +1,5 @@
+import { applyPaintSurface } from './paint';
+
 export class ModelTransition {
   private still?: HTMLCanvasElement;
   private pending?: Promise<void>;
@@ -63,7 +65,8 @@ export class ModelTransition {
     document.getElementById('waifu')?.removeAttribute('data-model-loading');
   }
 
-  begin(getAspect: () => number, paintScale: number) {
+  /** `framed` models are drawn on the current paint surface, others fill the reference square. */
+  begin(getAspect: () => number, framed: boolean) {
     const container = document.getElementById('waifu');
     const revision = ++this.revision;
     this.holding = false;
@@ -73,9 +76,9 @@ export class ModelTransition {
       this.still?.remove();
       this.still = undefined;
       const aspect = getAspect();
-      container.style.setProperty('--waifu-paint-scale', String(paintScale));
       container.style.setProperty('--waifu-aspect', String(aspect));
       container.toggleAttribute('data-wide-model', aspect >= 1.35);
+      applyPaintSurface(framed);
       container.removeAttribute('data-model-loading');
       if (container.hasAttribute('data-initial-framing')) {
         container.removeAttribute('data-initial-framing');

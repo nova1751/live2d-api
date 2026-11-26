@@ -166,12 +166,13 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible {
 }
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
-  --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1) / 2);
+  --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1));
+  --waifu-bleed-below: calc(var(--waifu-bleed) * var(--waifu-paint-below, 0.5));
   position: absolute;
   left: 50%;
-  bottom: calc(-1 * var(--waifu-bleed));
+  bottom: calc(-1 * var(--waifu-bleed-below));
   transform: translateX(-50%);
-  width: calc(var(--waifu-square) + 2 * var(--waifu-bleed));
+  width: calc(var(--waifu-square) + var(--waifu-bleed));
   aspect-ratio: 1;
 }
 .waifu-hit {
@@ -187,7 +188,7 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible {
   content: "";
   position: absolute;
   left: 50%;
-  bottom: var(--waifu-bleed);
+  bottom: var(--waifu-bleed-below);
   transform: translateX(-50%);
   width: 100cqw;
   height: 100cqh;

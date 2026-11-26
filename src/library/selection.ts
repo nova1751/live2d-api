@@ -1,6 +1,7 @@
 import { preferences } from '../runtime/storage';
 import { ModelTransition } from './transition';
 import { catalogFraming } from './framing';
+import { paintSurface } from './paint';
 import { indexCharacters } from './navigation';
 import { setModelLoading } from '../runtime/loading';
 import { isLoadCancelled } from '../runtime/request';
@@ -120,16 +121,15 @@ export class CatalogModels {
   private render(id: string, collection: Collection | undefined, asset: ReturnType<LoadedModelCatalog['resolve']>, start: boolean, revision: number) {
     const { modelUrl, ...options } = asset;
     let aspect = options.sceneAspect ?? 1;
-    const fit = this.options.collection && !options.sceneAspect && !id.startsWith('background/');
-    const paintScale = fit ? 1.5 : 1;
-    const framing = fit ? catalogFraming(id, value => { aspect = value; }, paintScale, collection === 'bang-dream') : undefined;
-    const present = this.options.collection ? this.transition.begin(() => aspect, paintScale) : undefined;
+    const fit = Boolean(this.options.collection) && !options.sceneAspect && !id.startsWith('background/');
+    const framing = fit ? catalogFraming(id, value => { aspect = value; }, collection === 'bang-dream') : undefined;
+    const present = this.options.collection ? this.transition.begin(() => aspect, fit) : undefined;
     const onPaint = () => {
       if (revision !== this.sequence) return;
       present?.();
       setModelLoading(false);
     };
-    return window.loadlive2d('live2d', modelUrl, { ...options, start, locale: this.options.locale, framing, onPaint, coreUrl: this.options.coreUrl,
+    return window.loadlive2d('live2d', modelUrl, { ...options, start, locale: this.options.locale, framing, paint: framing && paintSurface, onPaint, coreUrl: this.options.coreUrl,
       randomTap: Boolean(this.options.collection) && !id.startsWith('background/'), bandIdle: collection === 'bang-dream' });
   }
   load(_id?: number, _texture?: number, _message?: string, start = false) {

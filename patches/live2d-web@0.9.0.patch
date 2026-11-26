@@ -1,8 +1,17 @@
 diff --git a/dist/contract-Jj-UVMwt.d.mts b/dist/contract-Jj-UVMwt.d.mts
-index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..b0ac825e74ff1b8309f26a98ac8e394682f16e0f 100644
+index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..d40b0cffbba51fcc9549d62bc4353afd5b417046 100644
 --- a/dist/contract-Jj-UVMwt.d.mts
 +++ b/dist/contract-Jj-UVMwt.d.mts
-@@ -126,6 +126,12 @@ interface ModelHandle {
+@@ -63,6 +63,8 @@ interface StageOptions extends Size {
+   /** Concrete backing-buffer multiplier selected by the React host. */
+   resolution?: number;
+   maxFps?: number;
++  /** Called once per animation frame; return false to skip drawing it. Replaces maxFps. */
++  pace?: (timestamp: number) => boolean;
+ }
+ interface StageHandle {
+   resize: (width: number, height: number) => void;
+@@ -126,6 +128,12 @@ interface ModelHandle {
  }
  type MotionPriority = 'force' | 'idle' | 'normal';
  interface MotionOptions {
@@ -15,17 +24,19 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..b0ac825e74ff1b8309f26a98ac8e3946
    /** Playback priority. 'force' interrupts anything (default). */
    priority?: MotionPriority;
    /** Overrides the motion-wide fade-in duration in milliseconds. */
-@@ -192,6 +198,8 @@ interface IdleMotionOptions {
+@@ -192,6 +200,10 @@ interface IdleMotionOptions {
  }
  type IdleMotion = string | false | IdleMotionOptions;
  interface LoadModelOptions {
 +  /** Draw named curtain meshes with destination-out alpha compositing. */
 +  hiddenDrawables?: readonly string[];
++  /** Leave named meshes out of the color pass, such as effect overlays drawn over the character. */
++  skippedDrawables?: readonly string[];
    /** Idle group, weighted group selection, or false to disable automatic idle playback. */
    idleMotion?: IdleMotion;
    /**
 diff --git a/dist/model-CkKs9EQ2.mjs b/dist/model-CkKs9EQ2.mjs
-index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca5e0a4600 100644
+index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e5a5a4f32 100644
 --- a/dist/model-CkKs9EQ2.mjs
 +++ b/dist/model-CkKs9EQ2.mjs
 @@ -9176,7 +9176,6 @@ var CubismClippingManager = class {
@@ -83,7 +94,16 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			const colorBlendMode = model.getDrawableColorBlend(index);
  			const alphaBlendMode = model.getDrawableAlphaBlend(index);
  			if (colorBlendMode == -1 || alphaBlendMode == -1 || colorBlendMode == CubismColorBlend.ColorBlend_Normal && alphaBlendMode == 0) {
-@@ -13892,7 +13904,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -11940,6 +11952,8 @@ var CubismRenderer_WebGL = class extends CubismRenderer {
+ 	*/
+ 	drawDrawable(drawableIndex, rootFbo) {
+ 		if (!this.getModel().getDrawableDynamicFlagIsVisible(drawableIndex)) return;
++		// Skipped meshes are left out of the color pass only; clipping masks still read them.
++		if (this.skippedDrawables?.has(drawableIndex)) return;
+ 		this.submitDrawToParentOffscreen(drawableIndex, 0);
+ 		const clipContext = this._drawableClippingManager != null ? this._drawableClippingManager.getClippingContextListForDraw()[drawableIndex] : null;
+ 		if (clipContext != null && this.isUsingHighPrecisionMask()) {
+@@ -13892,7 +13906,7 @@ var FrameworkModel = class extends CubismUserModel {
  			this.getModel().loadParameters();
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
@@ -92,7 +112,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			this.getModel().saveParameters();
  			this.settleFinishedMotions();
  			this.scheduler.onLateUpdate(this.getModel(), deltaSeconds);
-@@ -13905,7 +13917,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13905,7 +13919,7 @@ var FrameworkModel = class extends CubismUserModel {
  			this.getModel().loadParameters();
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
@@ -101,7 +121,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			this.getModel().saveParameters();
  		});
  		this.settleFinishedMotions();
-@@ -13979,7 +13991,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13979,7 +13993,7 @@ var FrameworkModel = class extends CubismUserModel {
  	settleFinishedMotions() {
  		this.motionStates.settleFinished((handle) => this._motionManager.isFinishedByHandle(handle));
  	}
@@ -110,7 +130,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  		if (this.disposed) return { status: "disposed" };
  		if (this.renderError) throw this.renderError;
  		const count = this.setting.getMotionCount(group);
-@@ -13991,8 +14003,18 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13991,8 +14005,18 @@ var FrameworkModel = class extends CubismUserModel {
  		const generation = ++this.motionGeneration;
  		let handle;
  		let playback;
@@ -130,7 +150,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			if (this.disposed) return { status: "disposed" };
  			if (generation !== this.motionGeneration) return { status: "skipped" };
  			if (hasMotionFadeOverride(fade)) {
-@@ -14000,6 +14022,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14000,6 +14024,7 @@ var FrameworkModel = class extends CubismUserModel {
  				if (this.disposed) return { status: "disposed" };
  				if (generation !== this.motionGeneration) return { status: "skipped" };
  			}
@@ -138,7 +158,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			playback = preparePlaybackMotion(asset, fade, (buffer) => this.parseMotion(buffer, `${group}:${selected}`, group, selected), (motion) => ACubismMotion.delete(motion));
  			handle = this._motionManager.startMotionPriority(playback.motion, playback.autoDelete, priority);
  			if (handle === -1) {
-@@ -14013,8 +14036,25 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14013,8 +14038,25 @@ var FrameworkModel = class extends CubismUserModel {
  			if (this.disposed) return { status: "disposed" };
  			if (generation === this.motionGeneration) this._motionManager.setReservePriority(0);
  			throw error;
@@ -165,7 +185,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  	}
  	hitTestStagePoint(x, y) {
  		if (this.disposed || !this.layoutMatrix) return [];
-@@ -14188,7 +14228,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14188,7 +14230,7 @@ var FrameworkModel = class extends CubismUserModel {
  			playMotion: (group, index, options) => {
  				validateMotionOptions(options);
  				const fade = resolveMotionFade(options);
@@ -174,15 +194,30 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..dd0f248359b2465dc79cc04e154f73ca
  			},
  			onAfterMotionUpdate: (callback) => {
  				this.afterMotionCallbacks.add(callback);
-@@ -14273,6 +14313,11 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
+@@ -14273,6 +14315,12 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
  		const idleMotion = resolveIdleMotion(options.idleMotion, (group) => setting.getMotionCount(group));
  		model = new FrameworkModel(stage, modelUrl, setting, shaderBaseUrl, shaderSources, idleMotion, releaseFramework, model3Version, diagnostics, options.resolveAsset);
  		await model.initialize(options.signal);
-+		if (options.hiddenDrawables?.length) {
++		const indexesOf = (names) => {
 +			const ids = CubismFramework.getIdManager();
-+			const indexes = options.hiddenDrawables.map(id => model.getModel().getDrawableIndex(ids.getId(id)));
-+			model.getRenderer().curtainDrawables = new Set(indexes.filter(i => i >= 0));
-+		}
++			return new Set(names.map(id => model.getModel().getDrawableIndex(ids.getId(id))).filter(i => i >= 0));
++		};
++		if (options.hiddenDrawables?.length) model.getRenderer().curtainDrawables = indexesOf(options.hiddenDrawables);
++		if (options.skippedDrawables?.length) model.getRenderer().skippedDrawables = indexesOf(options.skippedDrawables);
  		if (diagnostics) diagnostics.loadPhase("ready", performance.now() - readyStartedAt);
  		return model.toHandle();
  	} catch (error) {
+diff --git a/dist/stage-4aA98CEt.mjs b/dist/stage-4aA98CEt.mjs
+index bbe78d3529c09961967f4914955bf7562c246271..f9c18d49f0b75f94eba73bf78c63ee222ee4f17b 100644
+--- a/dist/stage-4aA98CEt.mjs
++++ b/dist/stage-4aA98CEt.mjs
+@@ -334,7 +334,8 @@ function createWebGLStage(element, options, diagnostics) {
+ 		const tickDeltaMs = lastTickTime === void 0 ? 0 : timestamp - lastTickTime;
+ 		lastTickTime = timestamp;
+ 		accumulatedFrameMs += tickDeltaMs;
+-		if (lastRenderTime !== void 0 && accumulatedFrameMs < minFrameMs - .25) return;
++		// A pace callback, when given, replaces maxFps: it decides per animation frame whether to draw.
++		if (options.pace ? !options.pace(timestamp) : lastRenderTime !== void 0 && accumulatedFrameMs < minFrameMs - .25) return;
+ 		const deltaMs = lastRenderTime === void 0 ? 0 : timestamp - lastRenderTime;
+ 		lastRenderTime = timestamp;
+ 		accumulatedFrameMs = minFrameMs ? accumulatedFrameMs >= minFrameMs * 2 ? 0 : Math.max(0, accumulatedFrameMs - minFrameMs) : 0;

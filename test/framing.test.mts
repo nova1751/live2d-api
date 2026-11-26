@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { catalogFraming, createFraming, fitSilhouette } from '../src/library/framing.ts';
+import { catalogFraming, createFraming, fitSilhouette, onSurface, referenceSurface, type Camera, type PaintSurface } from '../src/library/framing.ts';
 
 const initial = { scale: 0.65, x: 0, y: 0 };
 const size = 128;
@@ -9,9 +9,9 @@ test('7706 keeps the same camera from first paint and fits both idle silhouettes
   for (const [form, center, top, bottom] of [['normal', 154, 155, 265], ['destroy', 177, 106, 186]] as const) {
     let aspect = 0;
     const bleed = 1.5;
-    const framing = catalogFraming('doll/56-1type/7706/' + form, ratio => { aspect = ratio; }, bleed);
-    const camera = framing.initial;
-    assert.deepEqual(framing.measure({} as HTMLCanvasElement), camera);
+    const framing = catalogFraming('doll/56-1type/7706/' + form, ratio => { aspect = ratio; });
+    assert.deepEqual(framing.measure({} as HTMLCanvasElement), framing.initial);
+    const camera = onSurface(framing.initial, { scale: bleed, below: 0.5 });
     const project = (p: number, offset: number) => 0.5 + bleed * (offset + (p / 320 - 0.5) * camera.scale / 0.65);
     assert.ok(aspect > 0.7 && aspect < 1);
     assert.ok(Math.abs(project(center, camera.x) - 0.5) < 0.02);
@@ -165,4 +165,31 @@ test('waits through transparent setup and ignores the isolated cinematic strip o
   assert.ok(aspect < 1 && camera);
   assert.ok(Math.abs(project(59, camera.y, camera) - 0.04) < 0.001);
   assert.ok(Math.abs(project(104, camera.y, camera) - 0.97) < 0.001);
+});
+
+// Where a model point lands in the reference square: the surface spans `scale` squares, centered
+// horizontally, with the share `below` of its extra height under the square.
+function onScreen(camera: Camera, surface: PaintSurface, point: number, axis: 'x' | 'y') {
+  const placed = onSurface(camera, surface);
+  const onPaint = 0.5 + placed[axis] + (point - 0.5) * placed.scale / initial.scale;
+  const before = axis === 'x' ? 0.5 : 1 - surface.below;
+  return onPaint * surface.scale - (surface.scale - 1) * before;
+}
+
+test('a larger paint surface keeps the framed character at the same size and place on screen', () => {
+  const cameras = [{ scale: 1.4, x: 0.08, y: 0.31 }, { scale: 0.65, x: 0, y: 0 }, { scale: 2.2, x: -0.12, y: -0.05 }];
+  const surfaces = [{ scale: 1.5, below: 0.5 }, { scale: 2.5, below: 0 }, { scale: 3.2, below: 0.5 }, { scale: 1.8, below: 0.25 }];
+  for (const camera of cameras) {
+    for (const point of [0, 0.2, 0.5, 0.9, 1]) {
+      for (const axis of ['x', 'y'] as const) {
+        const expected = onScreen(camera, referenceSurface, point, axis);
+        for (const surface of surfaces) assert.ok(Math.abs(onScreen(camera, surface, point, axis) - expected) < 1e-12);
+      }
+    }
+  }
+});
+
+test('the reference surface leaves a camera unchanged', () => {
+  const camera = { scale: 1.3, x: 0.1, y: 0.2 };
+  assert.deepEqual(onSurface(camera, referenceSurface), camera);
 });

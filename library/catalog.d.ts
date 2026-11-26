@@ -20,7 +20,10 @@ export interface GalleryEntry {
     portrait?: string;
 }
 export interface ModelVariant {
+    /** Meshes cut out of what is drawn below them: scene curtains, and backdrops behind the character. */
     hiddenDrawables?: string[];
+    /** Meshes not drawn at all: vignettes, flashes and glows laid over the character. */
+    skippedDrawables?: string[];
     sceneAspect?: number;
     cueSource?: string;
     collectionDefault?: boolean;
@@ -80,6 +83,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
         } | undefined;
         sceneAspect: number | undefined;
         hiddenDrawables: string[] | undefined;
+        skippedDrawables: string[] | undefined;
         files: {
             [k: string]: string | null;
         } | undefined;
@@ -111,6 +115,7 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
         } | undefined;
         sceneAspect: number | undefined;
         hiddenDrawables: string[] | undefined;
+        skippedDrawables: string[] | undefined;
         files: {
             [k: string]: string | null;
         } | undefined;

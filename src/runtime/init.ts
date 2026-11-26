@@ -5,6 +5,7 @@ import { icons, loadingIcon, retryIcon } from './icons';
 import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
 import { getJson, isLoadCancelled } from './request';
 import { setModelLoading } from './loading';
+import { sizeLegacyCanvas } from './legacy-canvas';
 import { LegacyModels } from '../legacy/models';
 import { CatalogModels } from '../library/selection';
 
@@ -108,6 +109,8 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     <div id="waifu-tool"></div>
   </div>`);
   byId('waifu-retry').addEventListener('click', () => { if (retryModel) void runModel(retryModel); });
+  // The width and height above only seed the buffer until the canvas has a displayed size.
+  sizeLegacyCanvas(byId('live2d') as HTMLCanvasElement);
   setModelLoading(true);
   show();
   window.addEventListener('live2d:dialogue', event => {

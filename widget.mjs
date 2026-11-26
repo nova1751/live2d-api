@@ -154,7 +154,7 @@ function createRenderer(base, legacy) {
       if (signal.aborted) return;
       const output = document.getElementById(canvas);
       if (!(output instanceof HTMLCanvasElement)) throw new Error("Missing Live2D canvas");
-      const result = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables, options?.files);
+      const result = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, { hidden: options?.hiddenDrawables, skipped: options?.skippedDrawables }, options?.files, options?.paint);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -208,6 +208,10 @@ function createRenderer(base, legacy) {
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
   render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
   render.onNextPaint = (copy) => hidden ? void 0 : controller ? stage?.onNextPaint(copy) : legacy?.onNextPaint?.(copy);
+  render.reframe = () => {
+    if (controller) stage?.reframe();
+    else legacy?.reframe?.();
+  };
   render.capture = () => {
     if (controller) stage?.capture();
     return !!controller;
@@ -388,14 +392,14 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
-    return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
   return { url: url.href, collection, locale, ids, gallery, visibleId, hasModel, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.9.25";
+var version = "2.9.26";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -422,7 +426,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-296d2417f27f802b/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-fe09e79b8d8a1efe/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

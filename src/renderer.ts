@@ -82,7 +82,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
       if (signal.aborted) return;
       const output = document.getElementById(canvas);
       if (!(output instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
-      const result: ModernStage = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, options?.hiddenDrawables, options?.files);
+      const result: ModernStage = await module.mountModern(output, url.href, options?.coreUrl, signal, options?.dialogue, options?.framing, onPaint, options?.cues, options?.randomTap, options?.sceneAspect, { hidden: options?.hiddenDrawables, skipped: options?.skippedDrawables }, options?.files, options?.paint);
       if (signal.aborted) return;
       stage = result;
       if (hidden) stage.pause();
@@ -124,6 +124,7 @@ export function createRenderer(base: string, legacy?: Render): Render {
   render.prepareInteraction = () => !controller && !!legacy?.prepareInteraction?.();
   render.playMotion = (group, index) => !hidden && (controller ? !!stage?.playMotion(group, index) : !!legacy?.playMotion?.(group, index));
   render.onNextPaint = copy => hidden ? undefined : controller ? stage?.onNextPaint(copy) : legacy?.onNextPaint?.(copy);
+  render.reframe = () => { if (controller) stage?.reframe(); else legacy?.reframe?.(); };
   render.capture = () => { if (controller) stage?.capture(); return !!controller; };
   return render;
 }

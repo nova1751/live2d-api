@@ -3,11 +3,16 @@ import { createLive2D, isMobileViewport, OFFICIAL_CUBISM_CORE_URL, resolveAutoQu
 
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
-import type { Camera, Framing } from './library/framing';
+import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurface } from './library/framing';
 import { loadModernAssets, bindInteractions } from './modern/interactions';
+import { loadCubismCore } from './modern/core';
+import { createFramePacer } from './runtime/frame-pacer';
 import type { DialogueSource, GameCue } from './library/catalog';
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, hiddenDrawables?: readonly string[], files?: Record<string, string | null>) {
+/** Catalog mesh lists: `hidden` meshes cut what is drawn below them, `skipped` meshes are not drawn. */
+export interface DrawableEffects { hidden?: readonly string[]; skipped?: readonly string[] }
+
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, drawables: DrawableEffects = {}, files?: Record<string, string | null>, paint: () => PaintSurface = () => referenceSurface) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -52,8 +57,10 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     // good. Size the drawing buffer here instead, in both directions.
     // live2d-web also treats every container under 768px as a phone, and the widget always is
     // one, so a high-DPI desktop would be capped at 1.5x. Keep phone limits for touch devices.
+    // The paint margin for zooming motions makes the surface several times the character's
+    // area, so the desktop budget covers a full-screen surface at 2x (2880 px square).
     const policy = resolveAutoQualityPolicy(matchMedia('(pointer: coarse)').matches ? undefined
-      : { mobileMaxResolution: 2, mobilePixelBudget: 4e6 });
+      : { mobileMaxResolution: 2, mobilePixelBudget: 8.5e6, desktopPixelBudget: 8.5e6 });
     // Lowered when frames run long. A pixel count, so a smaller view can still render sharper.
     let pixelCap = Infinity;
     const targetResolution = (cap = pixelCap) => {
@@ -116,9 +123,11 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         elapsed = frames = slow = 0;
       });
     }
-    const custom = !!(framing || onPaint || hiddenDrawables?.length);
+    const { hidden: hiddenDrawables, skipped: skippedDrawables } = drawables;
+    const custom = !!(framing || onPaint || hiddenDrawables?.length || skippedDrawables?.length);
     const backend: Live2DBackend = { ...cubismWebGL, createStage(element, options) {
-      const created = graphics = cubismWebGL.createStage(element, options);
+      // Evenly spaced frames on whole display refreshes, up to 120 fps (runtime/frame-pacer.ts).
+      const created = graphics = cubismWebGL.createStage(element, { ...options, pace: createFramePacer() });
       // Input uses the full camera, including any paint margin cropped at the screen edge.
       if (custom) created.toWorld = (x, y) => {
         const rect = element.getBoundingClientRect();
@@ -129,8 +138,10 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       resizeBuffer();
       return created;
     }, async loadModel(stage, url, options) {
-      return modelHandle = await cubismWebGL.loadModel(stage, url, hiddenDrawables ? { ...options, hiddenDrawables } : options);
+      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables, skippedDrawables });
     } };
+    // The measured camera for the reference square, placed on the current paint surface.
+    let framed: Camera | undefined;
     const fit = (camera: Camera) => ({ scale: camera.scale / 2, offsetX: camera.x,
       offsetY: camera.y - 0.5, units: 'stage' as const });
     // The floating widget waits below the viewport until its first framed paint.
@@ -146,8 +157,11 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         if (!signal.aborted) stage?.retry().catch(failure => console.error('[Live2D] Recovery failed', failure));
       }, 400 * attempt);
     };
+    // A site-provided coreUrl is used as given. Otherwise prefer the official host, with a fallback.
+    if (!coreUrl) await loadCubismCore(signal);
+    signal.throwIfAborted();
     stage = await createLive2D({ container: host, src: model, resolveAsset, coreUrl: coreUrl || OFFICIAL_CUBISM_CORE_URL,
-      pauseWhenOffscreen: !waitForFirstPaint, resolution: targetResolution(), maxFps: 60,
+      pauseWhenOffscreen: !waitForFirstPaint, resolution: targetResolution(),
       backend, fit: framing ? fit(framing.initial) : 'full', followPointer: true, signal, onError: recover });
     signal.throwIfAborted();
     const instance = stage;
@@ -161,7 +175,8 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
             wider => instance.setFit(fit(wider)));
           if (camera) {
             framing = undefined;
-            instance.setFit(fit(camera));
+            framed = camera;
+            instance.setFit(fit(onSurface(camera, paint())));
           }
           return;
         }
@@ -193,6 +208,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
     }).catch(error => { if (!signal.aborted) console.warn('[Live2D] Interactions unavailable', error); });
     return {
+      reframe() { if (framed && !signal.aborted) instance.setFit(fit(onSurface(framed, paint()))); },
       playMotion: (group: string, index: number) => interaction?.playMotion(group, index) ?? false,
       onNextPaint(copy: (canvas: HTMLCanvasElement) => void) {
         if (!graphics || !output || signal.aborted) return;

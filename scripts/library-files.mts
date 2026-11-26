@@ -19,15 +19,16 @@ export function readJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
 }
 
-// Mesh IDs are local to an export. Carry a reviewed curtain forward only for the same pinned manifest.
+// Mesh IDs are local to an export. Carry reviewed curtains and skipped layers forward only for the same pinned manifest.
 export function preserveSceneCurtains(path: string, catalog: Pick<ModelCatalog, 'sources' | 'models'>) {
   if (!existsSync(path)) return;
   const previous = readJson<ModelCatalog>(path);
   for (const [id, variants] of Object.entries(catalog.models)) {
     for (const variant of variants) {
       const match = previous.models[id]?.find(v => v.source === variant.source && v.manifest === variant.manifest);
-      if (match?.hiddenDrawables && previous.sources[match.source]?.baseUrl === catalog.sources[variant.source].baseUrl)
-        variant.hiddenDrawables = match.hiddenDrawables;
+      if (!match || previous.sources[match.source]?.baseUrl !== catalog.sources[variant.source].baseUrl) continue;
+      if (match.hiddenDrawables) variant.hiddenDrawables = match.hiddenDrawables;
+      if (match.skippedDrawables) variant.skippedDrawables = match.skippedDrawables;
     }
   }
 }

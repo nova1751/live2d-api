@@ -17,5 +17,7 @@ for (const file of files) {
   const entry = await stat(join(root, file));
   if (entry.isFile()) size += entry.size;
 }
+// The Cubism Core fallback is a separate CDN tag (scripts/publish-cubism-core.mts), fetched only on demand.
+assert.ok(!files.some(path => /live2dcubismcore/i.test(path)), 'The Cubism Core copy must stay out of the runtime package');
 assert.ok(size < 1_000_000, 'Runtime exceeded 1 MB unpacked: ' + size);
 console.log('Runtime package verified (' + size + ' bytes unpacked)');

@@ -114,11 +114,28 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
   };
 }
 
-export function createFraming(setAspect?: (ratio: number) => void, paintScale = 1, croppedPortrait = false) {
-  // Centering the larger surface around the original square preserves every screen coordinate.
-  const forSurface = (camera: Camera): Camera => ({
-    scale: camera.scale / paintScale, x: camera.x / paintScale, y: camera.y / paintScale,
-  });
+/**
+ * The drawn surface around the reference square that a framed camera targets. It is `scale`
+ * times the square's side, horizontally centered, with the fraction `below` of the extra height
+ * under the square's bottom edge (0.5 centers it; 0 grows it only upwards and sideways).
+ * Motions that zoom past the framed character stay visible within the extra margin.
+ */
+export interface PaintSurface { scale: number; below: number }
+export const referenceSurface: PaintSurface = { scale: 1, below: 0.5 };
+
+/** Place a camera framed for the reference square on a larger surface, unchanged on screen. */
+export function onSurface(camera: Camera, { scale, below }: PaintSurface): Camera {
+  return { scale: camera.scale / scale, x: camera.x / scale, y: (camera.y + (scale - 1) * (0.5 - below)) / scale };
+}
+
+export interface Framing {
+  /** Camera for the measurement frames, applied to the drawn surface as it is. */
+  initial: Camera;
+  /** The settled camera for the reference square, once measured. Place it with `onSurface`. */
+  measure(canvas: HTMLCanvasElement, hitTest?: HitTest, resizeSample?: (camera: Camera) => void): Camera | undefined;
+}
+
+export function createFraming(setAspect?: (ratio: number) => void, croppedPortrait = false): Framing {
   const initial = { scale: 0.65, x: 0, y: 0 };
   let sampleCamera = initial;
   const sample = document.createElement('canvas');
@@ -127,8 +144,8 @@ export function createFraming(setAspect?: (ratio: number) => void, paintScale = 
   const mask = new Uint8Array(size * size);
   const pose = new Uint8Array(mask.length);
   let frames = 0, nextSample = 0, firstSample: number | undefined;
-  return { initial, measure(canvas: HTMLCanvasElement, hitTest?: HitTest, resizeSample?: (camera: Camera) => void): Camera | undefined {
-    if (!ctx) return forSurface(authored);
+  return { initial, measure(canvas, hitTest, resizeSample) {
+    if (!ctx) return authored;
     const now = performance.now();
     if (now < nextSample) return;
     firstSample ??= now;
@@ -160,7 +177,7 @@ export function createFraming(setAspect?: (ratio: number) => void, paintScale = 
         mask.set(pose);
         frames++;
       }
-    } catch { return forSurface(authored); }
+    } catch { return authored; }
     if (frames < 3 && now - firstSample < 3200) return;
     if (frames && resizeSample && sampleCamera === initial) {
       for (let i = 0; i < size; i++) {
@@ -172,10 +189,9 @@ export function createFraming(setAspect?: (ratio: number) => void, paintScale = 
         return;
       }
     }
-    return forSurface(frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect, croppedPortrait) : authored);
+    return frames ? fitSilhouette(mask, sampleCamera, hitTest, setAspect, croppedPortrait) : authored;
   } };
 }
-export type Framing = ReturnType<typeof createFraming>;
 
 // Character bounds across a full idle loop on the 320px square reference view at scale 0.65.
 // 7706's baton and the damaged outfit's flying effects move independently of the figure.
@@ -189,18 +205,18 @@ const croppedForms = new Set([
   'character/madierda/base', 'npc/william/1/destroy',
 ]);
 
-export function catalogFraming(id: string, setAspect?: (ratio: number) => void, paintScale = 1, croppedPortrait = false): Framing {
+export function catalogFraming(id: string, setAspect?: (ratio: number) => void, croppedPortrait = false): Framing {
   const bounds = subjectFrames.get(id);
-  if (!bounds) return createFraming(setAspect, paintScale, croppedPortrait || croppedForms.has(id));
+  if (!bounds) return createFraming(setAspect, croppedPortrait || croppedForms.has(id));
   const [left, top, right, bottom] = bounds;
   const width = right - left, height = bottom - top;
   const aspect = setAspect ? width / height : 1;
   setAspect?.(aspect);
   const zoom = Math.min(0.93 * 320 * Math.min(1, 1 / aspect) / height, 0.94 * 320 * Math.min(1, aspect) / width);
   const camera = {
-    scale: 0.65 * zoom / paintScale,
-    x: (0.5 - (left + right) / 640) * zoom / paintScale,
-    y: (0.5 - 0.03 * Math.min(1, 1 / aspect) + (0.5 - bottom / 320) * zoom) / paintScale,
+    scale: 0.65 * zoom,
+    x: (0.5 - (left + right) / 640) * zoom,
+    y: 0.5 - 0.03 * Math.min(1, 1 / aspect) + (0.5 - bottom / 320) * zoom,
   };
   return { initial: camera, measure: () => camera };
 }

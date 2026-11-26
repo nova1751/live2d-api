@@ -5,6 +5,7 @@ import { setModelLoading } from '../runtime/loading';
 import { fallbackModelDirectory, modelDirectory } from '../distribution';
 import { pick, say } from '../runtime/messages';
 import { createFraming } from '../library/framing';
+import { paintSurface } from '../library/paint';
 import { ModelTransition } from '../library/transition';
 
 interface Catalog { models: (string | string[])[]; messages: string[] }
@@ -133,10 +134,10 @@ export class LegacyModels {
 
   private paint(url: string, start: boolean) {
     let aspect = 1;
-    const paintScale = 1.5;
-    const framing = this.options.modelUrl ? createFraming(value => { aspect = value; }, paintScale) : undefined;
-    const present = framing && this.transition.begin(() => aspect, paintScale);
-    return window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, framing, onPaint: () => present?.() });
+    const framing = this.options.modelUrl ? createFraming(value => { aspect = value; }) : undefined;
+    const present = framing && this.transition.begin(() => aspect, true);
+    return window.loadlive2d('live2d', url, { start, locale: this.options.locale, coreUrl: this.options.coreUrl, framing,
+      paint: framing && paintSurface, onPaint: () => present?.() });
   }
 
   async costume(target: string) {

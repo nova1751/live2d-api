@@ -143,14 +143,18 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
   .waifu-loading-icon svg { animation: waifu-spin .8s linear infinite; }
   body > #waifu:is([data-initial-framing], [data-model-pending]) { transition-duration: 0.3s; }
 }
+/* The drawn surface: the reference square plus a margin where zooming motions stay visible.
+   library/paint.ts sets the scale and the share of the margin below the square (framing.ts
+   PaintSurface): 1.5 in the widget, the whole screen in the expanded view. */
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
-  --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1) / 2);
+  --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1));
+  --waifu-bleed-below: calc(var(--waifu-bleed) * var(--waifu-paint-below, 0.5));
   position: absolute;
   left: 50%;
-  bottom: calc(-1 * var(--waifu-bleed));
+  bottom: calc(-1 * var(--waifu-bleed-below));
   transform: translateX(-50%);
-  width: calc(var(--waifu-square) + 2 * var(--waifu-bleed));
+  width: calc(var(--waifu-square) + var(--waifu-bleed));
   aspect-ratio: 1;
 }
 /* The renderer keeps the wider camera. Only the original viewport receives input. */
@@ -161,7 +165,7 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
   content: "";
   position: absolute;
   left: 50%;
-  bottom: var(--waifu-bleed);
+  bottom: var(--waifu-bleed-below);
   transform: translateX(-50%);
   width: 100cqw;
   height: 100cqh;
