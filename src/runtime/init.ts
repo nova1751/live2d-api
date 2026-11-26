@@ -68,20 +68,6 @@ function prepareStart(event: Event) {
   return event.isTrusted && !!window.loadlive2d.prepareInteraction?.();
 }
 
-function layoutFloatingTools(widget: HTMLElement, count: number) {
-  widget.style.setProperty('--waifu-tool-count', String(count));
-  if (!count) return;
-  const fit = () => {
-    const size = parseFloat(getComputedStyle(widget).getPropertyValue('--waifu-tool-size')) || 40;
-    const maxRows = Math.max(1, Math.floor((window.innerHeight - 12) / size));
-    const columns = Math.ceil(count / maxRows);
-    widget.style.setProperty('--waifu-tool-columns', String(columns));
-    widget.style.setProperty('--waifu-tool-rows', String(Math.ceil(count / columns)));
-  };
-  fit();
-  window.addEventListener('resize', fit);
-}
-
 function hide() {
   const widget = byId('waifu');
   const restoreFocus = widget.contains(document.activeElement);
@@ -168,7 +154,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     if (tool === 'expand') button.setAttribute('aria-haspopup', 'dialog');
     button.addEventListener('click', actions[tool]);
   }
-  if (adaptive) layoutFloatingTools(byId('waifu'), byId('waifu-tool').childElementCount);
+  if (adaptive) byId('waifu').style.setProperty('--waifu-tool-count', String(byId('waifu-tool').childElementCount));
   void runModel(() => models.load(undefined, undefined, undefined, start));
   getJson<Parameters<typeof bindMessages>[0]>(options.waifuPath).then(bindMessages).catch(error => console.warn('[Live2D]', error));
 }

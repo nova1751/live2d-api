@@ -64,8 +64,7 @@
 }
 
 #waifu.waifu-adaptive {
-  --waifu-tool-width: 44px;
-  --waifu-rail: var(--waifu-tool-width);
+  --waifu-rail: 44px;
   --waifu-gap: 6px;
   --waifu-content-gap: 12px;
   --waifu-side-space: calc(var(--waifu-rail) + var(--waifu-gap));
@@ -85,14 +84,15 @@
   height: var(--waifu-model-height);
 }
 .waifu-viewport { position: absolute; inset: 0 var(--waifu-side-space) 0 0; container-type: size; overflow: visible; }
-/* The floating controls reserve their space before the first frame measures the model. */
+/* Reserve the full tool stack independently of the model's fitted height. */
 body > #waifu.waifu-adaptive {
-  --waifu-rail: calc(var(--waifu-tool-width) * var(--waifu-tool-columns, 1));
-  --waifu-float-tools-height: calc(var(--waifu-tool-size) * var(--waifu-tool-rows, var(--waifu-tool-count, 0)));
+  --waifu-tool-stack-height: calc(var(--waifu-tool-size) * var(--waifu-tool-count, 0));
+  --waifu-float-tools-height: min(var(--waifu-tool-stack-height), 100dvh);
   --waifu-float-row: max(var(--waifu-model-height), var(--waifu-float-tools-height));
   --waifu-float-model-bottom: calc((var(--waifu-float-row) - var(--waifu-model-height)) / 2);
   width: calc(var(--waifu-max-width) + var(--waifu-side-space));
   height: var(--waifu-max-height);
+  min-height: var(--waifu-tool-stack-height);
   transform: none;
 }
 body > #waifu.waifu-adaptive .waifu-viewport {
@@ -111,18 +111,15 @@ body > #waifu.waifu-adaptive #waifu-status {
   top: calc(100% - var(--waifu-float-row) / 2);
 }
 body > #waifu.waifu-adaptive #waifu-tool {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(var(--waifu-tool-rows, var(--waifu-tool-count, 1)), var(--waifu-tool-size));
-  grid-auto-columns: var(--waifu-tool-width);
   top: auto;
   bottom: calc((var(--waifu-float-row) - var(--waifu-float-tools-height)) / 2);
   margin-block: 0;
   height: var(--waifu-float-tools-height);
-  max-height: none;
-  overflow: visible;
+  scrollbar-width: none;
 }
+body > #waifu.waifu-adaptive #waifu-tool::-webkit-scrollbar { display: none; }
 body > #waifu.waifu-adaptive #waifu-tool button { height: var(--waifu-tool-size); }
+body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: -2px; }
 #waifu-status {
   position: absolute;
   left: calc(var(--waifu-model-width, 350px) / 2);
