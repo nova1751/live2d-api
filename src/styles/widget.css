@@ -699,9 +699,11 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
 }
 #waifu-expanded #waifu #waifu-status { left: 50%; }
 #waifu-expanded #waifu #waifu-tips {
+  position: fixed;
+  z-index: 10;
   box-sizing: border-box;
   animation: none;
-  inset: auto auto calc(100% + var(--view-caption-gap)) 50%;
+  inset: calc(var(--view-header) + 2px) auto auto 50%;
   translate: -50% 0;
   margin: 0;
   width: min(420px, max(240px, 90%), 100cqw - 24px);

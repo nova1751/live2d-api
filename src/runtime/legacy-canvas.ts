@@ -12,7 +12,8 @@ const minBuffer = 256;
 export function sizeLegacyCanvas(canvas: HTMLCanvasElement) {
   // Without these the initial buffer simply stays as it is.
   if (typeof ResizeObserver !== 'function' || typeof matchMedia !== 'function') return;
-  const maxBuffer = matchMedia('(pointer: coarse)').matches ? 1536 : 2560;
+  const coarse = matchMedia('(pointer: coarse)').matches;
+  const maxBuffer = coarse ? 2048 : 4096;
   let timer = 0;
   const apply = () => {
     timer = 0;
@@ -20,7 +21,8 @@ export function sizeLegacyCanvas(canvas: HTMLCanvasElement) {
     if (!canvas.isConnected || canvas.style.visibility === 'hidden' || canvas.width !== canvas.height) return;
     const width = canvas.getBoundingClientRect().width;
     if (!width) return;
-    const target = Math.round(Math.min(maxBuffer, Math.max(minBuffer, width * devicePixelRatio)));
+    const dpr = !coarse && width <= 720 ? Math.max(devicePixelRatio, 1.5) : devicePixelRatio;
+    const target = Math.round(Math.min(maxBuffer, Math.max(minBuffer, width * dpr)));
     if (Math.abs(target - canvas.width) > 16) canvas.width = canvas.height = target;
   };
   const schedule = () => {

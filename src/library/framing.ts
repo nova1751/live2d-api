@@ -57,11 +57,41 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
     bottom = Math.max(bottom, row + 1);
   }
   if (!mass) return authored;
-  // A few detached particles high above the head can span half the canvas.
-  // Trim at most 0.1% of the alpha mass there, retaining two sample rows of slack.
+  // A few detached particles high above the head or off to the side can span half the canvas.
+  // Trim tiny outer islands separated from the main figure by a clear empty gap (>= 5 rows/cols
+  // and at most 3% of total alpha mass), while keeping close halos, hair strands and props.
+  const trimGap = 5;
+  const trimLimit = mass * 0.03;
+  const trimStart = (bins: Float64Array, start: number, end: number) => {
+    let acc = 0, gap = 0, candidate = start;
+    for (let i = start; i < end; i++) {
+      if (bins[i] === 0) gap++;
+      else {
+        if (gap >= trimGap && acc > 0 && acc <= trimLimit) candidate = i;
+        acc += bins[i];
+        gap = 0;
+        if (acc > trimLimit) break;
+      }
+    }
+    return candidate;
+  };
+  const trimEnd = (bins: Float64Array, start: number, end: number) => {
+    let acc = 0, gap = 0, candidate = end;
+    for (let i = end - 1; i >= start; i--) {
+      if (bins[i] === 0) gap++;
+      else {
+        if (gap >= trimGap && acc > 0 && acc <= trimLimit) candidate = i + 1;
+        acc += bins[i];
+        gap = 0;
+        if (acc > trimLimit) break;
+      }
+    }
+    return candidate;
+  };
   top = Math.max(top, quantile(rows, mass, 0.001) - 2);
-  const left = quantile(columns, mass, 0.001);
-  const right = quantile(columns, mass, 0.999) + 1;
+  top = trimStart(rows, top, bottom);
+  const left = trimStart(columns, quantile(columns, mass, 0.001), size);
+  const right = trimEnd(columns, left, quantile(columns, mass, 0.999) + 1);
   // A sword tip can extend below a cropped thigh. Anchor the horizontal cut of the
   // figure when only a thin prop remains below it. Full-length figures keep their feet.
   if (croppedPortrait) {

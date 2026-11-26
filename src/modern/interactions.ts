@@ -46,6 +46,11 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
 export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false, files?: Record<string, string | null>) {
   const model = json<Manifest>(url, signal).then(manifest => {
     const groups = manifest.FileReferences.Motions ?? {};
+    // live2d-web looks for the exact group name "Idle" by default; alias lowercase "idle" (e.g. Azur Lane).
+    if (!groups.Idle) {
+      const idleKey = Object.keys(groups).find(name => /^idle$/i.test(name)) ?? Object.keys(groups).find(name => /^idle/i.test(name));
+      if (idleKey) groups.Idle = groups[idleKey];
+    }
     const idleFiles = new Set(Object.entries(groups).filter(([name]) => /^idle/i.test(name)).flatMap(([, clips]) => clips.map(clip => clip.File)));
     // FileReferences defines the asset type even when an exporter uses a custom filename.
     const optional = new Map<string, object>();

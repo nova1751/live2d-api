@@ -59,14 +59,17 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     // one, so a high-DPI desktop would be capped at 1.5x. Keep phone limits for touch devices.
     // The paint margin for zooming motions makes the surface several times the character's
     // area, so the desktop budget covers a full-screen surface at 2x (2880 px square).
-    const policy = resolveAutoQualityPolicy(matchMedia('(pointer: coarse)').matches ? undefined
-      : { mobileMaxResolution: 2, mobilePixelBudget: 8.5e6, desktopPixelBudget: 8.5e6 });
+    const coarse = matchMedia('(pointer: coarse)').matches;
+    const policy = resolveAutoQualityPolicy(coarse ? undefined
+      : { mobileMaxResolution: 2, mobilePixelBudget: 16.8e6, desktopPixelBudget: 16.8e6 });
     // Lowered when frames run long. A pixel count, so a smaller view can still render sharper.
     let pixelCap = Infinity;
     const targetResolution = (cap = pixelCap) => {
       const rect = host.getBoundingClientRect();
       const width = Math.max(1, rect.width), height = Math.max(1, rect.height);
-      const wanted = selectInitialResolution({ devicePixelRatio, width, height, mobile: isMobileViewport(width, height) }, policy);
+      // Light supersampling keeps fine line art crisp in the small floating widget on 1x displays.
+      const dpr = !coarse && Math.max(width, height) <= 720 ? Math.max(devicePixelRatio, 1.5) : devicePixelRatio;
+      const wanted = selectInitialResolution({ devicePixelRatio: dpr, width, height, mobile: isMobileViewport(width, height) }, policy);
       return Math.max(policy.minResolution, Math.min(wanted, Math.sqrt(cap / (width * height))));
     };
     let sizing = 0;

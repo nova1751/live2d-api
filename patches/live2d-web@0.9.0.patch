@@ -36,10 +36,21 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..d40b0cffbba51fcc9549d62bc4353afd
    idleMotion?: IdleMotion;
    /**
 diff --git a/dist/model-CkKs9EQ2.mjs b/dist/model-CkKs9EQ2.mjs
-index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e5a5a4f32 100644
+index 31ee427b871153d223b0ab55fb0ab9e65b183d70..0e2072ceb0746bb5b280f2d8ba9ba13e80dbd3af 100644
 --- a/dist/model-CkKs9EQ2.mjs
 +++ b/dist/model-CkKs9EQ2.mjs
-@@ -9176,7 +9176,6 @@ var CubismClippingManager = class {
+@@ -7560,6 +7560,10 @@ var CubismMotion = class CubismMotion extends ACubismMotion {
+ 			if (parameterIndex == -1) continue;
+ 			value = evaluateCurve(this._motionData, c, time, isCorrection, duration);
+ 			model.setParameterValueByIndex(parameterIndex, value);
++			if (!model._hasPose && motionQueueEntry.getFadeOutStartTime() < 0) {
++				model.setPartOpacityById(curves[c].id, value);
++				if (model._captureIdleParts) model._idlePartOpacities.set(curves[c].id, value);
++			}
+ 		}
+ 		if (timeOffsetSeconds >= duration) if (this._isLoop) this.updateForNextLoop(motionQueueEntry, userTimeSeconds, time);
+ 		else {
+@@ -9176,7 +9180,6 @@ var CubismClippingManager = class {
  		}
  		if (renderTextureCount < 1) CubismLogWarning("The number of render textures must be an integer greater than or equal to 1. Set the number of render textures to 1.");
  		this._renderTextureCount = renderTextureCount < 1 ? 1 : renderTextureCount;
@@ -47,7 +58,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  		this._clippingContextListForDraw.length = model.getDrawableCount();
  		for (let i = 0; i < model.getDrawableCount(); i++) {
  			if (model.getDrawableMaskCounts()[i] <= 0) {
-@@ -9191,6 +9190,7 @@ var CubismClippingManager = class {
+@@ -9191,6 +9194,7 @@ var CubismClippingManager = class {
  			clippingContext.addClippedDrawable(i);
  			this._clippingContextListForDraw[i] = clippingContext;
  		}
@@ -55,7 +66,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  	}
  	/**
  	* オフスクリーン用の初期化処理
-@@ -9200,8 +9200,6 @@ var CubismClippingManager = class {
+@@ -9200,8 +9204,6 @@ var CubismClippingManager = class {
  	*/
  	initializeForOffscreen(model, maskBufferCount) {
  		this._renderTextureCount = maskBufferCount;
@@ -64,7 +75,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  		this._clippingContextListForOffscreen.length = model.getOffscreenCount();
  		for (let i = 0; i < model.getOffscreenCount(); ++i) {
  			if (model.getOffscreenMaskCounts()[i] <= 0) {
-@@ -9216,6 +9214,14 @@ var CubismClippingManager = class {
+@@ -9216,6 +9218,14 @@ var CubismClippingManager = class {
  			cc.addClippedOffscreen(i);
  			this._clippingContextListForOffscreen[i] = cc;
  		}
@@ -79,7 +90,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  	}
  	/**
  	* 既にマスクを作っているかを確認
-@@ -10558,7 +10564,13 @@ var CubismShader_WebGL = class {
+@@ -10558,7 +10568,13 @@ var CubismShader_WebGL = class {
  		const offset = masked ? invertedMask ? 2 : 1 : 0;
  		let shaderSet;
  		let isUsingCompatible = true;
@@ -94,7 +105,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			const colorBlendMode = model.getDrawableColorBlend(index);
  			const alphaBlendMode = model.getDrawableAlphaBlend(index);
  			if (colorBlendMode == -1 || alphaBlendMode == -1 || colorBlendMode == CubismColorBlend.ColorBlend_Normal && alphaBlendMode == 0) {
-@@ -11940,6 +11952,8 @@ var CubismRenderer_WebGL = class extends CubismRenderer {
+@@ -11940,6 +11956,8 @@ var CubismRenderer_WebGL = class extends CubismRenderer {
  	*/
  	drawDrawable(drawableIndex, rootFbo) {
  		if (!this.getModel().getDrawableDynamicFlagIsVisible(drawableIndex)) return;
@@ -103,8 +114,26 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  		this.submitDrawToParentOffscreen(drawableIndex, 0);
  		const clipContext = this._drawableClippingManager != null ? this._drawableClippingManager.getClippingContextListForDraw()[drawableIndex] : null;
  		if (clipContext != null && this.isUsingHighPrecisionMask()) {
-@@ -13892,7 +13906,7 @@ var FrameworkModel = class extends CubismUserModel {
- 			this.getModel().loadParameters();
+@@ -13792,7 +13810,7 @@ var FrameworkModel = class extends CubismUserModel {
+ 			});
+ 		}
+ 		try {
+-			if (pose) this.loadPose(pose, pose.byteLength);
++			if (pose) { this.loadPose(pose, pose.byteLength); this.getModel()._hasPose = true; }
+ 		} catch (error) {
+ 			throw new Live2DError("model-load-failed", `Failed to parse pose asset ${poseUrl}.`, {
+ 				cause: error,
+@@ -13889,10 +13907,15 @@ var FrameworkModel = class extends CubismUserModel {
+ 		if (this.disposed) return;
+ 		const deltaSeconds = deltaMs / 1e3;
+ 		if (!this.diagnostics) {
+-			this.getModel().loadParameters();
++			const _m = this.getModel();
++			_m.loadParameters();
++			if (!_m._hasPose) {
++				if (!_m._idlePartOpacities) { _m._idlePartOpacities = new Map(); _m._captureIdleParts = true; }
++				else { _m._captureIdleParts = false; for (const [_pid, _pop] of _m._idlePartOpacities) _m.setPartOpacityById(_pid, _pop); }
++			}
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
 -			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), deltaSeconds);
@@ -112,8 +141,17 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			this.getModel().saveParameters();
  			this.settleFinishedMotions();
  			this.scheduler.onLateUpdate(this.getModel(), deltaSeconds);
-@@ -13905,7 +13919,7 @@ var FrameworkModel = class extends CubismUserModel {
- 			this.getModel().loadParameters();
+@@ -13902,10 +13925,15 @@ var FrameworkModel = class extends CubismUserModel {
+ 			return;
+ 		}
+ 		measureSync(this.diagnostics, "frame", "motion", () => {
+-			this.getModel().loadParameters();
++			const _m = this.getModel();
++			_m.loadParameters();
++			if (!_m._hasPose) {
++				if (!_m._idlePartOpacities) { _m._idlePartOpacities = new Map(); _m._captureIdleParts = true; }
++				else { _m._captureIdleParts = false; for (const [_pid, _pop] of _m._idlePartOpacities) _m.setPartOpacityById(_pid, _pop); }
++			}
  			this.motionUpdated = false;
  			if (this._motionManager.isFinished()) this.scheduleIdle();
 -			else this.motionUpdated = this._motionManager.updateMotion(this.getModel(), deltaSeconds);
@@ -121,7 +159,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			this.getModel().saveParameters();
  		});
  		this.settleFinishedMotions();
-@@ -13979,7 +13993,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13979,7 +14007,7 @@ var FrameworkModel = class extends CubismUserModel {
  	settleFinishedMotions() {
  		this.motionStates.settleFinished((handle) => this._motionManager.isFinishedByHandle(handle));
  	}
@@ -130,7 +168,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  		if (this.disposed) return { status: "disposed" };
  		if (this.renderError) throw this.renderError;
  		const count = this.setting.getMotionCount(group);
-@@ -13991,8 +14005,18 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -13991,8 +14019,18 @@ var FrameworkModel = class extends CubismUserModel {
  		const generation = ++this.motionGeneration;
  		let handle;
  		let playback;
@@ -150,7 +188,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			if (this.disposed) return { status: "disposed" };
  			if (generation !== this.motionGeneration) return { status: "skipped" };
  			if (hasMotionFadeOverride(fade)) {
-@@ -14000,6 +14024,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14000,6 +14038,7 @@ var FrameworkModel = class extends CubismUserModel {
  				if (this.disposed) return { status: "disposed" };
  				if (generation !== this.motionGeneration) return { status: "skipped" };
  			}
@@ -158,7 +196,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			playback = preparePlaybackMotion(asset, fade, (buffer) => this.parseMotion(buffer, `${group}:${selected}`, group, selected), (motion) => ACubismMotion.delete(motion));
  			handle = this._motionManager.startMotionPriority(playback.motion, playback.autoDelete, priority);
  			if (handle === -1) {
-@@ -14013,8 +14038,25 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14013,8 +14052,25 @@ var FrameworkModel = class extends CubismUserModel {
  			if (this.disposed) return { status: "disposed" };
  			if (generation === this.motionGeneration) this._motionManager.setReservePriority(0);
  			throw error;
@@ -185,7 +223,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  	}
  	hitTestStagePoint(x, y) {
  		if (this.disposed || !this.layoutMatrix) return [];
-@@ -14188,7 +14230,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14188,7 +14244,7 @@ var FrameworkModel = class extends CubismUserModel {
  			playMotion: (group, index, options) => {
  				validateMotionOptions(options);
  				const fade = resolveMotionFade(options);
@@ -194,7 +232,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd2ca497063dfa03893908757666765e
  			},
  			onAfterMotionUpdate: (callback) => {
  				this.afterMotionCallbacks.add(callback);
-@@ -14273,6 +14315,12 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
+@@ -14273,6 +14329,12 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
  		const idleMotion = resolveIdleMotion(options.idleMotion, (group) => setting.getMotionCount(group));
  		model = new FrameworkModel(stage, modelUrl, setting, shaderBaseUrl, shaderSources, idleMotion, releaseFramework, model3Version, diagnostics, options.resolveAsset);
  		await model.initialize(options.signal);

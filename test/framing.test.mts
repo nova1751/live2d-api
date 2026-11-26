@@ -193,3 +193,20 @@ test('the reference surface leaves a camera unchanged', () => {
   const camera = { scale: 1.3, x: 0.1, y: 0.2 };
   assert.deepEqual(onSurface(camera, referenceSurface), camera);
 });
+
+test('ignores detached floating petals above the figure separated by an empty gap', () => {
+  const mask = new Uint8Array(128 * 128);
+  const fill = (x0: number, y0: number, x1: number, y1: number) => {
+    for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) mask[y * 128 + x] = 255;
+  };
+  // Main figure in the lower half (40 x 50 = 2000 px)
+  fill(44, 68, 84, 118);
+  const withoutPetals = fitSilhouette(mask, { scale: 0.65, x: 0, y: 0 });
+  // Three detached petals high above (~24 px total, > 0.1% and < 3% of mass, separated by > 30 empty rows)
+  fill(40, 20, 44, 22);
+  fill(60, 22, 64, 24);
+  fill(80, 24, 84, 26);
+  const withPetals = fitSilhouette(mask, { scale: 0.65, x: 0, y: 0 });
+  assert.ok(Math.abs(withPetals.scale - withoutPetals.scale) < 0.05, `expected scale ~${withoutPetals.scale}, got ${withPetals.scale}`);
+  assert.ok(Math.abs(withPetals.y - withoutPetals.y) < 0.03, `expected y ~${withoutPetals.y}, got ${withPetals.y}`);
+});
