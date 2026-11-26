@@ -125,6 +125,32 @@ export async function checkPaintOverflow(browser, base) {
         await button.hover();
         assert.deepEqual(await colors(), ['rgb(6, 132, 189)', 'none']);
       }
+      const toolbar = page.locator('#waifu-tool');
+      for (const height of [480, 320, 240, 820]) {
+        await page.setViewportSize({ width, height });
+        const layout = await toolbar.evaluate(rail => {
+          const buttons = Array.from(rail.children, button => button.getBoundingClientRect());
+          const viewport = document.querySelector('.waifu-viewport').getBoundingClientRect();
+          const bounds = rail.getBoundingClientRect();
+          return {
+            columns: new Set(buttons.map(button => button.x)).size,
+            minHeight: getComputedStyle(rail.parentElement).minHeight,
+            scrollbarWidth: getComputedStyle(rail).scrollbarWidth,
+            overflow: [rail.scrollWidth - rail.clientWidth, rail.scrollHeight - rail.clientHeight],
+            centered: Math.abs((bounds.top + bounds.bottom - viewport.top - viewport.bottom) / 2) <= 1,
+            reachable: buttons.every(button => button.top >= 0 && button.bottom <= innerHeight &&
+              button.left >= 0 && button.right <= innerWidth && button.height >= 40),
+          };
+        });
+        assert.deepEqual(layout, { columns: 1, minHeight: '320px', scrollbarWidth: 'none',
+          overflow: [0, Math.max(0, 320 - height)], centered: true, reachable: height >= 320 }, `${position} at ${width}×${height}`);
+        if (height < 320) {
+          const last = toolbar.locator('button').last();
+          await last.focus();
+          assert.ok(await last.evaluate(button => button.getBoundingClientRect().bottom <= innerHeight && button.parentElement.scrollTop > 0));
+          await toolbar.locator('button').first().focus();
+        }
+      }
       const tab = page.locator('#waifu-toggle');
       const originalCanvas = await page.locator('#live2d').elementHandle();
       await page.locator('#waifu-tool-expand').click({ force: true });
