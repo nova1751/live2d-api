@@ -699,11 +699,9 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
 }
 #waifu-expanded #waifu #waifu-status { left: 50%; }
 #waifu-expanded #waifu #waifu-tips {
-  position: fixed;
-  z-index: 10;
   box-sizing: border-box;
   animation: none;
-  inset: calc(var(--view-header) + 2px) auto auto 50%;
+  inset: auto auto calc(100% + var(--view-caption-gap)) 50%;
   translate: -50% 0;
   margin: 0;
   width: min(420px, max(240px, 90%), 100cqw - 24px);
@@ -720,6 +718,11 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   overflow: auto;
   overflow-wrap: anywhere;
   word-break: normal;
+}
+#waifu-expanded .waifu-view-viewport[data-pannable] #waifu #waifu-tips {
+  position: fixed;
+  z-index: 10;
+  inset: calc(var(--view-header) + 2px) auto auto 50%;
 }
 #waifu-expanded #waifu-tips span { color: var(--view-accent); }
 #waifu-expanded #waifu-tips.waifu-tips-active { pointer-events: auto; }
