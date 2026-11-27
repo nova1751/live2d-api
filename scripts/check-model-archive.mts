@@ -153,8 +153,11 @@ for (const collection of collections) {
         else if (cue.sound) voiceOnlyCues++;
       }
     }
+    const replacedSounds = new Set(Object.values(model.motions ?? {}).flat()
+      .filter(clip => clip.sound && v.cues?.[clip.sound]?.sound)
+      .map(clip => clip.sound));
     for (const item of references(model)) {
-      if (!item) continue;
+      if (!item || replacedSounds.has(item)) continue;
       const fix =
         v.files && Object.hasOwn(v.files, item) ? v.files[item] : (v.soundAliases?.[item] ?? item);
       if (fix === null) {

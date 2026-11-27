@@ -114,6 +114,35 @@ test('the Eve story motion uses the recording and subtitles from the same talk c
   }
 });
 
+test('Houkai restores native event audio and numbered subtitles from the game bundles', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const [catalog, audit, voices, captions] = await Promise.all(
+    ['houkai2', 'audit', 'voices/houkai2-partner-11.7', 'voices/houkai2-textmap-11.7'].map(read),
+  );
+  const location = new URL('https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/houkai2.json');
+  const library = parseModelCatalog(catalog, location, 'houkai2');
+  for (const [event, recording] of Object.entries(voices.recordings)) {
+    const name = 'houkai2-' + event + '.ogg';
+    const asset = library.resolve(recording.model);
+    assert.equal(asset.cues[event].sound, new URL('./voices/' + name, location).href);
+    assert.ok(asset.cues[event].caption);
+    assert.ok(!audit.unresolved.some(row => row.id === recording.model && row.file === event));
+    const audio = await readFile(new URL('../catalog/games/voices/' + name, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), recording.sha256);
+  }
+  for (const [folder, records] of Object.entries(captions.models)) {
+    const id = 'character/' + (folder === 'BYC' ? 'yazakura' : folder) + '/' + folder;
+    const asset = library.resolve(id);
+    for (const [key, record] of Object.entries(records)) {
+      assert.equal(asset.cues[key].caption, record.caption);
+    }
+  }
+  const kiana = library.resolve('character/Kiana/Kiana');
+  assert.equal(kiana.files['sound/kiana_live2d_001.wav'], null);
+  assert.equal(kiana.cues['sound/kiana_live2d_001.wav'].sound, undefined);
+  assert.ok(kiana.cues['sound/kiana_live2d_001.wav'].caption);
+});
+
 test('curated Cubism 2 galleries resolve their published IDs and have real portraits', async (t) => {
   const { loadModelCatalog } = await import('../widget.mjs');
   t.mock.method(globalThis, 'fetch', async (url) => Response.json(await read(new URL(url).pathname.split('/').pop().replace('.json', ''))));

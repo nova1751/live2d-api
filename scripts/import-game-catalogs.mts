@@ -58,7 +58,7 @@ async function legacyOptions(files, folder, manifest, id, recovery) {
     return;
   }
   for (const file of new Set(pathsFor(manifest))) {
-    if (files.has(posix.join(folder, file)) || aliases[file]) continue;
+    if (files.has(posix.join(folder, file)) || aliases[file] || recovery?.cues?.[file]?.sound) continue;
     if (file === manifest.model || manifest.textures.includes(file)) {
       unavailable.push({ id, file });
       return;
@@ -185,6 +185,7 @@ const houkai = library(),
 const bhFiles = await tree(bhRepo, 'cdf9de1d37f197e37b6b3c6fe40c487c17867714');
 const bhBase = raw + bhRepo + '/' + bhCommit + '/崩坏学园2/';
 houkai.sources.archive = { baseUrl: bhBase };
+houkai.sources.partnerVoices = { baseUrl: './voices/' };
 const bhNames = {
   mie: '雷电芽衣',
   BYC: '八重樱',
@@ -213,7 +214,11 @@ for (const f of bhFiles.keys()) {
     id = 'character/' + person + '/' + folder;
   const recovery = await recoverHoukai(folder, m, bhBase, bhFiles);
   const options = await legacyOptions(bhFiles, folder, m, id, recovery);
-  if (recovery && options) { options.cues = recovery.cues; repairs.push(...recovery.repairs); }
+  if (recovery && options) {
+    options.cues = recovery.cues;
+    if (recovery.cueSource) options.cueSource = recovery.cueSource;
+    repairs.push(...recovery.repairs);
+  }
   if (options)
     add(houkai, id, 'archive', f, options, {
       name: bhNames[folder] || folder,
