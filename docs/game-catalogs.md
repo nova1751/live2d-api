@@ -67,7 +67,7 @@ BanG Dream! 的 `hhw/013/013_live_event_93_sr`、`roselia/047/047_live_event_139
 
 对照 Bestdori 的服装索引和国服模型档案后，补入 9 套小豆泥联动造型与 2 套奥泽美咲造型。原模型保留独立待机和点击动作，共用的表情、物理和动作文件只存一份。两套联动造型从卡片原剧情补回 66 条点击互动。每条按剧情当时使用的服装、说话人、原动作和语音 ID 匹配。素材随图鉴快照发布。[服装索引](https://bestdori.com/api/costumes/all.5.json) · [原版剧情示例](https://bestdori.com/tool/storyviewer/card/cn/10048/1) · [文件与录音来源](../catalog/games/band-dream-cn/sources.json)
 
-《机动战队》斯洛卡伊的中文造型有 11 个自带台词的动作，从游戏内中文语音试听记录补回全部 11 段 Hanser 配音。其中 7 个动作原来缺音，另外 4 个改用同台词的中文录音。音频从独立试听片段截取，剪辑时间与校验值记录在[录音索引](../catalog/games/voices/iron-saga-slokai-cn.json)。[中文试听](https://www.bilibili.com/video/BV1Wh411m7fY/)
+《机动战队》斯洛卡伊的中文台词造型保留 4 段已有日语配音，另为 7 个原先缺音的动作补入 Hanser 的对应中文录音。剪辑时间与校验值记录在[录音索引](../catalog/games/voices/iron-saga-slokai-cn.json)。[中文试听](https://www.bilibili.com/video/BV1Wh411m7fY/)
 
 《崩坏学园 2》从无背景音乐的游戏内试听分集补回姬子一个中文互动和杏一个日文互动。按现有模型的旧录音键对照官方字幕编号，其余 74 个旧录音路径仍缺可确认的录音。[姬子试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=33) · [杏试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=52) · [录音索引](../catalog/games/voices/houkai2-recorded-preview.json)
 

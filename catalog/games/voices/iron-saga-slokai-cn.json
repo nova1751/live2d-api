@@ -59,38 +59,6 @@
         156.07
       ],
       "sha256": "15ca543d1c738eb1aa6e9f5c1481563babafb2a022f4ad655bc6c650dfc158a7"
-    },
-    "motions/idle/idle4-t1.mtn": {
-      "sound": "iron-saga-slokai-cn-idle4-t1.ogg",
-      "range": [
-        73.13,
-        76.66
-      ],
-      "sha256": "d5c25c27a2a2d5dad7cfa8cdb1d3ed2be1737bfa2d37bc0fcf6791905ba8dcfb"
-    },
-    "motions/tap_A3/tap6.mtn": {
-      "sound": "iron-saga-slokai-cn-tap6.ogg",
-      "range": [
-        77.6,
-        80.7
-      ],
-      "sha256": "5cfaecdf7f1f5469c4a8a956de3617adaf5281e149260ee4bd78551b87512c83"
-    },
-    "motions/tap_A1/tap4.mtn": {
-      "sound": "iron-saga-slokai-cn-tap4.ogg",
-      "range": [
-        96.55,
-        102.5
-      ],
-      "sha256": "90459be3a8a91e7e605f4381b5a677398b57c14d111b7714258bf8e882632085"
-    },
-    "motions/tap_A1/tap3.mtn": {
-      "sound": "iron-saga-slokai-cn-tap3.ogg",
-      "range": [
-        143.5,
-        147.6
-      ],
-      "sha256": "b2b04f26a83666ef1b1d300635ed44f4b8cc4e3743fe76acbf111ba12ab7c53f"
     }
   }
 }

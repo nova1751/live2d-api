@@ -159,8 +159,18 @@ test('recovered Iron Saga and Houkai recordings resolve with the original motion
   const cdn = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/';
   const chinese = parseModelCatalog(iron, new URL('iron-saga.json', cdn), 'iron-saga').resolve(slokai.model);
   const library = parseModelCatalog(houkai, new URL('houkai2.json', cdn), 'houkai2');
-  assert.equal(Object.keys(slokai.recordings).length, 11);
+  assert.equal(Object.keys(slokai.recordings).length, 7);
   assert.equal(preview.recordings.length, 2);
+  const originalSlokaiVoiceBase = 'https://cdn.jsdmirror.com/gh/Eikanya/Live2d-model@7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/';
+  for (const [motion, sound] of [
+    ['motions/tap_A1/tap3.mtn', 'siluokayi31.mp3'],
+    ['motions/tap_A1/tap4.mtn', 'siluokayi26.mp3'],
+    ['motions/tap_A3/tap6.mtn', 'siluokayi12.mp3'],
+    ['motions/idle/idle4-t1.mtn', 'siluokayi11.mp3'],
+  ]) {
+    assert.equal(chinese.cues[motion].sound, originalSlokaiVoiceBase + sound);
+    assert.ok(!Object.hasOwn(slokai.recordings, motion));
+  }
   for (const [file, { sound, sha256 }] of Object.entries(slokai.recordings)) {
     assert.equal(chinese.cues[file].sound, new URL('voices/' + sound, cdn).href);
     const audio = await readFile(new URL('../catalog/games/voices/' + sound, import.meta.url));
