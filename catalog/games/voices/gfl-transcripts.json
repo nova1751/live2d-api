@@ -13,12 +13,28 @@
     "caption": "（笑）",
     "captionEn": "(Laughs)"
   },
+  "6P62|MOOD2": {
+    "path": "audio/6P62/6P62_MOOD2_JP.ogg",
+    "sha256": "201eb59b171f5cf8732f8c7bf9a8cf606a26efed2bbf0dc2626b273a88463778",
+    "ja": "あ、ぴくりした",
+    "caption": "呀，吓了一跳",
+    "captionEn": "Ah, that startled me!",
+    "source": "https://storage.moegirl.org.cn/moegirl/commons/2/2e/6P62_033.mp3"
+  },
   "88TYPEMOD|LOWMOOD": {
     "path": "audio/88TYPEMOD/88TYPEMOD_LOWMOOD_JP.ogg",
     "sha256": "a93b2a8dbc0f5a41f688db6242f179ea45187506669f9db02ff288ef190fa5d0",
     "ja": "ダメですよ。",
     "caption": "这样不行哦。",
     "captionEn": "You can't do that."
+  },
+  "88TYPEMOD|MOOD2": {
+    "path": "audio/88TYPEMOD/88TYPEMOD_MOOD2_JP.ogg",
+    "sha256": "35a0ff7127d509b37af19f2f77dbec78ac770a8e22cdc8022c06f8823b2d3c73",
+    "ja": "ええー！？",
+    "caption": "欸？！",
+    "captionEn": "Huh?!",
+    "source": "https://storage.moegirl.org.cn/moegirl/commons/9/96/88type_033.mp3"
   },
   "98K|LOWMOOD": {
     "path": "audio/98K/98K_LOWMOOD_JP.ogg",
@@ -104,12 +120,28 @@
     "caption": "什么？",
     "captionEn": "What?"
   },
+  "SAIGA12|MOOD1": {
+    "path": "audio/SAIGA12/SAIGA12_MOOD1_JP.ogg",
+    "sha256": "ae0d274c93e90e983a34b2e71da1eccd47f57bebb2e12d1c1dec84090921154f",
+    "ja": "うふふふ",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)",
+    "source": "https://gf-ogas.wiki/wiki/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%3ASaiga-12"
+  },
   "WA2000|LOWMOOD": {
     "path": "audio/WA2000/WA2000_LOWMOOD_JP.ogg",
     "sha256": "1f258e797bb95992eb2622f6e956247209f5f1699e59ed638be9c8760a285756",
     "ja": "なんてこと？",
     "caption": "怎么会这样？",
     "captionEn": "How could this happen?"
+  },
+  "WA2000|MOOD2": {
+    "path": "audio/WA2000/WA2000_MOOD2_JP.ogg",
+    "sha256": "f118c412653bf7132da6702db4c44c4f409b793344c5a2a0de0c95f343054653",
+    "ja": "えぇぇぇ！？",
+    "caption": "欸欸欸？！",
+    "captionEn": "Whaaat?!",
+    "source": "https://gf-ogas.wiki/wiki/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%3AWA2000"
   },
   "ZB26|FEELING": {
     "path": "audio/ZB26/ZB26_FEELING_JP.ogg",
