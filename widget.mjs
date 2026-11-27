@@ -429,7 +429,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-9f0a4a2dcaa1c4cd/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-b5cde4e341c6de7e/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

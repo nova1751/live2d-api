@@ -1,0 +1,68 @@
+{
+  "packs": [
+    {
+      "name": "sakiko-stage",
+      "entries": [
+        {
+          "id": "avemujica/035/010_live_01_mask",
+          "manifest": "010_live_01_mask/sakiko.model3.json",
+          "sourceManifest": "https://haneoka.org/runtime/intl/live2d/010_live_01_mask/model3.json",
+          "sourceManifestSha256": "ef46cfa725c103f5162b27b15da8eb5a0148b80310a62cdb3e406115e724503a",
+          "display": {
+            "name": "丰川祥子",
+            "en": "Sakiko Togawa",
+            "outfit": "戴面具舞台装",
+            "outfitEn": "Masked stage outfit",
+            "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-avemujica/5da138eee99d87854181e78cc75fd9394894b5dc/assets/assets/chara_icon_35.png"
+          }
+        },
+        {
+          "id": "avemujica/035/010_servant_01",
+          "manifest": "010_servant_01/sakiko.model3.json",
+          "sourceManifest": "https://haneoka.org/runtime/intl/live2d/010_servant_01/model3.json",
+          "sourceManifestSha256": "79e353621f1afc24336db93329e76cf6b8f880eb4327f39136b32cc110c72a92",
+          "display": {
+            "name": "丰川祥子",
+            "en": "Sakiko Togawa",
+            "outfit": "侍从装",
+            "outfitEn": "Servant outfit",
+            "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-avemujica/5da138eee99d87854181e78cc75fd9394894b5dc/assets/assets/chara_icon_35.png"
+          }
+        }
+      ],
+      "tag": "cdn-our-notes-sakiko-stage-00b60b5da0b8"
+    },
+    {
+      "name": "sakiko-school",
+      "entries": [
+        {
+          "id": "avemujica/035/010_child_casual_spring_01_still",
+          "manifest": "010_child_casual_spring_01_still/sakiko.model3.json",
+          "sourceManifest": "https://haneoka.org/runtime/intl/live2d/010_child_casual_spring_01_still/model3.json",
+          "sourceManifestSha256": "72a3fea4c5457c41436dc971ef68174a0cbc8ae723d0fa94cb1773a407f9a2b4",
+          "display": {
+            "name": "丰川祥子",
+            "en": "Sakiko Togawa",
+            "outfit": "童年便服（静态剧情造型）",
+            "outfitEn": "Childhood casual wear (static story model)",
+            "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-avemujica/5da138eee99d87854181e78cc75fd9394894b5dc/assets/assets/chara_icon_35.png"
+          }
+        },
+        {
+          "id": "avemujica/035/010_school_winter_jhs",
+          "manifest": "010_school_winter_jhs/sakiko.model3.json",
+          "sourceManifest": "https://haneoka.org/runtime/intl/live2d/010_school_winter_jhs/model3.json",
+          "sourceManifestSha256": "f9f8d72e397add3c255439415d1974e19ea4f00249eed052f67b9fded7285c38",
+          "display": {
+            "name": "丰川祥子",
+            "en": "Sakiko Togawa",
+            "outfit": "初中冬季校服",
+            "outfitEn": "Middle-school winter uniform",
+            "portrait": "https://raw.githubusercontent.com/U1s1-king/dsh-live2d-avemujica/5da138eee99d87854181e78cc75fd9394894b5dc/assets/assets/chara_icon_35.png"
+          }
+        }
+      ],
+      "tag": "cdn-our-notes-sakiko-school-28c7c8095897"
+    }
+  ]
+}
