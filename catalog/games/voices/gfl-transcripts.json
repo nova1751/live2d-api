@@ -149,5 +149,96 @@
     "ja": "その通りです。",
     "caption": "正是如此。",
     "captionEn": "That's right."
+  },
+  "ERMA|LOWMOOD": {
+    "path": "audio/ERMA/ERMA_LOWMOOD_JP.ogg",
+    "sha256": "8f9b7b7948cb9de8b9a59692941ae36c7499bbd3ea9cbd476121b72f37176300",
+    "ja": "（ため息）",
+    "caption": "（叹气）",
+    "captionEn": "(Sighs)"
+  },
+  "G41|LOWMOOD": {
+    "path": "audio/G41/G41_LOWMOOD_JP.ogg",
+    "sha256": "cecf6ae53c98b50eca0e092facba0d22ae946f58fe68f06437d4c070958d508f",
+    "ja": "（ため息）",
+    "caption": "（叹气）",
+    "captionEn": "(Sighs)"
+  },
+  "HK416|MOOD2": {
+    "path": "audio/HK416/HK416_MOOD2_JP.ogg",
+    "sha256": "06c1515122aef644a28a5f0a3194a94b851927c1581a2bea13cfba679f2f51ea",
+    "ja": "うっ…",
+    "caption": "呃……",
+    "captionEn": "Ugh…"
+  },
+  "HK416MOD|MOOD2": {
+    "path": "audio/HK416MOD/HK416MOD_MOOD2_JP.ogg",
+    "sha256": "df795abf64bdd09e99d716e3e1d2f6a34c7683e6f2c25d041030dfe6a4c04ea7",
+    "ja": "うっ…",
+    "caption": "呃……",
+    "captionEn": "Ugh…"
+  },
+  "K2|MOOD2": {
+    "path": "audio/K2/K2_MOOD2_JP.ogg",
+    "sha256": "5d2bcb312b9de04a642368884ca7fdcee03f4516bad2cc982f30e8fa9364d55e",
+    "ja": "わー！",
+    "caption": "哇！",
+    "captionEn": "Whoa!"
+  },
+  "M1903|MOOD2": {
+    "path": "audio/M1903/M1903_MOOD2_JP.ogg",
+    "sha256": "c0d31c3bdd06a064cd5e46cc2b9e5586fe8827091ab50c75ecf82d237bd40b84",
+    "ja": "えっ？",
+    "caption": "欸？",
+    "captionEn": "Huh?"
+  },
+  "M26MASS|LOWMOOD": {
+    "path": "audio/M26MASS/M26MASS_LOWMOOD_JP.ogg",
+    "sha256": "92352bfc148a36401f3e2c7245306c64550a4635c43f01d25631b3bd0a868339",
+    "ja": "んん……",
+    "caption": "嗯……",
+    "captionEn": "Hmm…"
+  },
+  "M950A|AGREE": {
+    "path": "audio/M950A/M950A_AGREE_JP.ogg",
+    "sha256": "7b51c40b96e0bce34bc2b990f8d9e7b291d14eb854b474e39ca82ae59747aa11",
+    "ja": "んー？",
+    "caption": "嗯？",
+    "captionEn": "Hmm?"
+  },
+  "MARTINIHENRY|LOWMOOD": {
+    "path": "audio/MARTINIHENRY/MARTINIHENRY_LOWMOOD_JP.ogg",
+    "sha256": "8287694b36fd9f2c3a2900a95c8ebba1c7404371f716ea295855fc1fedcdaf89",
+    "ja": "えー、そんな……",
+    "caption": "欸，不会吧……",
+    "captionEn": "Oh, no way…"
+  },
+  "NTW20|MOOD2": {
+    "path": "audio/NTW20/NTW20_MOOD2_JP.ogg",
+    "sha256": "2236fcf74b9c9c3d0a12b7b7d5cbab7c1174f9e92d6b59b3f85512cfb4d92aa5",
+    "ja": "えっ？",
+    "caption": "欸？",
+    "captionEn": "Huh?"
+  },
+  "OTS14|LOWMOOD": {
+    "path": "audio/OTS14/OTS14_LOWMOOD_JP.ogg",
+    "sha256": "371c3235bb3d6a85765aaf6e7b021cd70a2b6982058590a478f3fcd8a9faaea8",
+    "ja": "そっか。",
+    "caption": "这样啊。",
+    "captionEn": "I see."
+  },
+  "SR3MP|APPRECIATE": {
+    "path": "audio/SR3MP/SR3MP_APPRECIATE_JP.ogg",
+    "sha256": "793885de10e5d1b4950adb599eaec69785f11dd26649e6e4f8560034f4dc1dd1",
+    "ja": "さすが！",
+    "caption": "不愧是你！",
+    "captionEn": "As expected!"
+  },
+  "SR3MP|MOOD1": {
+    "path": "audio/SR3MP/SR3MP_MOOD1_JP.ogg",
+    "sha256": "e48c4762b54f17294656edbce48d475a2e8798552e6853658a6154a00e331895",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   }
 }

@@ -160,7 +160,7 @@ test('recovered Iron Saga and Houkai recordings resolve with the original motion
   const chinese = parseModelCatalog(iron, new URL('iron-saga.json', cdn), 'iron-saga').resolve(slokai.model);
   const library = parseModelCatalog(houkai, new URL('houkai2.json', cdn), 'houkai2');
   assert.equal(Object.keys(slokai.recordings).length, 7);
-  assert.equal(preview.recordings.length, 2);
+  assert.equal(preview.recordings.length, 7);
   const originalSlokaiVoiceBase = 'https://cdn.jsdmirror.com/gh/Eikanya/Live2d-model@7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/';
   for (const [motion, sound] of [
     ['motions/tap_A1/tap3.mtn', 'siluokayi31.mp3'],
