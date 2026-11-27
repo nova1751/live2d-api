@@ -402,7 +402,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.32";
+var version = "2.9.33";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
