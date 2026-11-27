@@ -119,7 +119,8 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     }
     const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
       Object.entries(asset.cues).map(([key, cue]) => [key, { ...cue,
-        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : regionalUrl(cue.sound)),
+        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource)
+          : regionalUrl(cue.sound.startsWith('./') ? new URL(cue.sound, sourceBase).href : cue.sound)),
         caption: locale === 'en' ? cue.captionEn || cue.caption : cue.caption }])
     ) : undefined;
     const ratio = asset.sceneAspect;

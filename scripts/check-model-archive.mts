@@ -170,7 +170,7 @@ for (const collection of collections) {
     if (v.dialogue) check(urlPath(v.dialogue, source.href));
     for (const c of Object.values(v.cues ?? {}))
       if (c.sound) {
-        const base = v.cueSource ? new URL(catalog.sources[v.cueSource].baseUrl, host + path).href : url;
+        const base = v.cueSource ? new URL(catalog.sources[v.cueSource].baseUrl, host + path).href : host + path;
         check(urlPath(c.sound, base));
       }
     manifestsChecked++;

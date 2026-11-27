@@ -29,7 +29,9 @@ B 站 1.1.4 安装包的文件索引也只在 `elizabeth_2` 目录列出 `motion
 
 ## 本轮补全与已核对的缺音事件
 
-少女前线 369 个新版造型共有 1,991 条触摸事件。按角色和语音键核对后，9 条互动可显示笑声或吃惊的中文声音说明，另有 67 条有录音、无可核对字幕。42 条有字幕的互动仍缺对应录音。Px4 Storm 2801 战损的五条互动保留同一事件的声音和字幕，缺失的动作留空。[声音说明示例](https://gf-ogas.wiki/wiki/少女前线:Kar98k)
+少女前线 369 个新版造型共有 1,991 条触摸事件。按原录音转写 10 个语音键，为 14 条事件补回中英文字幕。目前 47 条事件有录音、缺可核对字幕，40 条有字幕、缺原录音。五区资源清单中的 400 个枪娘模型造型均可映射到当前收录的同源模型。Px4 Storm 2801 战损的五条触摸动画只出现在普通造型目录，战损版保留该事件的原声和字幕。[转写记录](../catalog/games/voices/gfl-transcripts.json) · [五区资源清单](https://github.com/gf-data-tools/gf-resource-downloader/releases/tag/ResData)
+
+98K 的 4301 和 8301 普通造型现在播放日服 `98K.acb` 中的 `98K_DIALOGUEWEDDING_JP`。原声的意思与最新中、日文台词表一致，英文字幕据此校正。录音随图鉴快照发布，使用当前图鉴所在的 CDN。[录音来源记录](../catalog/games/voices/gfl-98k-dialoguewedding.json)
 
 97 式霰弹枪 `doll/97types/5805/normal` 的事件 `580509` 使用 `97TYPES|DIALOGUEWEDDING`。模型事件表和角色页均将水果台词列为誓约后的副官互动。公开日语语音库缺这一键，角色页的誓约仪式和心智升级录音各对应其他台词。图鉴保留此事件的原动作和字幕。[事件表](https://github.com/GFL-Live2D/dump/blob/527aac9245c06444d5d0259be843740915b715fd/models/97types_5805/normal/97types_5805.data.json) · [角色台词](https://iopwiki.com/wiki/Type_97_Shotgun/Quotes) · [日语语音库](https://huggingface.co/datasets/deepghs/girlsfrontline_voices_jp)
 

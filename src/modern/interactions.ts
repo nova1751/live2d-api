@@ -121,9 +121,10 @@ function readActions(url: string, manifest: Manifest, groups: Record<string, Mot
   const matchMotion = nativeMotionLookup(paths, source?.url);
   function voiceFor(id: string) {
     const line = data?.voiceData[id];
+    const cue = cues?.[id];
     const code = line?.char_code?.toUpperCase(), key = line?.voice_key?.toUpperCase();
-    return { caption: cues?.[id]?.caption || source?.captions?.[code + '|' + key] || line?.caption,
-      sound: code && key ? source?.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined };
+    return { caption: cue?.caption || source?.captions?.[code + '|' + key] || line?.caption,
+      sound: cue?.sound ?? (code && key ? source?.audio.get('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG') : undefined) };
   }
   for (const [group, files] of Object.entries(groups)) {
     files.forEach((file, index) => {
