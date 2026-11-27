@@ -1,0 +1,30 @@
+{
+  "recordings": [
+    {
+      "id": "character/himeko/himeko",
+      "file": "sound/himeko_live2d_010.wav",
+      "from": "https://www.bilibili.com/video/BV1a84y117Pj/?p=33",
+      "sha256": "7cb6d0d50bee563c34123de069a7e5ef6b2dc2ec2429a3ff3d3834684ecbfda4",
+      "textId": 81548,
+      "sound": "houkai2-himeko-beer.ogg",
+      "language": "zh-CN",
+      "range": [
+        106.72,
+        114.15
+      ]
+    },
+    {
+      "id": "character/shin/shin",
+      "file": "sound/shin_009.wav",
+      "from": "https://www.bilibili.com/video/BV1a84y117Pj/?p=52",
+      "sha256": "2140c99effc7e46137025ae12d0932a15212af43d64630a11b940bccc37e060c",
+      "textId": 155102,
+      "sound": "houkai2-shin-last-words.ogg",
+      "language": "ja",
+      "range": [
+        156.19,
+        160.05
+      ]
+    }
+  ]
+}

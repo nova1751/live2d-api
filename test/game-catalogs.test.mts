@@ -151,6 +151,30 @@ test('recovered BanG Dream costumes keep their model, shared motions and origina
   }
 });
 
+test('recovered Iron Saga and Houkai recordings resolve with the original motion or voice key', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const [iron, slokai, houkai, preview, audit] = await Promise.all([
+    'iron-saga', 'voices/iron-saga-slokai-cn', 'houkai2', 'voices/houkai2-recorded-preview', 'audit',
+  ].map(read));
+  const cdn = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/';
+  const chinese = parseModelCatalog(iron, new URL('iron-saga.json', cdn), 'iron-saga').resolve(slokai.model);
+  const library = parseModelCatalog(houkai, new URL('houkai2.json', cdn), 'houkai2');
+  assert.equal(Object.keys(slokai.recordings).length, 11);
+  assert.equal(preview.recordings.length, 2);
+  for (const [file, { sound, sha256 }] of Object.entries(slokai.recordings)) {
+    assert.equal(chinese.cues[file].sound, new URL('voices/' + sound, cdn).href);
+    const audio = await readFile(new URL('../catalog/games/voices/' + sound, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), sha256);
+  }
+  for (const { id, file, sound, sha256 } of preview.recordings) {
+    assert.equal(library.resolve(id).cues[file].sound, new URL('voices/' + sound, cdn).href);
+    assert.ok(library.resolve(id).cues[file].caption);
+    assert.ok(!audit.unresolved.some(record => record.id === id && record.file === file));
+    const audio = await readFile(new URL('../catalog/games/voices/' + sound, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), sha256);
+  }
+});
+
 test('Houkai restores native event audio and numbered subtitles from the game bundles', async () => {
   const { parseModelCatalog } = await import('../src/library/catalog.ts');
   const [catalog, audit, voices, captions] = await Promise.all(

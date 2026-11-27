@@ -1,0 +1,96 @@
+{
+  "model": "character/siluokayi/chinese",
+  "source": "https://www.bilibili.com/video/BV1Wh411m7fY/",
+  "voiceActor": "Hanser",
+  "language": "zh-CN",
+  "recordings": {
+    "motions/tap_A2/tap1.mtn": {
+      "sound": "iron-saga-slokai-cn-tap1.ogg",
+      "range": [
+        123.32,
+        128.65
+      ],
+      "sha256": "26161181dd6179fd3d193caaea45f5584164d7f910928825c634a0847c084bd3"
+    },
+    "motions/tap_A1/tap7.mtn": {
+      "sound": "iron-saga-slokai-cn-tap7.ogg",
+      "range": [
+        225.5,
+        229.64
+      ],
+      "sha256": "ffd02659fd070766f3f768aaf3ba05ec6a6b83af3113f332ca97396fab3b8d38"
+    },
+    "motions/idle/idle3-t1.mtn": {
+      "sound": "iron-saga-slokai-cn-idle3-t1.ogg",
+      "range": [
+        43.55,
+        47.1
+      ],
+      "sha256": "f4b5812a2059326ea7e5fe64c1a4935a6db9ba3f2aa5230451c9cc7880f68d35"
+    },
+    "motions/tap_A2/tap5.mtn": {
+      "sound": "iron-saga-slokai-cn-tap5.ogg",
+      "range": [
+        170.96,
+        178.08
+      ],
+      "sha256": "a2d241a5ee3609281627baf4f9edd6ff9dd04dc12ea5591d0cafe7633da5de47"
+    },
+    "motions/tap_A1/tap8.mtn": {
+      "sound": "iron-saga-slokai-cn-tap8.ogg",
+      "range": [
+        190.53,
+        195.4
+      ],
+      "sha256": "17cf6462df83a220c6a4153cd1332dd01d02aee03931e716cfa9bbda872fb869"
+    },
+    "motions/tap_A3/tap2.mtn": {
+      "sound": "iron-saga-slokai-cn-tap2.ogg",
+      "range": [
+        25.95,
+        30.2
+      ],
+      "sha256": "95f41693878aacf7e1d47d208316d6b6422530b83ec917c033de2be124867988"
+    },
+    "motions/idle/idle2-t1.mtn": {
+      "sound": "iron-saga-slokai-cn-idle2-t1.ogg",
+      "range": [
+        151.9,
+        156.07
+      ],
+      "sha256": "15ca543d1c738eb1aa6e9f5c1481563babafb2a022f4ad655bc6c650dfc158a7"
+    },
+    "motions/idle/idle4-t1.mtn": {
+      "sound": "iron-saga-slokai-cn-idle4-t1.ogg",
+      "range": [
+        73.13,
+        76.66
+      ],
+      "sha256": "d5c25c27a2a2d5dad7cfa8cdb1d3ed2be1737bfa2d37bc0fcf6791905ba8dcfb"
+    },
+    "motions/tap_A3/tap6.mtn": {
+      "sound": "iron-saga-slokai-cn-tap6.ogg",
+      "range": [
+        77.6,
+        80.7
+      ],
+      "sha256": "5cfaecdf7f1f5469c4a8a956de3617adaf5281e149260ee4bd78551b87512c83"
+    },
+    "motions/tap_A1/tap4.mtn": {
+      "sound": "iron-saga-slokai-cn-tap4.ogg",
+      "range": [
+        96.55,
+        102.5
+      ],
+      "sha256": "90459be3a8a91e7e605f4381b5a677398b57c14d111b7714258bf8e882632085"
+    },
+    "motions/tap_A1/tap3.mtn": {
+      "sound": "iron-saga-slokai-cn-tap3.ogg",
+      "range": [
+        143.5,
+        147.6
+      ],
+      "sha256": "b2b04f26a83666ef1b1d300635ed44f4b8cc4e3743fe76acbf111ba12ab7c53f"
+    }
+  }
+}
