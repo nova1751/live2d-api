@@ -69,6 +69,8 @@ BanG Dream! 的 `hhw/013/013_live_event_93_sr`、`roselia/047/047_live_event_139
 
 对照 Bestdori 的服装索引和国服模型档案后，补入 9 套小豆泥联动造型与 2 套奥泽美咲造型。原模型保留独立待机和点击动作，共用的表情、物理和动作文件只存一份。两套联动造型从卡片原剧情补回 66 条点击互动。每条按剧情当时使用的服装、说话人、原动作和语音 ID 匹配。素材随图鉴快照发布。[服装索引](https://bestdori.com/api/costumes/all.5.json) · [原版剧情示例](https://bestdori.com/tool/storyviewer/card/cn/10048/1) · [文件与录音来源](../catalog/games/band-dream-cn/sources.json)
 
+丰川祥子新增《Our Notes》的戴面具舞台装、侍从装、童年便服和初中冬季校服，共有八套可选。童年便服沿用原版静态剧情演出。其他造型保留原表情、物理和动作，戴面具舞台装含摘面具动作。本组模型清单没有单独绑定点击语音和台词。素材使用两个固定 CDN 包，原模型、贴图和动作文件先核对后收录。[Our Notes 图鉴](https://haneoka.com/intl/zh-CN/live2d/) · [素材来源与包清单](../catalog/games/our-notes/sources.json)
+
 《机动战队》斯洛卡伊的中文台词造型保留 4 段已有日语配音，另为 7 个原先缺音的动作补入 Hanser 的对应中文录音。剪辑时间与校验值记录在[录音索引](../catalog/games/voices/iron-saga-slokai-cn.json)。[中文试听](https://www.bilibili.com/video/BV1Wh411m7fY/)
 
 《崩坏学园 2》从游戏内试听补回姬子一个中文互动、杏一个日文互动和耀夜姬五个日文互动。按现有模型的旧录音键对照官方字幕编号，其余 69 个旧录音路径仍缺可确认的录音。[姬子试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=33) · [杏试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=52) · [耀夜姬试听](https://www.bilibili.com/video/BV1jS4y1A7Uk/) · [录音索引](../catalog/games/voices/houkai2-recorded-preview.json)

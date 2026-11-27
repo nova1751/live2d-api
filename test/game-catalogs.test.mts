@@ -28,8 +28,36 @@ test('each game catalog can be deployed independently using immutable model sour
         continue;
       }
       const url = new URL(asset.manifest, base);
+      if (asset.source.startsWith('our-notes-')) {
+        assert.equal(game, 'bang-dream');
+        assert.match(url.href, /^https:\/\/cdn\.jsdelivr\.net\/gh\/nova1751\/live2d-api@cdn-our-notes-[a-z-]+-[a-f0-9]{12}\//);
+        continue;
+      }
       assert.equal(url.hostname, 'raw.githubusercontent.com');
       assert.match(url.pathname, /\/[0-9a-f]{40}\//);
+    }
+  }
+});
+
+test('Sakiko’s additional outfits use complete, separate Our Notes asset packs', async () => {
+  const catalog = await read('bang-dream');
+  const { packs } = await read('our-notes/sources');
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const library = parseModelCatalog(catalog, new URL('https://cdn.jsdmirror.com/catalog/games/bang-dream.json'), 'bang-dream');
+  assert.equal(library.ids.filter(id => id.startsWith('avemujica/035/')).length, 8);
+  for (const { name, tag, entries } of packs) {
+    for (const { id, manifest } of entries) {
+      assert.equal(library.resolve(id).modelUrl, 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@' + tag + '/' + manifest);
+      const path = new URL('../catalog/games/our-notes/' + name + '/' + manifest, import.meta.url);
+      const { FileReferences: refs } = JSON.parse(await readFile(path, 'utf8'));
+      assert.equal(refs.Motions.Idle[0].File, 'motions/mtn_idle01_C.motion3.json');
+      const files = [refs.Moc, refs.Physics, ...refs.Textures, ...refs.Expressions.map(exp => exp.File),
+        ...Object.values(refs.Motions).flat().map(motion => motion.File)];
+      for (const file of files) {
+        assert.doesNotMatch(file, /^(?:\/|https?:)/);
+        assert.ok((await readFile(new URL(file, path))).length);
+      }
+      if (id.endsWith('live_01_mask')) assert.equal(refs.Motions.maskoff01_C[0].File, 'motions/mtn_maskoff01_C.motion3.json');
     }
   }
 });

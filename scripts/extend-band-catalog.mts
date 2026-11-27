@@ -123,3 +123,20 @@ export async function importRecoveredBandCostumes(catalog: ModelCatalog) {
     catalog.gallery[id] = display;
   }
 }
+
+export async function importOurNotesCostumes(catalog: ModelCatalog) {
+  const manifest = new URL('../catalog/games/our-notes/sources.json', import.meta.url);
+  const { packs } = JSON.parse(await readFile(manifest, 'utf8')) as {
+    packs: { name: string; tag: string; entries: { id: string; manifest: string; display: GalleryEntry }[] }[];
+  };
+  catalog.gallery ??= {};
+  for (const { name, tag, entries } of packs) {
+    const source = 'our-notes-' + name;
+    catalog.sources[source] = { baseUrl: 'https://cdn.jsdelivr.net/gh/nova1751/live2d-api@' + tag + '/' };
+    for (const { id, manifest, display } of entries) {
+      if (catalog.models[id]) throw Error('Duplicate Our Notes costume ' + id);
+      catalog.models[id] = [{ source, manifest }];
+      catalog.gallery[id] = display;
+    }
+  }
+}
