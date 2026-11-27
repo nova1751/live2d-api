@@ -1,12 +1,12 @@
 import { execFileSync } from 'node:child_process';
-import { gameFiles, libraryTag } from './library-tag.mts';
+import { gameFiles, libraryTag, voiceDirectory } from './library-tag.mts';
 
 const git = (args, input, env) => execFileSync('git', args, { input, encoding: 'utf8', env }).trim();
-git(['diff', '--exit-code', 'HEAD', '--', 'catalog/library.json', ...gameFiles.map(file => 'catalog/games/' + file)]);
+git(['diff', '--exit-code', 'HEAD', '--', 'catalog/library.json', ...gameFiles.map(file => 'catalog/games/' + file), 'catalog/' + voiceDirectory]);
 const tag = await libraryTag();
 const blob = git(['rev-parse', 'HEAD:catalog/library.json']);
-const entries = git(['ls-tree', 'HEAD:catalog/games', '--', ...gameFiles]);
-if (entries.split('\n').length !== gameFiles.length) throw new Error('Incomplete game catalog snapshot');
+const entries = git(['ls-tree', 'HEAD:catalog/games', '--', ...gameFiles, 'voices']);
+if (entries.split('\n').length !== gameFiles.length + 1) throw new Error('Incomplete game catalog snapshot');
 const games = git(['mktree'], entries + '\n');
 const catalog = git(['mktree'], '040000 tree ' + games + '\tgames\n100644 blob ' + blob + '\tlibrary.json\n');
 const tree = git(['mktree'], '040000 tree ' + catalog + '\tcatalog\n');

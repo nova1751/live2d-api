@@ -184,7 +184,11 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
       const { dialogue, ...assets } = catalog.resolve(id);
       const { dialogue: galleryDialogue, ...galleryAssets } = gallery.resolve(id);
       const { modelUrl, files, cues } = assets;
-      assert.deepEqual(galleryAssets, assets, id);
+      const galleryCues = cues && Object.fromEntries(Object.entries(cues).map(([key, cue]) => [
+        key, { ...cue, sound: cue.sound?.startsWith(mirror + '/catalog/')
+          ? new URL(new URL(cue.sound).pathname, galleryUrl).href : cue.sound },
+      ]));
+      assert.deepEqual(galleryAssets, { ...assets, cues: galleryCues }, id);
       assert.equal(galleryDialogue?.url, dialogue?.url, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);

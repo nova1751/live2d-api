@@ -399,7 +399,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.29";
+var version = "2.9.30";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -426,7 +426,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-9fd9432a25958084/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-f74d19b6e0e97150/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

@@ -32,6 +32,34 @@
         "source": "pack6",
         "manifest": "xinxiya/index.json"
       }
+    ],
+    "character/siluokayi/chinese": [
+      {
+        "source": "pack6",
+        "manifest": "siluokayi/index.json",
+        "cues": {
+          "motions/tap_A1/tap3.mtn": {
+            "sound": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/siluokayi31.mp3",
+            "caption": "凡人，你以后只要看着我一个人就够了。",
+            "captionEn": "Mortal, from now on, you need only look at me."
+          },
+          "motions/tap_A1/tap4.mtn": {
+            "sound": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/siluokayi26.mp3",
+            "caption": "你的就是我的，我的还是我的，有什么不满吗？",
+            "captionEn": "What's yours is mine, and what's mine is still mine. Any objections?"
+          },
+          "motions/tap_A3/tap6.mtn": {
+            "sound": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/siluokayi12.mp3",
+            "caption": "做好你的分内之事，凡人。",
+            "captionEn": "Do your part, mortal."
+          },
+          "motions/idle/idle4-t1.mtn": {
+            "sound": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/siluokayi11.mp3",
+            "caption": "机械就是未来，未来就是机械。",
+            "captionEn": "Machinery is the future, and the future is machinery."
+          }
+        }
+      }
     ]
   },
   "gallery": {
@@ -62,6 +90,13 @@
       "outfit": "原版",
       "outfitEn": "Original",
       "portrait": "./games/portraits/iron-saga-xinxiya.webp"
+    },
+    "character/siluokayi/chinese": {
+      "name": "斯洛卡伊",
+      "en": "Slokai",
+      "outfit": "中文台词版",
+      "outfitEn": "Chinese dialogue",
+      "portrait": "./games/portraits/iron-saga-siluokayi.webp"
     }
   }
 }

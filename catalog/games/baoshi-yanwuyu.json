@@ -98,6 +98,12 @@
         "source": "archive",
         "manifest": "宝石研物语2/elizabeth_9_1/model.json"
       }
+    ],
+    "character/lili/depressed": [
+      {
+        "source": "archive",
+        "manifest": "宝石研物语/lili/model_depressed.json"
+      }
     ]
   },
   "gallery": {
@@ -205,6 +211,13 @@
       "outfit": "造型 9-1",
       "outfitEn": "Form 9-1",
       "portrait": "./games/portraits/baoshi-yanwuyu-elizabeth_9_1.webp"
+    },
+    "character/lili/depressed": {
+      "name": "莉莉",
+      "en": "Lily",
+      "outfit": "低落状态",
+      "outfitEn": "Downcast",
+      "portrait": "./games/portraits/baoshi-yanwuyu-lili.webp"
     }
   }
 }

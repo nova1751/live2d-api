@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
@@ -34,6 +35,7 @@ test('recovered motions and expressions use the exact bundle of the original out
   const catalog = await read('bang-dream'),
     audit = await read('audit');
   for (const { id } of audit.unavailable) assert.equal(catalog.models[id], undefined);
+  for (const { id, file } of audit.optionalPhysics) assert.equal(catalog.models[id][0].files[file], null);
   for (const [id, general, expected] of [
     ['hhw/012/012_dream_festival_4_ur', '014', 13],
     ['mygo/039/039_live_event_297_ur_活动297', '039', 2],
@@ -94,6 +96,24 @@ test('resolving the same Azur Lane event in either language keeps its original r
   assert.match(en.caption, /Commander/);
 });
 
+test('the Eve story motion uses the recording and subtitles from the same talk command', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const catalog = await read('bang-dream');
+  const location = new URL('https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/bang-dream.json');
+  const source = await read('voices/event154-06');
+  const zh = parseModelCatalog(catalog, location, 'bang-dream').resolve(source.id).cues;
+  const en = parseModelCatalog(catalog, location, 'bang-dream', 'en').resolve(source.id).cues;
+  for (const [motion, cue] of Object.entries(source.cues)) {
+    const path = new URL('./voices/' + cue.sound, location);
+    assert.equal(zh[motion].sound, path.href);
+    assert.equal(en[motion].sound, path.href);
+    assert.equal(zh[motion].caption, cue.caption);
+    assert.equal(en[motion].caption, cue.captionEn);
+    const audio = await readFile(new URL('../catalog/games/voices/' + cue.sound, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), source.recordings[cue.sound].sha256);
+  }
+});
+
 test('curated Cubism 2 galleries resolve their published IDs and have real portraits', async (t) => {
   const { loadModelCatalog } = await import('../widget.mjs');
   t.mock.method(globalThis, 'fetch', async (url) => Response.json(await read(new URL(url).pathname.split('/').pop().replace('.json', ''))));
@@ -101,7 +121,7 @@ test('curated Cubism 2 galleries resolve their published IDs and have real portr
   Object.defineProperty(globalThis, 'document', { configurable: true, value: { baseURI: 'https://example.org/' } });
   t.after(() => { if (document) Object.defineProperty(globalThis, 'document', document); else delete globalThis.document; });
 
-  for (const [game, count] of [['iron-saga', 4], ['warship-girls', 3], ['baoshi-yanwuyu', 15]]) {
+  for (const [game, count] of [['iron-saga', 5], ['warship-girls', 3], ['baoshi-yanwuyu', 16]]) {
     const url = new URL('/catalog/games/' + game + '.json', 'https://example.org');
     const gallery = await loadModelCatalog(url, game, 'en');
     assert.equal(gallery.ids.length, count);

@@ -1,6 +1,7 @@
 import { posix } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import { bandDreamManifest } from '../src/library/band-dream-export.ts';
-import type { GalleryEntry, ModelCatalog } from '../src/library/catalog.ts';
+import type { GalleryEntry, GameCue, ModelCatalog } from '../src/library/catalog.ts';
 import { json, pool, raw, tree } from './game-sources.mts';
 
 const repo = 'haneoka-gakuen/bangdream-live2d';
@@ -15,7 +16,11 @@ export async function extendBandCatalog(
   characterIds: Characters,
   byCostume: Map<string, Costume>,
 ) {
-  const files = await tree(repo, revision);
+  const [files, story] = await Promise.all([
+    tree(repo, revision),
+    readFile(new URL('../catalog/games/voices/event154-06.json', import.meta.url), 'utf8')
+      .then(text => JSON.parse(text) as { id: string; cues: Record<string, GameCue> }),
+  ]);
   const aliases = new Map<string, { band: string; code: string }>();
   for (const [band, characters] of Object.entries(characterIds)) {
     for (const [code, id] of Object.entries(characters)) {
@@ -36,8 +41,9 @@ export async function extendBandCatalog(
     if (entry && !characters.has(canonical)) characters.set(canonical, entry);
   }
 
-  const entries = new Map<string, { path: string; display: GalleryEntry; repairs?: Record<string, string> }>();
+  const entries = new Map<string, { path: string; display: GalleryEntry; repairs?: Record<string, string | null>; cues?: Record<string, GameCue> }>();
   const unavailable = new Map<string, string>();
+  const missingPhysics = new Map<string, string>();
   const manifests = [...files.keys()].filter(path => {
     const match = /^live2d\/chara\/((\d{3})_.+)_rip\/buildData\.asset$/.exec(path);
     return match && !match[1].endsWith('_general') && !existing.has(match[1].toLowerCase()) && aliases.has(match[2]);
@@ -64,7 +70,10 @@ export async function extendBandCatalog(
       unavailable.set(id, missing ?? 'No native idle motion');
       return;
     }
-    let repairs: Record<string, string> | undefined;
+    const cues = id === story.id ? story.cues : undefined;
+    if (cues && Object.keys(cues).some(file => !refs.includes(file)))
+      throw Error('Story cue references an unknown motion in ' + id);
+    let repairs: Record<string, string | null> | undefined;
     const physics = manifest.physics;
     if (physics && !files.has(posix.join(posix.dirname(path), physics))) {
       // Look for the exact referenced filename in this character's bundles. If
@@ -74,14 +83,15 @@ export async function extendBandCatalog(
       const event = /^\d{3}_event_\d+_story_/.exec(bundle)?.[0];
       const candidates = new Set(sameCharacter.map(file => files.get(file))).size > 1
         ? sameCharacter.filter(file => event && file.startsWith(prefix + event)) : sameCharacter;
-      if (new Set(candidates.map(file => files.get(file))).size !== 1) {
-        unavailable.set(id, physics);
-        return;
+      if (new Set(candidates.map(file => files.get(file))).size === 1) {
+        repairs = { [physics]: base + candidates[0] };
+      } else {
+        missingPhysics.set(id, physics);
+        repairs = { [physics]: null };
       }
-      repairs = { [physics]: base + candidates[0] };
     }
     const costume = byCostume.get(bundle);
-    entries.set(id, { path: path.slice(prefix.length), repairs, display: {
+    entries.set(id, { path: path.slice(prefix.length), repairs, cues, display: {
       name: character.name,
       en: character.en,
       outfit: costume?.description?.[3] || bundle.slice(4).replaceAll('_', ' '),
@@ -91,9 +101,10 @@ export async function extendBandCatalog(
     } });
   });
   catalog.sources.bestdori = { baseUrl: base + prefix };
-  for (const [id, { path, display, repairs }] of [...entries].sort(([a], [b]) => a.localeCompare(b))) {
-    catalog.models[id] = [{ source: 'bestdori', manifest: path, files: repairs }];
+  if (entries.get(story.id)?.cues) catalog.sources.story = { baseUrl: './voices/' };
+  for (const [id, { path, display, repairs, cues }] of [...entries].sort(([a], [b]) => a.localeCompare(b))) {
+    catalog.models[id] = [{ source: 'bestdori', manifest: path, files: repairs, cueSource: cues ? 'story' : undefined, cues }];
     (catalog.gallery ??= {})[id] = display;
   }
-  return { added: entries.size, unavailable };
+  return { added: entries.size, unavailable, missingPhysics };
 }

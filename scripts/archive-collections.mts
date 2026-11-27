@@ -196,7 +196,7 @@ try {
     for (const s of Object.values(catalog.sources)) {
       delete s.packs;
       // BanG Dream outfits share motion and expression directories with their siblings.
-      if (collection === 'bang-dream')
+      if (collection === 'bang-dream' && s.baseUrl.startsWith('https://'))
         plan(s.baseUrl).directories.add(pinned(s.baseUrl).path.replace(/\/$/, ''));
     }
     for (const variants of Object.values(catalog.models)) {
