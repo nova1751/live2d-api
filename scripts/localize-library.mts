@@ -47,10 +47,10 @@ const [{ voice, guns, costumes, table }, us] = await Promise.all([
   loadTables('ch', 'c6c763ca71e6f8450232fbd30e26900c51d2c09b', process.argv[3]),
   loadTables('us', '5be9af6692083246bd288b9326d0e576dbecb4f0', process.argv[4]),
 ]);
-// Some game events request a subtitle without requesting a recording.
 const motionTable = await table('stc/live2d_motions.json');
-const silentLines = (JSON.parse(motionTable) as {id:number;voice:string;text:string;motion_name:string;is_hurt:number}[])
-  .filter(row => !row.voice && row.text.startsWith('GUN|'));
+// The game can explicitly select a different subtitle key for a recording.
+const eventLines = (JSON.parse(motionTable) as {id:number;voice:string;text:string;motion_name:string;is_hurt:number}[])
+  .filter(row => row.text.startsWith('GUN|') && row.text !== row.voice);
 const enLabels: Record<string,string> = {};
 const enCaptions: Record<string,string> = {};
 const labels: Record<string, string> = {};
@@ -79,10 +79,13 @@ for (const [id, variants] of Object.entries(catalog.models)) {
     const base = join(root, 'sources', item.source);
     if (item.dialogue) {
       const data = readJson<{variant:string;motionData:Record<string,{motion_name:string;voice:string}>;voiceData: Record<string,{char_code:string;voice_key:string;caption:string}>}>(join(base,item.dialogue));
-      for (const row of silentLines) {
+      for (const row of eventLines) {
         const event = data.motionData[row.id];
-        if (!event || event.voice || data.voiceData[row.id]?.voice_key || event.motion_name !== row.motion_name ||
+        if (!event || event.voice !== row.voice || event.motion_name !== row.motion_name ||
             Boolean(row.is_hurt) !== (data.variant === 'destroy')) continue;
+        const recording = data.voiceData[row.id];
+        const voiceKey = (recording?.char_code + '|' + recording?.voice_key).toUpperCase();
+        if (recording?.caption || voice.has(voiceKey) || item.cues?.[row.id]?.caption) continue;
         const key = row.text.slice(4).toUpperCase();
         const caption = voice.get(key), captionEn = us.voice.get(key);
         if (caption && captionEn) (item.cues ??= {})[row.id] = { caption, captionEn };

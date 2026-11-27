@@ -4,6 +4,7 @@ import { collections, type ModelCatalog } from '../src/library/catalog.ts';
 import { repository } from './library-files.mts';
 import { resolve } from 'node:path';
 import { writeFileSync } from 'node:fs';
+import { bandDreamManifest } from '../src/library/band-dream-export.ts';
 
 const ref = process.argv[2];
 if (!ref || !/^refs\/live2d-archive\/[a-f0-9]{40}$/.test(ref))
@@ -126,8 +127,9 @@ for (const collection of collections) {
     }
   }
   for (const v of variants) {
-    const mp = manifestPath(v),
-      model = manifests.get(files.get(mp) ?? '');
+    const mp = manifestPath(v);
+    const raw = manifests.get(files.get(mp) ?? '');
+    const model: Manifest | undefined = raw && !raw.model && mp.endsWith('/buildData.asset') ? bandDreamManifest(raw) : raw;
     check(mp);
     if (!model) continue;
     const url = new URL(mp.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), host).href;

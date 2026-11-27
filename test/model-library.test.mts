@@ -80,6 +80,61 @@ test('scene cuts use the mesh IDs from each reviewed Cubism export', async () =>
   }
 });
 
+test('supplemental Azur Lane outfits keep the same character and use the exact skin recording', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const data = await json('catalog/games/azur-lane.json');
+  const library = parseModelCatalog(data, new URL('https://cdn.jsdmirror.com/catalog/games/azur-lane.json'), 'azur-lane');
+  const id = 'ship/20135/yanusi_7';
+  const asset = library.resolve(id);
+  assert.ok(library.ids.some(form => form === 'ship/20135/yanusi_3'));
+  assert.match(asset.modelUrl, /^https:\/\/cdn\.jsdmirror\.com\/gh\/Eikanya\/Live2d-model@[a-f\d]{40}\/.*\/yanusi_7\.model3\.json$/);
+  assert.match(asset.cues?.home.sound, /^https:\/\/cdn\.jsdmirror\.com\/gh\/Fernando2603\/AzurLane@[a-f\d]{40}\/audio\/voiceline\/201355\/home\.ogg$/);
+  assert.ok(asset.cues?.home.caption);
+  assert.ok(asset.cues?.home.captionEn);
+  assert.equal(asset.cues?.touch_drag1, undefined);
+});
+
+test('Girls’ Frontline event captions can use the game’s separate text key', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const data = await json('catalog/library.json');
+  const base = new URL('https://cdn.jsdmirror.com/catalog/library.json');
+  const asset = parseModelCatalog(data, base, 'girls-frontline').resolve('doll/88type/5308/destroy', 'dump');
+  assert.equal(asset.cues?.['530820']?.caption, '诶？？');
+  assert.ok(asset.cues?.['530820']?.captionEn);
+  assert.ok(asset.dialogue?.audio.has('AUDIO/88TYPEMOD/88TYPEMOD_MOOD2_JP.OGG'));
+});
+
+test('Bestdori costumes resolve the original per-file bundles through the same CDN', async () => {
+  const { bandDreamManifest } = await import('../src/library/band-dream-export.ts');
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const catalog = parseModelCatalog(await json('catalog/games/bang-dream.json'),
+    new URL('https://cdn.jsdmirror.com/catalog/games/bang-dream.json'), 'bang-dream');
+  const url = catalog.resolve('hhw/022/015_story_03').modelUrl;
+  const bundle = (name: string, fileName: string) => ({ bundleName: 'live2d/chara/' + name, fileName });
+  const manifest = bandDreamManifest({ Base: {
+    model: bundle('015_story_03', 'misaki.moc.bytes'),
+    textures: [bundle('015_general', 'texture_00')],
+    motions: [bundle('015_story_03', 'm_idle.mtn.bytes'), bundle('015_story_03', 'm_sad.mtn.bytes')],
+  } });
+  assert.match(url, /^https:\/\/cdn\.jsdmirror\.com\/gh\/haneoka-gakuen\/bangdream-live2d@[a-f\d]{40}\//);
+  assert.match(new URL(manifest.textures[0], url).href, /015_general_rip\/texture_00\.png$/);
+  assert.match(manifest.motions.idle[0].file, /m_idle\.mtn$/);
+  assert.match(manifest.motions.tap[0].file, /m_sad\.mtn$/);
+  assert.throws(() => bandDreamManifest({ Base: {
+    model: bundle('015_story_03', '../foreign.moc'),
+    textures: [bundle('015_story_03', 'texture_00')],
+  } }), /Invalid BanG Dream bundle reference/);
+});
+
+test('the renamed G36C shake motion matches only the native event for its own export', async () => {
+  const { nativeMotionLookup } = await import('../src/modern/native-events.ts');
+  const paths = new Set(['motions/shake_p.motion3.json']);
+  const dialogue = 'https://example.test/models/g36c_1202/normal/g36c_1202.data.json';
+  assert.equal(nativeMotionLookup(paths, dialogue)('120212', 'motions/shake.mtn'), 'motions/shake_p.motion3.json');
+  assert.equal(nativeMotionLookup(paths, dialogue)('120213', 'motions/shake.mtn'), undefined);
+  assert.equal(nativeMotionLookup(paths, dialogue.replace('/normal/', '/destroy/'))('120212', 'motions/shake.mtn'), undefined);
+});
+
 test('modern asset loader uses the pinned replacement for the broken CbJMS texture', async t => {
   const { parseModelCatalog } = await import('../src/library/catalog.ts');
   const { loadModernAssets } = await import('../src/modern/interactions.ts');

@@ -13,6 +13,13 @@ export function nativeMotionLookup(paths: Set<string>, dialogueUrl?: string) {
       path === 'motions/wedding_touch.motion3.json'
     )
       path = 'motions/wedding touch.motion3.json';
+    if (
+      eventId === '120212' &&
+      dialogueUrl?.endsWith('/g36c_1202/normal/g36c_1202.data.json') &&
+      path === 'motions/shake.motion3.json' &&
+      !paths.has(path) && paths.has('motions/shake_p.motion3.json')
+    )
+      path = 'motions/shake_p.motion3.json';
     return paths.has(path) ? path : basenames.get(path);
   };
 }

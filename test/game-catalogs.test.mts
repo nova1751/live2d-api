@@ -33,7 +33,7 @@ test('each game catalog can be deployed independently using immutable model sour
 test('recovered motions and expressions use the exact bundle of the original outfit', async () => {
   const catalog = await read('bang-dream'),
     audit = await read('audit');
-  assert.deepEqual(audit.unavailable, []);
+  for (const { id } of audit.unavailable) assert.equal(catalog.models[id], undefined);
   for (const [id, general, expected] of [
     ['hhw/012/012_dream_festival_4_ur', '014', 13],
     ['mygo/039/039_live_event_297_ur_活动297', '039', 2],

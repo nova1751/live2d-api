@@ -1,4 +1,6 @@
 import { recoverHoukai } from './recover-houkai.mts';
+import { extendAzurCatalog } from './extend-azur-catalog.mts';
+import { extendBandCatalog } from './extend-band-catalog.mts';
 import { preserveSceneCurtains } from './library-files.mts';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -171,6 +173,8 @@ for (const [band, [commit, sha]] of Object.entries(bands)) {
     });
   }
 }
+const bandExpansion = await extendBandCatalog(bandLibrary, characterIds, byCostume);
+for (const [id, reason] of bandExpansion.unavailable) unavailable.push({ id, reason });
 await save('bang-dream', bandLibrary);
 
 const houkai = library(),
@@ -405,6 +409,7 @@ for (const path of manifests) {
     },
   );
 }
+await extendAzurCatalog(az, keys, localize, english);
 await save('azur-lane', az);
 await save('audit', { repairs, unresolved, unavailable });
 for (const [name, lib] of Object.entries({ bandLibrary, houkai, az }))
