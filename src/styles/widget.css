@@ -100,6 +100,8 @@ body > #waifu.waifu-adaptive .waifu-viewport {
   width: var(--waifu-model-width);
   height: var(--waifu-model-height);
 }
+/* A painted backdrop would otherwise fill the extra motion surface behind the toolbar and caption. */
+body > #waifu[data-clip-scene] .waifu-viewport { overflow: clip; }
 body > #waifu.waifu-adaptive #waifu-tips {
   left: var(--waifu-viewport-left, 0px);
   right: calc(100% - var(--waifu-viewport-left, 0px) - var(--waifu-model-width));

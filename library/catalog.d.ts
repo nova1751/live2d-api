@@ -1,4 +1,5 @@
 export type WidgetLocale = 'zh-CN' | 'en';
+export type SubjectFrame = readonly [left: number, top: number, right: number, bottom: number];
 export interface ModelSource {
     baseUrl: string;
     packs?: {
@@ -24,6 +25,8 @@ export interface ModelVariant {
     hiddenDrawables?: string[];
     /** Meshes not drawn at all: vignettes, flashes and glows laid over the character. */
     skippedDrawables?: string[];
+    /** Measured character bounds in the 320px reference view, when the opening pose includes a full scene. */
+    subjectFrame?: SubjectFrame;
     sceneAspect?: number;
     cueSource?: string;
     collectionDefault?: boolean;
@@ -82,6 +85,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
             };
         } | undefined;
         sceneAspect: number | undefined;
+        subjectFrame: SubjectFrame | undefined;
         hiddenDrawables: string[] | undefined;
         skippedDrawables: string[] | undefined;
         files: {
@@ -114,6 +118,7 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
             };
         } | undefined;
         sceneAspect: number | undefined;
+        subjectFrame: SubjectFrame | undefined;
         hiddenDrawables: string[] | undefined;
         skippedDrawables: string[] | undefined;
         files: {

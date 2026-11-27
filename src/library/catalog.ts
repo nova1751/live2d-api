@@ -2,6 +2,7 @@ import { withLoadTimeout } from '../runtime/request.ts';
 import { fetchCdnAsset } from '../runtime/cdn.ts';
 
 export type WidgetLocale = 'zh-CN' | 'en';
+export type SubjectFrame = readonly [left: number, top: number, right: number, bottom: number];
 export interface ModelSource { baseUrl: string; packs?: { baseUrl: string; directories: string[] }[] }
 export interface GameCue { sound?: string; caption?: string; captionEn?: string }
 export interface GalleryEntry { name: string; en?: string; outfit: string; outfitEn?: string; date?: number; portrait?: string }
@@ -10,6 +11,8 @@ export interface ModelVariant {
   hiddenDrawables?: string[];
   /** Meshes not drawn at all: vignettes, flashes and glows laid over the character. */
   skippedDrawables?: string[];
+  /** Measured character bounds in the 320px reference view, when the opening pose includes a full scene. */
+  subjectFrame?: SubjectFrame;
 sceneAspect?: number; cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
@@ -126,9 +129,12 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     ) : undefined;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === 'number' && Number.isFinite(ratio) && ratio > 0 ? ratio : undefined;
+    const frame = asset.subjectFrame;
+    const subjectFrame: SubjectFrame | undefined = Array.isArray(frame) && frame.length === 4 && frame.every(value => Number.isFinite(value) && value >= 0 && value <= 320) &&
+      frame[0] < frame[2] && frame[1] < frame[3] ? frame : undefined;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files)
       .map(([path, replacement]) => [path, replacement && catalogAssetUrl(replacement)])) : asset.files;
-    return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { cues, sceneAspect, subjectFrame, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
     .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;

@@ -119,11 +119,11 @@ export class CatalogModels {
     }
   }
   private render(id: string, collection: Collection | undefined, asset: ReturnType<LoadedModelCatalog['resolve']>, start: boolean, revision: number) {
-    const { modelUrl, ...options } = asset;
+    const { modelUrl, subjectFrame, ...options } = asset;
     let aspect = options.sceneAspect ?? 1;
     const fit = Boolean(this.options.collection) && !options.sceneAspect && !id.startsWith('background/');
-    const framing = fit ? catalogFraming(id, value => { aspect = value; }, collection === 'bang-dream') : undefined;
-    const present = this.options.collection ? this.transition.begin(() => aspect, fit) : undefined;
+    const framing = fit ? catalogFraming(id, value => { aspect = value; }, collection === 'bang-dream', subjectFrame) : undefined;
+    const present = this.options.collection ? this.transition.begin(() => aspect, fit, fit && !!subjectFrame) : undefined;
     const onPaint = () => {
       if (revision !== this.sequence) return;
       present?.();

@@ -1,3 +1,5 @@
+import type { SubjectFrame } from './catalog.ts';
+
 export interface Camera { scale: number; x: number; y: number }
 const authored: Camera = { scale: 1, x: 0, y: 0 };
 const size = 128;
@@ -225,7 +227,7 @@ export function createFraming(setAspect?: (ratio: number) => void, croppedPortra
 
 // Character bounds across a full idle loop on the 320px square reference view at scale 0.65.
 // 7706's baton and the damaged outfit's flying effects move independently of the figure.
-const subjectFrames: ReadonlyMap<string, readonly [number, number, number, number]> = new Map([
+const subjectFrames: ReadonlyMap<string, SubjectFrame> = new Map([
   ['doll/56-1type/7706/normal', [108, 152, 199, 267]],
   ['doll/56-1type/7706/destroy', [139, 103, 215, 189]],
 ]);
@@ -235,8 +237,8 @@ const croppedForms = new Set([
   'character/madierda/base', 'npc/william/1/destroy',
 ]);
 
-export function catalogFraming(id: string, setAspect?: (ratio: number) => void, croppedPortrait = false): Framing {
-  const bounds = subjectFrames.get(id);
+export function catalogFraming(id: string, setAspect?: (ratio: number) => void, croppedPortrait = false, subjectFrame?: SubjectFrame): Framing {
+  const bounds = subjectFrame ?? subjectFrames.get(id);
   if (!bounds) return createFraming(setAspect, croppedPortrait || croppedForms.has(id));
   const [left, top, right, bottom] = bounds;
   const width = right - left, height = bottom - top;

@@ -66,7 +66,7 @@ export class ModelTransition {
   }
 
   /** `framed` models are drawn on the current paint surface, others fill the reference square. */
-  begin(getAspect: () => number, framed: boolean) {
+  begin(getAspect: () => number, framed: boolean, clipScene = false) {
     const container = document.getElementById('waifu');
     const revision = ++this.revision;
     this.holding = false;
@@ -78,6 +78,7 @@ export class ModelTransition {
       const aspect = getAspect();
       container.style.setProperty('--waifu-aspect', String(aspect));
       container.toggleAttribute('data-wide-model', aspect >= 1.35);
+      container.toggleAttribute('data-clip-scene', clipScene);
       applyPaintSurface(framed);
       container.removeAttribute('data-model-loading');
       if (container.hasAttribute('data-initial-framing')) {

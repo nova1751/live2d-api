@@ -19,6 +19,20 @@ test('7706 keeps the same camera from first paint and fits both idle silhouettes
     assert.ok(project(bottom, camera.y) - project(top, camera.y) > 0.85);
   }
 });
+
+test('catalog character bounds frame the subject inside an opaque landscape scene', () => {
+  let aspect = 0;
+  const framing = catalogFraming('ship/39904/wuqi_3', ratio => { aspect = ratio; }, false, [136, 118, 184, 209]);
+  assert.equal(aspect, 48 / 91);
+  assert.deepEqual(framing.measure({} as HTMLCanvasElement), framing.initial);
+  const left = project(136 * size / 320, framing.initial.x, framing.initial);
+  const right = project(184 * size / 320, framing.initial.x, framing.initial);
+  const top = project(118 * size / 320, framing.initial.y, framing.initial);
+  const bottom = project(209 * size / 320, framing.initial.y, framing.initial);
+  assert.ok(Math.abs((left + right) / 2 - 0.5) < 0.001);
+  assert.ok(top > 0 && bottom < 1 && bottom - top > 0.9);
+});
+
 function rectangle(mask, left, top, right, bottom) {
   for (let y = top; y < bottom; y++) mask.fill(255, y * size + left, y * size + right);
 }
