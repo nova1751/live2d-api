@@ -1,3 +1,5 @@
+import { maxPaintBuffer } from './paint-buffer';
+
 const settleMs = 160;
 const minBuffer = 256;
 
@@ -14,7 +16,7 @@ export function sizeLegacyCanvas(canvas: HTMLCanvasElement) {
   if (typeof ResizeObserver !== 'function' || typeof matchMedia !== 'function') return;
   const coarse = matchMedia('(pointer: coarse)').matches;
   const minSide = coarse ? minBuffer : 1200;
-  const maxBuffer = coarse ? 2048 : 4096;
+  const maxBuffer = maxPaintBuffer();
   let timer = 0;
   const apply = () => {
     timer = 0;

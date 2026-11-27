@@ -1,6 +1,7 @@
 import { translated } from './locale';
 import { icons, retryIcon } from './icons';
 import { overridePaintSurface } from '../library/paint';
+import { maxPaintBuffer } from './paint-buffer';
 
 /** Enlarge the mounted canvas so the current model and its playback stay alive. */
 export function expandModel(initialZoom = 100) {
@@ -87,7 +88,6 @@ export function expandModel(initialZoom = 100) {
   // keeps its compact margin. The character keeps its size and place either way. The surface
   // is centered on the reference square; resizing it reallocates GPU buffers, so wait until zooming
   // settles. The Cubism 2 drawing buffer follows the canvas on its own (runtime/legacy-canvas.ts).
-  const maxBuffer = matchMedia('(pointer: coarse)').matches ? 2048 : 4096;
   let coverTimer = 0;
   function cover(now = false) {
     clearTimeout(coverTimer);
@@ -98,7 +98,7 @@ export function expandModel(initialZoom = 100) {
       const square = Math.max(box.width, box.height);
       const x = box.left + box.width / 2, y = box.bottom - square / 2;
       const reach = Math.max(x - view.left, view.right - x, y - view.top, view.bottom - y);
-      const limit = Math.max(1.5, maxBuffer / (square * devicePixelRatio));
+      const limit = Math.max(1.5, maxPaintBuffer() / (square * devicePixelRatio));
       overridePaintSurface({ scale: Math.min(limit, Math.max(1.5, 2 * reach / square)), below: 0.5 });
     };
     if (now) measure();

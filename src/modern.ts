@@ -1,4 +1,4 @@
-import { createLive2D, isMobileViewport, OFFICIAL_CUBISM_CORE_URL, resolveAutoQualityPolicy, selectInitialResolution,
+import { createLive2D, isMobileViewport, OFFICIAL_CUBISM_CORE_URL, resolveAutoQualityPolicy,
   type Live2DInstance } from 'live2d-web';
 
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
@@ -7,6 +7,7 @@ import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurfa
 import { loadModernAssets, bindInteractions } from './modern/interactions';
 import { loadCubismCore } from './modern/core';
 import { createFramePacer } from './runtime/frame-pacer';
+import { maxPaintBuffer, paintResolution, visibleArea } from './runtime/paint-buffer';
 import type { DialogueSource, GameCue } from './library/catalog';
 
 /** Catalog mesh lists: `hidden` meshes cut what is drawn below them, `skipped` meshes are not drawn. */
@@ -57,21 +58,26 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     // good. Size the drawing buffer here instead, in both directions.
     // live2d-web also treats every container under 768px as a phone, and the widget always is
     // one, so a high-DPI desktop would be capped at 1.5x. Keep phone limits for touch devices.
-    // The paint margin for zooming motions makes the surface several times the character's
-    // area, so the desktop budget covers a full-screen surface at 2x (2880 px square).
+    // The paint margin for zooming motions makes the surface reach past the screen edges. Only its
+    // visible part counts against the budget, so a full-screen or zoomed-in character renders at
+    // the display's own pixel ratio; the buffer side has its own limit (runtime/paint-buffer.ts).
     const coarse = matchMedia('(pointer: coarse)').matches;
     const maxRes = Math.min(3, Math.max(2, devicePixelRatio || 2));
     const policy = resolveAutoQualityPolicy(coarse ? undefined
       : { desktopMaxResolution: maxRes, mobileMaxResolution: maxRes, mobilePixelBudget: 16.8e6, desktopPixelBudget: 16.8e6 });
-    // Lowered when frames run long. A pixel count, so a smaller view can still render sharper.
+    // Lowered when frames run long. Visible device pixels, so a smaller view can still render sharper.
     let pixelCap = Infinity;
+    const shownPixels = () => visibleArea(host.getBoundingClientRect(), innerWidth, innerHeight);
     const targetResolution = (cap = pixelCap) => {
       const rect = host.getBoundingClientRect();
-      const width = Math.max(1, rect.width), height = Math.max(1, rect.height);
+      const mobile = isMobileViewport(Math.max(1, rect.width), Math.max(1, rect.height));
       // 2x supersampling keeps fine line art razor-sharp in the small floating widget on 1x/1.25x/1.5x displays.
-      const dpr = !coarse && Math.max(width, height) <= 720 ? Math.max(devicePixelRatio, 2) : devicePixelRatio;
-      const wanted = selectInitialResolution({ devicePixelRatio: dpr, width, height, mobile: isMobileViewport(width, height) }, policy);
-      return Math.max(policy.minResolution, Math.min(wanted, Math.sqrt(cap / (width * height))));
+      const dpr = !coarse && Math.max(rect.width, rect.height) <= 720 ? Math.max(devicePixelRatio, 2) : devicePixelRatio;
+      return Math.max(policy.minResolution, paintResolution(rect, { width: innerWidth, height: innerHeight }, dpr, {
+        maxResolution: mobile ? policy.mobileMaxResolution : policy.desktopMaxResolution,
+        pixelBudget: mobile ? policy.mobilePixelBudget : policy.desktopPixelBudget,
+        maxSide: maxPaintBuffer(),
+      }, cap));
     };
     let sizing = 0;
     const resizeBuffer = () => {
@@ -112,15 +118,13 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
         stableWindows = slow === 0 ? stableWindows + 1 : 0;
         if (overloaded && current > policy.minResolution) {
           const next = Math.max(policy.minResolution, Math.round((current - policy.resolutionStep) * 100) / 100);
-          const { width, height } = stage.getSize();
-          pixelCap = width * height * next * next;
+          pixelCap = shownPixels() * next * next;
           stage.setResolution(next);
         } else if (stableWindows >= 4 && Number.isFinite(pixelCap)) {
           // Probe one step after sustained smooth rendering at the same viewport size.
           const wanted = targetResolution(Infinity);
           const next = Math.min(wanted, current + policy.resolutionStep);
-          const { width, height } = stage.getSize();
-          pixelCap = next >= wanted ? Infinity : width * height * next * next;
+          pixelCap = next >= wanted ? Infinity : shownPixels() * next * next;
           if (next > current) stage.setResolution(next);
           stableWindows = 0;
         }

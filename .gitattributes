@@ -1,3 +1,6 @@
 patches/*.patch text eol=lf
 vendor/cubism-core/** -text
 catalog/games/band-dream-cn/**/*.mtn -text -diff
+# Served byte for byte and hashed into the catalog snapshot tag (scripts/library-tag.mts).
+catalog/games/band-dream-cn/** -text
+catalog/games/voices/** -text
