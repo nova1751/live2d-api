@@ -21,10 +21,13 @@ test('each game catalog can be deployed independently using immutable model sour
     for (const [id, [asset]] of Object.entries(catalog.models)) {
       assert.equal(id.split('/').length, 3);
       assert.ok(catalog.gallery[id].name && catalog.gallery[id].outfit);
-      const url = new URL(
-        asset.manifest,
-        catalog.sources[asset.source].baseUrl,
-      );
+      const base = catalog.sources[asset.source].baseUrl;
+      if (base.startsWith('./')) {
+        const location = new URL('../catalog/games/', import.meta.url);
+        assert.ok((await readFile(new URL(asset.manifest, new URL(base, location)))).length);
+        continue;
+      }
+      const url = new URL(asset.manifest, base);
       assert.equal(url.hostname, 'raw.githubusercontent.com');
       assert.match(url.pathname, /\/[0-9a-f]{40}\//);
     }
@@ -111,6 +114,40 @@ test('the Eve story motion uses the recording and subtitles from the same talk c
     assert.equal(en[motion].caption, cue.captionEn);
     const audio = await readFile(new URL('../catalog/games/voices/' + cue.sound, import.meta.url));
     assert.equal(createHash('sha256').update(audio).digest('hex'), source.recordings[cue.sound].sha256);
+  }
+});
+
+test('recovered BanG Dream costumes keep their model, shared motions and original story recordings on the catalog CDN', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const catalog = await read('bang-dream');
+  const { entries, storyRecordings } = await read('band-dream-cn/sources');
+  const root = new URL('../catalog/games/', import.meta.url);
+  const cdn = new URL('https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/bang-dream.json');
+  const library = parseModelCatalog(catalog, cdn, 'bang-dream');
+  assert.equal(entries.length, 11);
+  assert.equal(storyRecordings.length, 66);
+  const checked = new Set();
+  for (const { id, manifest } of entries) {
+    const relative = './band-dream-cn/' + manifest;
+    assert.equal(library.resolve(id).modelUrl, new URL(relative, cdn).href);
+    const path = new URL(relative, root);
+    const model = JSON.parse(await readFile(path, 'utf8'));
+    const motions = Object.values(model.motions).flat();
+    const files = [model.model, ...model.textures, model.physics, ...model.expressions.map(e => e.file), ...motions.map(m => m.file)];
+    for (const file of files.filter(Boolean)) {
+      const asset = new URL(file, path);
+      if (checked.has(asset.href)) continue;
+      assert.ok(asset.href.startsWith(root.href) && (await readFile(asset)).length);
+      checked.add(asset.href);
+    }
+    const cues = storyRecordings.filter(row => row.id === id);
+    assert.equal(motions.filter(clip => clip.sound).length, cues.length);
+    for (const { sound, motion, sha256 } of cues) {
+      const recording = '../../voices/' + sound;
+      assert.ok(motions.find(clip => clip.sound === recording && clip.file === motion)?.text);
+      assert.equal(new URL(recording, new URL(relative, cdn)).href, new URL('./voices/' + sound, cdn).href);
+      assert.equal(createHash('sha256').update(await readFile(new URL(recording, path))).digest('hex'), sha256);
+    }
   }
 });
 

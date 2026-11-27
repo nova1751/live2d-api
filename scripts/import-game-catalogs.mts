@@ -1,6 +1,6 @@
 import { recoverHoukai } from './recover-houkai.mts';
 import { extendAzurCatalog } from './extend-azur-catalog.mts';
-import { extendBandCatalog } from './extend-band-catalog.mts';
+import { extendBandCatalog, importRecoveredBandCostumes } from './extend-band-catalog.mts';
 import { preserveSceneCurtains } from './library-files.mts';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -177,6 +177,7 @@ const bandExpansion = await extendBandCatalog(bandLibrary, characterIds, byCostu
 for (const [id, reason] of bandExpansion.unavailable) unavailable.push({ id, reason });
 const optionalPhysics = [...bandExpansion.missingPhysics].sort(([a], [b]) => a.localeCompare(b))
   .map(([id, file]) => ({ id, file }));
+await importRecoveredBandCostumes(bandLibrary);
 await save('bang-dream', bandLibrary);
 
 const houkai = library(),

@@ -65,6 +65,8 @@ B 站 1.1.4 安装包的文件索引也只在 `elizabeth_2` 目录列出 `motion
 
 BanG Dream! 的 `hhw/013/013_live_event_93_sr`、`roselia/047/047_live_event_139_r` 和 `morfonica/019/019_casual` 由独立素材包提供。素材包保留上游固定提交的造型目录和相对引用，国内入口通过镜像加载。Morfonica 日常服曾在上游镜像地址遇到 403。项目素材包的 51 个文件与该造型的上游 Git 树一致。
 
+对照 Bestdori 的服装索引和国服模型档案后，补入 9 套小豆泥联动造型与 2 套奥泽美咲造型。原模型保留独立待机和点击动作，共用的表情、物理和动作文件只存一份。两套联动造型从卡片原剧情补回 66 条点击互动。每条按剧情当时使用的服装、说话人、原动作和语音 ID 匹配。素材随图鉴快照发布，截图和原始尺寸由原模型决定。[服装索引](https://bestdori.com/api/costumes/all.5.json) · [原版剧情示例](https://bestdori.com/tool/storyviewer/card/cn/10048/1) · [文件与录音来源](../catalog/games/band-dream-cn/sources.json)
+
 三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可按播放器的国内地址解析规则复核三个系列。
 
 在仓库根目录运行以下命令。导入工具需要 Node、Git 和网络。已提交的目录可直接用于常规构建；重导时才会读取上游 Git 树和清单。第一次导入会下载元数据并缓存到 `node_modules/.cache/game-sources`。语音归档采用 Git 部分克隆，仅枚举路径。

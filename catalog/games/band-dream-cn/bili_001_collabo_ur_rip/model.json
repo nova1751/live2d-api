@@ -1,0 +1,465 @@
+{
+  "model": "../bili_001_collabo_ur_rip/kasumi_abroad.moc",
+  "textures": [
+    "../bili_001_collabo_ur_rip/texture_00.png",
+    "../bili_001_collabo_ur_rip/texture_01.png"
+  ],
+  "physics": "../bili_001_collabo_ur_rip/kasumi_abroad.physics.json",
+  "expressions": [
+    {
+      "name": "angry01",
+      "file": "../001_general_rip/angry01.exp.json"
+    },
+    {
+      "name": "cry01",
+      "file": "../001_general_rip/cry01.exp.json"
+    },
+    {
+      "name": "cry03",
+      "file": "../001_general_rip/cry03.exp.json"
+    },
+    {
+      "name": "default",
+      "file": "../001_general_rip/default.exp.json"
+    },
+    {
+      "name": "f01",
+      "file": "../001_general_rip/f01.exp.json"
+    },
+    {
+      "name": "f02",
+      "file": "../001_general_rip/f02.exp.json"
+    },
+    {
+      "name": "f03",
+      "file": "../001_general_rip/f03.exp.json"
+    },
+    {
+      "name": "f04",
+      "file": "../001_general_rip/f04.exp.json"
+    },
+    {
+      "name": "f05",
+      "file": "../001_general_rip/f05.exp.json"
+    },
+    {
+      "name": "f06",
+      "file": "../001_general_rip/f06.exp.json"
+    },
+    {
+      "name": "f07",
+      "file": "../001_general_rip/f07.exp.json"
+    },
+    {
+      "name": "f08",
+      "file": "../001_general_rip/f08.exp.json"
+    },
+    {
+      "name": "f09",
+      "file": "../001_general_rip/f09.exp.json"
+    },
+    {
+      "name": "f10",
+      "file": "../001_general_rip/f10.exp.json"
+    },
+    {
+      "name": "f11",
+      "file": "../001_general_rip/f11.exp.json"
+    },
+    {
+      "name": "f12",
+      "file": "../001_general_rip/f12.exp.json"
+    },
+    {
+      "name": "f13",
+      "file": "../001_general_rip/f13.exp.json"
+    },
+    {
+      "name": "f14",
+      "file": "../001_general_rip/f14.exp.json"
+    },
+    {
+      "name": "f15",
+      "file": "../001_general_rip/f15.exp.json"
+    },
+    {
+      "name": "f16",
+      "file": "../001_general_rip/f16.exp.json"
+    },
+    {
+      "name": "f17",
+      "file": "../001_general_rip/f17.exp.json"
+    },
+    {
+      "name": "f18",
+      "file": "../001_general_rip/f18.exp.json"
+    },
+    {
+      "name": "idle01",
+      "file": "../001_general_rip/idle01.exp.json"
+    },
+    {
+      "name": "kime01",
+      "file": "../001_general_rip/kime01.exp.json"
+    },
+    {
+      "name": "sad01",
+      "file": "../001_general_rip/sad01.exp.json"
+    },
+    {
+      "name": "serious01",
+      "file": "../001_general_rip/serious01.exp.json"
+    },
+    {
+      "name": "serious02",
+      "file": "../001_general_rip/serious02.exp.json"
+    },
+    {
+      "name": "shame01",
+      "file": "../001_general_rip/shame01.exp.json"
+    },
+    {
+      "name": "smile01",
+      "file": "../001_general_rip/smile01.exp.json"
+    },
+    {
+      "name": "smile02",
+      "file": "../001_general_rip/smile02.exp.json"
+    },
+    {
+      "name": "smile03",
+      "file": "../001_general_rip/smile03.exp.json"
+    },
+    {
+      "name": "surprised01",
+      "file": "../001_general_rip/surprised01.exp.json"
+    }
+  ],
+  "motions": {
+    "tap": [
+      {
+        "file": "../001_general_rip/angry01.mtn"
+      },
+      {
+        "file": "../001_general_rip/bye01.mtn"
+      },
+      {
+        "file": "../001_general_rip/cry01.mtn"
+      },
+      {
+        "file": "../001_general_rip/cry02.mtn"
+      },
+      {
+        "file": "../001_general_rip/cry03.mtn"
+      },
+      {
+        "file": "../bili_001_collabo_ur_rip/eeto01.mtn"
+      },
+      {
+        "file": "../001_general_rip/gattsu01.mtn"
+      },
+      {
+        "file": "../001_general_rip/hukumi01.mtn"
+      },
+      {
+        "file": "../001_general_rip/jaan01.mtn"
+      },
+      {
+        "file": "../001_general_rip/kime01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf02.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf03.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf04.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf05.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf_left01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nf_right01.mtn"
+      },
+      {
+        "file": "../001_general_rip/niyaniya01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf02.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf03.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf04.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf05.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf_left01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nnf_right01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nod01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nod02.mtn"
+      },
+      {
+        "file": "../001_general_rip/oowarai01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sad01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sad02.mtn"
+      },
+      {
+        "file": "../001_general_rip/scared01.mtn"
+      },
+      {
+        "file": "../001_general_rip/serious01.mtn"
+      },
+      {
+        "file": "../001_general_rip/serious02.mtn"
+      },
+      {
+        "file": "../001_general_rip/shame01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sing01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sleep01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sleep02.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile01.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile02.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile03.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile04.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile05.mtn"
+      },
+      {
+        "file": "../001_general_rip/smile06.mtn"
+      },
+      {
+        "file": "../001_general_rip/sneeze01.mtn"
+      },
+      {
+        "file": "../001_general_rip/sneeze02.mtn"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn"
+      },
+      {
+        "file": "../001_general_rip/surprised02.mtn"
+      },
+      {
+        "file": "../001_general_rip/surprised03.mtn"
+      },
+      {
+        "file": "../001_general_rip/wink01.mtn"
+      },
+      {
+        "file": "../bili_001_collabo_ur_rip/gacha01.mtn"
+      },
+      {
+        "file": "../001_general_rip/nod01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-001.mp3",
+        "text": "小豆泥，你刚才好厉害啊！"
+      },
+      {
+        "file": "../001_general_rip/smile03.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-002.mp3",
+        "text": "要是我也能变得像小豆泥那么强就好了……\n咦，小豆泥？"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-003.mp3",
+        "text": "诶！你按了开始按钮！？"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-004.mp3",
+        "text": "哇！敌人出现了！"
+      },
+      {
+        "file": "../001_general_rip/nnf02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-005.mp3",
+        "text": "直接冲过去很危险的~！"
+      },
+      {
+        "file": "../001_general_rip/serious02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-006.mp3",
+        "text": "对了！给小豆泥加上BUFF就行了……！\n嘿！一定要生效啊~！"
+      },
+      {
+        "file": "../001_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-007.mp3",
+        "text": "好厉害好厉害！\n敌人的攻击全躲开了！"
+      },
+      {
+        "file": "../001_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-008.mp3",
+        "text": "哇！\n小豆泥的抓挠攻击……！"
+      },
+      {
+        "file": "../001_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-009.mp3",
+        "text": "真不愧是小豆泥！\n把敌人干掉了！"
+      },
+      {
+        "file": "../001_general_rip/surprised02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-010.mp3",
+        "text": "哇哇！\n后面也有敌人！？"
+      },
+      {
+        "file": "../001_general_rip/angry01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-011.mp3",
+        "text": "啊，小豆泥，危险！"
+      },
+      {
+        "file": "../001_general_rip/nnf01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-012.mp3",
+        "text": "好痛……咦？\n敌人已经倒下了"
+      },
+      {
+        "file": "../bili_001_collabo_ur_rip/eeto01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-013.mp3",
+        "text": "大概是因为我为了救小豆泥冲进去，\n所以让敌人打了个空吧……？"
+      },
+      {
+        "file": "../001_general_rip/nf01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-014.mp3",
+        "text": "虽然对于BUFF还不是很懂，\n但我也会帮你的，一起加油吧！"
+      },
+      {
+        "file": "../001_general_rip/nod02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-015.mp3",
+        "text": "小豆泥的头槌……！\n好响！"
+      },
+      {
+        "file": "../001_general_rip/smile06.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-016.mp3",
+        "text": "哇，好像把敌人削弱了不少！\n谢谢！"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-017.mp3",
+        "text": "诶，还有吗~！？"
+      },
+      {
+        "file": "../001_general_rip/nf04.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-018.mp3",
+        "text": "呼~虽然挺难的，\n但能跟小豆泥一起作战，感觉特别开心！"
+      },
+      {
+        "file": "../001_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-019.mp3",
+        "text": "我来加BUFF，小豆泥来攻击……"
+      },
+      {
+        "file": "../001_general_rip/kime01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-020.mp3",
+        "text": "说不定我们是最强搭档呢！"
+      },
+      {
+        "file": "../001_general_rip/nnf04.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-021.mp3",
+        "text": "敌人好像还有很多……\n那么！准备上吧~！"
+      },
+      {
+        "file": "../001_general_rip/nod02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-022.mp3",
+        "text": "小豆泥！冲呀——！"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-023.mp3",
+        "text": "哇，敌人超生气的！？\n小豆泥，危险！咦？"
+      },
+      {
+        "file": "../bili_001_collabo_ur_rip/eeto01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-024.mp3",
+        "text": "小豆泥在盯着远处看……\n……诶，睡着了！？"
+      },
+      {
+        "file": "../001_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-025.mp3",
+        "text": "怎、怎么办~！\n偏偏挑这个时候……"
+      },
+      {
+        "file": "../001_general_rip/serious02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-026.mp3",
+        "text": "可是，小豆泥都那么努力了，\n就算只有我一个人，也一定要干掉它！"
+      },
+      {
+        "file": "../001_general_rip/nnf02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-027.mp3",
+        "text": "为了不吵醒小豆泥……\n尽量用最小幅度的动作，不发出声音……！"
+      },
+      {
+        "file": "../001_general_rip/angry01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-028.mp3",
+        "text": "嘿~！"
+      },
+      {
+        "file": "../001_general_rip/jaan01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-029.mp3",
+        "text": "太好啦~~！\n打倒了~~~！"
+      },
+      {
+        "file": "../001_general_rip/kime01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-030.mp3",
+        "text": "这就是星星的力量~！"
+      },
+      {
+        "file": "../001_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-031.mp3",
+        "text": "啊，小豆泥，你醒啦~！"
+      },
+      {
+        "file": "../001_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-033.mp3",
+        "text": "哇哇，刚睡醒的小豆泥\n很有精神呢！喵——！"
+      },
+      {
+        "file": "../001_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res001003-CHS_Azukicollab2026_KM_01-034.mp3",
+        "text": "多亏了小豆泥，我觉得自己变得好强！\n谢谢你！小豆泥！"
+      }
+    ],
+    "idle": [
+      {
+        "file": "../001_general_rip/idle01.mtn"
+      },
+      {
+        "file": "../001_general_rip/idle02.mtn"
+      }
+    ]
+  }
+}
