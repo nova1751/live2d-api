@@ -79,7 +79,10 @@ test('scene cuts use the mesh IDs from each reviewed Cubism export', async () =>
     assert.ok(ships.resolve(id).hiddenDrawables?.includes('MB_blackbgjuxing2'));
   }
   for (const id of ['ship/39904/wuqi_3', 'ship/39904/wuqi_3_hx']) {
-    assert.deepEqual(ships.resolve(id, 'eikanya').hiddenDrawables, ['ArtMesh307']);
+    const { hiddenDrawables, sceneAspect, subjectFrame } = ships.resolve(id, 'eikanya');
+    assert.deepEqual(hiddenDrawables, ['ArtMesh307']);
+    assert.deepEqual(subjectFrame, [136, 118, 184, 209]);
+    assert.equal(sceneAspect, undefined);
   }
   assert.deepEqual(ships.resolve('ship/20703/guanghui_9', 'eikanya').hiddenDrawables, ['ArtMesh545', 'ArtMesh546']);
   assert.deepEqual(ships.resolve('ship/29903/chaijun_5', 'eikanya').hiddenDrawables, ['ArtMesh771']);

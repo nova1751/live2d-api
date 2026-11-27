@@ -392,15 +392,17 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     ) : void 0;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
+    const frame = asset.subjectFrame;
+    const subjectFrame = Array.isArray(frame) && frame.length === 4 && frame.every((value) => Number.isFinite(value) && value >= 0 && value <= 320) && frame[0] < frame[2] && frame[1] < frame[3] ? frame : void 0;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && catalogAssetUrl(replacement)])) : asset.files;
-    return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    return { cues, sceneAspect, subjectFrame, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
   return { url: url.href, collection, locale, ids, gallery, visibleId, hasModel, labels: localized?.labels ?? {}, resolve, legacyIds: catalog.legacyIds };
 }
 
 // package.json
-var version = "2.9.32";
+var version = "2.9.33";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -427,7 +429,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-67dd9f130a8f5798/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-9f0a4a2dcaa1c4cd/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;
