@@ -198,7 +198,18 @@ test('recovered media stays with its original recording, motion and locale', asy
   }
   assert.match(boise.sound, /\/102290\/propose\.ogg$/);
   assert.ok(boise.caption && boise.captionEn);
-  assert.equal(az.models['ship/30116/xuefeng_3'][0].cues.touch_special.sound, undefined);
+  const azurRepairs = await read('voices/azur-wiki-voices');
+  assert.equal(azurRepairs.length, 9);
+  for (const repair of azurRepairs) {
+    const cue = az.models[repair.id][0].cues[repair.group];
+    assert.equal(az.gallery[repair.id].date, repair.skinId);
+    assert.equal(cue.caption, repair.caption);
+    assert.equal(cue.captionEn, repair.captionEn);
+    assert.equal(cue.sound, repair.sound);
+    const audio = await readFile(new URL('../catalog/games/' + repair.sound, import.meta.url));
+    assert.equal(audio.toString('ascii', 0, 4), 'OggS');
+    assert.equal(createHash('sha256').update(audio).digest('hex'), repair.sha256);
+  }
   for (const [id, count] of [['character/xier/xier', 9], ['character/delisha/delisha', 5]]) {
     const asset = bh.models[id][0];
     assert.equal(Object.keys(asset.cues).length, count);

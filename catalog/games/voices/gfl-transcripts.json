@@ -6,6 +6,13 @@
     "caption": "真不错！",
     "captionEn": "Lovely!"
   },
+  "6P62|MOOD1": {
+    "path": "audio/6P62/6P62_MOOD1_JP.ogg",
+    "sha256": "141ca9a3d0b2a259627eaf4f81559c0ac0863a65f7be3d79a3a9aa3e7ad61abc",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
   "88TYPEMOD|LOWMOOD": {
     "path": "audio/88TYPEMOD/88TYPEMOD_LOWMOOD_JP.ogg",
     "sha256": "a93b2a8dbc0f5a41f688db6242f179ea45187506669f9db02ff288ef190fa5d0",
@@ -19,6 +26,20 @@
     "ja": "なんてことですの？",
     "caption": "怎么会这样？",
     "captionEn": "How could this happen?"
+  },
+  "COLTWALKER|ACCEPT": {
+    "path": "audio/COLTWALKER/COLTWALKER_ACCEPT_JP.ogg",
+    "sha256": "e6a83e0faaaea230e384deab8ef1920719cab5c07234cefe341665592a8e8da2",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
+  "DSR50|MOOD1": {
+    "path": "audio/DSR50/DSR50_MOOD1_JP.ogg",
+    "sha256": "6e051db6486f728381d21109931f9d4c0cab2d01a8d5fae5f646395db4930aef",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   },
   "G36C|LOWMOOD": {
     "path": "audio/G36C/G36C_LOWMOOD_JP.ogg",
@@ -34,6 +55,20 @@
     "caption": "真了不起。",
     "captionEn": "Nicely done."
   },
+  "GRIZZLY|MOOD1": {
+    "path": "audio/GRIZZLY/GRIZZLY_MOOD1_JP.ogg",
+    "sha256": "02bf99e98fc86f7707e93f31f84264bd432f481bca38917a6656b2ffbd365d4a",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
+  "HK416MOD|MOOD1": {
+    "path": "audio/HK416MOD/HK416MOD_MOOD1_JP.ogg",
+    "sha256": "4fa377dec78a959225d59207476d65133b1517e0c61aa3720cb430f97655d786",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
   "HK416|LOWMOOD": {
     "path": "audio/HK416/HK416_LOWMOOD_JP.ogg",
     "sha256": "d55801682a89f42e00d841600cb0d3559950d9be065653bfa53669bfc22ad122",
@@ -41,12 +76,26 @@
     "caption": "怎么会……",
     "captionEn": "No way…"
   },
+  "K2|MOOD1": {
+    "path": "audio/K2/K2_MOOD1_JP.ogg",
+    "sha256": "3f30173c60c1d14f4ad64b7fe7cf440d77a98c67ae3ea39b5b11cbd098eb529b",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
   "KP31|APPRECIATE": {
     "path": "audio/KP31/KP31_APPRECIATE_JP.ogg",
     "sha256": "9131075d74a49ff632bfcab798cfe0a7983954d927726d1ef919d6fb52917bd2",
     "ja": "よくできました。",
     "caption": "做得好。",
     "captionEn": "Well done."
+  },
+  "OTS14|MOOD1": {
+    "path": "audio/OTS14/OTS14_MOOD1_JP.ogg",
+    "sha256": "8b6ad45077e1cbe48b6c3a621aaa9b1d63f0c144224f11c76b63e9080a241966",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   },
   "RO635MOD|MOOD2": {
     "path": "audio/RO635MOD/RO635MOD_MOOD2_JP.ogg",

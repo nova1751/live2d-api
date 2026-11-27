@@ -417,6 +417,16 @@ for (const path of manifests) {
   );
 }
 await extendAzurCatalog(az, keys, localize, english);
+const azurVoiceRepairs = JSON.parse(await readFile(join(destination, 'voices/azur-wiki-voices.json'), 'utf8'));
+for (const repair of azurVoiceRepairs) {
+  const cue = az.models[repair.id]?.[0]?.cues?.[repair.group];
+  if (!cue || cue.caption !== repair.caption || az.gallery[repair.id]?.date !== repair.skinId) continue;
+  const bytes = await readFile(join(destination, repair.sound));
+  if (createHash('sha256').update(bytes).digest('hex') !== repair.sha256)
+    throw Error('Incorrect Azur Lane recording ' + repair.sound);
+  cue.sound ??= repair.sound;
+  cue.captionEn ??= repair.captionEn;
+}
 await save('azur-lane', az);
 await save('audit', { repairs, unresolved, unavailable, optionalPhysics });
 for (const [name, lib] of Object.entries({ bandLibrary, houkai, az }))

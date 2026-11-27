@@ -1,6 +1,6 @@
 import { nativeMotionLookup, nativeTouchArea } from '../src/modern/native-events.ts';
 import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { parseModelCatalog } from '../src/library/catalog.ts';
 import { readJson, type Library } from './library-files.mts';
@@ -35,7 +35,10 @@ for (const id of gallery.ids) {
   if (!asset?.dialogue || !asset.manifest) continue;
   counts.modernForms++;
   const local = join(directory, 'sources', asset.source);
-  const manifest = readJson<Manifest>(join(local, asset.manifest));
+  const replacement = asset.files?.[basename(asset.manifest)];
+  const manifest = readJson<Manifest>(replacement?.startsWith('./')
+    ? join(dirname(index), replacement)
+    : join(dirname(join(local, asset.manifest)), replacement ?? basename(asset.manifest)));
   const data = readJson<{
     variant: string;
     motionData: Record<string, Event>;

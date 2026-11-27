@@ -44,7 +44,13 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
 }
 
 export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false, files?: Record<string, string | null>) {
-  const model = json<Manifest>(url, signal).then(manifest => {
+  const pathname = new URL(url).pathname;
+  const src = decodeURIComponent(pathname.slice(1));
+  const directory = new URL('.', url).pathname;
+  const replacement = files?.[decodeURIComponent(pathname.slice(directory.length))];
+  // Keep the original model URL as the base for paths within a replacement manifest.
+  const manifestUrl = replacement ? new URL(replacement, url).href : url;
+  const model = json<Manifest>(manifestUrl, signal).then(manifest => {
     const groups = manifest.FileReferences.Motions ?? {};
     // live2d-web looks for the exact group name "Idle" by default; alias lowercase "idle" (e.g. Azur Lane).
     if (!groups.Idle) {
@@ -81,8 +87,6 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
   });
   // The renderer can finish or abort before the optional interaction data arrives.
   void interactions.catch(() => {});
-  const src = decodeURIComponent(new URL(url).pathname.slice(1));
-  const directory = new URL('.', url).pathname;
   async function resolveAsset(path: string, requestSignal?: AbortSignal) {
     if (path === src) return new Blob([JSON.stringify((await model).manifest)], { type: 'application/json' });
     // jsDelivr parses repo@version before decoding path segments.
