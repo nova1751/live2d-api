@@ -78,6 +78,11 @@ test('scene cuts use the mesh IDs from each reviewed Cubism export', async () =>
   for (const id of ['ship/21304/abeikelongbi_3', 'ship/21304/abeikelongbi_3_hx']) {
     assert.ok(ships.resolve(id).hiddenDrawables?.includes('MB_blackbgjuxing2'));
   }
+  for (const id of ['ship/39904/wuqi_3', 'ship/39904/wuqi_3_hx']) {
+    assert.deepEqual(ships.resolve(id, 'eikanya').hiddenDrawables, ['ArtMesh307']);
+  }
+  assert.deepEqual(ships.resolve('ship/20703/guanghui_9', 'eikanya').hiddenDrawables, ['ArtMesh545', 'ArtMesh546']);
+  assert.deepEqual(ships.resolve('ship/29903/chaijun_5', 'eikanya').hiddenDrawables, ['ArtMesh771']);
 });
 
 test('supplemental Azur Lane outfits keep the same character and use the exact skin recording', async () => {
@@ -170,6 +175,36 @@ test('disabled optional motion keeps its fallback while a disabled texture remai
   assert.deepEqual(fetch.mock.calls.map(call => call.arguments[0]), [manifest]);
 });
 
+test('PX4 Storm damaged form resolves recovered motions without changing its model or dialogue source', async t => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const { loadModernAssets } = await import('../src/modern/interactions.ts');
+  const mirror = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@tag/';
+  const catalog = parseModelCatalog(await json('catalog/library.json'), new URL('catalog/library.json', mirror), 'girls-frontline');
+  const asset = catalog.resolve('doll/px4storm/2801/destroy');
+  const manifest = await json('catalog/games/repairs/gfl-px4storm-2801-destroy.model3.json');
+  const replacement = new URL('catalog/games/repairs/gfl-px4storm-2801-destroy.model3.json', mirror).href;
+  const file = 'motions/touch_1.motion3.json';
+  const motionUrl = new URL('../normal/' + file, asset.modelUrl).href;
+  const cue = { char_code: 'Px4Storm', voice_key: 'DIALOGUE3', caption: 'test line' };
+  const fetch = t.mock.method(globalThis, 'fetch', async url => {
+    if (url === replacement) return Response.json(manifest);
+    if (url === asset.dialogue?.url) return Response.json({ variant: 'destroy', motionData: {
+      '280121': { motion_name: 'motions/touch_1.mtn', touch_area: 'head', probability: 1, delay: 0, is_hurt: 1 },
+    }, voiceData: { '280121': cue } });
+    if (url === motionUrl) return Response.json({ Meta: { Duration: 1 }, Curves: [] });
+    throw Error('Unexpected asset ' + url);
+  });
+  assert.match(asset.modelUrl, /\/destroy\/px4storm_2801\.model3\.json$/);
+  const { src, interactions, resolveAsset } = loadModernAssets(asset.modelUrl, asset.dialogue,
+    new AbortController().signal, undefined, false, asset.files);
+  const { actions } = await interactions;
+  const action = actions.find(action => action.file === file);
+  assert.equal(action?.caption, asset.dialogue?.captions?.['PX4STORM|DIALOGUE3']);
+  assert.match(action?.sound ?? '', /PX4STORM_DIALOGUE3_JP\.ogg$/i);
+  await resolveAsset(src.replace(/[^/]+$/, file));
+  assert.deepEqual(fetch.mock.calls.map(call => call.arguments[0]), [replacement, asset.dialogue?.url, motionUrl]);
+});
+
 test('all seven mainland catalogs resolve pinned models, recordings and absolute repairs through the mirror', async () => {
   const { collections, parseModelCatalog } = await import('../src/library/catalog.ts');
   const mirror = 'https://cdn.jsdmirror.com';
@@ -188,7 +223,12 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
         key, { ...cue, sound: cue.sound?.startsWith(mirror + '/catalog/')
           ? new URL(new URL(cue.sound).pathname, galleryUrl).href : cue.sound },
       ]));
-      assert.deepEqual(galleryAssets, { ...assets, cues: galleryCues }, id);
+      const galleryFiles = files && Object.fromEntries(Object.entries(files).map(([key, value]) => [
+        key, value?.startsWith(mirror + '/catalog/') ? new URL(new URL(value).pathname, galleryUrl).href : value,
+      ]));
+      const galleryModelUrl = modelUrl.startsWith(mirror + '/catalog/')
+        ? new URL(new URL(modelUrl).pathname, galleryUrl).href : modelUrl;
+      assert.deepEqual(galleryAssets, { ...assets, modelUrl: galleryModelUrl, cues: galleryCues, files: galleryFiles }, id);
       assert.equal(galleryDialogue?.url, dialogue?.url, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);

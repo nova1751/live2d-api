@@ -19,9 +19,18 @@ interface PartnerVoiceIndex {
 interface TextMapIndex {
   models: Record<string, Record<string, { textId: number; caption: string }>>;
 }
+interface PreviewRecording {
+  id: string;
+  file: string;
+  sound: string;
+  from: string;
+  textId: number;
+  sha256: string;
+}
 const voices = new URL('../catalog/games/voices/', import.meta.url);
 const partnerVoices: PartnerVoiceIndex = JSON.parse(await readFile(new URL('houkai2-partner-11.7.json', voices), 'utf8'));
 const textMap: TextMapIndex = JSON.parse(await readFile(new URL('houkai2-textmap-11.7.json', voices), 'utf8'));
+const preview: { recordings: PreviewRecording[] } = JSON.parse(await readFile(new URL('houkai2-recorded-preview.json', voices), 'utf8'));
 const outfits: Record<string, 'seele' | 'thresa'> = { xier: 'seele', delisha: 'thresa' };
 const translations = {
   seele: [
@@ -121,8 +130,9 @@ function recoverCaptions(folder: string, manifest: Manifest): Record<string, Gam
 async function recoverOriginalEvents(folder: string, manifest: Manifest) {
   const id = 'character/' + folder + '/' + folder;
   const events = Object.entries(partnerVoices.recordings).filter(([, recording]) => recording.model === id);
+  const previews = preview.recordings.filter(recording => recording.id === id);
   const cues = recoverCaptions(folder, manifest);
-  if (!events.length && !Object.keys(cues).length) return;
+  if (!events.length && !previews.length && !Object.keys(cues).length) return;
   const sounds = new Set(Object.values(manifest.motions).flat().map(clip => clip.sound));
   const repairs = [];
   for (const [event, recording] of events) {
@@ -134,7 +144,16 @@ async function recoverOriginalEvents(folder: string, manifest: Manifest) {
     cues[event] = { ...cues[event], sound };
     repairs.push({ id, file: event, from: partnerVoices.packageUrl, manifestUrl: partnerVoices.manifestUrl, sha256: recording.sha256 });
   }
-  return { cues, cueSource: events.length ? 'partnerVoices' : undefined, repairs };
+  for (const { file, sound, from, textId, sha256 } of previews) {
+    assert.ok(sounds.has(file) && cues[file]?.caption && !cues[file].sound, id + ' invalid preview recording ' + file);
+    assert.equal(textMap.models[folder][file].textId, textId);
+    const audio = await readFile(new URL(sound, voices));
+    assert.equal(audio.toString('ascii', 0, 4), 'OggS');
+    assert.equal(createHash('sha256').update(audio).digest('hex'), sha256, sound);
+    cues[file].sound = sound;
+    repairs.push({ id, file, from, sha256, textId });
+  }
+  return { cues, cueSource: repairs.length ? 'partnerVoices' : undefined, repairs };
 }
 
 async function recoverMei(manifest: Manifest, originalTree: Map<string,string>) {

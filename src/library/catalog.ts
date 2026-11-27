@@ -75,6 +75,7 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     return href.replace(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([a-f\d]{40})\//i,
       mainlandPath + '$1/$2@$3/').replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
+  const catalogAssetUrl = (href: string) => regionalUrl(href.startsWith('./') ? new URL(href, sourceBase).href : href);
   const available = new Set(Object.keys(catalog.models).filter(id => (!collection || !id.startsWith('other/')) && catalog.models[id].some(asset => asset.manifest)));
   const hasModel = (id: string) => available.has(id);
   const presentation = collection ? catalog.presentation : undefined;
@@ -120,13 +121,13 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
     const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
       Object.entries(asset.cues).map(([key, cue]) => [key, { ...cue,
         sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource)
-          : regionalUrl(cue.sound.startsWith('./') ? new URL(cue.sound, sourceBase).href : cue.sound)),
+          : catalogAssetUrl(cue.sound)),
         caption: locale === 'en' ? cue.captionEn || cue.caption : cue.caption }])
     ) : undefined;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === 'number' && Number.isFinite(ratio) && ratio > 0 ? ratio : undefined;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files)
-      .map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
+      .map(([path, replacement]) => [path, replacement && catalogAssetUrl(replacement)])) : asset.files;
     return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)

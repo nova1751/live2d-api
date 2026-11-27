@@ -55,15 +55,23 @@ B 站 1.1.4 安装包的文件索引也只在 `elizabeth_2` 目录列出 `motion
 
 ## 崩坏学园 2 原版录音与字幕
 
-国服 11.7 资源清单中的 Wwise 搭档语音包收录了丽塔、时雨绮罗、妮娜、宁蒂、西琳和琪卡的 41 个缺失事件。按模型的原事件名匹配 Wwise 事件 ID，再通过同一声库的播放动作解析到单一音轨。图鉴将原音轨转为 Ogg Vorbis，并随图鉴快照发布约 2.7 MB 的录音。17 个造型的 124 条中文字幕按模型中的数字编号与官方 `TextMap` 精确对应，包括芽衣的 7 条字幕。其余 76 处旧 WAV 引用暂缺可核实的原录音。[语音来源记录](../catalog/games/voices/houkai2-partner-11.7.json) · [中文字幕来源记录](../catalog/games/voices/houkai2-textmap-11.7.json)
+国服 11.7 资源清单中的 Wwise 搭档语音包收录了丽塔、时雨绮罗、妮娜、宁蒂、西琳和琪卡的 41 个缺失事件。按模型的原事件名匹配 Wwise 事件 ID，再通过同一声库的播放动作解析到单一音轨。图鉴将原音轨转为 Ogg Vorbis，并随图鉴快照发布约 2.7 MB 的录音。17 个造型的 124 条中文字幕按模型中的数字编号与官方 `TextMap` 精确对应，包括芽衣的 7 条字幕。[语音来源记录](../catalog/games/voices/houkai2-partner-11.7.json) · [中文字幕来源记录](../catalog/games/voices/houkai2-textmap-11.7.json)
 
 ## 碧蓝航线的场景取景
 
 埃姆登「黑白的夜之主」与安克雷奇「海豚、海洋、游泳课」的普通版和 HX 版包含整幅场景，并把部分活动布景停在原画框外。图鉴按这四份模型的 Cubism 画布比例显示，分别为 6000∶6502 和 9∶7。动作将布景移入画框时即可看到。其他造型继续按可见轮廓取景。
 
+光辉、怨仇、吾妻等 14 个造型导出使用透明场景切割。图鉴按各导出版本的网格 ID 标记遮挡层，由播放器沿原遮挡范围和动画写入透明度。吾妻普通版和 HX 版的场景卡片仍由原网格绘制。
+
 ## 更新目录
 
 BanG Dream! 的 `hhw/013/013_live_event_93_sr`、`roselia/047/047_live_event_139_r` 和 `morfonica/019/019_casual` 由独立素材包提供。素材包保留上游固定提交的造型目录和相对引用，国内入口通过镜像加载。Morfonica 日常服曾在上游镜像地址遇到 403。项目素材包的 51 个文件与该造型的上游 Git 树一致。
+
+对照 Bestdori 的服装索引和国服模型档案后，补入 9 套小豆泥联动造型与 2 套奥泽美咲造型。原模型保留独立待机和点击动作，共用的表情、物理和动作文件只存一份。两套联动造型从卡片原剧情补回 66 条点击互动。每条按剧情当时使用的服装、说话人、原动作和语音 ID 匹配。素材随图鉴快照发布。[服装索引](https://bestdori.com/api/costumes/all.5.json) · [原版剧情示例](https://bestdori.com/tool/storyviewer/card/cn/10048/1) · [文件与录音来源](../catalog/games/band-dream-cn/sources.json)
+
+《机动战队》斯洛卡伊的中文台词造型保留 4 段已有日语配音，另为 7 个原先缺音的动作补入 Hanser 的对应中文录音。剪辑时间与校验值记录在[录音索引](../catalog/games/voices/iron-saga-slokai-cn.json)。[中文试听](https://www.bilibili.com/video/BV1Wh411m7fY/)
+
+《崩坏学园 2》从游戏内试听补回姬子一个中文互动、杏一个日文互动和耀夜姬五个日文互动。按现有模型的旧录音键对照官方字幕编号，其余 69 个旧录音路径仍缺可确认的录音。[姬子试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=33) · [杏试听](https://www.bilibili.com/video/BV1a84y117Pj/?p=52) · [耀夜姬试听](https://www.bilibili.com/video/BV1jS4y1A7Uk/) · [录音索引](../catalog/games/voices/houkai2-recorded-preview.json)
 
 三个手工核对的作品目录位于 `catalog/games/{iron-saga,warship-girls,baoshi-yanwuyu}.json`。用 `node scripts/check-curated-catalogs.mts` 检查所有清单和引用文件的可达性，加 `--mainland` 可按播放器的国内地址解析规则复核三个系列。
 

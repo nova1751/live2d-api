@@ -6,6 +6,21 @@
     "caption": "真不错！",
     "captionEn": "Lovely!"
   },
+  "6P62|MOOD1": {
+    "path": "audio/6P62/6P62_MOOD1_JP.ogg",
+    "sha256": "141ca9a3d0b2a259627eaf4f81559c0ac0863a65f7be3d79a3a9aa3e7ad61abc",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
+  "6P62|MOOD2": {
+    "path": "audio/6P62/6P62_MOOD2_JP.ogg",
+    "sha256": "201eb59b171f5cf8732f8c7bf9a8cf606a26efed2bbf0dc2626b273a88463778",
+    "ja": "あ、ぴくりした",
+    "caption": "呀，吓了一跳",
+    "captionEn": "Ah, that startled me!",
+    "source": "https://storage.moegirl.org.cn/moegirl/commons/2/2e/6P62_033.mp3"
+  },
   "88TYPEMOD|LOWMOOD": {
     "path": "audio/88TYPEMOD/88TYPEMOD_LOWMOOD_JP.ogg",
     "sha256": "a93b2a8dbc0f5a41f688db6242f179ea45187506669f9db02ff288ef190fa5d0",
@@ -13,12 +28,34 @@
     "caption": "这样不行哦。",
     "captionEn": "You can't do that."
   },
+  "88TYPEMOD|MOOD2": {
+    "path": "audio/88TYPEMOD/88TYPEMOD_MOOD2_JP.ogg",
+    "sha256": "35a0ff7127d509b37af19f2f77dbec78ac770a8e22cdc8022c06f8823b2d3c73",
+    "ja": "ええー！？",
+    "caption": "欸？！",
+    "captionEn": "Huh?!",
+    "source": "https://storage.moegirl.org.cn/moegirl/commons/9/96/88type_033.mp3"
+  },
   "98K|LOWMOOD": {
     "path": "audio/98K/98K_LOWMOOD_JP.ogg",
     "sha256": "e2ab7a7630f7f67284770201179161421528c47a3f4ca348a9b2cb4b70dd4e75",
     "ja": "なんてことですの？",
     "caption": "怎么会这样？",
     "captionEn": "How could this happen?"
+  },
+  "COLTWALKER|ACCEPT": {
+    "path": "audio/COLTWALKER/COLTWALKER_ACCEPT_JP.ogg",
+    "sha256": "e6a83e0faaaea230e384deab8ef1920719cab5c07234cefe341665592a8e8da2",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
+  "DSR50|MOOD1": {
+    "path": "audio/DSR50/DSR50_MOOD1_JP.ogg",
+    "sha256": "6e051db6486f728381d21109931f9d4c0cab2d01a8d5fae5f646395db4930aef",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   },
   "G36C|LOWMOOD": {
     "path": "audio/G36C/G36C_LOWMOOD_JP.ogg",
@@ -34,12 +71,33 @@
     "caption": "真了不起。",
     "captionEn": "Nicely done."
   },
+  "GRIZZLY|MOOD1": {
+    "path": "audio/GRIZZLY/GRIZZLY_MOOD1_JP.ogg",
+    "sha256": "02bf99e98fc86f7707e93f31f84264bd432f481bca38917a6656b2ffbd365d4a",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
+  "HK416MOD|MOOD1": {
+    "path": "audio/HK416MOD/HK416MOD_MOOD1_JP.ogg",
+    "sha256": "4fa377dec78a959225d59207476d65133b1517e0c61aa3720cb430f97655d786",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
   "HK416|LOWMOOD": {
     "path": "audio/HK416/HK416_LOWMOOD_JP.ogg",
     "sha256": "d55801682a89f42e00d841600cb0d3559950d9be065653bfa53669bfc22ad122",
     "ja": "そんな……",
     "caption": "怎么会……",
     "captionEn": "No way…"
+  },
+  "K2|MOOD1": {
+    "path": "audio/K2/K2_MOOD1_JP.ogg",
+    "sha256": "3f30173c60c1d14f4ad64b7fe7cf440d77a98c67ae3ea39b5b11cbd098eb529b",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   },
   "KP31|APPRECIATE": {
     "path": "audio/KP31/KP31_APPRECIATE_JP.ogg",
@@ -48,12 +106,27 @@
     "caption": "做得好。",
     "captionEn": "Well done."
   },
+  "OTS14|MOOD1": {
+    "path": "audio/OTS14/OTS14_MOOD1_JP.ogg",
+    "sha256": "8b6ad45077e1cbe48b6c3a621aaa9b1d63f0c144224f11c76b63e9080a241966",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
+  },
   "RO635MOD|MOOD2": {
     "path": "audio/RO635MOD/RO635MOD_MOOD2_JP.ogg",
     "sha256": "fe63ed6780c6adf481e4f0de520a310b967a8e6dfa15f9c91b00624a553cfdd9",
     "ja": "なに？",
     "caption": "什么？",
     "captionEn": "What?"
+  },
+  "SAIGA12|MOOD1": {
+    "path": "audio/SAIGA12/SAIGA12_MOOD1_JP.ogg",
+    "sha256": "ae0d274c93e90e983a34b2e71da1eccd47f57bebb2e12d1c1dec84090921154f",
+    "ja": "うふふふ",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)",
+    "source": "https://gf-ogas.wiki/wiki/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%3ASaiga-12"
   },
   "WA2000|LOWMOOD": {
     "path": "audio/WA2000/WA2000_LOWMOOD_JP.ogg",
@@ -62,11 +135,110 @@
     "caption": "怎么会这样？",
     "captionEn": "How could this happen?"
   },
+  "WA2000|MOOD2": {
+    "path": "audio/WA2000/WA2000_MOOD2_JP.ogg",
+    "sha256": "f118c412653bf7132da6702db4c44c4f409b793344c5a2a0de0c95f343054653",
+    "ja": "えぇぇぇ！？",
+    "caption": "欸欸欸？！",
+    "captionEn": "Whaaat?!",
+    "source": "https://gf-ogas.wiki/wiki/%E5%B0%91%E5%A5%B3%E5%89%8D%E7%BA%BF%3AWA2000"
+  },
   "ZB26|FEELING": {
     "path": "audio/ZB26/ZB26_FEELING_JP.ogg",
     "sha256": "1dc61d463371beef61b2a3b6d17a6205e62ebfc3f7a3ed95348166efd1b8e159",
     "ja": "その通りです。",
     "caption": "正是如此。",
     "captionEn": "That's right."
+  },
+  "ERMA|LOWMOOD": {
+    "path": "audio/ERMA/ERMA_LOWMOOD_JP.ogg",
+    "sha256": "8f9b7b7948cb9de8b9a59692941ae36c7499bbd3ea9cbd476121b72f37176300",
+    "ja": "（ため息）",
+    "caption": "（叹气）",
+    "captionEn": "(Sighs)"
+  },
+  "G41|LOWMOOD": {
+    "path": "audio/G41/G41_LOWMOOD_JP.ogg",
+    "sha256": "cecf6ae53c98b50eca0e092facba0d22ae946f58fe68f06437d4c070958d508f",
+    "ja": "（ため息）",
+    "caption": "（叹气）",
+    "captionEn": "(Sighs)"
+  },
+  "HK416|MOOD2": {
+    "path": "audio/HK416/HK416_MOOD2_JP.ogg",
+    "sha256": "06c1515122aef644a28a5f0a3194a94b851927c1581a2bea13cfba679f2f51ea",
+    "ja": "うっ…",
+    "caption": "呃……",
+    "captionEn": "Ugh…"
+  },
+  "HK416MOD|MOOD2": {
+    "path": "audio/HK416MOD/HK416MOD_MOOD2_JP.ogg",
+    "sha256": "df795abf64bdd09e99d716e3e1d2f6a34c7683e6f2c25d041030dfe6a4c04ea7",
+    "ja": "うっ…",
+    "caption": "呃……",
+    "captionEn": "Ugh…"
+  },
+  "K2|MOOD2": {
+    "path": "audio/K2/K2_MOOD2_JP.ogg",
+    "sha256": "5d2bcb312b9de04a642368884ca7fdcee03f4516bad2cc982f30e8fa9364d55e",
+    "ja": "わー！",
+    "caption": "哇！",
+    "captionEn": "Whoa!"
+  },
+  "M1903|MOOD2": {
+    "path": "audio/M1903/M1903_MOOD2_JP.ogg",
+    "sha256": "c0d31c3bdd06a064cd5e46cc2b9e5586fe8827091ab50c75ecf82d237bd40b84",
+    "ja": "えっ？",
+    "caption": "欸？",
+    "captionEn": "Huh?"
+  },
+  "M26MASS|LOWMOOD": {
+    "path": "audio/M26MASS/M26MASS_LOWMOOD_JP.ogg",
+    "sha256": "92352bfc148a36401f3e2c7245306c64550a4635c43f01d25631b3bd0a868339",
+    "ja": "んん……",
+    "caption": "嗯……",
+    "captionEn": "Hmm…"
+  },
+  "M950A|AGREE": {
+    "path": "audio/M950A/M950A_AGREE_JP.ogg",
+    "sha256": "7b51c40b96e0bce34bc2b990f8d9e7b291d14eb854b474e39ca82ae59747aa11",
+    "ja": "んー？",
+    "caption": "嗯？",
+    "captionEn": "Hmm?"
+  },
+  "MARTINIHENRY|LOWMOOD": {
+    "path": "audio/MARTINIHENRY/MARTINIHENRY_LOWMOOD_JP.ogg",
+    "sha256": "8287694b36fd9f2c3a2900a95c8ebba1c7404371f716ea295855fc1fedcdaf89",
+    "ja": "えー、そんな……",
+    "caption": "欸，不会吧……",
+    "captionEn": "Oh, no way…"
+  },
+  "NTW20|MOOD2": {
+    "path": "audio/NTW20/NTW20_MOOD2_JP.ogg",
+    "sha256": "2236fcf74b9c9c3d0a12b7b7d5cbab7c1174f9e92d6b59b3f85512cfb4d92aa5",
+    "ja": "えっ？",
+    "caption": "欸？",
+    "captionEn": "Huh?"
+  },
+  "OTS14|LOWMOOD": {
+    "path": "audio/OTS14/OTS14_LOWMOOD_JP.ogg",
+    "sha256": "371c3235bb3d6a85765aaf6e7b021cd70a2b6982058590a478f3fcd8a9faaea8",
+    "ja": "そっか。",
+    "caption": "这样啊。",
+    "captionEn": "I see."
+  },
+  "SR3MP|APPRECIATE": {
+    "path": "audio/SR3MP/SR3MP_APPRECIATE_JP.ogg",
+    "sha256": "793885de10e5d1b4950adb599eaec69785f11dd26649e6e4f8560034f4dc1dd1",
+    "ja": "さすが！",
+    "caption": "不愧是你！",
+    "captionEn": "As expected!"
+  },
+  "SR3MP|MOOD1": {
+    "path": "audio/SR3MP/SR3MP_MOOD1_JP.ogg",
+    "sha256": "e48c4762b54f17294656edbce48d475a2e8798552e6853658a6154a00e331895",
+    "ja": "（笑い声）",
+    "caption": "（笑）",
+    "captionEn": "(Laughs)"
   }
 }

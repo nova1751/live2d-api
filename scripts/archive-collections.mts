@@ -202,8 +202,13 @@ try {
     for (const variants of Object.values(catalog.models)) {
       modelCount++;
       for (const v of variants) {
-        const base = catalog.sources[v.source].baseUrl,
-          src = plan(base);
+        const base = catalog.sources[v.source].baseUrl;
+        if (base.startsWith('./')) {
+          const manifest = v.manifest && posix.join(posix.dirname(file), base, v.manifest);
+          if (manifest && !entries.has(manifest)) throw Error('Missing local model manifest ' + manifest);
+          continue;
+        }
+        const src = plan(base);
         for (const f of [v.manifest, (v as { binary?: string }).binary, v.dialogue].filter(
           (x): x is string => !!x,
         )) {

@@ -1,0 +1,373 @@
+{
+  "model": "../bili_011_collabo_ur_rip/kokoro_abroad.moc",
+  "textures": [
+    "../bili_011_collabo_ur_rip/texture_00.png",
+    "../bili_011_collabo_ur_rip/texture_01.png"
+  ],
+  "physics": "../bili_011_collabo_ur_rip/kokoro_abroad.physics.json",
+  "expressions": [
+    {
+      "name": "angry01",
+      "file": "../011_general_rip/angry01.exp.json"
+    },
+    {
+      "name": "cry01",
+      "file": "../011_general_rip/cry01.exp.json"
+    },
+    {
+      "name": "default",
+      "file": "../011_general_rip/default.exp.json"
+    },
+    {
+      "name": "idle01",
+      "file": "../011_general_rip/idle01.exp.json"
+    },
+    {
+      "name": "kime01",
+      "file": "../011_general_rip/kime01.exp.json"
+    },
+    {
+      "name": "kokoro_default",
+      "file": "../011_general_rip/kokoro_default.exp.json"
+    },
+    {
+      "name": "kokoro_sad",
+      "file": "../011_general_rip/kokoro_sad.exp.json"
+    },
+    {
+      "name": "kokoro_serious",
+      "file": "../011_general_rip/kokoro_serious.exp.json"
+    },
+    {
+      "name": "kokoro_smile01",
+      "file": "../011_general_rip/kokoro_smile01.exp.json"
+    },
+    {
+      "name": "kokoro_smile02",
+      "file": "../011_general_rip/kokoro_smile02.exp.json"
+    },
+    {
+      "name": "kokoro_special",
+      "file": "../011_general_rip/kokoro_special.exp.json"
+    },
+    {
+      "name": "kokoro_suprised",
+      "file": "../011_general_rip/kokoro_suprised.exp.json"
+    },
+    {
+      "name": "sad01",
+      "file": "../011_general_rip/sad01.exp.json"
+    },
+    {
+      "name": "serious01",
+      "file": "../011_general_rip/serious01.exp.json"
+    },
+    {
+      "name": "smile01",
+      "file": "../011_general_rip/smile01.exp.json"
+    },
+    {
+      "name": "smile02",
+      "file": "../011_general_rip/smile02.exp.json"
+    },
+    {
+      "name": "suprised01",
+      "file": "../011_general_rip/suprised01.exp.json"
+    },
+    {
+      "name": "thinking01",
+      "file": "../011_general_rip/thinking01.exp.json"
+    }
+  ],
+  "motions": {
+    "tap": [
+      {
+        "file": "../011_general_rip/angry01.mtn"
+      },
+      {
+        "file": "../011_general_rip/bye01.mtn"
+      },
+      {
+        "file": "../011_general_rip/bye02.mtn"
+      },
+      {
+        "file": "../011_general_rip/cry01.mtn"
+      },
+      {
+        "file": "../011_general_rip/gattsu01.mtn"
+      },
+      {
+        "file": "../011_general_rip/humming01.mtn"
+      },
+      {
+        "file": "../011_general_rip/jaan01.mtn"
+      },
+      {
+        "file": "../011_general_rip/kime01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf02.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf03.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf04.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf_left01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf_right01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf02.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf03.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf04.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf05.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf_left01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nnf_right01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nod01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nod02.mtn"
+      },
+      {
+        "file": "../011_general_rip/oowarai01.mtn"
+      },
+      {
+        "file": "../011_general_rip/sad01.mtn"
+      },
+      {
+        "file": "../011_general_rip/sad02.mtn"
+      },
+      {
+        "file": "../011_general_rip/sad03.mtn"
+      },
+      {
+        "file": "../011_general_rip/serious01.mtn"
+      },
+      {
+        "file": "../011_general_rip/shame01.mtn"
+      },
+      {
+        "file": "../011_general_rip/sleep01.mtn"
+      },
+      {
+        "file": "../011_general_rip/sleep02.mtn"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn"
+      },
+      {
+        "file": "../011_general_rip/smile02.mtn"
+      },
+      {
+        "file": "../011_general_rip/surprised01.mtn"
+      },
+      {
+        "file": "../011_general_rip/wink01.mtn"
+      },
+      {
+        "file": "../011_general_rip/wondering01.mtn"
+      },
+      {
+        "file": "../bili_011_collabo_ur_rip/gacha01.mtn"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-024.mp3",
+        "text": "交给我吧！"
+      },
+      {
+        "file": "../011_general_rip/jaan01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-025.mp3",
+        "text": "微笑——光束！！"
+      },
+      {
+        "file": "../011_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-026.mp3",
+        "text": "成功了！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-028.mp3",
+        "text": "都是多亏了纱夜！"
+      },
+      {
+        "file": "../011_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-030.mp3",
+        "text": "不过，这里的怪比活动的时候要好打得多啊！\n这也是因为我进步了吗？"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-033.mp3",
+        "text": "原来是这样啊！"
+      },
+      {
+        "file": "../011_general_rip/nf03.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-034.mp3",
+        "text": "哎呀？\n那边的是……"
+      },
+      {
+        "file": "../011_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-036.mp3",
+        "text": "是小豆泥！"
+      },
+      {
+        "file": "../011_general_rip/nf03.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-038.mp3",
+        "text": "哎呀？"
+      },
+      {
+        "file": "../011_general_rip/nod01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-039.mp3",
+        "text": "嗯嗯"
+      },
+      {
+        "file": "../011_general_rip/nf04.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-041.mp3",
+        "text": "纱夜，小豆泥好像也想和我们\n一起做任务！"
+      },
+      {
+        "file": "../011_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-044.mp3",
+        "text": "小豆泥，我们一起加油吧！"
+      },
+      {
+        "file": "../011_general_rip/nf03.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_01-051.mp3",
+        "text": "猫——"
+      },
+      {
+        "file": "../011_general_rip/nf03.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-005.mp3",
+        "text": "小豆泥，你是想让那只猫露出笑容吗！"
+      },
+      {
+        "file": "../011_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-006.mp3",
+        "text": "好，那我也来帮忙！"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-009.mp3",
+        "text": "嘿、嘿！"
+      },
+      {
+        "file": "../011_general_rip/sad01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-010.mp3",
+        "text": "不行啊……天一黑马上就找不到敌人了……"
+      },
+      {
+        "file": "../011_general_rip/surprised01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-015.mp3",
+        "text": "呀！"
+      },
+      {
+        "file": "../011_general_rip/nf01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-017.mp3",
+        "text": "我没事，可是小豆泥它——！"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-020.mp3",
+        "text": "不能放弃哦，纱夜！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-022.mp3",
+        "text": "我想到了一个好主意！\n相信我吧！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-024.mp3",
+        "text": "当然啦！\n小豆泥，跟我来！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-028.mp3",
+        "text": "谢谢你，纱夜！"
+      },
+      {
+        "file": "../011_general_rip/gattsu01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-030.mp3",
+        "text": "Happy!"
+      },
+      {
+        "file": "../011_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-032.mp3",
+        "text": "Lucky!"
+      },
+      {
+        "file": "../011_general_rip/kime01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-034.mp3",
+        "text": "Smile!"
+      },
+      {
+        "file": "../011_general_rip/jaan01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-036.mp3",
+        "text": "光——束！！！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-040.mp3",
+        "text": "呵呵！"
+      },
+      {
+        "file": "../011_general_rip/nf05.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-042.mp3",
+        "text": "看来它们已经很要好了呢！"
+      },
+      {
+        "file": "../011_general_rip/smile02.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-044.mp3",
+        "text": "是我的『快乐能量』起作用了哦！"
+      },
+      {
+        "file": "../011_general_rip/smile01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-047.mp3",
+        "text": "对呀！我发现只要攒满『快乐能量』，\n就能发射光束了！用『Happy!Lucky!Smile!光束』，\n就能让怪兽和大家都笑容满面！"
+      },
+      {
+        "file": "../011_general_rip/oowarai01.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-051.mp3",
+        "text": "呵呵呵！"
+      },
+      {
+        "file": "../011_general_rip/nf02.mtn",
+        "sound": "../../voices/band-cn-bili_res011001-CHS_Azukicollab2026_KO_02-052.mp3",
+        "text": "来嘛，纱夜也一起玩吧！"
+      }
+    ],
+    "idle": [
+      {
+        "file": "../011_general_rip/idle01.mtn"
+      },
+      {
+        "file": "../011_general_rip/idle02.mtn"
+      }
+    ]
+  }
+}

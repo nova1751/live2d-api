@@ -183,6 +183,16 @@ sources.dump.packs = [
 ];
 const catalogPath = join(repository, 'catalog/library.json');
 preserveSceneCurtains(catalogPath, { sources, models: ordered });
+// The five damaged-form touch motions were byte-identical to the normal form in the original Cubism 2 export.
+const px4 = ordered['doll/px4storm/2801/destroy']?.find(v => v.source === 'dump');
+if (dump === '527aac9245c06444d5d0259be843740915b715fd' &&
+    px4?.manifest === 'models/px4storm_2801/destroy/px4storm_2801.model3.json') {
+  const repair = 'games/repairs/gfl-px4storm-2801-destroy.model3.json';
+  const model = readJson<{ FileReferences: { Motions: Record<string, { File: string }[]> } }>(join(repository, 'catalog', repair));
+  const clips = Object.values(model.FileReferences.Motions).flat().filter(clip => /^motions\/touch_[1-5]\.motion3\.json$/.test(clip.File));
+  px4.files = { ...px4.files, 'px4storm_2801.model3.json': './' + repair,
+    ...Object.fromEntries(clips.map(clip => [clip.File, '../normal/' + clip.File])) };
+}
 writeFileSync(
   catalogPath,
   JSON.stringify({ schemaVersion: 1, legacyIds, sources, models: ordered, audio }) + '\n',

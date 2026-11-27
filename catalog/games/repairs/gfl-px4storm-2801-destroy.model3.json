@@ -1,0 +1,113 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "px4storm_2801.moc3",
+    "Textures": [
+      "model.2048/texture_00.png"
+    ],
+    "Motions": {
+      "Broken1": [
+        {
+          "File": "motions/broken_1.motion3.json"
+        }
+      ],
+      "Broken2": [
+        {
+          "File": "motions/broken_2.motion3.json"
+        }
+      ],
+      "Broken3": [
+        {
+          "File": "motions/broken_3.motion3.json"
+        }
+      ],
+      "Broken4": [
+        {
+          "File": "motions/broken_4.motion3.json"
+        }
+      ],
+      "Broken5": [
+        {
+          "File": "motions/broken_5.motion3.json"
+        }
+      ],
+      "Idle": [
+        {
+          "File": "motions/daiji_idle_01.motion3.json"
+        }
+      ],
+      "Login": [
+        {
+          "File": "motions/login.motion3.json"
+        }
+      ],
+      "Shake": [
+        {
+          "File": "motions/shake.motion3.json"
+        }
+      ],
+      "TapLeg": [
+        {
+          "File": "motions/touch_1.motion3.json"
+        },
+        {
+          "File": "motions/touch_2.motion3.json"
+        }
+      ],
+      "TapBody": [
+        {
+          "File": "motions/touch_3.motion3.json"
+        },
+        {
+          "File": "motions/touch_4.motion3.json"
+        }
+      ],
+      "TapHead": [
+        {
+          "File": "motions/touch_5.motion3.json"
+        }
+      ]
+    },
+    "Layout": {
+      "CenterX": 0,
+      "CenterY": 0,
+      "Width": 1,
+      "Height": 1,
+      "Scale": 18,
+      "X": 0,
+      "Y": 0
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthForm",
+        "ParamMouthOpenY"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    }
+  ],
+  "HitAreas": [
+    {
+      "Id": "HitAreaLeg",
+      "Name": "leg"
+    },
+    {
+      "Id": "HitAreaHead",
+      "Name": "head"
+    },
+    {
+      "Id": "HitAreaBody",
+      "Name": "body"
+    }
+  ]
+}

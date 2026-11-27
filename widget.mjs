@@ -331,6 +331,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
       mainlandPath + "$1/$2@$3/"
     ).replace(/^https:\/\/cdn\.jsdelivr\.net\/gh\//, mainlandPath);
   }
+  const catalogAssetUrl = (href) => regionalUrl(href.startsWith("./") ? new URL(href, sourceBase).href : href);
   const available = new Set(Object.keys(catalog.models).filter((id) => (!collection || !id.startsWith("other/")) && catalog.models[id].some((asset) => asset.manifest)));
   const hasModel = (id) => available.has(id);
   const presentation = collection ? catalog.presentation : void 0;
@@ -385,13 +386,13 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
       Object.entries(asset.cues).map(([key, cue]) => [key, {
         ...cue,
-        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : regionalUrl(cue.sound.startsWith("./") ? new URL(cue.sound, sourceBase).href : cue.sound)),
+        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : catalogAssetUrl(cue.sound)),
         caption: locale === "en" ? cue.captionEn || cue.caption : cue.caption
       }])
     ) : void 0;
     const ratio = asset.sceneAspect;
     const sceneAspect = typeof ratio === "number" && Number.isFinite(ratio) && ratio > 0 ? ratio : void 0;
-    const files = asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && regionalUrl(replacement)])) : asset.files;
+    const files = asset.files ? Object.fromEntries(Object.entries(asset.files).map(([path, replacement]) => [path, replacement && catalogAssetUrl(replacement)])) : asset.files;
     return { cues, sceneAspect, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery).map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;
@@ -399,7 +400,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.31";
+var version = "2.9.32";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -426,7 +427,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-5074b66649ffa4a4/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-67dd9f130a8f5798/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

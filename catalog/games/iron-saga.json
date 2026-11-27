@@ -57,6 +57,27 @@
             "sound": "https://raw.githubusercontent.com/Eikanya/Live2d-model/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/siluokayi11.mp3",
             "caption": "机械就是未来，未来就是机械。",
             "captionEn": "Machinery is the future, and the future is machinery."
+          },
+          "motions/tap_A2/tap1.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-tap1.ogg"
+          },
+          "motions/tap_A1/tap7.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-tap7.ogg"
+          },
+          "motions/idle/idle3-t1.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-idle3-t1.ogg"
+          },
+          "motions/tap_A2/tap5.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-tap5.ogg"
+          },
+          "motions/tap_A1/tap8.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-tap8.ogg"
+          },
+          "motions/tap_A3/tap2.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-tap2.ogg"
+          },
+          "motions/idle/idle2-t1.mtn": {
+            "sound": "./voices/iron-saga-slokai-cn-idle2-t1.ogg"
           }
         }
       }

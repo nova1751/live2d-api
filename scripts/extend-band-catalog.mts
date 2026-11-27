@@ -108,3 +108,18 @@ export async function extendBandCatalog(
   }
   return { added: entries.size, unavailable, missingPhysics };
 }
+
+export async function importRecoveredBandCostumes(catalog: ModelCatalog) {
+  const file = new URL('../catalog/games/band-dream-cn/sources.json', import.meta.url);
+  const { entries } = JSON.parse(await readFile(file, 'utf8')) as {
+    entries: { id: string; manifest: string; display: GalleryEntry }[];
+  };
+  const source = 'bestdori-cn-snapshot';
+  catalog.sources[source] = { baseUrl: './band-dream-cn/' };
+  catalog.gallery ??= {};
+  for (const { id, manifest, display } of entries) {
+    if (catalog.models[id]) throw Error('Duplicate recovered BanG Dream costume ' + id);
+    catalog.models[id] = [{ source, manifest }];
+    catalog.gallery[id] = display;
+  }
+}

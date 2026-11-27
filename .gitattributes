@@ -1,2 +1,3 @@
 patches/*.patch text eol=lf
 vendor/cubism-core/** -text
+catalog/games/band-dream-cn/**/*.mtn -text -diff

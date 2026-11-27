@@ -21,10 +21,13 @@ test('each game catalog can be deployed independently using immutable model sour
     for (const [id, [asset]] of Object.entries(catalog.models)) {
       assert.equal(id.split('/').length, 3);
       assert.ok(catalog.gallery[id].name && catalog.gallery[id].outfit);
-      const url = new URL(
-        asset.manifest,
-        catalog.sources[asset.source].baseUrl,
-      );
+      const base = catalog.sources[asset.source].baseUrl;
+      if (base.startsWith('./')) {
+        const location = new URL('../catalog/games/', import.meta.url);
+        assert.ok((await readFile(new URL(asset.manifest, new URL(base, location)))).length);
+        continue;
+      }
+      const url = new URL(asset.manifest, base);
       assert.equal(url.hostname, 'raw.githubusercontent.com');
       assert.match(url.pathname, /\/[0-9a-f]{40}\//);
     }
@@ -114,6 +117,74 @@ test('the Eve story motion uses the recording and subtitles from the same talk c
   }
 });
 
+test('recovered BanG Dream costumes keep their model, shared motions and original story recordings on the catalog CDN', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const catalog = await read('bang-dream');
+  const { entries, storyRecordings } = await read('band-dream-cn/sources');
+  const root = new URL('../catalog/games/', import.meta.url);
+  const cdn = new URL('https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/bang-dream.json');
+  const library = parseModelCatalog(catalog, cdn, 'bang-dream');
+  assert.equal(entries.length, 11);
+  assert.equal(storyRecordings.length, 66);
+  const checked = new Set();
+  for (const { id, manifest } of entries) {
+    const relative = './band-dream-cn/' + manifest;
+    assert.equal(library.resolve(id).modelUrl, new URL(relative, cdn).href);
+    const path = new URL(relative, root);
+    const model = JSON.parse(await readFile(path, 'utf8'));
+    const motions = Object.values(model.motions).flat();
+    const files = [model.model, ...model.textures, model.physics, ...model.expressions.map(e => e.file), ...motions.map(m => m.file)];
+    for (const file of files.filter(Boolean)) {
+      const asset = new URL(file, path);
+      if (checked.has(asset.href)) continue;
+      assert.ok(asset.href.startsWith(root.href) && (await readFile(asset)).length);
+      checked.add(asset.href);
+    }
+    const cues = storyRecordings.filter(row => row.id === id);
+    assert.equal(motions.filter(clip => clip.sound).length, cues.length);
+    for (const { sound, motion, sha256 } of cues) {
+      const recording = '../../voices/' + sound;
+      assert.ok(motions.find(clip => clip.sound === recording && clip.file === motion)?.text);
+      assert.equal(new URL(recording, new URL(relative, cdn)).href, new URL('./voices/' + sound, cdn).href);
+      assert.equal(createHash('sha256').update(await readFile(new URL(recording, path))).digest('hex'), sha256);
+    }
+  }
+});
+
+test('recovered Iron Saga and Houkai recordings resolve with the original motion or voice key', async () => {
+  const { parseModelCatalog } = await import('../src/library/catalog.ts');
+  const [iron, slokai, houkai, preview, audit] = await Promise.all([
+    'iron-saga', 'voices/iron-saga-slokai-cn', 'houkai2', 'voices/houkai2-recorded-preview', 'audit',
+  ].map(read));
+  const cdn = 'https://cdn.jsdmirror.com/gh/nova1751/live2d-api@catalog-test/catalog/games/';
+  const chinese = parseModelCatalog(iron, new URL('iron-saga.json', cdn), 'iron-saga').resolve(slokai.model);
+  const library = parseModelCatalog(houkai, new URL('houkai2.json', cdn), 'houkai2');
+  assert.equal(Object.keys(slokai.recordings).length, 7);
+  assert.equal(preview.recordings.length, 7);
+  const originalSlokaiVoiceBase = 'https://cdn.jsdmirror.com/gh/Eikanya/Live2d-model@7e446cbd95ec352cdb0f73c079e4d075d7d528ac/机动战队/siluokayi/voice/';
+  for (const [motion, sound] of [
+    ['motions/tap_A1/tap3.mtn', 'siluokayi31.mp3'],
+    ['motions/tap_A1/tap4.mtn', 'siluokayi26.mp3'],
+    ['motions/tap_A3/tap6.mtn', 'siluokayi12.mp3'],
+    ['motions/idle/idle4-t1.mtn', 'siluokayi11.mp3'],
+  ]) {
+    assert.equal(chinese.cues[motion].sound, originalSlokaiVoiceBase + sound);
+    assert.ok(!Object.hasOwn(slokai.recordings, motion));
+  }
+  for (const [file, { sound, sha256 }] of Object.entries(slokai.recordings)) {
+    assert.equal(chinese.cues[file].sound, new URL('voices/' + sound, cdn).href);
+    const audio = await readFile(new URL('../catalog/games/voices/' + sound, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), sha256);
+  }
+  for (const { id, file, sound, sha256 } of preview.recordings) {
+    assert.equal(library.resolve(id).cues[file].sound, new URL('voices/' + sound, cdn).href);
+    assert.ok(library.resolve(id).cues[file].caption);
+    assert.ok(!audit.unresolved.some(record => record.id === id && record.file === file));
+    const audio = await readFile(new URL('../catalog/games/voices/' + sound, import.meta.url));
+    assert.equal(createHash('sha256').update(audio).digest('hex'), sha256);
+  }
+});
+
 test('Houkai restores native event audio and numbered subtitles from the game bundles', async () => {
   const { parseModelCatalog } = await import('../src/library/catalog.ts');
   const [catalog, audit, voices, captions] = await Promise.all(
@@ -198,7 +269,18 @@ test('recovered media stays with its original recording, motion and locale', asy
   }
   assert.match(boise.sound, /\/102290\/propose\.ogg$/);
   assert.ok(boise.caption && boise.captionEn);
-  assert.equal(az.models['ship/30116/xuefeng_3'][0].cues.touch_special.sound, undefined);
+  const azurRepairs = await read('voices/azur-wiki-voices');
+  assert.equal(azurRepairs.length, 9);
+  for (const repair of azurRepairs) {
+    const cue = az.models[repair.id][0].cues[repair.group];
+    assert.equal(az.gallery[repair.id].date, repair.skinId);
+    assert.equal(cue.caption, repair.caption);
+    assert.equal(cue.captionEn, repair.captionEn);
+    assert.equal(cue.sound, repair.sound);
+    const audio = await readFile(new URL('../catalog/games/' + repair.sound, import.meta.url));
+    assert.equal(audio.toString('ascii', 0, 4), 'OggS');
+    assert.equal(createHash('sha256').update(audio).digest('hex'), repair.sha256);
+  }
   for (const [id, count] of [['character/xier/xier', 9], ['character/delisha/delisha', 5]]) {
     const asset = bh.models[id][0];
     assert.equal(Object.keys(asset.cues).length, count);
