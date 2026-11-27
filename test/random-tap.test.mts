@@ -90,6 +90,10 @@ test('a native text-only event retains its subtitle and leaves other motions ava
   const {actions} = await loadModernAssets('https://example.org/model', {url:'https://example.org/data',audio:new Map()},
     new AbortController().signal,{120213:{caption:'稍稍休息一下怎么样？'}},true).interactions;
   assert.deepEqual(actions.map(a=>[a.group,a.caption,a.sound]),[['Touch','稍稍休息一下怎么样？',undefined],['Wave',undefined,undefined]]);
+  const sound = 'https://example.org/recording.ogg';
+  const restored = await loadModernAssets('https://example.org/model', {url:'https://example.org/data',audio:new Map()},
+    new AbortController().signal,{120213:{caption:'稍稍休息一下怎么样？',sound}},true).interactions;
+  assert.deepEqual(restored.actions.map(a=>[a.group,a.caption,a.sound]),[['Touch','稍稍休息一下怎么样？',sound],['Wave',undefined,undefined]]);
 });
 
 test('the renderer preserves the CDN version delimiter and encodes reserved characters in filenames', async t => {

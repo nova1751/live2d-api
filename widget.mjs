@@ -385,7 +385,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
     const cues = asset.cues && (!asset.cueSource || collection && catalog.sources[asset.cueSource]) ? Object.fromEntries(
       Object.entries(asset.cues).map(([key, cue]) => [key, {
         ...cue,
-        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : regionalUrl(cue.sound)),
+        sound: cue.sound && (asset.cueSource ? assetUrl(cue.sound, asset.cueSource) : regionalUrl(cue.sound.startsWith("./") ? new URL(cue.sound, sourceBase).href : cue.sound)),
         caption: locale === "en" ? cue.captionEn || cue.caption : cue.caption
       }])
     ) : void 0;
@@ -399,7 +399,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.30";
+var version = "2.9.31";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -426,7 +426,7 @@ function runtimeDirectory(src) {
 }
 function githubLibrary(base) {
   const origin = base.hostname === "cdn.jsdmirror.com" ? base.origin : globalCdn;
-  return origin + "/gh/nova1751/live2d-api@catalog-f74d19b6e0e97150/catalog/library.json";
+  return origin + "/gh/nova1751/live2d-api@catalog-5074b66649ffa4a4/catalog/library.json";
 }
 function defaultLibraryUrl(base) {
   if (!packageRoot.test(base.pathname) && !widgetSnapshot.test(base.pathname)) return void 0;

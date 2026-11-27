@@ -1,4 +1,5 @@
 import { recoverNativeEvents } from './recover-native-events.mts';
+import { recoverGflDialogue } from './recover-gfl-dialogue.mts';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { readJson, repository, type Library } from './library-files.mts';
@@ -157,5 +158,6 @@ for (const key of [...legacyKeys].sort()) {
 }
 catalog.presentation = { labels, captions, aliases, outfitOrder, en: { labels: enLabels, captions: { ...enCaptions, ...legacyLines } } };
 recoverNativeEvents(catalog, root);
+console.log(recoverGflDialogue(catalog, root));
 await writeFile(file, JSON.stringify(catalog) + '\n');
 console.log(Object.keys(labels).length, 'labels;', Object.keys(captions).length, 'subtitles;', Object.keys(aliases).length, 'archive aliases');

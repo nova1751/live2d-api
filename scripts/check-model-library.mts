@@ -56,9 +56,12 @@ for (const [id, items] of Object.entries(library.models)) {
     const primary = items.find(v => v.manifest);
     if (!primary) throw new Error('Missing model manifest');
     for (const variant of items) {
-      if (!variant.cueSource || !library.sources[variant.cueSource]) continue;
       for (const [motion,cue] of Object.entries(variant.cues ?? {})) {
-        if (cue.sound && !statSync(join(directory,'sources',variant.cueSource,cue.sound),{throwIfNoEntry:false})?.size) {
+        if (!cue.sound) continue;
+        const path = variant.cueSource && library.sources[variant.cueSource]
+          ? join(directory, 'sources', variant.cueSource, cue.sound)
+          : !variant.cueSource && cue.sound.startsWith('./') ? join(directory, cue.sound) : undefined;
+        if (path && !statSync(path, { throwIfNoEntry: false })?.size) {
           console.error(id,motion,cue.sound);
           errors++;
         }

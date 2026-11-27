@@ -82,10 +82,11 @@ if (existsSync(index)) {
   for (const [id, variants] of Object.entries(previous.models)) {
     for (const variant of variants) {
       const current = library.models[id]?.find(v => v.source === variant.source && v.manifest === variant.manifest);
-      if (current?.cueSource || variant.cueSource) {
+      if (current?.cueSource || variant.cueSource || (current?.dialogue && current.dialogue === variant.dialogue)) {
         delete variant.cueSource;
         delete variant.cues;
-        if (current?.cueSource) { variant.cueSource = current.cueSource; variant.cues = current.cues; }
+        if (current?.cueSource) variant.cueSource = current.cueSource;
+        if (current?.cues) variant.cues = current.cues;
       }
       if (current?.collectionDefault) variant.collectionDefault = true;
       else delete variant.collectionDefault;
@@ -105,6 +106,17 @@ for (const file of [...files, 'catalog/browser.mjs', 'catalog/gallery.css', 'cat
   const target = join(viewer, file);
   mkdirSync(dirname(target), { recursive: true });
   cpSync(join(repository, file), target, { recursive: true });
+}
+const recordings = new Set(Object.values(library.models).flat()
+  .filter(variant => !variant.cueSource)
+  .flatMap(variant => Object.values(variant.cues ?? {}).map(cue => cue.sound))
+  .filter((sound): sound is string => !!sound?.startsWith('./')));
+for (const file of recordings) {
+  for (const directory of [output, join(viewer, 'catalog')]) {
+    const target = join(directory, file);
+    mkdirSync(dirname(target), { recursive: true });
+    cpSync(join(repository, 'catalog', file), target);
+  }
 }
 // A partial download can expose a historical ID when its preferred alias is absent.
 for (const [id, preferred] of Object.entries(library.presentation?.aliases ?? {})) {

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { readFile } from 'node:fs/promises';
 import { posix } from 'node:path';
+import type { GameCue } from '../src/library/catalog.ts';
 import { json, raw, tree } from './game-sources.mts';
 
 const repo = 'RedBeanN/HSoD2';
@@ -9,6 +11,17 @@ const prefix = 'up-list/public/live2d/';
 const base = raw + repo + '/' + revision + '/' + prefix;
 interface Motion {file: string; sound?: string; text: number}
 interface Manifest {model: string; motions: Record<string, Motion[]>}
+interface PartnerVoiceIndex {
+  manifestUrl: string;
+  packageUrl: string;
+  recordings: Record<string, { model: string; sha256: string }>;
+}
+interface TextMapIndex {
+  models: Record<string, Record<string, { textId: number; caption: string }>>;
+}
+const voices = new URL('../catalog/games/voices/', import.meta.url);
+const partnerVoices: PartnerVoiceIndex = JSON.parse(await readFile(new URL('houkai2-partner-11.7.json', voices), 'utf8'));
+const textMap: TextMapIndex = JSON.parse(await readFile(new URL('houkai2-textmap-11.7.json', voices), 'utf8'));
 const outfits: Record<string, 'seele' | 'thresa'> = { xier: 'seele', delisha: 'thresa' };
 const translations = {
   seele: [
@@ -38,9 +51,12 @@ async function bytes(url: string) {
 }
 
 export async function recoverHoukai(folder: string, manifest: Manifest, originalBase: string, originalTree: Map<string,string>) {
-  if (folder === 'mie') return recoverMei(manifest, originalTree);
+  if (folder === 'mie') {
+    const recovery = await recoverMei(manifest, originalTree);
+    return { ...recovery, cues: recoverCaptions(folder, manifest) };
+  }
   const outfit = outfits[folder];
-  if (!outfit) return;
+  if (!outfit) return recoverOriginalEvents(folder, manifest);
   const directory = 'model/' + outfit + '/';
   const manifestUrl = base + directory + 'model.json';
   const [alternate, archive, messages] = await Promise.all([
@@ -92,6 +108,35 @@ export async function recoverHoukai(folder: string, manifest: Manifest, original
   return { files, cues, repairs };
 }
 
+function recoverCaptions(folder: string, manifest: Manifest): Record<string, GameCue> {
+  const clips = Object.values(manifest.motions).flat();
+  const captions = Object.entries(textMap.models[folder] ?? {});
+  return Object.fromEntries(captions.map(([key, { textId, caption }]) => {
+    const matches = clips.filter(clip => (clip.sound || clip.file) === key);
+    assert.ok(matches.length && matches.every(clip => clip.text === textId), folder + ' unmatched text ID ' + textId);
+    return [key, { caption }];
+  }));
+}
+
+async function recoverOriginalEvents(folder: string, manifest: Manifest) {
+  const id = 'character/' + folder + '/' + folder;
+  const events = Object.entries(partnerVoices.recordings).filter(([, recording]) => recording.model === id);
+  const cues = recoverCaptions(folder, manifest);
+  if (!events.length && !Object.keys(cues).length) return;
+  const sounds = new Set(Object.values(manifest.motions).flat().map(clip => clip.sound));
+  const repairs = [];
+  for (const [event, recording] of events) {
+    assert.ok(sounds.has(event), id + ' unused Wwise event ' + event);
+    const sound = 'houkai2-' + event + '.ogg';
+    const audio = await readFile(new URL(sound, voices));
+    assert.equal(audio.toString('ascii', 0, 4), 'OggS');
+    assert.equal(createHash('sha256').update(audio).digest('hex'), recording.sha256, sound);
+    cues[event] = { ...cues[event], sound };
+    repairs.push({ id, file: event, from: partnerVoices.packageUrl, manifestUrl: partnerVoices.manifestUrl, sha256: recording.sha256 });
+  }
+  return { cues, cueSource: events.length ? 'partnerVoices' : undefined, repairs };
+}
+
 async function recoverMei(manifest: Manifest, originalTree: Map<string,string>) {
   const repo = 'AzharRizkiZ/Live2D-Model', rev = 'fab804971d22fcbcefbc6e4277d1e09424e9143c';
   const root = 'assets/models/Honkai-Impact/';
@@ -115,5 +160,5 @@ async function recoverMei(manifest: Manifest, originalTree: Map<string,string>) 
     files[clip.sound] = from;
     repairs.push({ id:'character/mie/mie', file:clip.sound, from, manifestUrl, sha256:createHash('sha256').update(wav).digest('hex') });
   }
-  return { files, cues: undefined, repairs };
+  return { files, repairs };
 }

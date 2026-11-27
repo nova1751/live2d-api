@@ -7,7 +7,7 @@
 | 少女前线 | 延用原目录及离线下载工具。刘氏步枪 563 标准款事件 56309 按清单内含空格的动作路径匹配。G11、G41、刘易斯、RFB、SAT8、Vector 的 8 个缺词键采用逐条核对过的社区转写或中译，仅用于中文模式。[台词资料示例](https://gf-ogas.wiki/wiki/少女前线:G11) |
 | 碧蓝航线 | [模型与缩略图](https://github.com/Chaoray/AzurLane-Live2D-Viewer/tree/88cb6e56a0ad472fe7e546509f096545d2bbc5b9)、[中文装扮及台词](https://github.com/AzurLaneTools/AzurLaneData/tree/4cca5c2437007b62d30a6235fcfc0c0203231378)、[日文语音](https://github.com/Fernando2603/AzurLane/tree/219db8feba07058dde232c461218bdacaaefdc17/audio/voiceline)。优先使用对应装扮的录音。允许继承的语音键按游戏规则核对默认装扮以及中、日、英文本，再绑定同一事件的录音。模型的命中区域名称用于点击。 |
 | BanG Dream! | 使用 [U1s1-king](https://github.com/U1s1-king) 的九个 dsh-live2d 乐队仓库。独立版人物编号按各仓库的角色表映射到游戏编号，服装名称及时间来自[游戏数据归档](https://github.com/haneoka-gakuen/bangdream-live2d/tree/2ed0434efb999b78bc282ad27b3964395a32340a)。松原花音与长崎爽世两套服装按原 buildData 的 bundleName 和 fileName 补回 15 个引用。 |
-| 崩坏学园 2 | 19 个造型。希儿与德丽莎有经动作核对的录音和字幕，芽衣另补回 7 段原始录音。其他 16 个造型仍有 117 个缺音频的引用，播放时保留原动作。[原始模型](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/崩坏学园2) |
+| 崩坏学园 2 | 19 个造型。希儿与德丽莎有经动作核对的录音和字幕，芽衣有 7 段原始录音。17 个造型补回官方中文字幕，其中 6 个造型从原语音包补回 41 段录音。仍缺录音的动作保留字幕并照常播放。[原始模型](https://github.com/Eikanya/Live2d-model/tree/7e446cbd95ec352cdb0f73c079e4d075d7d528ac/崩坏学园2) |
 
 点击未映射部位时，旧模型按实际网格命中，新模型在没有命名命中区域时读取渲染帧的像素透明度。随机动作复用该动作已有的录音、字幕和播放时序，空白画布不触发随机动作。
 
@@ -25,9 +25,13 @@
 
 宝石研物语使用同一上游固定提交中的原始素材。部分模型清单在数组或对象的最后一项保留了逗号，Cubism 2 播放器兼容这种导出格式。仓库中的缩略图由图鉴实机渲染生成。上述数量以核对过的公开文件为范围。
 
+B 站 1.1.4 安装包的文件索引也只在 `elizabeth_2` 目录列出 `motions/guide.mtn`。`elizabeth_8` 目录内有模型、贴图、四段动作和四段录音，图鉴使用该造型现有的原动作。[安装包](https://pkg.biligame.com/games/bsywy_1.1.4_bilibili_20210927_276373.apk)
+
 ## 本轮补全与已核对的缺音事件
 
-少女前线 369 个新版造型共有 1,991 条触摸事件。按角色和语音键核对后，9 条互动可显示笑声或吃惊的中文声音说明，另有 67 条有录音、无可核对字幕。42 条有字幕的互动仍缺对应录音。Px4 Storm 2801 战损的五条互动保留同一事件的声音和字幕，缺失的动作留空。[声音说明示例](https://gf-ogas.wiki/wiki/少女前线:Kar98k)
+少女前线 369 个新版造型共有 1,991 条触摸事件。按原录音转写 10 个语音键，为 14 条事件补回中英文字幕。目前 47 条事件有录音、缺可核对字幕，40 条有字幕、缺原录音。五区资源清单中的 400 个枪娘模型造型均可映射到当前收录的同源模型。Px4 Storm 2801 战损的五条触摸动画只出现在普通造型目录，战损版保留该事件的原声和字幕。[转写记录](../catalog/games/voices/gfl-transcripts.json) · [五区资源清单](https://github.com/gf-data-tools/gf-resource-downloader/releases/tag/ResData)
+
+98K 的 4301 和 8301 普通造型现在播放日服 `98K.acb` 中的 `98K_DIALOGUEWEDDING_JP`。原声的意思与最新中、日文台词表一致，英文字幕据此校正。录音随图鉴快照发布，使用当前图鉴所在的 CDN。[录音来源记录](../catalog/games/voices/gfl-98k-dialoguewedding.json)
 
 97 式霰弹枪 `doll/97types/5805/normal` 的事件 `580509` 使用 `97TYPES|DIALOGUEWEDDING`。模型事件表和角色页均将水果台词列为誓约后的副官互动。公开日语语音库缺这一键，角色页的誓约仪式和心智升级录音各对应其他台词。图鉴保留此事件的原动作和字幕。[事件表](https://github.com/GFL-Live2D/dump/blob/527aac9245c06444d5d0259be843740915b715fd/models/97types_5805/normal/97types_5805.data.json) · [角色台词](https://iopwiki.com/wiki/Type_97_Shotgun/Quotes) · [日语语音库](https://huggingface.co/datasets/deepghs/girlsfrontline_voices_jp)
 
@@ -47,7 +51,11 @@
 
 2.9.5 补回可畏「值日时的春心萌动」的三个特殊互动。返港、第三句主界面台词和特殊触摸分别使用同装扮 207053 的 `home_ex`、`main3_ex` 和 `touch2_ex` 日语录音，字幕来自中服及美服的额外台词表。当前目录共 2,255 个带台词的动作组，其中 2,254 个带录音。[额外台词表](https://github.com/AzurLaneTools/AzurLaneData/blob/4cca5c2437007b62d30a6235fcfc0c0203231378/CN/ShareCfg/ship_skin_words_extra.json) · [对应装扮录音](https://github.com/Fernando2603/AzurLane/tree/219db8feba07058dde232c461218bdacaaefdc17/audio/voiceline/207053)
 
-芽衣沿用 `mie/model.json` 的原动作、录音文件名和时序。另一导出的 `mei` 目录收录了同名 WAV，对应的七个动作文件与当前造型逐字节相同。七个原文本编号暂缺可核实的字幕表。[补录来源](https://github.com/AzharRizkiZ/Live2D-Model/tree/fab804971d22fcbcefbc6e4277d1e09424e9143c/assets/models/Honkai-Impact/mei)
+芽衣沿用 `mie/model.json` 的原动作、录音文件名和时序。另一导出的 `mei` 目录收录了同名 WAV，对应的七个动作文件与当前造型逐字节相同。[补录来源](https://github.com/AzharRizkiZ/Live2D-Model/tree/fab804971d22fcbcefbc6e4277d1e09424e9143c/assets/models/Honkai-Impact/mei)
+
+## 崩坏学园 2 原版录音与字幕
+
+国服 11.7 资源清单中的 Wwise 搭档语音包收录了丽塔、时雨绮罗、妮娜、宁蒂、西琳和琪卡的 41 个缺失事件。按模型的原事件名匹配 Wwise 事件 ID，再通过同一声库的播放动作解析到单一音轨。图鉴将原音轨转为 Ogg Vorbis，并随图鉴快照发布约 2.7 MB 的录音。17 个造型的 124 条中文字幕按模型中的数字编号与官方 `TextMap` 精确对应，包括芽衣的 7 条字幕。其余 76 处旧 WAV 引用暂缺可核实的原录音。[语音来源记录](../catalog/games/voices/houkai2-partner-11.7.json) · [中文字幕来源记录](../catalog/games/voices/houkai2-textmap-11.7.json)
 
 ## 碧蓝航线的场景取景
 

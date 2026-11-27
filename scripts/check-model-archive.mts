@@ -153,8 +153,11 @@ for (const collection of collections) {
         else if (cue.sound) voiceOnlyCues++;
       }
     }
+    const replacedSounds = new Set(Object.values(model.motions ?? {}).flat()
+      .filter(clip => clip.sound && v.cues?.[clip.sound]?.sound)
+      .map(clip => clip.sound));
     for (const item of references(model)) {
-      if (!item) continue;
+      if (!item || replacedSounds.has(item)) continue;
       const fix =
         v.files && Object.hasOwn(v.files, item) ? v.files[item] : (v.soundAliases?.[item] ?? item);
       if (fix === null) {
@@ -167,7 +170,7 @@ for (const collection of collections) {
     if (v.dialogue) check(urlPath(v.dialogue, source.href));
     for (const c of Object.values(v.cues ?? {}))
       if (c.sound) {
-        const base = v.cueSource ? new URL(catalog.sources[v.cueSource].baseUrl, host + path).href : url;
+        const base = v.cueSource ? new URL(catalog.sources[v.cueSource].baseUrl, host + path).href : host + path;
         check(urlPath(c.sound, base));
       }
     manifestsChecked++;

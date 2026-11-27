@@ -63,9 +63,8 @@ for (const id of gallery.ids) {
       code = line?.char_code?.toUpperCase(),
       key = line?.voice_key?.toUpperCase();
     const hasAudio = !!(
-      code &&
-      key &&
-      source.audio.has('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG')
+      cues?.[eventId]?.sound ||
+      (code && key && source.audio.has('AUDIO/' + code + '/' + code + '_' + key + '_JP.OGG'))
     );
     const hasText = !!(cues?.[eventId]?.caption || source.captions?.[code + '|' + key] || line?.caption)?.trim();
     const reasons = [];
