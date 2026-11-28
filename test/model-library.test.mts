@@ -104,6 +104,9 @@ test('supplemental Azur Lane outfits keep the same character and use the exact s
   assert.ok(asset.cues?.home.caption);
   assert.ok(asset.cues?.home.captionEn);
   assert.equal(asset.cues?.touch_drag1, undefined);
+  const stLouis = library.resolve('ship/10213/shengluyisi_2');
+  assert.ok(stLouis.cues?.main_1?.sound && stLouis.cues?.main_1?.caption && stLouis.cues?.main_1?.captionEn);
+  assert.ok(stLouis.cues?.wedding?.sound && stLouis.cues?.wedding?.caption);
 });
 
 test('Girls’ Frontline event captions can use the game’s separate text key', async () => {

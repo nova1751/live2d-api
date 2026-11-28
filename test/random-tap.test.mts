@@ -136,3 +136,32 @@ test('touch events can use the sole numbered head of 7706 without joining ambigu
   assert.equal(nativeTouchArea('leg2', new Set(['leg1'])), 'leg2');
   assert.equal(nativeTouchArea('leg', new Set(['leg', 'leg2'])), 'leg');
 });
+
+test('motions placed under an anonymous empty group are promoted by filename for idle and cues', async t => {
+  const compiled = await build({ entryPoints: ['src/modern/interactions.ts'], bundle: true, write: false, format: 'esm' });
+  const { loadModernAssets } = await import('data:text/javascript;base64,' + Buffer.from(compiled.outputFiles[0].contents).toString('base64'));
+  const manifest = {
+    FileReferences: {
+      Motions: {
+        '': [
+          { File: 'motions/idle.motion3.json' },
+          { File: 'motions/touch_body.motion3.json' },
+          { File: 'motions/daiji_idle_01.motion3.json' },
+        ],
+      },
+    },
+  };
+  t.mock.method(globalThis, 'fetch', async () => Response.json(manifest));
+  const { src, resolveAsset, interactions } = loadModernAssets(
+    'https://example.org/shengluyisi_2.model3.json', undefined, new AbortController().signal,
+    { touch_body: { sound: 'https://example.org/touch.ogg', caption: 'hi' } }, true,
+  );
+  const rewritten = JSON.parse(await (await resolveAsset(src)).text());
+  assert.equal(rewritten.FileReferences.Motions[''], undefined);
+  assert.deepEqual(rewritten.FileReferences.Motions.Idle.map((c: { File: string }) => c.File),
+    ['motions/idle.motion3.json', 'motions/daiji_idle_01.motion3.json']);
+  const { actions, idleFiles } = await interactions;
+  assert.ok(idleFiles.has('motions/idle.motion3.json') && idleFiles.has('motions/daiji_idle_01.motion3.json'));
+  assert.deepEqual(actions.map((a: { group: string; sound?: string; caption?: string }) => [a.group, a.sound, a.caption]),
+    [['touch_body', 'https://example.org/touch.ogg', 'hi']]);
+});

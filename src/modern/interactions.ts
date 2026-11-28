@@ -52,6 +52,18 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
   const manifestUrl = replacement ? new URL(replacement, url).href : url;
   const model = json<Manifest>(manifestUrl, signal).then(manifest => {
     const groups = manifest.FileReferences.Motions ?? {};
+    // Some exports place all motions under the empty group "" (e.g. GFL HOC squads, Azur Lane shengluyisi_2).
+    // Promote unnamed clips into groups named after their filename stem so idle and cue lookups work.
+    if (Array.isArray(groups['']) && groups[''].length && Object.keys(groups).every(name => !name)) {
+      const unnamed = groups[''];
+      delete groups[''];
+      for (const clip of unnamed) {
+        const stem = /(?:^|\/)([^/]+?)(?:\.motion3\.json)?$/i.exec(clip.File)?.[1] ?? '';
+        const name = /(?:^|_)idle(?:_|$)/i.test(stem) ? 'Idle' : stem;
+        if (!name) continue;
+        (groups[name] ??= []).push(clip);
+      }
+    }
     // live2d-web looks for the exact group name "Idle" by default; alias lowercase "idle" (e.g. Azur Lane).
     if (!groups.Idle) {
       const idleKey = Object.keys(groups).find(name => /^idle$/i.test(name)) ?? Object.keys(groups).find(name => /^idle/i.test(name));
