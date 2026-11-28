@@ -106,7 +106,8 @@ body > #waifu.waifu-adaptive #waifu-tips {
   left: var(--waifu-viewport-left, 0px);
   right: calc(100% - var(--waifu-viewport-left, 0px) - var(--waifu-model-width));
   bottom: calc(var(--waifu-float-model-bottom) + var(--waifu-model-height) + var(--waifu-content-gap));
-  max-height: min(30vh, 160px, calc(100dvh - var(--waifu-float-model-bottom) - var(--waifu-model-height) - var(--waifu-content-gap) - max(var(--waifu-content-gap), env(safe-area-inset-top, 0px))));
+  /* The whole line shows, however long; it only scrolls if it would leave the screen. */
+  max-height: calc(100dvh - var(--waifu-float-model-bottom) - var(--waifu-model-height) - var(--waifu-content-gap) - max(var(--waifu-content-gap), env(safe-area-inset-top, 0px)));
 }
 body > #waifu.waifu-adaptive #waifu-status {
   left: calc(var(--waifu-viewport-left, 0px) + var(--waifu-model-width) / 2);
@@ -185,7 +186,7 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
   right: var(--waifu-side-space);
   width: min(320px, var(--waifu-model-width));
   min-height: 0;
-  max-height: min(30vh, 160px);
+  max-height: none;
   margin: 0 auto;
   overflow: auto;
   overflow-wrap: anywhere;
@@ -522,6 +523,8 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
 
 .waifu-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 #waifu-tool button:focus-visible, #waifu-retry:focus-visible, #waifu-toggle:focus-visible { outline: 2px solid var(--waifu-focus, #126381); outline-offset: 2px; }
+/* Focus returned after closing the expanded view with the mouse (runtime/expand.ts). */
+#waifu-tool button[data-quiet-focus]:focus-visible { outline: none; }
 @media (hover: none) {
   #waifu.waifu-adaptive { --waifu-tool-size: 44px; }
   #waifu-tool { opacity: 1; }
@@ -643,19 +646,19 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
 .waifu-view-controls button:hover { background: var(--view-hover); }
 .waifu-view-controls svg { width: 16px; height: 16px; fill: currentColor; }
 .waifu-view-controls :focus-visible { outline: 2px solid var(--view-accent); outline-offset: 1px; }
+/* The view never scrolls: expand.ts moves the content and zooms it, and handles every gesture. */
 .waifu-view-viewport {
   position: absolute;
   inset: 0;
   container-type: size;
-  overflow: auto;
-  scrollbar-width: none;
+  overflow: clip;
   overscroll-behavior: contain;
-  overflow-anchor: none;
-  /* One finger pans natively; pinches are handled as zoom in expand.ts. */
-  touch-action: pan-x pan-y;
+  touch-action: none;
+  cursor: grab;
 }
-.waifu-view-viewport::-webkit-scrollbar { display: none; }
-.waifu-view-viewport[data-pannable] { cursor: grab; }
+/* The view fills the screen and holds focus for the zoom and arrow keys; a ring around it would
+   only frame the screen. The zoom value and the moving character show where keys go. */
+.waifu-view-viewport:focus { outline: none; }
 .waifu-view-viewport[data-panning],
 .waifu-view-viewport[data-panning] * { cursor: grabbing; user-select: none; }
 .waifu-view-content {
@@ -668,17 +671,29 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   --view-fit-height: max(1px, calc(min(90cqh, 100cqh - var(--view-header) - var(--view-footer)) - var(--view-caption-space)));
   display: grid;
   place-items: center;
+  /* A zoomed character overflows the view evenly on every side. */
+  place-content: center;
   box-sizing: border-box;
-  overflow: clip;
-  width: max-content;
-  height: max-content;
-  min-width: 100%;
-  min-height: 100%;
-  /* Zoomed in, a tall figure is still narrower than the screen and a wide one shorter, which left
-     nothing to pan along that axis. Add travel in both directions that grows with the zoom. */
-  --view-slack-x: max(0px, 50cqw * (var(--view-scale, 1) - 1));
-  --view-slack-y: max(0px, 50cqh * (var(--view-scale, 1) - 1));
-  padding: calc(var(--view-header) + var(--view-caption-space) + var(--view-slack-y)) calc(var(--view-side) + var(--view-slack-x)) calc(var(--view-footer) + var(--view-slack-y));
+  position: relative;
+  left: var(--view-pan-x, 0px);
+  top: var(--view-pan-y, 0px);
+  width: 100%;
+  height: 100%;
+  padding: calc(var(--view-header) + var(--view-caption-space)) var(--view-side) var(--view-footer);
+}
+/* A framed model draws on a square fixed around the view (expand.ts), so zooming and dragging move
+   the camera rather than a larger canvas. Input still reaches only the character's own box. */
+#waifu-expanded #waifu[data-placed-surface] .waifu-surface {
+  left: var(--view-surface-left);
+  top: var(--view-surface-top);
+  bottom: auto;
+  width: var(--view-surface-size);
+  transform: none;
+}
+#waifu-expanded #waifu[data-placed-surface] .waifu-surface .waifu-model-stage::after {
+  left: var(--view-hit-left);
+  bottom: var(--view-hit-bottom);
+  transform: none;
 }
 #waifu-expanded #waifu {
   position: relative;
@@ -704,11 +719,14 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   box-sizing: border-box;
   animation: none;
   inset: auto auto calc(100% + var(--view-caption-gap)) 50%;
-  translate: -50% 0;
+  translate: calc(-50% + var(--view-caption-shift, 0px)) 0;
   margin: 0;
-  width: min(420px, max(240px, 90%), 100cqw - 24px);
+  /* Short lines keep the usual width; long ones widen, then wrap onto as many lines as they need. */
+  width: max-content;
+  min-width: min(420px, max(240px, 90%), 100cqw - 24px);
+  max-width: min(720px, 100cqw - 24px);
   min-height: 0;
-  max-height: var(--view-caption-height);
+  max-height: calc(100cqh - var(--view-header) - 16px);
   padding: 7px 12px;
   border: 1px solid var(--view-outline);
   border-radius: 10px;
@@ -721,7 +739,7 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   overflow-wrap: anywhere;
   word-break: normal;
 }
-#waifu-expanded .waifu-view-viewport[data-pannable] #waifu #waifu-tips {
+#waifu-expanded .waifu-view-viewport[data-caption-pinned] #waifu #waifu-tips {
   position: fixed;
   z-index: 10;
   inset: calc(var(--view-header) + 2px) auto auto 50%;
@@ -730,6 +748,7 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
 #waifu-expanded #waifu-tips.waifu-tips-active { pointer-events: auto; }
 #waifu-expanded #waifu #waifu-tool {
   inset: 0 auto 0 calc(100% + 6px);
+  z-index: 9;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -737,6 +756,7 @@ html:has(#waifu-expanded[open]) { overflow: hidden; }
   height: max-content;
   max-height: none;
   margin: auto 0;
+  translate: var(--view-tool-x, 0px) var(--view-tool-y, 0px);
   opacity: 1;
   overflow: visible;
 }

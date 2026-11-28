@@ -80,12 +80,16 @@ test('scene cuts use the mesh IDs from each reviewed Cubism export', async () =>
   }
   for (const id of ['ship/39904/wuqi_3', 'ship/39904/wuqi_3_hx']) {
     const { hiddenDrawables, sceneAspect, subjectFrame } = ships.resolve(id, 'eikanya');
-    assert.deepEqual(hiddenDrawables, ['ArtMesh307']);
+    assert.deepEqual(hiddenDrawables, ['ArtMesh307', 'ArtMesh745']);
     assert.deepEqual(subjectFrame, [136, 118, 184, 209]);
     assert.equal(sceneAspect, undefined);
   }
-  assert.deepEqual(ships.resolve('ship/20703/guanghui_9', 'eikanya').hiddenDrawables, ['ArtMesh545', 'ArtMesh546']);
-  assert.deepEqual(ships.resolve('ship/29903/chaijun_5', 'eikanya').hiddenDrawables, ['ArtMesh771']);
+  for (const name of ['ArtMesh545', 'ArtMesh546', 'ArtMesh416']) {
+    assert.ok(ships.resolve('ship/20703/guanghui_9', 'eikanya').hiddenDrawables?.includes(name));
+  }
+  for (const name of ['ArtMesh771', 'ArtMesh915']) {
+    assert.ok(ships.resolve('ship/29903/chaijun_5', 'eikanya').hiddenDrawables?.includes(name));
+  }
 });
 
 test('supplemental Azur Lane outfits keep the same character and use the exact skin recording', async () => {

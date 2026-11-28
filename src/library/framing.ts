@@ -152,12 +152,25 @@ export function fitSilhouette(mask: Uint8Array, initial: Camera, hitTest?: HitTe
  * under the square's bottom edge (0.5 centers it; 0 grows it only upwards and sideways).
  * Motions that zoom past the framed character stay visible within the extra margin.
  */
-export interface PaintSurface { scale: number; below: number }
+export interface ScaledSurface { scale: number; below: number }
+/**
+ * A square surface with the reference square anywhere on it: its top-left corner and side as
+ * fractions of the surface side. The expanded view uses one fixed to the screen while the
+ * character is zoomed and dragged across it (runtime/expand.ts).
+ */
+export interface PlacedSurface { left: number; top: number; size: number }
+export type PaintSurface = ScaledSurface | PlacedSurface;
 export const referenceSurface: PaintSurface = { scale: 1, below: 0.5 };
 
-/** Place a camera framed for the reference square on a larger surface, unchanged on screen. */
-export function onSurface(camera: Camera, { scale, below }: PaintSurface): Camera {
-  return { scale: camera.scale / scale, x: camera.x / scale, y: (camera.y + (scale - 1) * (0.5 - below)) / scale };
+/** Place a camera framed for the reference square on another surface, unchanged on screen. */
+export function onSurface(camera: Camera, surface: PaintSurface): Camera {
+  if (!('size' in surface)) {
+    const { scale, below } = surface;
+    return { scale: camera.scale / scale, x: camera.x / scale, y: (camera.y + (scale - 1) * (0.5 - below)) / scale };
+  }
+  // Camera offsets are measured from the surface center, in units of its side.
+  const { left, top, size } = surface;
+  return { scale: camera.scale * size, x: size * camera.x + left + size / 2 - 0.5, y: size * camera.y + top + size / 2 - 0.5 };
 }
 
 export interface Framing {

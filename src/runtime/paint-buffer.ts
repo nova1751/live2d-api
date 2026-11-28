@@ -1,10 +1,23 @@
 /**
- * Largest drawing-buffer side for a paint surface, in device pixels. The expanded view sizes its
- * surface within it (runtime/expand.ts) and both renderers clamp their buffers to it. 6144 keeps a
- * full-screen surface at native resolution on 4K and 5K screens at any system scaling.
+ * Largest drawing-buffer side for a paint surface, in device pixels; both renderers clamp their
+ * buffers to it. The expanded view draws on a square around the screen (runtime/expand.ts), and
+ * 8192 holds that square at 2x on a 1440p screen and at native resolution on 4K and 5K screens.
  */
 export function maxPaintBuffer() {
-  return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 2048 : 6144;
+  return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 2048 : 8192;
+}
+
+/** Visible device pixels a desktop drawing buffer may hold: 4K at native resolution, 1440p at 2x. */
+export const desktopPixelBudget = 16.8e6;
+
+/**
+ * The pixel ratio to aim for. Desktops render the floating widget and the expanded view at 2x or
+ * more even on a 1x screen: the supersampled, mipmapped result is sharper than drawing at 1x.
+ * Touch devices keep their own ratio to save power.
+ */
+export function targetPixelRatio(element: Element, width: number, height: number, coarse: boolean) {
+  const ratio = Number.isFinite(devicePixelRatio) && devicePixelRatio > 0 ? devicePixelRatio : 1;
+  return !coarse && (Math.max(width, height) <= 720 || element.closest('#waifu-expanded')) ? Math.max(ratio, 2) : ratio;
 }
 
 export interface Box { left: number; top: number; width: number; height: number }

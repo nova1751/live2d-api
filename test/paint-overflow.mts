@@ -171,7 +171,8 @@ export async function checkPaintOverflow(browser, base) {
           const coverage = (subject.y + subject.height - tip.y) / frame.height;
           assert.ok(coverage >= 0.80 && coverage <= 0.90, String(coverage));
         }
-        assert.deepEqual(await view.evaluate(el => [el.scrollWidth - el.clientWidth, el.scrollHeight - el.clientHeight]), [0, 0]);
+        // The view never scrolls; expand.ts moves the character instead.
+        assert.deepEqual(await view.evaluate(el => { el.scrollTo(100, 100); return [el.scrollLeft, el.scrollTop]; }), [0, 0]);
         return canvas.width;
       };
       // Expanded, the paint surface reaches every edge of the view, so zooming motions are cut only by
@@ -201,6 +202,37 @@ export async function checkPaintOverflow(browser, base) {
         const canvas = document.querySelector('#live2d');
         return Math.abs(canvas.width / canvas.height - canvas.clientWidth / canvas.clientHeight) < 0.01;
       });
+      // The surface is a square fixed around the view: zooming and dragging move the camera, so the
+      // drawing buffer keeps its size at every zoom.
+      const buffer = () => viewer.locator('#live2d').evaluate(canvas => {
+        const output = document.querySelector('#waifu-expanded .waifu-model-stage canvas') ?? canvas;
+        return [output.width, output.height, Math.round(output.getBoundingClientRect().width)];
+      });
+      // Cubism 2 resizes its buffer once the layout has settled for 160 ms (runtime/legacy-canvas.ts).
+      await page.waitForTimeout(400);
+      const fittedBuffer = await buffer();
+      for (const value of ['50', '200', '300', '100']) {
+        await viewer.getByRole('spinbutton').fill(value);
+        await viewer.getByRole('spinbutton').press('Enter');
+        assert.deepEqual(await buffer(), fittedBuffer, `buffer at ${value}%`);
+      }
+      // Dragging works at 100% too, within the view, and a drag that starts on the character does not tap it.
+      const before = await viewer.locator('.waifu-hit').boundingBox();
+      const [dx, dy] = width > 1000 ? [-80, -40] : [0, -40];
+      await page.mouse.move(before.x + before.width / 2, before.y + before.height / 2);
+      await page.mouse.down();
+      // Slow enough not to glide on release.
+      for (let step = 1; step <= 8; step++) {
+        await page.mouse.move(before.x + before.width / 2 + dx * step / 8, before.y + before.height / 2 + dy * step / 8);
+        await page.waitForTimeout(40);
+      }
+      await page.waitForTimeout(150);
+      await page.mouse.up();
+      const dragged = await viewer.locator('.waifu-hit').boundingBox();
+      assert.ok(Math.abs(dragged.x - before.x - dx) < 2 && Math.abs(dragged.y - before.y - dy) < 2, JSON.stringify({ before, dragged }));
+      assert.deepEqual(await buffer(), fittedBuffer);
+      await viewer.getByRole('button', { name: '适应窗口' }).click();
+      assert.ok(Math.abs((await viewer.locator('.waifu-hit').boundingBox()).x - before.x) < 1);
       await viewer.getByRole('button', { name: '全屏', exact: true }).click();
       await page.waitForFunction(() => !!document.fullscreenElement);
       await assertFit();
@@ -209,12 +241,12 @@ export async function checkPaintOverflow(browser, base) {
       await viewer.getByRole('spinbutton').fill('200');
       await viewer.getByRole('spinbutton').press('Enter');
       assert.ok(Math.abs((await viewer.locator('.waifu-hit').boundingBox()).width - 2 * fitted) <= 2);
-      assert.equal(await view.evaluate(el => getComputedStyle(el).scrollbarWidth), 'none');
       if (width > 1000) {
+        // The arrow keys move the view like scrolling: up reveals what is above, so the character moves down.
         await view.focus();
-        const scroll = await view.evaluate(el => el.scrollTop);
+        const top = (await viewer.locator('.waifu-hit').boundingBox()).y;
         await view.press('ArrowUp');
-        await page.waitForFunction(top => document.querySelector('.waifu-view-viewport').scrollTop < top, scroll);
+        assert.ok((await viewer.locator('.waifu-hit').boundingBox()).y > top);
       }
       await viewer.getByRole('button', { name: '适应窗口' }).click();
       await assertFit();

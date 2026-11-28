@@ -183,16 +183,20 @@ test('waits through transparent setup and ignores the isolated cinematic strip o
 
 // Where a model point lands in the reference square: the surface spans `scale` squares, centered
 // horizontally, with the share `below` of its extra height under the square.
+// A placed surface holds the square at `left`, `top` and `size`, in fractions of its own side.
 function onScreen(camera: Camera, surface: PaintSurface, point: number, axis: 'x' | 'y') {
   const placed = onSurface(camera, surface);
   const onPaint = 0.5 + placed[axis] + (point - 0.5) * placed.scale / initial.scale;
+  if ('size' in surface) return (onPaint - (axis === 'x' ? surface.left : surface.top)) / surface.size;
   const before = axis === 'x' ? 0.5 : 1 - surface.below;
   return onPaint * surface.scale - (surface.scale - 1) * before;
 }
 
 test('a larger paint surface keeps the framed character at the same size and place on screen', () => {
   const cameras = [{ scale: 1.4, x: 0.08, y: 0.31 }, { scale: 0.65, x: 0, y: 0 }, { scale: 2.2, x: -0.12, y: -0.05 }];
-  const surfaces = [{ scale: 1.5, below: 0.5 }, { scale: 2.5, below: 0 }, { scale: 3.2, below: 0.5 }, { scale: 1.8, below: 0.25 }];
+  const surfaces: PaintSurface[] = [{ scale: 1.5, below: 0.5 }, { scale: 2.5, below: 0 }, { scale: 3.2, below: 0.5 }, { scale: 1.8, below: 0.25 },
+    // The expanded view: the square off-center on a surface fixed to the screen, or larger than it.
+    { left: 0.31, top: 0.47, size: 0.42 }, { left: -0.6, top: -1.1, size: 2.7 }, { left: 0, top: 0, size: 1 }];
   for (const camera of cameras) {
     for (const point of [0, 0.2, 0.5, 0.9, 1]) {
       for (const axis of ['x', 'y'] as const) {
@@ -200,6 +204,15 @@ test('a larger paint surface keeps the framed character at the same size and pla
         for (const surface of surfaces) assert.ok(Math.abs(onScreen(camera, surface, point, axis) - expected) < 1e-12);
       }
     }
+  }
+});
+
+test('a placed surface matches the scaled surface it describes', () => {
+  const camera = { scale: 1.4, x: 0.08, y: 0.31 };
+  for (const [scale, below] of [[1.5, 0.5], [2.5, 0], [1.8, 0.25]]) {
+    const placed = onSurface(camera, { left: (scale - 1) / 2 / scale, top: (scale - 1) * (1 - below) / scale, size: 1 / scale });
+    const scaled = onSurface(camera, { scale, below });
+    for (const key of ['scale', 'x', 'y'] as const) assert.ok(Math.abs(placed[key] - scaled[key]) < 1e-12, key);
   }
 });
 

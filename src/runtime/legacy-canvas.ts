@@ -1,4 +1,4 @@
-import { maxPaintBuffer } from './paint-buffer';
+import { desktopPixelBudget, maxPaintBuffer, paintResolution, targetPixelRatio } from './paint-buffer';
 
 const settleMs = 160;
 const minBuffer = 256;
@@ -22,10 +22,14 @@ export function sizeLegacyCanvas(canvas: HTMLCanvasElement) {
     timer = 0;
     // Hidden while a Cubism 3+ model owns the stage. Both backends project onto a square.
     if (!canvas.isConnected || canvas.style.visibility === 'hidden' || canvas.width !== canvas.height) return;
-    const width = canvas.getBoundingClientRect().width;
+    const rect = canvas.getBoundingClientRect();
+    const width = rect.width;
     if (!width) return;
-    const dpr = !coarse && width <= 720 ? Math.max(devicePixelRatio, 2) : devicePixelRatio;
-    const target = Math.round(Math.min(maxBuffer, Math.max(minSide, width * dpr)));
+    const dpr = targetPixelRatio(canvas, width, width, coarse);
+    // Desktops get the same visible-pixel budget as Cubism 3+; phones keep their own pixel ratio.
+    const scale = coarse ? dpr : paintResolution(rect, { width: innerWidth, height: innerHeight }, dpr,
+      { maxResolution: 3, pixelBudget: desktopPixelBudget, maxSide: maxBuffer });
+    const target = Math.round(Math.min(maxBuffer, Math.max(minSide, width * scale)));
     if (Math.abs(target - canvas.width) > 16) canvas.width = canvas.height = target;
   };
   const schedule = () => {

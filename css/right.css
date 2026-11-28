@@ -105,7 +105,7 @@ body > #waifu.waifu-adaptive #waifu-tips {
   left: var(--waifu-viewport-left, 0px);
   right: calc(100% - var(--waifu-viewport-left, 0px) - var(--waifu-model-width));
   bottom: calc(var(--waifu-float-model-bottom) + var(--waifu-model-height) + var(--waifu-content-gap));
-  max-height: min(30vh, 160px, calc(100dvh - var(--waifu-float-model-bottom) - var(--waifu-model-height) - var(--waifu-content-gap) - max(var(--waifu-content-gap), env(safe-area-inset-top, 0px))));
+  max-height: calc(100dvh - var(--waifu-float-model-bottom) - var(--waifu-model-height) - var(--waifu-content-gap) - max(var(--waifu-content-gap), env(safe-area-inset-top, 0px)));
 }
 body > #waifu.waifu-adaptive #waifu-status {
   left: calc(var(--waifu-viewport-left, 0px) + var(--waifu-model-width) / 2);
@@ -216,7 +216,7 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible {
   right: var(--waifu-side-space);
   width: min(320px, var(--waifu-model-width));
   min-height: 0;
-  max-height: min(30vh, 160px);
+  max-height: none;
   margin: 0 auto;
   overflow: auto;
   overflow-wrap: anywhere;
@@ -512,6 +512,9 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible {
   outline: 2px solid var(--waifu-focus, #126381);
   outline-offset: 2px;
 }
+#waifu-tool button[data-quiet-focus]:focus-visible {
+  outline: none;
+}
 @media (hover: none) {
   #waifu.waifu-adaptive {
     --waifu-tool-size: 44px;
@@ -672,17 +675,13 @@ html:has(#waifu-expanded[open]) {
   position: absolute;
   inset: 0;
   container-type: size;
-  overflow: auto;
-  scrollbar-width: none;
+  overflow: clip;
   overscroll-behavior: contain;
-  overflow-anchor: none;
-  touch-action: pan-x pan-y;
-}
-.waifu-view-viewport::-webkit-scrollbar {
-  display: none;
-}
-.waifu-view-viewport[data-pannable] {
+  touch-action: none;
   cursor: grab;
+}
+.waifu-view-viewport:focus {
+  outline: none;
 }
 .waifu-view-viewport[data-panning],
 .waifu-view-viewport[data-panning] * {
@@ -699,15 +698,26 @@ html:has(#waifu-expanded[open]) {
   --view-fit-height: max(1px, calc(min(90cqh, 100cqh - var(--view-header) - var(--view-footer)) - var(--view-caption-space)));
   display: grid;
   place-items: center;
+  place-content: center;
   box-sizing: border-box;
-  overflow: clip;
-  width: max-content;
-  height: max-content;
-  min-width: 100%;
-  min-height: 100%;
-  --view-slack-x: max(0px, 50cqw * (var(--view-scale, 1) - 1));
-  --view-slack-y: max(0px, 50cqh * (var(--view-scale, 1) - 1));
-  padding: calc(var(--view-header) + var(--view-caption-space) + var(--view-slack-y)) calc(var(--view-side) + var(--view-slack-x)) calc(var(--view-footer) + var(--view-slack-y));
+  position: relative;
+  left: var(--view-pan-x, 0px);
+  top: var(--view-pan-y, 0px);
+  width: 100%;
+  height: 100%;
+  padding: calc(var(--view-header) + var(--view-caption-space)) var(--view-side) var(--view-footer);
+}
+#waifu-expanded #waifu[data-placed-surface] .waifu-surface {
+  left: var(--view-surface-left);
+  top: var(--view-surface-top);
+  bottom: auto;
+  width: var(--view-surface-size);
+  transform: none;
+}
+#waifu-expanded #waifu[data-placed-surface] .waifu-surface .waifu-model-stage::after {
+  left: var(--view-hit-left);
+  bottom: var(--view-hit-bottom);
+  transform: none;
 }
 #waifu-expanded #waifu {
   position: relative;
@@ -737,11 +747,13 @@ html:has(#waifu-expanded[open]) {
   box-sizing: border-box;
   animation: none;
   inset: auto auto calc(100% + var(--view-caption-gap)) 50%;
-  translate: -50% 0;
+  translate: calc(-50% + var(--view-caption-shift, 0px)) 0;
   margin: 0;
-  width: min(420px, max(240px, 90%), 100cqw - 24px);
+  width: max-content;
+  min-width: min(420px, max(240px, 90%), 100cqw - 24px);
+  max-width: min(720px, 100cqw - 24px);
   min-height: 0;
-  max-height: var(--view-caption-height);
+  max-height: calc(100cqh - var(--view-header) - 16px);
   padding: 7px 12px;
   border: 1px solid var(--view-outline);
   border-radius: 10px;
@@ -754,7 +766,7 @@ html:has(#waifu-expanded[open]) {
   overflow-wrap: anywhere;
   word-break: normal;
 }
-#waifu-expanded .waifu-view-viewport[data-pannable] #waifu #waifu-tips {
+#waifu-expanded .waifu-view-viewport[data-caption-pinned] #waifu #waifu-tips {
   position: fixed;
   z-index: 10;
   inset: calc(var(--view-header) + 2px) auto auto 50%;
@@ -767,6 +779,7 @@ html:has(#waifu-expanded[open]) {
 }
 #waifu-expanded #waifu #waifu-tool {
   inset: 0 auto 0 calc(100% + 6px);
+  z-index: 9;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -774,6 +787,7 @@ html:has(#waifu-expanded[open]) {
   height: max-content;
   max-height: none;
   margin: auto 0;
+  translate: var(--view-tool-x, 0px) var(--view-tool-y, 0px);
   opacity: 1;
   overflow: visible;
 }

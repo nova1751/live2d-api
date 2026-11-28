@@ -7,7 +7,7 @@ import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurfa
 import { loadModernAssets, bindInteractions } from './modern/interactions';
 import { loadCubismCore } from './modern/core';
 import { createFramePacer } from './runtime/frame-pacer';
-import { maxPaintBuffer, paintResolution, visibleArea } from './runtime/paint-buffer';
+import { desktopPixelBudget, maxPaintBuffer, paintResolution, targetPixelRatio, visibleArea } from './runtime/paint-buffer';
 import type { DialogueSource, GameCue } from './library/catalog';
 
 /** Catalog mesh lists: `hidden` meshes cut what is drawn below them, `skipped` meshes are not drawn. */
@@ -64,15 +64,14 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     const coarse = matchMedia('(pointer: coarse)').matches;
     const maxRes = Math.min(3, Math.max(2, devicePixelRatio || 2));
     const policy = resolveAutoQualityPolicy(coarse ? undefined
-      : { desktopMaxResolution: maxRes, mobileMaxResolution: maxRes, mobilePixelBudget: 16.8e6, desktopPixelBudget: 16.8e6 });
+      : { desktopMaxResolution: maxRes, mobileMaxResolution: maxRes, mobilePixelBudget: desktopPixelBudget, desktopPixelBudget });
     // Lowered when frames run long. Visible device pixels, so a smaller view can still render sharper.
     let pixelCap = Infinity;
     const shownPixels = () => visibleArea(host.getBoundingClientRect(), innerWidth, innerHeight);
     const targetResolution = (cap = pixelCap) => {
       const rect = host.getBoundingClientRect();
       const mobile = isMobileViewport(Math.max(1, rect.width), Math.max(1, rect.height));
-      // 2x supersampling keeps fine line art razor-sharp in the small floating widget on 1x/1.25x/1.5x displays.
-      const dpr = !coarse && Math.max(rect.width, rect.height) <= 720 ? Math.max(devicePixelRatio, 2) : devicePixelRatio;
+      const dpr = targetPixelRatio(host, rect.width, rect.height, coarse);
       return Math.max(policy.minResolution, paintResolution(rect, { width: innerWidth, height: innerHeight }, dpr, {
         maxResolution: mobile ? policy.mobileMaxResolution : policy.desktopMaxResolution,
         pixelBudget: mobile ? policy.mobilePixelBudget : policy.desktopPixelBudget,
@@ -120,7 +119,7 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
           const next = Math.max(policy.minResolution, Math.round((current - policy.resolutionStep) * 100) / 100);
           pixelCap = shownPixels() * next * next;
           stage.setResolution(next);
-        } else if (stableWindows >= 4 && Number.isFinite(pixelCap)) {
+        } else if (stableWindows >= 2 && Number.isFinite(pixelCap)) {
           // Probe one step after sustained smooth rendering at the same viewport size.
           const wanted = targetResolution(Infinity);
           const next = Math.min(wanted, current + policy.resolutionStep);
@@ -135,7 +134,9 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     const custom = !!(framing || onPaint || hiddenDrawables?.length || skippedDrawables?.length);
     const backend: Live2DBackend = { ...cubismWebGL, createStage(element, options) {
       // Evenly spaced frames on whole display refreshes, up to 120 fps (runtime/frame-pacer.ts).
-      const created = graphics = cubismWebGL.createStage(element, { ...options, pace: createFramePacer() });
+      // Desktops render at 2x or more (runtime/paint-buffer.ts), which already smooths edges, so a
+      // multisampled buffer only costs memory: about 400 MB for a full-screen 5120 px surface.
+      const created = graphics = cubismWebGL.createStage(element, { ...options, pace: createFramePacer(), antialias: coarse });
       // Input uses the full camera, including any paint margin cropped at the screen edge.
       if (custom) created.toWorld = (x, y) => {
         const rect = element.getBoundingClientRect();
@@ -146,7 +147,9 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       resizeBuffer();
       return created;
     }, async loadModel(stage, url, options) {
-      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables, skippedDrawables });
+      // Clipped details (eyes, shading on clothes) are cut by a mask shared among all clips. Cubism's
+      // 256 px default visibly softens those edges on a full-screen character.
+      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables, skippedDrawables, maskBufferSize: coarse ? 1024 : 2048 });
     } };
     // The measured camera for the reference square, placed on the current paint surface.
     let framed: Camera | undefined;
