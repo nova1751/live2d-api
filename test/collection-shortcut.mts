@@ -104,6 +104,9 @@ export async function checkCollectionShortcut(browser, base) {
     });
     await page.route(base + 'domestic-autoload', route => route.fulfill({ contentType: 'text/html',
       body: `<script src="${domesticRuntime}autoload.js?collection=all&amp;lang=en" data-mode="random" data-model-id="azur-lane:test/azur-lane/b"></script>` }));
+    // A first visit: the pages above found the global CDN reachable from this origin, and a
+    // remembered host would take precedence over the mirror this embed names (runtime/cdn.ts).
+    await page.evaluate(() => localStorage.clear());
     await page.goto(base + 'domestic-autoload');
     await wait(games[1], 'b');
     assert.equal(denied, 1);
