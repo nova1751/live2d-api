@@ -184,7 +184,7 @@ function readActions(url: string, manifest: Manifest, groups: Record<string, Mot
   return actions;
 }
 
-export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void) {
+export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void, meshAreas?: (event: MouseEvent) => string[]) {
   let current: AbortController | undefined;
   let playing: string | undefined;
   let gate: GestureGate | undefined;
@@ -330,7 +330,8 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     if (gate?.claims(event)) { event.live2dHandlesCaption = true; return; }
     const click = ++intent;
     if (current) event.live2dHandlesCaption = true;
-    const hits = stage.hitTest(event.clientX, event.clientY).filter(area => !gate?.parts.has(area.toLowerCase()));
+    const hits = [...stage.hitTest(event.clientX, event.clientY), ...meshAreas?.(event) ?? []]
+      .filter(area => !gate?.parts.has(area.toLowerCase()));
     for (const area of hits) {
       const candidates = actions.filter(a => a.area === area.toLowerCase() && a.weight > 0 && (!gate || gate.allows(a.group)));
       if (candidates.length) {

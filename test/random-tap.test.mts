@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { build } from 'esbuild';
-import { nativeTouchArea } from '../src/modern/native-events.ts';
+import { nativeTouchArea, unlistedAreaMeshes } from '../src/modern/native-events.ts';
 
 test('touch rules win and only visible, unmapped taps rotate through eligible motions', async t => {
   const compiled = await build({ entryPoints:['src/modern/interactions.ts'],bundle:true,write:false,format:'esm' });
@@ -135,6 +135,32 @@ test('touch events can use the sole numbered head of 7706 without joining ambigu
   assert.equal(nativeTouchArea('head', new Set(['head2', 'head3'])), 'head');
   assert.equal(nativeTouchArea('leg2', new Set(['leg1'])), 'leg2');
   assert.equal(nativeTouchArea('leg', new Set(['leg', 'leg2'])), 'leg');
+});
+
+test('touch events find areas that the export counts or spells differently', () => {
+  // Type 88 (11609), Colt Walker, MK3A1, Python: the event counts from 1, the export from the bare name.
+  assert.equal(nativeTouchArea('leg1', new Set(['head', 'body', 'leg', 'leg2'])), 'leg');
+  assert.equal(nativeTouchArea('feet1', new Set(['feet', 'feet2', 'body'])), 'feet');
+  // HK416 MOD: the other way round.
+  assert.equal(nativeTouchArea('head', new Set(['head1', 'head2', 'body1'])), 'head1');
+  // Stevens 520: letters for numbers.
+  assert.equal(nativeTouchArea('leg2', new Set(['lega', 'legb', 'legc'])), 'legb');
+  // HK433: "log" for leg.
+  assert.equal(nativeTouchArea('leg2', new Set(['log', 'log2', 'body'])), 'log2');
+  assert.equal(nativeTouchArea('leg1', new Set(['log', 'log2', 'body'])), 'log');
+  // Nothing to tell left from right, or a part the export lacks.
+  assert.equal(nativeTouchArea('feetl', new Set(['feet', 'feet2'])), 'feetl');
+  assert.equal(nativeTouchArea('table', new Set(['head', 'body'])), 'table');
+});
+
+test('touch areas missing from HitAreas use the model meshes that carry them', () => {
+  // SAIGA-12 (4510) and DSR-50 (1801) misspell the mesh and leave it out of HitAreas.
+  assert.deepEqual([...unlistedAreaMeshes(['HitAreaLeg', 'HItAreaHead', 'D_PSD.1'], ['head', 'leg'], [{ Name: 'leg' }])], [['HItAreaHead', 'head']]);
+  assert.deepEqual([...unlistedAreaMeshes(['HiteAreaLeg'], ['leg'], [])], [['HiteAreaLeg', 'leg']]);
+  // Azur Lane exports without HitAreas: TouchHead plays touch_head, but parts the game's rules
+  // drive stay theirs, and plain art meshes never count.
+  assert.deepEqual([...unlistedAreaMeshes(['TouchHead', 'TouchDrag1', 'TouchBody', 'Head'], ['touch_head', 'touch_drag1', 'head', 'main_1'], [], new Set(['TouchDrag1']))],
+    [['TouchHead', 'touch_head']]);
 });
 
 test('motions placed under an anonymous empty group are promoted by filename for idle and cues', async t => {

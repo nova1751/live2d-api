@@ -1,5 +1,5 @@
 diff --git a/dist/contract-Jj-UVMwt.d.mts b/dist/contract-Jj-UVMwt.d.mts
-index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..9423cbbf2cc676779bc3a3cea70d88700c499be6 100644
+index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..775d28dbcfb06e519769febc39f05fae0e7ad7f3 100644
 --- a/dist/contract-Jj-UVMwt.d.mts
 +++ b/dist/contract-Jj-UVMwt.d.mts
 @@ -63,6 +63,10 @@ interface StageOptions extends Size {
@@ -13,7 +13,7 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..9423cbbf2cc676779bc3a3cea70d8870
  }
  interface StageHandle {
    resize: (width: number, height: number) => void;
-@@ -98,6 +102,13 @@ interface ModelHandle {
+@@ -98,6 +102,15 @@ interface ModelHandle {
    focus: (x: number, y: number) => void;
    /** Hit-area names containing the stage-local point, in declaration order. */
    hitTest: (x: number, y: number) => string[];
@@ -22,12 +22,14 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..9423cbbf2cc676779bc3a3cea70d8870
 +   * includes meshes that are not drawn (games use invisible meshes as touch areas).
 +   */
 +  drawablesAt?: (x: number, y: number, ids: readonly string[]) => { id: string; opacity: number; visible: boolean }[];
++  /** Every mesh id in the model, in model order. */
++  drawableIds?: () => string[];
 +  /** Switches the automatic idle group. An idle playing now gives way; a playing action finishes first. */
 +  setIdleMotion?: (group: IdleMotion) => void;
    getModelInfo: () => ModelInfo;
    /**
     * Resolves when playback finishes (including interruption), not when it
-@@ -126,6 +137,12 @@ interface ModelHandle {
+@@ -126,6 +139,12 @@ interface ModelHandle {
  }
  type MotionPriority = 'force' | 'idle' | 'normal';
  interface MotionOptions {
@@ -40,7 +42,7 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..9423cbbf2cc676779bc3a3cea70d8870
    /** Playback priority. 'force' interrupts anything (default). */
    priority?: MotionPriority;
    /** Overrides the motion-wide fade-in duration in milliseconds. */
-@@ -192,6 +209,12 @@ interface IdleMotionOptions {
+@@ -192,6 +211,12 @@ interface IdleMotionOptions {
  }
  type IdleMotion = string | false | IdleMotionOptions;
  interface LoadModelOptions {
@@ -54,7 +56,7 @@ index 473d4eaaf4b298daefd4a5f9b361e8c6fea38159..9423cbbf2cc676779bc3a3cea70d8870
    idleMotion?: IdleMotion;
    /**
 diff --git a/dist/model-CkKs9EQ2.mjs b/dist/model-CkKs9EQ2.mjs
-index 31ee427b871153d223b0ab55fb0ab9e65b183d70..d934fb28e67a3275fe70ca058c9801742ac04d6d 100644
+index 31ee427b871153d223b0ab55fb0ab9e65b183d70..bd17f8528658bc0fd26d10425aabcc44d706f8d1 100644
 --- a/dist/model-CkKs9EQ2.mjs
 +++ b/dist/model-CkKs9EQ2.mjs
 @@ -7560,6 +7560,10 @@ var CubismMotion = class CubismMotion extends ACubismMotion {
@@ -292,16 +294,17 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..d934fb28e67a3275fe70ca058c980174
  	}
  	hitTestStagePoint(x, y) {
  		if (this.disposed || !this.layoutMatrix) return [];
-@@ -14179,6 +14279,8 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14179,6 +14279,9 @@ var FrameworkModel = class extends CubismUserModel {
  			getModelInfo: () => this.readModelInfo(),
  			getParameter: (id) => this.getModel().getParameterValueById(this.parameterId(id)),
  			hitTest: (x, y) => this.hitTestStagePoint(x, y),
 +			drawablesAt: (x, y, ids) => this.drawablesAtStagePoint(x, y, ids),
++			drawableIds: () => this.disposed ? [] : [...this.getModel().getModel().drawables.ids],
 +			setIdleMotion: (group) => this.setIdleGroup(group),
  			isMotionPlaying: () => !this.disposed && !this._motionManager.isFinished(),
  			motion: async (group, index, options) => {
  				validateMotionOptions(options);
-@@ -14188,7 +14290,7 @@ var FrameworkModel = class extends CubismUserModel {
+@@ -14188,7 +14291,7 @@ var FrameworkModel = class extends CubismUserModel {
  			playMotion: (group, index, options) => {
  				validateMotionOptions(options);
  				const fade = resolveMotionFade(options);
@@ -310,7 +313,7 @@ index 31ee427b871153d223b0ab55fb0ab9e65b183d70..d934fb28e67a3275fe70ca058c980174
  			},
  			onAfterMotionUpdate: (callback) => {
  				this.afterMotionCallbacks.add(callback);
-@@ -14272,7 +14374,14 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
+@@ -14272,7 +14375,14 @@ async function loadFrameworkModel(stage, url, shaderBaseUrl, shaderSources, opti
  		}
  		const idleMotion = resolveIdleMotion(options.idleMotion, (group) => setting.getMotionCount(group));
  		model = new FrameworkModel(stage, modelUrl, setting, shaderBaseUrl, shaderSources, idleMotion, releaseFramework, model3Version, diagnostics, options.resolveAsset);

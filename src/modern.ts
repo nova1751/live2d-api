@@ -5,6 +5,7 @@ import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
 import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurface } from './library/framing';
 import { loadModernAssets, bindInteractions } from './modern/interactions';
+import { unlistedAreaMeshes } from './modern/native-events';
 import { bindGestures } from './modern/gesture-input';
 import type { GestureFile } from './modern/gestures';
 import { fetchCdnAsset } from './runtime/cdn';
@@ -228,7 +229,15 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     let interaction: ReturnType<typeof bindInteractions> | undefined;
     void Promise.all([interactions, gestureRules]).then(([{ actions, idleFiles, hitAreas }, rules]) => {
       if (signal.aborted || !wrapper.contains(canvas)) return;
-      interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible);
+      const handle = modelHandle, stageHandle = graphics;
+      const unlisted = handle?.drawableIds && handle.drawablesAt && stageHandle
+        ? unlistedAreaMeshes(handle.drawableIds(), actions.map(action => action.area), hitAreas,
+          new Set((rules ?? []).map(rule => rule.draw_able_name ?? '').filter(Boolean))) : undefined;
+      const meshAreas = unlisted?.size ? (event: MouseEvent) => {
+        const point = stageHandle!.toWorld(event.clientX, event.clientY);
+        return handle!.drawablesAt!(point.x, point.y, [...unlisted.keys()]).map(hit => unlisted.get(hit.id)!);
+      } : undefined;
+      interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible, meshAreas);
       if (rules?.length && modelHandle && graphics)
         interaction.setGate(bindGestures(host, instance, modelHandle, graphics, rules, interaction.actions, hitAreas, signal));
       window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
