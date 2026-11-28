@@ -135,7 +135,15 @@ for (const collection of collections) {
     const url = new URL(mp.split('/').map(part => encodeURIComponent(part).replace(/%40/g, '@')).join('/'), host).href;
     if (v.cues && !v.dialogue) {
       // Modern cues use the native motion group; classic cues use motion or sound paths.
-      const keys = new Set(Object.keys(model.FileReferences?.Motions ?? {}));
+      const motionGroups = model.FileReferences?.Motions ?? {};
+      const keys = new Set(Object.keys(motionGroups));
+      if (Array.isArray(motionGroups['']) && motionGroups[''].length && Object.keys(motionGroups).every(name => !name)) {
+        for (const clip of motionGroups['']) {
+          const stem = /(?:^|\/)([^/]+?)(?:\.motion3\.json)?$/i.exec(clip.File)?.[1] ?? '';
+          const name = /(?:^|_)idle(?:_|$)/i.test(stem) ? 'Idle' : stem;
+          if (name) keys.add(name);
+        }
+      }
       const directory = new URL('.', url).pathname;
       for (const clip of Object.values(model.motions ?? {}).flat()) {
         if (clip.sound) keys.add(clip.sound);
