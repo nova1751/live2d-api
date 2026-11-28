@@ -50,6 +50,26 @@ test('dragging a part moves its parameter and settles on the nearest notch', () 
   assert.equal(value('touch_drag1'), 6.6);
 });
 
+test('a part keeps its presses while an action holds it still, then drags again', () => {
+  const { gestures, state, run, value, finish } = model();
+  state.playing = 'touch_drag3';
+  // TouchDrag1 ignores presses during actions, like the game; the press must not reach the page.
+  assert.equal(gestures.press(['TouchDrag1'], { x: 0, y: 0 }, 0), true);
+  gestures.move({ x: 0, y: -210 });
+  run(0.2);
+  gestures.release({ x: 0, y: -210 }, 0.3);
+  run(0.3);
+  assert.equal(value('touch_drag1'), 0, 'the part stays put while the action plays');
+  finish();
+  assert.equal(gestures.press(['TouchDrag1'], { x: 0, y: 0 }, 1), true);
+  gestures.move({ x: 0, y: -210 });
+  run(0.2);
+  gestures.release({ x: 0, y: -210 }, 1.3);
+  run(0.3);
+  assert.equal(value('touch_drag1'), 5);
+  assert.equal(gestures.press(['Head'], { x: 0, y: 0 }, 2), false, 'other meshes still leave the press to the page');
+});
+
 test('a part with a revert time springs back after release', () => {
   const { gestures, run, value } = model();
   // TouchDrag2: 20 px per unit to the right, only positive, back to 0 after 100 ms.

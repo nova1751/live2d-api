@@ -246,7 +246,6 @@ export class Gestures {
     // The game hands a press to one part (Live2dChar.GetDragPart): the front one that takes presses.
     const part = hits.find(name => this.rules.some(rule => rule.drawable === name && rule.holds));
     const playing = this.host.playing() !== undefined;
-    let owned = false;
     for (const rule of this.rules) {
       if (rule.drawable !== part || rule.pressed) continue;
       if (rule.data.ignore_action === 1 && playing) continue;
@@ -256,10 +255,12 @@ export class Gestures {
       rule.triggerTime = 0;
       if (rule.type === DRAG_DOWN_ACTION) rule.index = 1;
       rule.smoothTime = rule.smooth;
-      owned = true;
     }
     this.tap(hits, true);
-    return owned;
+    // Most parts stay put while an action plays (ignore_action, live2ddrag.lua startDrag), often the
+    // one their own drag started. The game then ignores the press; it stays the model's here too, so
+    // the full-screen view does not pan the canvas instead.
+    return part !== undefined;
   }
   move(point: Point) {
     this.pointer = point;

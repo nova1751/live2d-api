@@ -36,7 +36,7 @@
 希望绕过分支 CDN 缓存、发布后立即同步最新版本的网站，可使用下面的引导脚本（通过 npm 镜像查询最新稳定版并自动加载全部 7 个作品）：
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.41/latest.mjs?collection=all"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.42/latest.mjs?collection=all"></script>
 ```
 
 经典 `<script>` 接入（支持通过 `data-position`、`data-mode`、`data-model-id` 自定义位置、随机顺序和初始造型）使用 `@widget-latest/autoload.js?collection=all`：
@@ -45,7 +45,7 @@
 <script src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
 ```
 
-要固定 CDN 版本，请用 `@widget-2.9.41` 这类运行时标签。包含素材的 `@v2.9.41` 源码标签可能超过 jsDelivr 的 50 MB 限制。全量模式也可用 `data-model-id="作品:模型 ID"` 指定初始造型，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
+要固定 CDN 版本，请用 `@widget-2.9.42` 这类运行时标签。包含素材的 `@v2.9.42` 源码标签可能超过 jsDelivr 的 50 MB 限制。全量模式也可用 `data-model-id="作品:模型 ID"` 指定初始造型，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
 
 只展示碧蓝航线时，给**脚本地址**加上 `?collection=azur-lane`。切到底会回到该作品的第一个造型。海外可将域名换为 `cdn.jsdelivr.net`。
 
@@ -215,7 +215,7 @@ await loadWidget({
 希望绕过分支缓存、自动采用已发布版本的网站，可使用下面的国内入口。固定地址标识加载脚本自身的版本。它通过国内 npm 镜像查询稳定版本号，再从国内 GitHub CDN 加载对应版本的播放器和模型；加上 `?collection=all` 即可轮换全部七个作品。查询超时或新版入口暂不可用时，自动使用随脚本发布的版本。海外网站可将域名换成 `cdn.jsdelivr.net`。
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.41/latest.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.42/latest.mjs"></script>
 ```
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。
