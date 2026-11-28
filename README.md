@@ -29,12 +29,23 @@
 把脚本放在网页的 `</body>` 前。“切换人物”跳到下一位人物的首个造型。“切换造型”只在当前人物的服装、阶级或战损等版本间轮换。只有一个造型时，换装按钮呈灰色。全量入口走完一部作品的人物后进入下一部，指定作品时在该作品内循环。刷新后恢复上次选择。需要逐条浏览时，可在模块 API 的 `loadWidget` 调用中指定 `switchBy: 'outfit'`。
 
 ```html
+<!-- 推荐：自动跟随全部 7 个作品的最新稳定版（中国大陆使用 cdn.jsdmirror.com，海外可换 cdn.jsdelivr.net） -->
 <script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
 ```
 
-经典 `<script>` 接入使用 `@widget-latest/autoload.js`。要固定 CDN 版本，请用 `@widget-2.9.18` 这类运行时标签。包含素材的 `@v2.9.18` 源码标签可能超过 jsDelivr 的 50 MB 限制。
+希望绕过分支 CDN 缓存、发布后立即同步最新版本的网站，可使用下面的引导脚本（通过 npm 镜像查询最新稳定版并自动加载全部 7 个作品）：
 
-用经典脚本轮换全部作品时，在地址后加 `?collection=all`。也可以用 `data-model-id` 指定图鉴中的初始造型。全量模式可写成 `作品:模型 ID`，让播放器直接打开对应目录，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
+```html
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs?collection=all"></script>
+```
+
+经典 `<script>` 接入（支持通过 `data-position`、`data-mode`、`data-model-id` 自定义位置、随机顺序和初始造型）使用 `@widget-latest/autoload.js?collection=all`：
+
+```html
+<script src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
+```
+
+要固定 CDN 版本，请用 `@widget-2.9.37` 这类运行时标签。包含素材的 `@v2.9.37` 源码标签可能超过 jsDelivr 的 50 MB 限制。全量模式也可用 `data-model-id="作品:模型 ID"` 指定初始造型，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
 
 只展示碧蓝航线时，给**脚本地址**加上 `?collection=azur-lane`。切到底会回到该作品的第一个造型。海外可将域名换为 `cdn.jsdelivr.net`。
 
@@ -145,15 +156,15 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 
 | 作品 | 已收录造型 | 接入范围 |
 | --- | ---: | --- |
-| 少女前线 | 443 | 保留原入口、旧模型地址和作品内排序 |
-| 碧蓝航线 | 178 | 按舰船与装扮归档，依照装扮 ID 和事件键匹配录音与中文台词 |
-| BanG Dream! | 2,769 | 九个乐队素材库，按乐队、人物和服装归档 |
-| 崩坏学园 2 | 19 | 八重樱两款造型归到同一人物；保留原动作，来源缺录音的事件可静音预览 |
-| 机动战队 | 4 | 玛蒂尔达和斯洛卡伊按原声清单播放，另外两位保留原动作。 |
-| 战舰少女 R | 3 | 密苏里、大淀和列克星敦（CV-16）的独立换装与动作。 |
-| 宝石研物语 | 15 | 按角色归并两作造型，保留清单指定的动作和音频。 |
+| 少女前线 | 443 | 129 个条目，保留原入口、旧模型地址和作品内排序 |
+| 碧蓝航线 | 269 | 167 位舰船，按装扮 ID 与官方继承规则匹配日配语音和中英台词，含透明场景切割 |
+| BanG Dream! | 3,493 | 46 位角色，覆盖九个乐队素材库、国服联动造型与《Our Notes》丰川祥子 Cubism 3 造型 |
+| 崩坏学园 2 | 19 | 18 位角色，补回官方中文字幕与原版语音；来源缺录音的事件保留动作与字幕 |
+| 机动战队 | 5 | 4 位角色，玛蒂尔达与斯洛卡伊（日/中双版）按原声清单播放，另外两位保留原动作 |
+| 战舰少女 R | 3 | 密苏里、大淀和列克星敦（CV-16）的独立换装、动作与内嵌中文互动台词 |
+| 宝石研物语 | 16 | 6 位角色，按角色归并两作造型（含伊丽莎白 8 号造型），保留清单指定的动作和音频 |
 
-部署完整静态站后，可从任意网页使用同一模块入口加载指定作品。例如以下文件与网页同源，跨站使用时替换为站点的绝对地址。
+以上共收录 **4,248 个可选造型**（覆盖 373 位角色与条目）。部署完整静态站后，可从任意网页使用同一模块入口加载指定作品。例如以下文件与网页同源，跨站使用时替换为站点的绝对地址。
 
 ```js
 import { loadWidget } from '/widget.mjs';
@@ -197,10 +208,10 @@ await loadWidget({
 <script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/girls-frontline.mjs"></script>
 ```
 
-希望绕过分支缓存、自动采用已发布版本的网站，可使用下面的国内入口。固定地址标识加载脚本自身的版本。它通过国内 npm 镜像查询稳定版本号，再从国内 GitHub CDN 加载对应版本的播放器和模型。查询超时或新版入口暂不可用时，自动使用随脚本发布的版本。海外网站可将域名换成 `cdn.jsdelivr.net`。
+希望绕过分支缓存、自动采用已发布版本的网站，可使用下面的国内入口。固定地址标识加载脚本自身的版本。它通过国内 npm 镜像查询稳定版本号，再从国内 GitHub CDN 加载对应版本的播放器和模型；加上 `?collection=all` 即可轮换全部七个作品。查询超时或新版入口暂不可用时，自动使用随脚本发布的版本。海外网站可将域名换成 `cdn.jsdelivr.net`。
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.4.7/latest.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs"></script>
 ```
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。

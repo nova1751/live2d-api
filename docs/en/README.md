@@ -29,10 +29,23 @@ Two more playable examples · [Iron Saga · Slokai](https://nova1751.github.io/l
 Place the script before `</body>`. **Next character** opens the next character’s first listed form. **Next outfit** cycles through the current character’s costumes, tiers or damaged forms. It is disabled for characters with one form. The full catalog advances to the next game after its last character. A single-game embed wraps within that game. Reloading restores the previous selection. To browse every catalog entry in order, pass `switchBy: 'outfit'` to `loadWidget`.
 
 ```html
+<!-- Recommended: rotate all 7 collections and follow the latest stable release -->
 <script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/collections.mjs"></script>
 ```
 
-For a classic `<script>` embed, use `@widget-latest/autoload.js`. Pin a CDN release with a runtime tag such as `@widget-2.9.11`. The `@v2.9.11` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit.
+To bypass Git branch CDN caches and pick up new releases as soon as they publish to npm, use the versioned bootstrap with `?collection=all`:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs?collection=all"></script>
+```
+
+For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-locale`, and `data-model-id`), use `@widget-latest/autoload.js?collection=all`:
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
+```
+
+Pin a CDN release with a runtime tag such as `@widget-2.9.37`. The `@v2.9.37` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
 
 For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
 
@@ -142,7 +155,17 @@ The gallery loads one collection at a time. Search by character or outfit and sh
 
 A click first uses the model’s own touch mapping. On an unassigned visible region, the widget samples an eligible motion from that outfit and avoids immediate repeats when alternatives exist. Idle and lifecycle events retain their separate triggers.
 
-On a deployment of the full static site, use the same widget module for all four games. Use absolute deployment URLs when embedding from another origin.
+| Game | Forms | Scope |
+| --- | ---: | --- |
+| Girls’ Frontline | 443 | 129 entries, preserving legacy entrypoints, classic IDs, and collection order |
+| Azur Lane | 269 | 167 ships with voice and bilingual captions matched by skin ID and official inheritance rules, plus transparent scene cuts |
+| BanG Dream! | 3,493 | 46 characters across nine band libraries, CN crossover outfits, and *Our Notes* Sakiko Cubism 3 forms |
+| Guns GirlZ | 19 | 18 characters with official Chinese captions and recovered voices; unvoiced clips keep motions and captions |
+| Iron Saga | 5 | 4 characters; Matilda and Slokai (JP & CN) use voiced manifests, while the other pilots keep their motions |
+| Warship Girls R | 3 | Individual outfits, motions, and embedded Chinese interaction lines for Missouri, Ōyodo, and Lexington (CV-16) |
+| Baoshi Yanwuyu | 16 | 6 characters merged across both games (including Elizabeth form 8), preserving motions and audio |
+
+In total, the built-in gallery indexes **4,248 selectable forms** across 373 characters and entries. On a deployment of the full static site, use the same widget module for all seven games. Use absolute deployment URLs when embedding from another origin.
 
 ```js
 import { loadWidget } from '/widget.mjs';
@@ -167,9 +190,6 @@ Each additional collection uses a JSON catalog with the same name. Models, textu
 | `loadModelCatalog(url, collection?, locale?)` | Read available IDs, localized labels and native manifest URLs. |
 | `baseUrl` / `catalogUrl` / `coreUrl` | Override the runtime directory, catalog JSON URL or Cubism Core URL independently. |
 | Legacy integrations | Existing `initWidget(waifuPath, apiPath)`, numeric model IDs, `autoload.js`, random/sequential loaders and standalone CSS remain available. |
-| Iron Saga | 4 | Matilda and Slokai use their voiced manifests. The other pilots retain their original motions. |
-| Warship Girls R | 3 | Individual outfits and motions for Missouri, Ōyodo and Lexington (CV-16). |
-| Baoshi Yanwuyu | 15 | Characters and forms from the first two games, with original motion and audio references. |
 
 <details>
 <summary>Collection shortcuts, offline previews and original screenshots</summary>
@@ -190,10 +210,10 @@ Place one module script before `</body>`. Choose the CDN closest to your audienc
 <script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/girls-frontline.mjs?lang=en"></script>
 ```
 
-To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
+To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN; add `collection=all` to rotate through all seven games. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.4.7/latest.mjs?lang=en"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs?lang=en"></script>
 ```
 
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
