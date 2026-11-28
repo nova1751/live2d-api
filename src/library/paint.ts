@@ -1,8 +1,11 @@
 import { referenceSurface, type PaintSurface } from './framing';
 
-// The floating widget and hosted previews keep a modest margin around the framed square. Only the
-// expanded view, which owns the screen, draws on a surface fixed to it (runtime/expand.ts).
-const compact: PaintSurface = { scale: 1.5, below: 0.5 };
+// The floating widget and hosted previews keep a margin around the framed square where motions
+// that reach past the character, such as raised arms and weapons, are still drawn. The widget sits
+// on the bottom edge of the screen, so nearly all of it goes to the sides and above: the part below
+// would be off screen. Only the expanded view, which owns the screen, draws on a surface fixed to
+// it (runtime/expand.ts).
+const compact: PaintSurface = { scale: 2, below: 0.1 };
 
 let override: PaintSurface | undefined;
 let framed = false;

@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 
 // Render the packaged widget on a host page with a working button behind its paint margin.
 export async function checkPaintOverflow(browser, base) {
+  // The floating widget's paint surface (library/paint.ts): twice the framed square, with a tenth
+  // of the extra height below it and the rest above.
+  const compact = { scale: 2, below: 0.1 };
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.route(base + 'overflow-test', route => route.fulfill({ contentType: 'text/html',
@@ -88,10 +91,10 @@ export async function checkPaintOverflow(browser, base) {
       } else {
         assert.ok(Math.abs(paint.width - camera.width) <= 1);
       }
-      assert.ok(Math.abs(camera.width - square * 1.5) <= 1);
+      assert.ok(Math.abs(camera.width - square * compact.scale) <= 1);
       assert.ok(widget.width >= hit.width + 50 - 1);
       assert.ok(Math.abs(camera.x + camera.width / 2 - hit.x - hit.width / 2) <= 1);
-      assert.ok(Math.abs(paint.y + paint.height - square / 4 - hit.y - hit.height) <= 1);
+      assert.ok(Math.abs(paint.y + paint.height - square * (compact.scale - 1) * compact.below - hit.y - hit.height) <= 1);
       const point = { x: Math.floor(hit.x + hit.width / 2), y: Math.floor(hit.y - 14) };
       await page.evaluate(({ x, y }) => {
         const button = document.querySelector('#behind');
@@ -255,13 +258,13 @@ export async function checkPaintOverflow(browser, base) {
       // A dialog's close event is dispatched asynchronously; the widget moves back in its handler.
       await page.waitForSelector('#waifu-expanded', { state: 'detached' });
       assert.ok(await originalCanvas.evaluate(canvas => canvas === document.querySelector('body > #waifu #live2d')));
-      // Back in the floating widget, the compact 1.5x margin returns.
+      // Back in the floating widget, the compact margin returns.
       const [restoredSurface, restoredSquare] = await page.evaluate(() => {
         const surface = document.querySelector('body > #waifu .waifu-surface').getBoundingClientRect();
         const hit = document.querySelector('body > #waifu .waifu-hit').getBoundingClientRect();
         return [surface.width, Math.max(hit.width, hit.height)];
       });
-      assert.ok(Math.abs(restoredSurface - restoredSquare * 1.5) <= 1, JSON.stringify([restoredSurface, restoredSquare]));
+      assert.ok(Math.abs(restoredSurface - restoredSquare * compact.scale) <= 1, JSON.stringify([restoredSurface, restoredSquare]));
       await page.locator('#waifu-tool-quit').click();
       if (animated) {
         await waitForSlide(0, -500);

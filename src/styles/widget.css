@@ -148,7 +148,8 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
 }
 /* The drawn surface: the reference square plus a margin where zooming motions stay visible.
    library/paint.ts sets the scale and the share of the margin below the square (framing.ts
-   PaintSurface): 1.5 in the widget, the whole screen in the expanded view. */
+   PaintSurface): twice the square, mostly above it, in the widget; the whole screen in the
+   expanded view. */
 .waifu-surface {
   --waifu-square: max(100cqw, 100cqh);
   --waifu-bleed: calc(var(--waifu-square) * (var(--waifu-paint-scale, 1) - 1));

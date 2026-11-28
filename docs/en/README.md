@@ -36,7 +36,7 @@ Place the script before `</body>`. **Next character** opens the next characterâ€
 To bypass Git branch CDN caches and pick up new releases as soon as they publish to npm, use the versioned bootstrap with `?collection=all`:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs?collection=all"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.38/latest.mjs?collection=all"></script>
 ```
 
 For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-locale`, and `data-model-id`), use `@widget-latest/autoload.js?collection=all`:
@@ -45,7 +45,7 @@ For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-l
 <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
 ```
 
-Pin a CDN release with a runtime tag such as `@widget-2.9.37`. The `@v2.9.37` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
+Pin a CDN release with a runtime tag such as `@widget-2.9.38`. The `@v2.9.38` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
 
 For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
 
@@ -213,7 +213,7 @@ Place one module script before `</body>`. Choose the CDN closest to your audienc
 To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN; add `collection=all` to rotate through all seven games. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.37/latest.mjs?lang=en"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.38/latest.mjs?lang=en"></script>
 ```
 
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.
