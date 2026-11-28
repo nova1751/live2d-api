@@ -59,17 +59,24 @@ export function appendResource(element: HTMLScriptElement | HTMLLinkElement, url
   });
 }
 
-export async function withLoadTimeout<T>(load: (signal: AbortSignal) => Promise<T>): Promise<T> {
+/** `outer` lets a caller cancel too, for example when a newer request supersedes this one. */
+export async function withLoadTimeout<T>(load: (signal: AbortSignal) => Promise<T>, outer?: AbortSignal): Promise<T> {
   const controller = new AbortController();
   const cancel = loadDeadline(controller.signal, () => controller.abort(new Error('Live2D resource load timed out')));
+  const forward = () => controller.abort(outer!.reason);
+  if (outer?.aborted) forward();
+  else outer?.addEventListener('abort', forward, { once: true });
   try { return await load(controller.signal); }
-  finally { cancel(); }
+  finally {
+    cancel();
+    outer?.removeEventListener('abort', forward);
+  }
 }
 
-export async function getJson<T>(url: string): Promise<T> {
+export async function getJson<T>(url: string, outer?: AbortSignal): Promise<T> {
   return withLoadTimeout(async signal => {
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error(`Failed to load ${url} (HTTP ${response.status})`);
     return trackResponse(response, signal).json();
-  });
+  }, outer);
 }

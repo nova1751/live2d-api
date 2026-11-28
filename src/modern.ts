@@ -1,4 +1,4 @@
-import { createLive2D, isMobileViewport, OFFICIAL_CUBISM_CORE_URL, resolveAutoQualityPolicy,
+import { createLive2D, OFFICIAL_CUBISM_CORE_URL, resolveAutoQualityPolicy,
   type Live2DInstance } from 'live2d-web';
 
 import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
@@ -7,7 +7,7 @@ import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurfa
 import { loadModernAssets, bindInteractions } from './modern/interactions';
 import { loadCubismCore } from './modern/core';
 import { createFramePacer } from './runtime/frame-pacer';
-import { desktopPixelBudget, maxPaintBuffer, paintResolution, targetPixelRatio, visibleArea } from './runtime/paint-buffer';
+import { desktopPixelBudget, touchPixelBudget, maxPaintBuffer, paintResolution, targetPixelRatio, visibleArea } from './runtime/paint-buffer';
 import type { DialogueSource, GameCue } from './library/catalog';
 
 /** Catalog mesh lists: `hidden` meshes cut what is drawn below them, `skipped` meshes are not drawn. */
@@ -56,26 +56,26 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
     // live2d-web's automatic quality only ever lowers the resolution. Opening the full-screen view
     // caps it to the pixel budget, and back in the small widget the model would stay blurry for
     // good. Size the drawing buffer here instead, in both directions.
-    // live2d-web also treats every container under 768px as a phone, and the widget always is
-    // one, so a high-DPI desktop would be capped at 1.5x. Keep phone limits for touch devices.
+    // live2d-web also treats every container under 768px, and every touch device, as a phone and
+    // caps it at 1.5x and 1.5M pixels to save power. On a 3x phone screen that halves the detail of
+    // the character in the widget, the gallery and full screen alike. Sharpness comes first: touch
+    // devices render at their own pixel ratio too, within their own budget, and only frames that
+    // run long lower it (watchFrames below).
     // The paint margin for zooming motions makes the surface reach past the screen edges. Only its
     // visible part counts against the budget, so a full-screen or zoomed-in character renders at
     // the display's own pixel ratio; the buffer side has its own limit (runtime/paint-buffer.ts).
     const coarse = matchMedia('(pointer: coarse)').matches;
-    const maxRes = Math.min(3, Math.max(2, devicePixelRatio || 2));
-    const policy = resolveAutoQualityPolicy(coarse ? undefined
-      : { desktopMaxResolution: maxRes, mobileMaxResolution: maxRes, mobilePixelBudget: desktopPixelBudget, desktopPixelBudget });
+    const maxRes = coarse ? 3 : Math.min(3, Math.max(2, devicePixelRatio || 2));
+    const budget = coarse ? touchPixelBudget : desktopPixelBudget;
+    const policy = resolveAutoQualityPolicy({ desktopMaxResolution: maxRes, mobileMaxResolution: maxRes, mobilePixelBudget: budget, desktopPixelBudget: budget });
     // Lowered when frames run long. Visible device pixels, so a smaller view can still render sharper.
     let pixelCap = Infinity;
     const shownPixels = () => visibleArea(host.getBoundingClientRect(), innerWidth, innerHeight);
     const targetResolution = (cap = pixelCap) => {
       const rect = host.getBoundingClientRect();
-      const mobile = isMobileViewport(Math.max(1, rect.width), Math.max(1, rect.height));
       const dpr = targetPixelRatio(host, rect.width, rect.height, coarse);
       return Math.max(policy.minResolution, paintResolution(rect, { width: innerWidth, height: innerHeight }, dpr, {
-        maxResolution: mobile ? policy.mobileMaxResolution : policy.desktopMaxResolution,
-        pixelBudget: mobile ? policy.mobilePixelBudget : policy.desktopPixelBudget,
-        maxSide: maxPaintBuffer(),
+        maxResolution: policy.desktopMaxResolution, pixelBudget: policy.desktopPixelBudget, maxSide: maxPaintBuffer(),
       }, cap));
     };
     let sizing = 0;
@@ -148,8 +148,9 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       return created;
     }, async loadModel(stage, url, options) {
       // Clipped details (eyes, shading on clothes) are cut by a mask shared among all clips. Cubism's
-      // 256 px default visibly softens those edges on a full-screen character.
-      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables, skippedDrawables, maskBufferSize: coarse ? 1024 : 2048 });
+      // 256 px default visibly softens those edges on a full-screen character, and so does 1024 on
+      // a phone drawing at 3x.
+      return modelHandle = await cubismWebGL.loadModel(stage, url, { ...options, hiddenDrawables, skippedDrawables, maskBufferSize: 2048 });
     } };
     // The measured camera for the reference square, placed on the current paint surface.
     let framed: Camera | undefined;

@@ -250,6 +250,54 @@ test('a previously hidden widget waits for reopening, restores the skin and resp
   assert.equal(context.localStorage.getItem('waifu-display'), null);
 });
 
+// Start the classic widget with hitokoto.cn answered by `quote`, which may be slow or fail.
+async function quoteWidget(quote: (url: string) => Promise<unknown>) {
+  const { context, nodes } = browser();
+  context.console.warn = () => {};
+  const fetchLocal = context.fetch;
+  context.fetch = async url => url.startsWith('https://v1.hitokoto.cn')
+    ? { ok: true, json: () => quote(url) }
+    : fetchLocal(url);
+  context.document.head.appendChild({ src: base + 'live2d.min.js' });
+  await settled();
+  vm.runInContext(read('jsdelivr/sequential/waifu-tips.js'), context);
+  context.initWidget({ cdnPath: base, waifuPath: base + 'waifu-tips.json' });
+  await settled();
+  const caption = nodes.get('waifu-tips');
+  return { caption, ask: () => nodes.get('waifu-tool-hitokoto').click() };
+}
+
+test('a quote asked for during the welcome shows at once, with its source in the same caption', async () => {
+  const { caption, ask } = await quoteWidget(async () => ({ hitokoto: '人生如逆旅', from: '临江仙', from_who: '苏轼' }));
+  assert.match(caption.innerHTML, /欢迎|Hello|早上|中午|下午|晚上|凌晨/, 'the welcome line is up first');
+  ask();
+  assert.equal(caption.innerHTML, '让我想想…');
+  await settled();
+  assert.equal(caption.innerHTML, '人生如逆旅<small class="waifu-tips-source">—— 苏轼「临江仙」</small>');
+});
+
+test('an unreachable quote service still answers with an offline line', async () => {
+  const { caption, ask } = await quoteWidget(async () => { throw new Error('offline'); });
+  ask();
+  await settled();
+  assert.match(caption.innerHTML, /（离线）<\/small>$/);
+  assert.doesNotMatch(caption.innerHTML, /hitokoto|来自/);
+});
+
+test('only the latest of several quick quote requests is shown', async () => {
+  const answers: ((value: unknown) => void)[] = [];
+  const { caption, ask } = await quoteWidget(() => new Promise(resolve => answers.push(resolve)));
+  ask();
+  ask();
+  await settled();
+  assert.equal(answers.length, 2);
+  answers[1]({ hitokoto: '第二句', from: '乙' });
+  await settled();
+  answers[0]({ hitokoto: '第一句', from: '甲' });
+  await settled();
+  assert.equal(caption.innerHTML, '第二句<small class="waifu-tips-source">—— 「乙」</small>');
+});
+
 test('npm shortcuts fetch the default catalog from the corresponding GitHub CDN', async () => {
   for (const host of ['cdn.jsdmirror.com', 'cdn.jsdelivr.net']) {
     const { context, document, requests, renders } = browser();

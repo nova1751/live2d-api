@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { paintResolution, visibleArea } from '../src/runtime/paint-buffer.ts';
+import { touchPixelBudget, paintResolution, visibleArea } from '../src/runtime/paint-buffer.ts';
 
 const desktop = { maxResolution: 3, pixelBudget: 16.8e6, maxSide: 8192 };
 // A full-screen expanded view: the square surface spans the screen width and overhangs top and bottom.
@@ -39,9 +39,27 @@ test('desktop supersampling keeps 2x on 1080p and 2K full-screen canvases and fi
   assert.ok(fourK > 1.4 && fourK < 1.5, String(fourK));
 });
 
-test('slow frames and touch budgets still lower the resolution', () => {
+const touch = { maxResolution: 3, pixelBudget: touchPixelBudget, maxSide: 3072 };
+
+test('slow frames still lower the resolution', () => {
   const box = fullScreen(1920, 1080), view = { width: 1920, height: 1080 };
   assert.equal(paintResolution(box, view, 2, desktop, 1920 * 1080 * 1.5 ** 2), 1.5);
-  const phone = { maxResolution: 1.5, pixelBudget: 1.5e6, maxSide: 2048 };
-  assert.ok(paintResolution({ left: 0, top: 0, width: 390, height: 390 }, { width: 390, height: 844 }, 3, phone) === 1.5);
+  const phone = { width: 390, height: 844 };
+  assert.equal(paintResolution({ left: 0, top: 120, width: 390, height: 390 }, phone, 3, touch, 390 * 390 * 2 ** 2), 2);
+});
+
+test('a phone or tablet shows the full-screen character at its own pixel ratio', () => {
+  // Portrait screens: the square surface spans the height and overhangs both sides.
+  const portrait = (width: number, height: number) => ({ left: (width - height) / 2, top: 0, width: height, height });
+  for (const [width, height, dpr] of [[390, 844, 3], [430, 932, 3], [412, 915, 2.625], [820, 1180, 2], [1024, 1366, 2]]) {
+    assert.equal(paintResolution(portrait(width, height), { width, height }, dpr, touch), dpr, `${width}x${height}@${dpr}`);
+  }
+});
+
+test('the gallery preview and the floating widget are as sharp on a phone as full screen', () => {
+  const phone = { width: 390, height: 844 };
+  // The gallery stage, a 496 px square that runs off both sides of a 390 px screen.
+  assert.equal(paintResolution({ left: -53, top: 150, width: 496, height: 496 }, phone, 3, touch), 3);
+  // The floating widget: its surface is twice the character's square and reaches past the edges.
+  assert.equal(paintResolution({ left: -60, top: 460, width: 600, height: 600 }, phone, 3, touch), 3);
 });

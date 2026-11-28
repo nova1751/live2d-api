@@ -30,7 +30,7 @@ const { outputFiles: [legacyEngine] } = await build({
   target: 'es2020', minifyWhitespace: true, legalComments: 'inline',
 });
 const entries = [
-  { entryPoints: ['src/vendor/asteroids.ts'], outfile: 'asteroids.js' },
+  { entryPoints: ['src/game/asteroids/index.ts'], outfile: 'asteroids.js', format: 'iife', bundle: true, minify: true },
   { entryPoints: ['src/standalone.ts'], outfile: 'live2d.min.js', format: 'iife', bundle: true,
     minify: true, banner: { js: legacyEngine.text.trimEnd() + ';' } },
   { entryPoints: ['src/modern.ts'], outfile: 'modern/renderer.mjs', target: 'es2022', format: 'esm', bundle: true, minify: true },

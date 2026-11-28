@@ -245,6 +245,15 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible { outline-offset: 
 #waifu-tips span {
   color: #0099cc;
 }
+/* A quote's source sits under the quote in the same caption. */
+#waifu-tips .waifu-tips-source {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.72;
+  text-align: right;
+}
 
 #live2d {
   cursor: grab;

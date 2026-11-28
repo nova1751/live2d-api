@@ -57,13 +57,17 @@ function appendResource(element, url) {
     document.head.appendChild(element);
   });
 }
-async function withLoadTimeout(load) {
+async function withLoadTimeout(load, outer) {
   const controller = new AbortController();
   const cancel = loadDeadline(controller.signal, () => controller.abort(new Error("Live2D resource load timed out")));
+  const forward = () => controller.abort(outer.reason);
+  if (outer?.aborted) forward();
+  else outer?.addEventListener("abort", forward, { once: true });
   try {
     return await load(controller.signal);
   } finally {
     cancel();
+    outer?.removeEventListener("abort", forward);
   }
 }
 
@@ -224,6 +228,9 @@ var MIRROR = "https://cdn.jsdmirror.com/gh/";
 var JSDELIVR = "https://cdn.jsdelivr.net/gh/";
 var RAW = "https://raw.githubusercontent.com/";
 var COMMIT = /^[a-f\d]{40}$/i;
+var HEDGE_MS = 2e3;
+var PREFERENCE_MS = 864e5;
+var PREFERENCE_KEY = "live2d-cdn";
 function mirrorRetryUrl(input) {
   if (!input.startsWith(MIRROR)) return;
   const url = new URL(input);
@@ -242,6 +249,33 @@ function githubFile(input) {
   const [, owner, repo, ref, path] = match;
   return { owner, repo, ref, path };
 }
+function onRaw(ref) {
+  return COMMIT.test(ref) || ref !== "latest" && /[^\d.]/.test(ref);
+}
+var familyOf = (href) => href.startsWith(MIRROR) ? "mainland" : href.startsWith(JSDELIVR) || href.startsWith(RAW) ? "global" : void 0;
+var preferenceKey = Symbol.for("live2d.cdnPreference");
+var state = globalThis[preferenceKey] ?? (globalThis[preferenceKey] = {});
+function cdnPreference() {
+  if (!state.loaded) {
+    state.loaded = true;
+    try {
+      const saved = JSON.parse(localStorage.getItem(PREFERENCE_KEY) ?? "null");
+      if (saved && (saved.family === "global" || saved.family === "mainland") && Number(saved.until) > Date.now()) state.family = saved.family;
+    } catch {
+    }
+  }
+  return state.family;
+}
+function setCdnPreference(family, persist = true) {
+  state.loaded = true;
+  state.family = family;
+  state.decided = true;
+  if (!persist) return;
+  try {
+    localStorage.setItem(PREFERENCE_KEY, JSON.stringify({ family, until: Date.now() + PREFERENCE_MS }));
+  } catch {
+  }
+}
 var demoted = /* @__PURE__ */ new Map();
 var DEMOTE_MS = 12e4;
 var hostOf = (href) => {
@@ -252,21 +286,56 @@ var hostOf = (href) => {
   }
 };
 var isDemoted = (href) => (demoted.get(hostOf(href)) ?? 0) > Date.now();
-function cdnAlternates(input) {
+function cdnCandidates(input, { script = false } = {}) {
   const file = githubFile(input);
-  const retry = mirrorRetryUrl(input);
-  if (!file) return retry ? [retry] : [];
+  if (!file) {
+    const retry = mirrorRetryUrl(input);
+    return retry ? [input, retry] : [input];
+  }
   const { owner, repo, ref, path } = file;
   const mirror = `${MIRROR}${owner}/${repo}@${ref}/${path}`;
   const jsdelivr = `${JSDELIVR}${owner}/${repo}@${ref}/${path}`;
-  const raw = `${RAW}${owner}/${repo}/${ref}/${path}`;
-  const others = input.startsWith(MIRROR) ? [retry, jsdelivr, ...COMMIT.test(ref) ? [raw] : []] : input.startsWith(JSDELIVR) ? [...COMMIT.test(ref) ? [raw] : [], mirror] : [jsdelivr, mirror];
-  const unique = others.filter((href, index) => href && href !== input && others.indexOf(href) === index);
+  const raw = !script && onRaw(ref) ? `${RAW}${owner}/${repo}/${ref}/${path}` : void 0;
+  const global = input.startsWith(RAW) ? [raw, jsdelivr] : [jsdelivr, raw];
+  const mainland = [mirror, mirrorRetryUrl(mirror)];
+  const family = cdnPreference() ?? familyOf(input);
+  const ordered = family === "mainland" ? [mainland[0], ...global, mainland[1]] : [...global, ...mainland];
+  const unique = ordered.filter((href, index) => !!href && ordered.indexOf(href) === index);
   return [...unique.filter((href) => !isDemoted(href)), ...unique.filter(isDemoted)];
 }
 var transient = (status) => status === 403 || status === 421 || status === 429 || status >= 500;
 async function fetchCdnAsset(url, signal, progressSignal = signal) {
-  const candidates = isDemoted(url) ? [...cdnAlternates(url), url] : [url, ...cdnAlternates(url)];
+  if (githubFile(url)) {
+    while (!state.decided && state.race) await until(state.race, signal);
+    if (!state.decided) {
+      const race = raceHosts(cdnCandidates(url), signal, progressSignal);
+      state.race = race;
+      try {
+        return await race;
+      } finally {
+        if (state.race === race) state.race = void 0;
+      }
+    }
+  }
+  return failover(cdnCandidates(url), signal, progressSignal);
+}
+function until(promise, signal) {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    const abort = () => reject(signal.reason);
+    signal?.addEventListener("abort", abort, { once: true });
+    promise.then(() => {
+    }, () => {
+    }).then(() => {
+      signal?.removeEventListener("abort", abort);
+      resolve();
+    });
+  });
+}
+async function failover(candidates, signal, progressSignal = signal) {
   let last;
   let failure;
   for (const candidate of candidates) {
@@ -285,6 +354,76 @@ async function fetchCdnAsset(url, signal, progressSignal = signal) {
   }
   if (last) return last;
   throw failure;
+}
+function raceHosts(candidates, signal, progressSignal = signal) {
+  return new Promise((resolve, reject) => {
+    const attempts = /* @__PURE__ */ new Set();
+    let next = 0;
+    let settled = false;
+    let hedge;
+    let last;
+    let failure;
+    const finish = (settle) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(hedge);
+      signal?.removeEventListener("abort", cancel);
+      settle();
+    };
+    function cancel() {
+      for (const attempt of attempts) attempt.abort(signal.reason);
+      finish(() => reject(signal.reason));
+    }
+    const failed = (candidate) => {
+      if (candidates.length > 1) demoted.set(hostOf(candidate), Date.now() + DEMOTE_MS);
+      if (next < candidates.length) start();
+      else if (!attempts.size) finish(() => last ? resolve(last) : reject(failure));
+    };
+    function switchFamily() {
+      const tried = new Set(candidates.slice(0, next).map(familyOf));
+      const other = candidates.findIndex((href, index) => index >= next && !tried.has(familyOf(href)));
+      if (other > next) candidates.splice(next, 0, ...candidates.splice(other, 1));
+      start();
+    }
+    function start() {
+      if (settled) return;
+      const candidate = candidates[next++];
+      const attempt = new AbortController();
+      attempts.add(attempt);
+      clearTimeout(hedge);
+      if (next < candidates.length) hedge = setTimeout(switchFamily, HEDGE_MS);
+      fetch(candidate, { signal: attempt.signal }).then((response) => {
+        attempts.delete(attempt);
+        if (settled) {
+          void response.body?.cancel().catch(() => {
+          });
+          return;
+        }
+        if (response.ok || !transient(response.status)) {
+          for (const other of attempts) other.abort();
+          const family = familyOf(candidate);
+          if (family) setCdnPreference(family);
+          finish(() => resolve(trackResponse(response, progressSignal)));
+          return;
+        }
+        void response.body?.cancel().catch(() => {
+        });
+        last = response;
+        failed(candidate);
+      }, (error) => {
+        attempts.delete(attempt);
+        if (settled) return;
+        failure = error;
+        failed(candidate);
+      });
+    }
+    if (signal?.aborted) {
+      reject(signal.reason);
+      return;
+    }
+    signal?.addEventListener("abort", cancel, { once: true });
+    start();
+  });
 }
 
 // src/library/catalog.ts
@@ -402,7 +541,7 @@ function parseModelCatalog(catalog, url, collection, locale = "zh-CN", sourceBas
 }
 
 // package.json
-var version = "2.9.38";
+var version = "2.9.39";
 
 // src/distribution.ts
 var repository = "/gh/nova1751/live2d-api";
@@ -534,8 +673,10 @@ function loadGirlsFrontline(options = {}) {
   return loadWidget({ ...options, collection: "girls-frontline" });
 }
 export {
+  cdnPreference,
   loadGirlsFrontline,
   loadModelCatalog,
   loadWidget,
-  selectWidgetModel
+  selectWidgetModel,
+  setCdnPreference
 };

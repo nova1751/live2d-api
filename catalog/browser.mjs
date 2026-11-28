@@ -1,5 +1,5 @@
 /*! Live2D API | Generated from src/ | https://github.com/nova1751/live2d-api */
-import { loadModelCatalog, loadWidget, selectWidgetModel } from "../widget.mjs";
+import { cdnPreference, loadModelCatalog, loadWidget, selectWidgetModel, setCdnPreference } from "../widget.mjs";
 const gameNames = {
   "girls-frontline": ["少女前线", "Girls’ Frontline"],
   "azur-lane": ["碧蓝航线", "Azur Lane"],
@@ -127,11 +127,14 @@ themeButton.addEventListener("click", () => {
 prefersDark.addEventListener("change", applyTheme);
 applyTheme();
 const cdnChoice = new URL(location.href).searchParams.get("cdn");
-const mainland = cdnChoice === "mainland" || cdnChoice !== "global" && /^Asia\/(Shanghai|Urumqi|Chongqing|Chungking|Harbin|Kashgar)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone);
-const cdnHost = mainland ? "https://cdn.jsdmirror.com" : "https://cdn.jsdelivr.net";
-const embedCode = '<script type="module" src="' + cdnHost + "/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=" + game + (english ? "&lang=en" : "") + '"><\/script>';
-find("embed-code").textContent = embedCode;
-find("copy-embed").addEventListener("click", () => void copyText(embedCode, t("接入代码已复制", "Embed code copied.")));
+if (cdnChoice === "mainland" || cdnChoice === "global") setCdnPreference(cdnChoice, false);
+const embedCode = () => '<script type="module" src="' + (cdnPreference() === "mainland" ? "https://cdn.jsdmirror.com" : "https://cdn.jsdelivr.net") + "/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=" + game + (english ? "&lang=en" : "") + '"><\/script>';
+const showEmbedCode = () => {
+  find("embed-code").textContent = embedCode();
+};
+showEmbedCode();
+find("embed").addEventListener("toggle", showEmbedCode);
+find("copy-embed").addEventListener("click", () => void copyText(embedCode(), t("接入代码已复制", "Embed code copied.")));
 const attachWidget = () => {
   for (const child of Array.from(document.body.querySelectorAll(":scope > #waifu, :scope > #waifu-toggle"))) {
     (child.id === "waifu-toggle" ? find("stage") : host).append(child);
@@ -213,7 +216,7 @@ try {
   };
   var highlight2 = highlight, drawCards2 = drawCards, describe2 = describe;
   notice.textContent = t("正在载入图鉴…", "Loading catalog…");
-  const library = await loadModelCatalog(catalogUrl, game, locale, mainland ? "mainland" : void 0);
+  const library = await loadModelCatalog(catalogUrl, game, locale, cdnPreference() === "mainland" ? "mainland" : void 0);
   notice.textContent = "";
   const portrait = (id) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map((id) => {

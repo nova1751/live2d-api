@@ -2,13 +2,24 @@
  * Largest drawing-buffer side for a paint surface, in device pixels; both renderers clamp their
  * buffers to it. The expanded view draws on a square around the screen (runtime/expand.ts), and
  * 8192 holds that square at 2x on a 1440p screen and at native resolution on 4K and 5K screens.
+ * On touch devices 3072 holds it at the screen's own ratio on a 3x phone (932 px tall) and a 2x
+ * 12.9" tablet (1366 px), where 2048 left the full-screen character at about 2x and 1.5x.
  */
 export function maxPaintBuffer() {
-  return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 2048 : 8192;
+  return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 3072 : 8192;
 }
 
 /** Visible device pixels a desktop drawing buffer may hold: 4K at native resolution, 1440p at 2x. */
 export const desktopPixelBudget = 16.8e6;
+
+/**
+ * Visible device pixels a touch device may draw: enough for a full-screen character on a 3x phone
+ * (about 3.6M) and a 2x 12.9" tablet (about 5.6M) at their own ratio, so the widget and the
+ * gallery, which are smaller, always are. live2d-web's phone default of 1.5M at 1.5x leaves the
+ * character visibly soft on those screens. Frames that run long still lower the resolution
+ * (modern.ts).
+ */
+export const touchPixelBudget = 6e6;
 
 /**
  * The pixel ratio to aim for. Desktops render the floating widget and the expanded view at 2x or

@@ -150,7 +150,7 @@ h1 span { color: var(--brand); font-weight: 700 }
 
 /* Layout */
 .layout { display: grid; grid-template-columns: minmax(300px, 1fr) minmax(0, 1.55fr); align-items: start; gap: clamp(20px, 2.6vw, 40px); padding-bottom: 56px }
-.preview-panel { position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow: hidden auto; overscroll-behavior: contain; scrollbar-width: thin; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md) }
+.preview-panel { position: sticky; top: calc(var(--header-h) + 16px); max-height: calc(100vh - var(--header-h) - 32px); overflow: hidden auto; scrollbar-width: thin; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-md) }
 
 /* Stage: contract with the widget (see #stage #waifu rules below). */
 /* The model shrinks on short screens so the name and outfit picker stay above the fold. */

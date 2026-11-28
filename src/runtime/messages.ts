@@ -20,27 +20,83 @@ export function escapeText(text: string): string {
 }
 
 let clickRules: Rule[] | undefined;
-let timer: number | undefined;
 let heldPlayback: object | undefined;
 
-function clearMessage() {
+// The caption's dismissal clock. It stops while the reader hovers or focuses the caption
+// and while the tab is hidden, then resumes with whatever time was left.
+let timer: number | undefined;
+let deadline = 0;
+let remaining = 0;
+const holds = new Set<string>();
+
+function stopClock() {
   clearTimeout(timer);
+  timer = undefined;
+  remaining = 0;
+}
+
+function startClock(ms: number) {
+  stopClock();
+  remaining = ms;
+  if (holds.size) return;
+  deadline = Date.now() + ms;
+  timer = setTimeout(clearMessage, ms);
+}
+
+function hold(reason: string) {
+  if (holds.has(reason)) return;
+  holds.add(reason);
+  if (timer === undefined) return;
+  clearTimeout(timer);
+  timer = undefined;
+  remaining = Math.max(0, deadline - Date.now());
+}
+
+function release(reason: string) {
+  if (!holds.delete(reason) || holds.size || !remaining) return;
+  // Linger briefly after the pointer leaves so the line does not vanish under it.
+  startClock(Math.max(remaining, 1000));
+}
+
+/** Pause the caption while it is read, focused or out of sight. */
+export function attachCaption(box: HTMLElement) {
+  box.addEventListener('pointerenter', () => hold('pointer'));
+  box.addEventListener('pointerleave', () => release('pointer'));
+  box.addEventListener('focusin', () => hold('focus'));
+  box.addEventListener('focusout', () => release('focus'));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) hold('hidden');
+    else release('hidden');
+  });
+}
+
+function clearMessage() {
+  stopClock();
   session.removeItem('waifu-text');
   document.getElementById('waifu-tips')?.classList.remove('waifu-tips-active');
 }
 
 function display(message: string, priority: number) {
-  clearTimeout(timer);
+  stopClock();
   session.setItem('waifu-text', String(priority));
   const box = document.getElementById('waifu-tips')!;
   box.innerHTML = message;
   box.classList.add('waifu-tips-active');
 }
 
-export function say(message: Text | undefined, duration: number, priority: number) {
-  if (!message || heldPlayback || Number(session.getItem('waifu-text')) > priority) return;
-  display(pick(message), priority);
-  timer = setTimeout(clearMessage, duration);
+/** Long lines stay up long enough to read; this only ever lengthens a caller's duration. */
+function readingTime(message: string, duration: number) {
+  const characters = message.replace(/<[^>]*>/g, '').replace(/&[a-z]+;/g, ' ').length;
+  return Math.max(duration, Math.min(12000, 2500 + characters * 60));
+}
+
+/** Show a caption unless a higher-priority one is up. Returns whether it was shown. */
+export function say(message: Text | undefined, duration: number, priority: number): boolean {
+  if (!message || heldPlayback || Number(session.getItem('waifu-text')) > priority) return false;
+  const text = pick(message);
+  display(text, priority);
+  startClock(readingTime(text, duration));
+  return true;
 }
 
 export function showDialogue(text: string, playback?: object) {
@@ -69,7 +125,7 @@ export function finishDialogue(playback: object, interrupted: boolean) {
   if (heldPlayback !== playback) return;
   heldPlayback = undefined;
   if (interrupted) clearMessage();
-  else timer = setTimeout(clearMessage, 1200);
+  else startClock(1200);
 }
 
 function welcome(times: Tips['time']): Text {

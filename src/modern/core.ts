@@ -1,5 +1,5 @@
 import { ensureCubismCore, OFFICIAL_CUBISM_CORE_URL } from 'live2d-web';
-import { cdnAlternates } from '../runtime/cdn';
+import { cdnCandidates } from '../runtime/cdn';
 
 // Long enough for a slow but working connection to the official host, short enough that a
 // stalled one does not leave the model loading for live2d-web's full 30 second timeout.
@@ -50,7 +50,7 @@ async function load() {
   }
   const pinned = pinnedCoreUrl();
   let failure: unknown;
-  for (const url of [pinned, ...cdnAlternates(pinned)]) {
+  for (const url of cdnCandidates(pinned, { script: true })) {
     try {
       // Resolves at once if the stalled official script finished in the meantime.
       await Promise.race([ensureCubismCore(url), official.catch(() => new Promise<never>(() => {}))]);

@@ -275,6 +275,14 @@ body > #waifu.waifu-adaptive #waifu-tool button:focus-visible {
 #waifu-tips span {
   color: #0099cc;
 }
+#waifu-tips .waifu-tips-source {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 18px;
+  opacity: 0.72;
+  text-align: right;
+}
 #live2d {
   cursor: grab;
   height: 350px;

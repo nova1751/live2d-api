@@ -1,5 +1,7 @@
 import { createRenderer, isModern } from './renderer';
 export { loadModelCatalog } from './library/catalog.js';
+/** Which GitHub CDN family to try first: the global hosts, or the mainland China mirror. */
+export { cdnPreference, setCdnPreference, type CdnFamily } from './runtime/cdn.js';
 import { runtimeDirectory, defaultLibraryUrl, githubLibrary, useRuntimeSnapshot } from './distribution';
 import { appendResource } from './runtime/request';
 const mounting = Symbol.for('live2dapi-noa.mounting');

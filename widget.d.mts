@@ -1,4 +1,6 @@
 export { loadModelCatalog } from './library/catalog.js';
+/** Which GitHub CDN family to try first: the global hosts, or the mainland China mirror. */
+export { cdnPreference, setCdnPreference, type CdnFamily } from './runtime/cdn.js';
 import type { WidgetLocale } from './library/catalog.js';
 export type { WidgetLocale } from './library/catalog.js';
 export type WidgetMode = 'random' | 'sequential';

@@ -2,8 +2,9 @@ import { preferences, session } from './storage';
 import { setLanguage, translated } from './locale';
 import { expandModel } from './expand';
 import { icons, loadingIcon, retryIcon } from './icons';
-import { bindMessages, escapeText, finishDialogue, say, showDialogue, showModelPreset } from './messages';
+import { attachCaption, bindMessages, escapeText, finishDialogue, pick, say, showDialogue, showModelPreset } from './messages';
 import { getJson, isLoadCancelled } from './request';
+import { cdnCandidates } from './cdn';
 import { setModelLoading } from './loading';
 import { sizeLegacyCanvas } from './legacy-canvas';
 import { LegacyModels } from '../legacy/models';
@@ -28,26 +29,80 @@ async function runModel(action: () => void | Promise<void>) {
   catch (error) { if (retryModel === action && !isLoadCancelled(error)) reportError(error); }
 }
 
-async function hitokoto(locale?: LegacyOptions['locale']) {
-  if (locale === 'en') {
-    say(['One step at a time, Commander.', 'Even on a quiet day, there is something worth noticing.'], 6000, 9);
-    return;
-  }
-  const quote = await getJson<{ from: string; creator: string; hitokoto: string }>('https://v1.hitokoto.cn');
-  say(escapeText(quote.hitokoto), 6000, 9);
-  setTimeout(() => {
-    say(`这句一言来自 <span>「${escapeText(String(quote.from))}」</span>，是 <span>${escapeText(String(quote.creator))}</span> 在 hitokoto.cn 投稿的。`, 4000, 9);
-  }, 6000);
+// Shown when hitokoto.cn is unreachable, slow or rate limited, so the button always answers.
+const offlineQuotes = [
+  '今天也辛苦了，记得抬头看看天空。',
+  '再小的进步，也值得被记住。',
+  '休息不是偷懒，是为了走更远的路。',
+  '把手头这件事做好，就已经很了不起了。',
+  '风会停，雨也会停，明天总会来。',
+];
+const englishQuotes = ['One step at a time, Commander.', 'Even on a quiet day, there is something worth noticing.'];
+// A click is a request from the reader, so it outranks idle chatter and the welcome line.
+const askedPriority = 11;
+let quoteRequest: AbortController | undefined;
+
+function cancelQuote() {
+  quoteRequest?.abort();
+  quoteRequest = undefined;
 }
 
-function asteroids() {
-  if (window.Asteroids) {
-    (window.ASTEROIDSPLAYERS ??= []).push(new window.Asteroids());
-  } else {
-    const script = document.createElement('script');
-    script.src = asteroidsUrl;
-    document.head.appendChild(script);
+async function hitokoto(locale?: LegacyOptions['locale']) {
+  cancelQuote();
+  if (locale === 'en') {
+    say(englishQuotes, 6000, askedPriority);
+    return;
   }
+  const request = quoteRequest = new AbortController();
+  const timeout = setTimeout(() => request.abort(new Error('hitokoto.cn timed out')), 5000);
+  say('让我想想…', 5000, askedPriority);
+  try {
+    const quote = await getJson<{ hitokoto: string; from?: string | null; from_who?: string | null }>('https://v1.hitokoto.cn', request.signal);
+    if (quoteRequest !== request) return;
+    const author = quote.from_who ? escapeText(String(quote.from_who)) : '';
+    const work = quote.from ? `「${escapeText(String(quote.from))}」` : '';
+    // The quote and its source share one caption, so the source can never appear alone.
+    const source = author || work ? `<small class="waifu-tips-source">—— ${author}${work}</small>` : '';
+    say(escapeText(String(quote.hitokoto)) + source, 6000, askedPriority);
+  } catch (error) {
+    // A newer click or hiding the widget aborted this request; that caller speaks instead.
+    if (quoteRequest !== request) return;
+    console.warn('[Live2D]', error);
+    say(`${pick(offlineQuotes)}<small class="waifu-tips-source">（离线）</small>`, 6000, askedPriority);
+  } finally {
+    clearTimeout(timeout);
+    if (quoteRequest === request) quoteRequest = undefined;
+  }
+}
+
+let gameLoading = false;
+function asteroids() {
+  if (window.Asteroids) { window.Asteroids.start(); return; }
+  // The script starts the game itself once it loads; a second click meanwhile waits for it.
+  if (gameLoading) return;
+  gameLoading = true;
+  // Same file on the other GitHub CDNs, in case the visitor's network blocks this one.
+  const urls = cdnCandidates(asteroidsUrl, { script: true });
+  const load = (index: number) => {
+    const script = document.createElement('script');
+    script.src = urls[index];
+    script.onload = () => { gameLoading = false; };
+    script.onerror = () => {
+      script.remove();
+      if (index + 1 < urls.length) { load(index + 1); return; }
+      gameLoading = false;
+      say(translated('小游戏加载失败了，稍后再试试吧。', 'The game could not load. Try again in a moment.'), 5000, askedPriority);
+    };
+    document.head.appendChild(script);
+  };
+  load(0);
+}
+
+function gameOver(event: Event) {
+  const score = Number((event as CustomEvent<{ score?: number }>).detail?.score) || 0;
+  say(score
+    ? translated(`打掉了 <span>${score}</span> 个元素，指挥官好身手！`, `You knocked out <span>${score}</span> elements. Nice flying, Commander!`)
+    : translated('一个都没打中？下次一定行～', 'Not a single hit? Next time for sure.'), 5000, 10);
 }
 
 let visibilityRevision = 0;
@@ -109,6 +164,8 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
     <div id="waifu-tool"></div>
   </div>`);
   byId('waifu-retry').addEventListener('click', () => { if (retryModel) void runModel(retryModel); });
+  attachCaption(byId('waifu-tips'));
+  window.addEventListener('asteroids:end', gameOver);
   // The width and height above only seed the buffer until the canvas has a displayed size.
   sizeLegacyCanvas(byId('live2d') as HTMLCanvasElement);
   setModelLoading(true);
@@ -145,7 +202,7 @@ function mount(options: LegacyOptions, models: LegacyModels | CatalogModels, sta
       window.Live2D.captureFrame = true;
     },
     info: () => window.open('https://github.com/nova1751/live2d-api'),
-    quit: () => { retryModel = undefined; models.cancel(); hide(); },
+    quit: () => { retryModel = undefined; cancelQuote(); models.cancel(); hide(); },
   };
   for (const name of Array.isArray(options.tools) ? options.tools : Object.keys(actions)) {
     if (options.modelUrl && (name === 'switch-model' || name === 'switch-texture')) continue;

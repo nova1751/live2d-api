@@ -1,4 +1,4 @@
-import { loadModelCatalog, loadWidget, selectWidgetModel } from '../widget.mjs';
+import { cdnPreference, loadModelCatalog, loadWidget, selectWidgetModel, setCdnPreference } from '../widget.mjs';
 
 const gameNames = {
   'girls-frontline': ['少女前线','Girls’ Frontline'], 'azur-lane': ['碧蓝航线','Azur Lane'],
@@ -108,15 +108,19 @@ themeButton.addEventListener('click', () => {
 prefersDark.addEventListener('change', applyTheme);
 applyTheme();
 
-// Route assets by where the visitor probably is, not by the page language. A wrong guess only costs
-// a fallback: fetchCdnAsset moves between JSDMirror, jsDelivr and raw GitHub on its own.
+// Assets come from jsDelivr and raw GitHub first. Where those are slow or blocked, the mainland
+// mirror starts after about a second and wins (runtime/cdn.ts), and this browser then prefers it
+// for a day. ?cdn=mainland or ?cdn=global picks the hosts for one visit instead.
 const cdnChoice = new URL(location.href).searchParams.get('cdn');
-const mainland = cdnChoice === 'mainland' || cdnChoice !== 'global' &&
-  /^Asia\/(Shanghai|Urumqi|Chongqing|Chungking|Harbin|Kashgar)$/.test(Intl.DateTimeFormat().resolvedOptions().timeZone);
-const cdnHost = mainland ? 'https://cdn.jsdmirror.com' : 'https://cdn.jsdelivr.net';
-const embedCode = '<script type="module" src="' + cdnHost + '/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=' + game + (english ? '&lang=en' : '') + '"></script>';
-find('embed-code').textContent = embedCode;
-find('copy-embed').addEventListener('click', () => void copyText(embedCode, t('接入代码已复制', 'Embed code copied.')));
+if (cdnChoice === 'mainland' || cdnChoice === 'global') setCdnPreference(cdnChoice, false);
+// Suggest the embed host that serves this visitor; it follows the CDN that answered.
+const embedCode = () => '<script type="module" src="' + (cdnPreference() === 'mainland' ? 'https://cdn.jsdmirror.com' : 'https://cdn.jsdelivr.net') +
+  '/gh/nova1751/live2d-api@widget-latest/collections.mjs?collection=' + game + (english ? '&lang=en' : '') + '"></script>';
+const showEmbedCode = () => { find('embed-code').textContent = embedCode(); };
+showEmbedCode();
+// The first model load may have switched hosts since the page opened.
+find('embed').addEventListener('toggle', showEmbedCode);
+find('copy-embed').addEventListener('click', () => void copyText(embedCode(), t('接入代码已复制', 'Embed code copied.')));
 
 // Host the standard widget in the preview panel, including a later reopen after it was hidden.
 const attachWidget = () => {
@@ -128,7 +132,8 @@ new MutationObserver(attachWidget).observe(document.body, { childList: true });
 
 try {
   notice.textContent = t('正在载入图鉴…', 'Loading catalog…');
-  const library = await loadModelCatalog(catalogUrl, game, locale, mainland ? 'mainland' : undefined);
+  // A browser known to need the mirror links straight to it, images included.
+  const library = await loadModelCatalog(catalogUrl, game, locale, cdnPreference() === 'mainland' ? 'mainland' : undefined);
   notice.textContent = '';
   const portrait = (id: string) => library.gallery ? library.gallery[id]?.portrait : gflPortrait(id);
   const models = library.ids.map(id => {

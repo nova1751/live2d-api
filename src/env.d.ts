@@ -41,8 +41,8 @@ interface Window {
     reframe?(): void;
   };
   Live2D: { captureName: string; captureFrame: boolean };
-  Asteroids?: new () => object;
-  ASTEROIDSPLAYERS?: object[];
+  /** Set by asteroids.js. `start` focuses the running game instead of opening a second one. */
+  Asteroids?: { start(): void; stop(): void };
 }
 
 // Replaced with literals in the standalone CDN entry scripts.
