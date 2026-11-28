@@ -5,7 +5,7 @@ import { join, relative, sep } from 'node:path';
 import { collections } from '../src/library/catalog.ts';
 
 export const gameFiles = collections.filter(name => name !== 'girls-frontline').map(name => name + '.json');
-export const gameAssetDirectories = ['voices', 'band-dream-cn'];
+export const gameAssetDirectories = ['voices', 'band-dream-cn', 'azur-lane-l2d'];
 
 export async function libraryTag() {
   const digest = createHash('sha256');

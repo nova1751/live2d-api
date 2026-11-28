@@ -1,0 +1,1 @@
+{"schemaVersion":1,"skin":103261,"rules":[{"drag_direct":2,"draw_able_name":"TouchDrag1","id":1032611,"ignore_react":1,"mode":1,"offset_y":4,"parameter":"touch_drag1","range":[0,30],"range_abs":1,"revert":50,"revert_smooth":100,"smooth":100}]}

@@ -36,7 +36,7 @@ Place the script before `</body>`. **Next character** opens the next character�
 To bypass Git branch CDN caches and pick up new releases as soon as they publish to npm, use the versioned bootstrap with `?collection=all`:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.39/latest.mjs?collection=all"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.40/latest.mjs?collection=all"></script>
 ```
 
 For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-locale`, and `data-model-id`), use `@widget-latest/autoload.js?collection=all`:
@@ -45,7 +45,7 @@ For a classic `<script>` embed (supporting `data-position`, `data-mode`, `data-l
 <script src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
 ```
 
-Pin a CDN release with a runtime tag such as `@widget-2.9.39`. The `@v2.9.39` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
+Pin a CDN release with a runtime tag such as `@widget-2.9.40`. The `@v2.9.40` source tag includes model assets and the full snapshot can exceed jsDelivr's 50 MB limit. In full-catalog mode you can also set `data-model-id="collection:modelId"`, for example `data-model-id="azur-lane:ship/10117/lafei"`.
 
 For a single game, add `collection` to the **script URL**. Switching wraps within that game. This example also enables English.
 
@@ -145,7 +145,7 @@ The locale controls widget buttons, accessibility labels, greetings and fallback
 
 Gallery characters can extend their arms, clothing and effects beyond the original interaction area. Clicks in this extra space reach the page underneath. The character and toolbar respond within their usual bounds. The floating widget uses a default z-index of 10. Set `:root { --waifu-z-index: 20; }` on the host page to change it.
 
-Choose **Expand model** in the toolbar. **100%** fits the character and its caption into the available area. Scene models keep their authored aspect ratio. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. At higher zoom, scroll, drag the background, or use the arrow keys to move the preview. Choose **Fit to view** to return to 100%.
+Choose **Expand model** in the toolbar. **100%** fits the character and its caption into the available area. Scene models keep their authored aspect ratio. Drag the slider, or enter a whole percentage from **50 to 300** and press Enter. At higher zoom, scroll, drag the background, or use the arrow keys to move the preview. Choose **Fit to view** to return to 100%. A drag that starts on a part the character moves itself (an Azur Lane outfit's parts, a stroke area on a classic model) goes to the character instead of moving the view.
 
 **Fullscreen** keeps the selected percentage and zoom controls. **Restore** returns the same canvas to the page with its current character and playback. An embedding iframe needs fullscreen permission from its host. To open at 150% each time, set `loadWidget({ modelUrl, expandedZoom: 150 })`.
 
@@ -155,10 +155,12 @@ The gallery loads one collection at a time. Search by character or outfit and sh
 
 A click first uses the model’s own touch mapping. On an unassigned visible region, the widget samples an eligible motion from that outfit and avoids immediate repeats when alternatives exist. Idle and lifecycle events retain their separate triggers.
 
+122 Azur Lane outfits carry the game's own touch rules (the `ship_l2d` table) and play them as the game does: dragged parts snap to their notches or spring back, taps switch idle poses or toggle parts, and holding or dragging a part into place starts an action. While a pose is active, actions it does not allow stay off. A few outfits place touch areas outside the model's canvas, where the game's wider screen still shows them; zoom out in **Expand model** to reach them.
+
 | Game | Forms | Scope |
 | --- | ---: | --- |
 | Girls’ Frontline | 443 | 129 entries, preserving legacy entrypoints, classic IDs, and collection order |
-| Azur Lane | 269 | 167 ships with voice and bilingual captions matched by skin ID and official inheritance rules, plus transparent scene cuts |
+| Azur Lane | 269 | 167 ships with voice and bilingual captions matched by skin ID and official inheritance rules, plus transparent scene cuts; 122 outfits with the game's drags and pose switches |
 | BanG Dream! | 3,493 | 46 characters across nine band libraries, CN crossover outfits, and *Our Notes* Sakiko Cubism 3 forms |
 | Guns GirlZ | 19 | 18 characters with official Chinese captions and recovered voices; unvoiced clips keep motions and captions |
 | Iron Saga | 5 | 4 characters; Matilda and Slokai (JP & CN) use voiced manifests, while the other pilots keep their motions |
@@ -213,7 +215,7 @@ Place one module script before `</body>`. Choose the CDN closest to your audienc
 To follow published releases independently of Git branch caches, use the bootstrap below. Its fixed URL identifies the bootstrap itself. It looks up the stable version in the npm registry and loads that release from the GitHub CDN; add `collection=all` to rotate through all seven games. If the lookup times out or the new module is unavailable, it falls back to its own release. For mainland China, use `cdn.jsdmirror.com` to select the mainland registry mirror and CDN.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.39/latest.mjs?lang=en"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/nova1751/live2d-api@widget-2.9.40/latest.mjs?lang=en"></script>
 ```
 
 The shortcut displays the widget on viewports at least 768 CSS pixels wide. A first visit starts with the tier-one Airstrike Fairy. Subsequent visits restore the last outfit on that site. Use the module API to set your own display rules.

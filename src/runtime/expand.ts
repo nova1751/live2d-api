@@ -215,9 +215,12 @@ export function expandModel(initialZoom = 100) {
 
   // Dragging anywhere moves the view at any zoom, the character included. A press that stays
   // within a few pixels is still a click, so tapping the character keeps triggering its reactions.
+  // Where the model itself reacts to a drag (a stroke or an upward swipe on a Cubism 2 part, a part
+  // an outfit's game rules move), the drag stays with the model; the background, other parts, two
+  // fingers and the wheel still pan.
   // A quick release keeps gliding and slows down.
   const panSlop = 6;
-  let drag: { id: number; x: number; y: number; from: Point; active: boolean; samples: (Point & { t: number })[] } | undefined;
+  let drag: { id: number; x: number; y: number; from: Point; active: boolean; down: PointerEvent; samples: (Point & { t: number })[] } | undefined;
   let swallowClick = false;
   let gliding = 0;
   function stopGlide() {
@@ -256,10 +259,11 @@ export function expandModel(initialZoom = 100) {
     stopGlide();
     if (drag || touches.size > 1 || !event.isPrimary) return;
     if (event.pointerType === 'mouse' && event.button !== 0 && event.button !== 1) return;
-    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, from: pan, active: false,
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, from: pan, active: false, down: event,
       samples: [{ x: event.clientX, y: event.clientY, t: event.timeStamp }] };
     // The background has nothing to click, and the middle button never clicks: pan right away.
-    if (event.button === 1 || event.target === viewport || event.target === content) {
+    // A model can still own a press there, on a touch area off its canvas (modern/gesture-input.ts).
+    if (event.button === 1 || (!event.live2dDrag && (event.target === viewport || event.target === content))) {
       event.preventDefault();
       startPan(event);
     }
@@ -271,6 +275,9 @@ export function expandModel(initialZoom = 100) {
     const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
     if (!drag.active) {
       if (Math.hypot(dx, dy) < panSlop) return;
+      // The renderer marked the press (after this capture listener saw it) as a gesture of its own:
+      // let the moves and the release reach the model instead of moving the view.
+      if (drag.down.live2dDrag) { drag = undefined; return; }
       startPan(event);
     }
     // Keep the character from treating the drag as a stroke or a gaze target.

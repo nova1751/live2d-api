@@ -5,6 +5,9 @@ import { cubismWebGL } from 'live2d-web/backends/cubism-webgl';
 import type { Live2DBackend, ModelHandle, StageHandle } from 'live2d-web';
 import { onSurface, referenceSurface, type Camera, type Framing, type PaintSurface } from './library/framing';
 import { loadModernAssets, bindInteractions } from './modern/interactions';
+import { bindGestures } from './modern/gesture-input';
+import type { GestureFile } from './modern/gestures';
+import { fetchCdnAsset } from './runtime/cdn';
 import { loadCubismCore } from './modern/core';
 import { createFramePacer } from './runtime/frame-pacer';
 import { desktopPixelBudget, touchPixelBudget, maxPaintBuffer, paintResolution, targetPixelRatio, visibleArea } from './runtime/paint-buffer';
@@ -13,7 +16,7 @@ import type { DialogueSource, GameCue } from './library/catalog';
 /** Catalog mesh lists: `hidden` meshes cut what is drawn below them, `skipped` meshes are not drawn. */
 export interface DrawableEffects { hidden?: readonly string[]; skipped?: readonly string[] }
 
-export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, drawables: DrawableEffects = {}, files?: Record<string, string | null>, paint: () => PaintSurface = () => referenceSurface) {
+export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUrl: string | undefined, signal: AbortSignal, dialogue?: DialogueSource, framing?: Framing, onPaint?: (canvas: HTMLCanvasElement) => void, cues?: Record<string, GameCue>, randomTap = false, sceneAspect?: number, drawables: DrawableEffects = {}, files?: Record<string, string | null>, paint: () => PaintSurface = () => referenceSurface, gestures?: string) {
   signal.throwIfAborted();
   if (!(canvas instanceof HTMLCanvasElement)) throw new Error('Missing Live2D canvas');
   // Keep the original canvas and its CSS dimensions. WebGL 1 and 2 cannot share a canvas.
@@ -49,7 +52,16 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
   }
   signal.addEventListener('abort', cleanup, { once: true });
   try {
-    const { interactions, src: model, resolveAsset } = loadModernAssets(src, dialogue, signal, cues, randomTap, files);
+    const { interactions, src: model, resolveAsset } = loadModernAssets(src, dialogue, signal, cues, randomTap, files, !!gestures);
+    // The outfit's touch and drag rules from the game. The model works without them.
+    const gestureRules = gestures ? fetchCdnAsset(gestures, signal).then(async response => {
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const file: GestureFile = await response.json();
+      return file.schemaVersion === 1 && Array.isArray(file.rules) ? file.rules : undefined;
+    }).catch(error => {
+      if (!signal.aborted) console.warn('[Live2D] Touch rules unavailable', gestures, error);
+      return undefined;
+    }) : undefined;
     signal.throwIfAborted();
     let graphics: StageHandle | undefined;
     let modelHandle: ModelHandle | undefined;
@@ -214,9 +226,11 @@ export async function mountModern(canvas: HTMLCanvasElement, src: string, coreUr
       }));
     } : undefined;
     let interaction: ReturnType<typeof bindInteractions> | undefined;
-    void interactions.then(({ actions, idleFiles }) => {
+    void Promise.all([interactions, gestureRules]).then(([{ actions, idleFiles, hitAreas }, rules]) => {
       if (signal.aborted || !wrapper.contains(canvas)) return;
       interaction = bindInteractions(host, instance, actions, signal, idleFiles, hitVisible);
+      if (rules?.length && modelHandle && graphics)
+        interaction.setGate(bindGestures(host, instance, modelHandle, graphics, rules, interaction.actions, hitAreas, signal));
       window.dispatchEvent(new CustomEvent('live2d:motions', { detail: actions.map(({group,index,sound})=>({group,index,voiced:!!sound})) }));
     }).catch(error => { if (!signal.aborted) console.warn('[Live2D] Interactions unavailable', error); });
     return {

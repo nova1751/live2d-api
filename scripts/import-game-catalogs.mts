@@ -1,5 +1,6 @@
 import { recoverHoukai } from './recover-houkai.mts';
 import { extendAzurCatalog } from './extend-azur-catalog.mts';
+import { attachAzurGestures } from './azur-gestures.mts';
 import { extendBandCatalog, importOurNotesCostumes, importRecoveredBandCostumes } from './extend-band-catalog.mts';
 import { preserveSceneCurtains } from './library-files.mts';
 import { createHash } from 'node:crypto';
@@ -429,6 +430,8 @@ for (const repair of azurVoiceRepairs) {
   cue.sound ??= repair.sound;
   cue.captionEn ??= repair.captionEn;
 }
+// Touch and drag rules come from scripts/import-azur-gestures.mts; keep them for outfits that stay.
+attachAzurGestures(az, destination);
 await save('azur-lane', az);
 await save('audit', { repairs, unresolved, unavailable, optionalPhysics });
 for (const [name, lib] of Object.entries({ bandLibrary, houkai, az }))

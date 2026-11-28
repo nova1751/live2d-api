@@ -228,7 +228,10 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
     for (const id of catalog.ids) {
       const { dialogue, ...assets } = catalog.resolve(id);
       const { dialogue: galleryDialogue, ...galleryAssets } = gallery.resolve(id);
-      const { modelUrl, files, cues } = assets;
+      const { modelUrl, files, cues, gestures } = assets;
+      // Recordings and touch rules kept beside the catalog come from wherever the catalog is served.
+      const beside = (url: string) => new URL(new URL(url).pathname, galleryUrl).href;
+      const galleryGestures = gestures?.startsWith(mirror + '/catalog/') ? beside(gestures) : gestures;
       const galleryCues = cues && Object.fromEntries(Object.entries(cues).map(([key, cue]) => [
         key, { ...cue, sound: cue.sound?.startsWith(mirror + '/catalog/')
           ? new URL(new URL(cue.sound).pathname, galleryUrl).href : cue.sound },
@@ -238,7 +241,7 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
       ]));
       const galleryModelUrl = modelUrl.startsWith(mirror + '/catalog/')
         ? new URL(new URL(modelUrl).pathname, galleryUrl).href : modelUrl;
-      assert.deepEqual(galleryAssets, { ...assets, modelUrl: galleryModelUrl, cues: galleryCues, files: galleryFiles }, id);
+      assert.deepEqual(galleryAssets, { ...assets, modelUrl: galleryModelUrl, cues: galleryCues, files: galleryFiles, gestures: galleryGestures }, id);
       assert.equal(galleryDialogue?.url, dialogue?.url, id);
       const portrait = catalog.gallery?.[id]?.portrait;
       if (portrait?.startsWith('https:')) assert.equal(new URL(portrait).origin, mirror, id);
@@ -246,7 +249,7 @@ test('all seven mainland catalogs resolve pinned models, recordings and absolute
         assert.deepEqual(galleryDialogue?.audio, dialogue.audio, id);
         recordings.add(dialogue.audio);
       }
-      for (const url of [modelUrl, dialogue?.url, ...Object.values(files ?? {}), ...Object.values(cues ?? {}).map(cue => cue.sound)]) {
+      for (const url of [modelUrl, dialogue?.url, gestures, ...Object.values(files ?? {}), ...Object.values(cues ?? {}).map(cue => cue.sound)]) {
         if (url && /^https?:/.test(url)) assert.equal(new URL(url).origin, mirror, id + ' ' + url);
       }
     }

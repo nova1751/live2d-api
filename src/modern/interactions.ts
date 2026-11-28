@@ -1,12 +1,13 @@
 import { nativeMotionLookup, nativeTouchArea } from './native-events.ts';
 import { prepareMotion } from './motion.ts';
+import type { GestureGate } from './gesture-input.ts';
 import { createVolumeLipSync, type Live2DInstance } from 'live2d-web';
 import type { DialogueSource, GameCue } from '../library/catalog';
 import { fetchCdnAsset } from '../runtime/cdn.ts';
 
 interface MotionFile { File: string; Sound?: string }
 interface Manifest {
-  HitAreas?: { Name: string }[];
+  HitAreas?: { Id?: string; Name: string }[];
   FileReferences: {
     Motions?: Record<string, MotionFile[]>;
     Physics?: string;
@@ -43,7 +44,7 @@ async function json<T>(url: string, signal: AbortSignal): Promise<T> {
   return response.json();
 }
 
-export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false, files?: Record<string, string | null>) {
+export function loadModernAssets(url: string, source: DialogueSource | undefined, signal: AbortSignal, cues?: Record<string,GameCue>, randomTap = false, files?: Record<string, string | null>, gestures = false) {
   const pathname = new URL(url).pathname;
   const src = decodeURIComponent(pathname.slice(1));
   const directory = new URL('.', url).pathname;
@@ -94,8 +95,9 @@ export function loadModernAssets(url: string, source: DialogueSource | undefined
     }),
   ]).then(([{ manifest, groups, idleFiles }, data]) => {
     const actions = readActions(url, manifest, groups, idleFiles, data, source, cues, randomTap);
-    const oneShot = new Set(source || randomTap ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
-    return { actions, idleFiles, oneShot };
+    // Game rules wait for an action to end before the next pose, so actions never loop with them.
+    const oneShot = new Set(source || randomTap || gestures ? actions.filter(a => a.file && !idleFiles.has(a.file)).map(a => new URL(a.file, url).href) : []);
+    return { actions, idleFiles, oneShot, hitAreas: manifest.HitAreas ?? [] };
   });
   // The renderer can finish or abort before the optional interaction data arrives.
   void interactions.catch(() => {});
@@ -184,9 +186,11 @@ function readActions(url: string, manifest: Manifest, groups: Record<string, Mot
 
 export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actions: Action[], signal: AbortSignal, idleFiles: ReadonlySet<string>, hitVisible?: (event: MouseEvent, onHit: () => void) => void) {
   let current: AbortController | undefined;
+  let playing: string | undefined;
+  let gate: GestureGate | undefined;
   let context: AudioContext | undefined;
   let intent = 0;
-  function stop() { intent++; current?.abort(); current = undefined; }
+  function stop() { intent++; current?.abort(); current = undefined; playing = undefined; }
   // Move the mouth with the voice volume. Motions without mouth curves would otherwise stay silent-faced.
   const mouth = createVolumeLipSync();
   let analyser: AnalyserNode | undefined;
@@ -235,6 +239,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
   async function play(action: Action) {
     stop();
     const controller = current = new AbortController();
+    playing = action.group;
     const signal = controller.signal;
     const playback = {};
     let voice: AudioBufferSourceNode | undefined;
@@ -304,7 +309,7 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
       if (!signal.aborted) throw error;
     } finally {
       controller.abort();
-      if (current === controller) current = undefined;
+      if (current === controller) { current = undefined; playing = undefined; }
     }
   }
   const idleOrSystem = /^(idle|wait|standby|start|login|tick|shake|mail|mission|complete|home|wedding)/i;
@@ -312,19 +317,22 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     !/(?:^|[/_])(?:idle|wait|standby|login|wedding)/i.test(action.file)) : [];
   let lastFile: string | undefined;
   function playFallback() {
-    if (signal.aborted || !fallback.length) return;
-    const other = fallback.filter(a => a.file !== lastFile);
-    const pool = other.length ? other : fallback;
+    const allowed = gate ? fallback.filter(a => gate!.allows(a.group)) : fallback;
+    if (signal.aborted || !allowed.length) return;
+    const other = allowed.filter(a => a.file !== lastFile);
+    const pool = other.length ? other : allowed;
     const action = pool[Math.floor(Math.random()*pool.length)];
     lastFile = action.file;
     play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
   }
   host.addEventListener('click', event => {
+    // The outfit's game rules took this press, or one of their actions is still playing.
+    if (gate?.claims(event)) { event.live2dHandlesCaption = true; return; }
     const click = ++intent;
     if (current) event.live2dHandlesCaption = true;
-    const hits = stage.hitTest(event.clientX, event.clientY);
+    const hits = stage.hitTest(event.clientX, event.clientY).filter(area => !gate?.parts.has(area.toLowerCase()));
     for (const area of hits) {
-      const candidates = actions.filter(a => a.area === area.toLowerCase() && a.weight > 0);
+      const candidates = actions.filter(a => a.area === area.toLowerCase() && a.weight > 0 && (!gate || gate.allows(a.group)));
       if (candidates.length) {
         let roll = Math.random() * candidates.reduce((sum, a) => sum + a.weight, 0);
         const action = candidates.find(a => (roll -= a.weight) < 0) ?? candidates[candidates.length - 1];
@@ -342,10 +350,14 @@ export function bindInteractions(host: HTMLElement, stage: Live2DInstance, actio
     }
   }, { signal });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); }, { signal });
-  return { stop, playMotion(group: string, index: number) {
+  function playMotion(group: string, index: number) {
     const action = actions.find(item => item.group === group && item.index === index);
     if (!action || signal.aborted) return false;
     play(action).catch(error => { if (!signal.aborted) console.error('[Live2D]', error); });
     return true;
-  } };
+  }
+  return { stop, playMotion,
+    /** For the outfit's game rules (modern/gesture-input.ts). */
+    actions: { play: (group: string) => playMotion(group, 0), stop, playing: () => playing },
+    setGate(next: GestureGate | undefined) { gate = next; } };
 }

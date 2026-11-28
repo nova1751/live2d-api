@@ -36,7 +36,7 @@
 希望绕过分支 CDN 缓存、发布后立即同步最新版本的网站，可使用下面的引导脚本（通过 npm 镜像查询最新稳定版并自动加载全部 7 个作品）：
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.39/latest.mjs?collection=all"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.40/latest.mjs?collection=all"></script>
 ```
 
 经典 `<script>` 接入（支持通过 `data-position`、`data-mode`、`data-model-id` 自定义位置、随机顺序和初始造型）使用 `@widget-latest/autoload.js?collection=all`：
@@ -45,7 +45,7 @@
 <script src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-latest/autoload.js?collection=all" data-position="left" data-mode="sequential"></script>
 ```
 
-要固定 CDN 版本，请用 `@widget-2.9.39` 这类运行时标签。包含素材的 `@v2.9.39` 源码标签可能超过 jsDelivr 的 50 MB 限制。全量模式也可用 `data-model-id="作品:模型 ID"` 指定初始造型，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
+要固定 CDN 版本，请用 `@widget-2.9.40` 这类运行时标签。包含素材的 `@v2.9.40` 源码标签可能超过 jsDelivr 的 50 MB 限制。全量模式也可用 `data-model-id="作品:模型 ID"` 指定初始造型，例如 `data-model-id="azur-lane:ship/10117/lafei"`。
 
 只展示碧蓝航线时，给**脚本地址**加上 `?collection=azur-lane`。切到底会回到该作品的第一个造型。海外可将域名换为 `cdn.jsdelivr.net`。
 
@@ -144,7 +144,7 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 
 图鉴人物的手臂、衣摆和特效可以画到原交互框外。伸出的部分会把点击交给下方网页，人物原区域和工具栏照常响应。悬浮看板娘默认层级为 10，可在宿主页用 `:root { --waifu-z-index: 20; }` 调整。
 
-点击工具栏的 **放大查看**。默认的 **100%** 会让人物和对话框等比适应可用区域。场景模型按原始画幅显示。拖动滑块，或输入 **50–300%** 的整数并按 Enter 确认。放大后可滚动、拖动空白处或使用方向键移动预览，点 **适应窗口** 回到 100%。
+点击工具栏的 **放大查看**。默认的 **100%** 会让人物和对话框等比适应可用区域。场景模型按原始画幅显示。拖动滑块，或输入 **50–300%** 的整数并按 Enter 确认。放大后可滚动、拖动空白处或使用方向键移动预览，点 **适应窗口** 回到 100%。在人物能被拖动的部位（碧蓝航线造型的部件、旧版模型的抚摸区域）拖动时，交给人物处理，画面不跟着移动。
 
 **全屏** 会保留当前比例，仍可继续调整。点 **还原** 返回网页，人物、动作和语音沿用同一块画布。嵌入 iframe 时，宿主页面需要授予全屏权限。想让自己的页面每次以 150% 打开，可以设置 `loadWidget({ modelUrl, expandedZoom: 150 })`。
 
@@ -154,10 +154,12 @@ await loadWidget({ catalogUrl: '/models/catalog.json', modelId: 'haru/original' 
 
 点击人物时优先采用模型自带的触摸事件。在没有匹配事件的可见部位，播放器会从该造型已有的动作中随机选择；有多个可选动作时尽量避免连续重复。待机动作和登录等专用事件保留各自的触发方式。
 
+碧蓝航线有 122 个造型带游戏原有的触摸规则（配置表 `ship_l2d`），播放方式与游戏一致：拖动部件后吸附到档位或弹回原位，点击切换待机姿态或开关部件，长按或拖到位后触发动作。进入某个姿态后，该姿态不支持的动作不会触发。少数造型的触摸区位于模型画面之外（游戏屏幕比模型画布大），在 **放大查看** 中缩小画面后即可点到。
+
 | 作品 | 已收录造型 | 接入范围 |
 | --- | ---: | --- |
 | 少女前线 | 443 | 129 个条目，保留原入口、旧模型地址和作品内排序 |
-| 碧蓝航线 | 269 | 167 位舰船，按装扮 ID 与官方继承规则匹配日配语音和中英台词，含透明场景切割 |
+| 碧蓝航线 | 269 | 167 位舰船，按装扮 ID 与官方继承规则匹配日配语音和中英台词，含透明场景切割；122 个造型支持游戏原有的拖动与姿态切换 |
 | BanG Dream! | 3,493 | 46 位角色，覆盖九个乐队素材库、国服联动造型与《Our Notes》丰川祥子 Cubism 3 造型 |
 | 崩坏学园 2 | 19 | 18 位角色，补回官方中文字幕与原版语音；来源缺录音的事件保留动作与字幕 |
 | 机动战队 | 5 | 4 位角色，玛蒂尔达与斯洛卡伊（日/中双版）按原声清单播放，另外两位保留原动作 |
@@ -211,7 +213,7 @@ await loadWidget({
 希望绕过分支缓存、自动采用已发布版本的网站，可使用下面的国内入口。固定地址标识加载脚本自身的版本。它通过国内 npm 镜像查询稳定版本号，再从国内 GitHub CDN 加载对应版本的播放器和模型；加上 `?collection=all` 即可轮换全部七个作品。查询超时或新版入口暂不可用时，自动使用随脚本发布的版本。海外网站可将域名换成 `cdn.jsdelivr.net`。
 
 ```html
-<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.39/latest.mjs"></script>
+<script type="module" src="https://cdn.jsdmirror.com/gh/nova1751/live2d-api@widget-2.9.40/latest.mjs"></script>
 ```
 
 快捷入口在视口宽度达到 768 CSS 像素时显示。首次访问默认展示一阶空袭妖精，后续访问恢复该站上次选择的造型。需要自定显示条件时可使用模块 API。

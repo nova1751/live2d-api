@@ -13,6 +13,8 @@ export interface ModelVariant {
   skippedDrawables?: string[];
   /** Measured character bounds in the 320px reference view, when the opening pose includes a full scene. */
   subjectFrame?: SubjectFrame;
+  /** The game's touch and drag rules for this outfit, relative to the catalog (src/modern/gestures.ts). */
+  gestures?: string;
 sceneAspect?: number; cueSource?: string; collectionDefault?: boolean; cues?: Record<string, GameCue>; files?: Record<string,string|null>; source: string; manifest?: string; dialogue?: string; soundAliases?: Record<string, string> }
 export interface ModelCatalog {
   schemaVersion: 1;
@@ -134,7 +136,8 @@ export function parseModelCatalog(catalog: ModelCatalog, url: URL, collection?: 
       frame[0] < frame[2] && frame[1] < frame[3] ? frame : undefined;
     const files = asset.files ? Object.fromEntries(Object.entries(asset.files)
       .map(([path, replacement]) => [path, replacement && catalogAssetUrl(replacement)])) : asset.files;
-    return { cues, sceneAspect, subjectFrame, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases };
+    const gestures = typeof asset.gestures === 'string' ? catalogAssetUrl(asset.gestures) : undefined;
+    return { cues, sceneAspect, subjectFrame, hiddenDrawables: asset.hiddenDrawables, skippedDrawables: asset.skippedDrawables, files, captions, modelUrl: assetUrl(asset.manifest), dialogue, soundAliases: asset.soundAliases, gestures };
   }
   const gallery = catalog.gallery ? Object.fromEntries(Object.entries(catalog.gallery)
     .map(([id, entry]) => [id, entry.portrait ? { ...entry, portrait: regionalUrl(entry.portrait) } : entry])) : catalog.gallery;

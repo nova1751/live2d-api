@@ -22,12 +22,14 @@ interface InitWidget {
 interface Event {
   /** Set by a model renderer when it owns the caption for this click. */
   live2dHandlesCaption?: boolean;
+  /** Set by a model renderer on a press where dragging is a gesture the model reacts to. */
+  live2dDrag?: boolean;
 }
 
 interface Window {
   initWidget: InitWidget;
   loadlive2d: {
-    (canvas: string, model: string, options?: { signal?: AbortSignal; sceneAspect?: number; hiddenDrawables?: string[]; skippedDrawables?: string[]; randomTap?: boolean; bandIdle?: boolean; files?: Record<string,string|null>; cues?: Record<string,import('./library/catalog').GameCue>; locale?: import('./library/catalog').WidgetLocale; onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; paint?: () => import('./library/framing').PaintSurface; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string }): void | Promise<void>;
+    (canvas: string, model: string, options?: { signal?: AbortSignal; sceneAspect?: number; hiddenDrawables?: string[]; skippedDrawables?: string[]; randomTap?: boolean; bandIdle?: boolean; files?: Record<string,string|null>; cues?: Record<string,import('./library/catalog').GameCue>; locale?: import('./library/catalog').WidgetLocale; onPaint?: (canvas: HTMLCanvasElement) => void; captions?: Record<string,string>; framing?: import('./library/framing').Framing; paint?: () => import('./library/framing').PaintSurface; soundAliases?: Record<string, string>; dialogue?: import('./library/catalog').DialogueSource; start?: boolean; coreUrl?: string; gestures?: string }): void | Promise<void>;
     cancelLoad?(): void;
     playMotion?(group: string, index: number): boolean;
     onNextPaint?(copy: (canvas: HTMLCanvasElement) => void): (() => void) | undefined;

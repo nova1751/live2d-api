@@ -1,0 +1,1 @@
+{"schemaVersion":1,"skin":205015,"rules":[{"gyro":1,"gyro_x":1,"id":204,"mode":1,"parameter":"ParamBGMoveX","range":[-30,30],"revert":200,"revert_smooth":200,"smooth":200},{"gyro":1,"gyro_y":1,"id":205,"mode":1,"parameter":"ParamBGMoveY","range":[-30,30],"revert":200,"revert_smooth":200,"smooth":200}]}

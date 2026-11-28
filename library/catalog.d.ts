@@ -27,6 +27,8 @@ export interface ModelVariant {
     skippedDrawables?: string[];
     /** Measured character bounds in the 320px reference view, when the opening pose includes a full scene. */
     subjectFrame?: SubjectFrame;
+    /** The game's touch and drag rules for this outfit, relative to the catalog (src/modern/gestures.ts). */
+    gestures?: string;
     sceneAspect?: number;
     cueSource?: string;
     collectionDefault?: boolean;
@@ -95,6 +97,7 @@ export declare function loadModelCatalog(input: string | URL, collection?: Colle
         modelUrl: string;
         dialogue: DialogueSource | undefined;
         soundAliases: Record<string, string> | undefined;
+        gestures: string | undefined;
     };
     legacyIds: string[][] | undefined;
 }>;
@@ -128,6 +131,7 @@ export declare function parseModelCatalog(catalog: ModelCatalog, url: URL, colle
         modelUrl: string;
         dialogue: DialogueSource | undefined;
         soundAliases: Record<string, string> | undefined;
+        gestures: string | undefined;
     };
     legacyIds: string[][] | undefined;
 };
